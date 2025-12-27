@@ -87,14 +87,24 @@ function Cube({
   hasRedOutline,
   hasFace,
   eyeCount = 2,
+  starEyes,
   style,
 }: {
   color: string;
   hasRedOutline?: boolean;
   hasFace?: boolean;
   eyeCount?: number;
+  starEyes?: 'red' | 'blue' | false;
   style?: React.CSSProperties;
 }) {
+  const renderStarEye = (color: 'red' | 'blue') => (
+    <div className={`cube-eye-star star-${color}`}>
+      <div className="eye-inner" />
+    </div>
+  );
+
+  const renderNormalEye = () => <div className="cube-eye" />;
+
   return (
     <div
       className="cube absolute"
@@ -108,8 +118,10 @@ function Cube({
       {hasFace && (
         <div className="cube-face">
           <div className="cube-eyes">
-            {eyeCount >= 1 && <div className="cube-eye" />}
-            {eyeCount >= 2 && <div className="cube-eye" />}
+            {/* Left eye */}
+            {eyeCount >= 1 && (starEyes === 'blue' ? renderStarEye('blue') : starEyes === 'red' ? renderStarEye('red') : renderNormalEye())}
+            {/* Right eye - normal for 5, star for 10, normal otherwise */}
+            {eyeCount >= 2 && (starEyes === 'red' ? renderStarEye('red') : renderNormalEye())}
           </div>
           <div className="cube-mouth" />
         </div>
@@ -202,8 +214,11 @@ export function NumberBlock({
     0
   );
 
-  // Number of eyes based on value (1 has 1 eye, others have 2)
+  // Number of eyes based on value (only 1 has 1 eye, others have 2)
   const eyeCount = value === 1 ? 1 : 2;
+
+  // Star eyes for 5 (blue) and 10 (red)
+  const starEyes = value === 5 ? 'blue' : value === 10 ? 'red' : false;
 
   const handleDragStart = () => {
     dragStartPos.current = position;
@@ -283,6 +298,7 @@ export function NumberBlock({
             hasRedOutline={hasRedOutline}
             hasFace={index === topCubeIndex}
             eyeCount={eyeCount}
+            starEyes={starEyes}
             style={{
               left: pos.x,
               top: pos.y,
