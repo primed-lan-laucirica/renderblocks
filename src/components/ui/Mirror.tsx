@@ -73,72 +73,40 @@ function SpawnableBlock({ value, onDragOut }: SpawnableBlockProps) {
       whileTap={{ scale: 0.95 }}
       whileDrag={{ scale: 1.2, zIndex: 100 }}
     >
-      {/* Cube preview */}
+      {/* Cube preview - uses same .cube class as canvas */}
       <div
-        className="w-full h-full rounded-lg"
+        className="cube"
         style={{
           backgroundColor: color,
-          boxShadow: `
-            inset 0 -3px 0 rgba(0, 0, 0, 0.2),
-            inset 0 3px 0 rgba(255, 255, 255, 0.3),
-            0 2px 4px rgba(0, 0, 0, 0.2)
-          `,
         }}
       >
-        {/* Face - eyes and mouth */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-          {/* Eyes - 1 has only one eye, 5 has left star eye, 10 has both star eyes */}
-          <div className="flex gap-1 -mt-1 items-center">
+        {/* Face - uses same CSS classes as canvas blocks */}
+        <div className="cube-face">
+          <div className="cube-eyes">
             {/* Left eye */}
             {value === 5 ? (
-              <div className="relative flex items-center justify-center" style={{ width: '14px', height: '18px' }}>
-                <div className="absolute inset-0" style={{
-                  background: '#0066FF',
-                  clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
-                }} />
-                <div className="bg-white rounded-full relative border border-gray-800 z-10" style={{ width: '7px', height: '10px' }}>
-                  <div className="absolute bg-gray-800 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ width: '4px', height: '4px' }} />
-                </div>
+              <div className="cube-eye-star star-blue">
+                <div className="eye-inner" />
               </div>
             ) : value === 10 ? (
-              <div className="relative flex items-center justify-center" style={{ width: '14px', height: '18px' }}>
-                <div className="absolute inset-0" style={{
-                  background: '#FF0000',
-                  clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
-                }} />
-                <div className="bg-white rounded-full relative border border-gray-800 z-10" style={{ width: '7px', height: '10px' }}>
-                  <div className="absolute bg-gray-800 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ width: '4px', height: '4px' }} />
-                </div>
+              <div className="cube-eye-star star-red">
+                <div className="eye-inner" />
               </div>
             ) : (
-              <div className="bg-white rounded-full relative border border-gray-800" style={{ width: '9px', height: '13px' }}>
-                <div className="absolute w-1 h-1 bg-gray-800 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-              </div>
+              <div className="cube-eye" />
             )}
-            {/* Right eye - normal for 1-9, star for 10 */}
+            {/* Right eye - normal for 5, star for 10, hidden for 1 */}
             {value !== 1 && (
               value === 10 ? (
-                <div className="relative flex items-center justify-center" style={{ width: '14px', height: '18px' }}>
-                  <div className="absolute inset-0" style={{
-                    background: '#FF0000',
-                    clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
-                  }} />
-                  <div className="bg-white rounded-full relative border border-gray-800 z-10" style={{ width: '7px', height: '10px' }}>
-                    <div className="absolute bg-gray-800 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{ width: '4px', height: '4px' }} />
-                  </div>
+                <div className="cube-eye-star star-red">
+                  <div className="eye-inner" />
                 </div>
               ) : (
-                <div className="bg-white rounded-full relative border border-gray-800" style={{ width: '9px', height: '13px' }}>
-                  <div className="absolute w-1 h-1 bg-gray-800 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                </div>
+                <div className="cube-eye" />
               )
             )}
           </div>
-          {/* Mouth - slightly curved, higher on one side */}
-          <div
-            className={`w-4 h-1 bg-gray-800 ${(value === 5 || value === 10) ? '-mt-1' : 'mt-0.5'}`}
-            style={{ borderRadius: '0 0 6px 4px', transform: 'rotate(-3deg)' }}
-          />
+          <div className="cube-mouth" />
         </div>
 
         {/* Value label on top */}
