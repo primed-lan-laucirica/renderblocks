@@ -129,5 +129,4 @@ cd android
 ```
 
 ## Git Remotes
-- Origin: `primed-lan-laucirica/renderblocks`
-- Fork: `PrimeDeviation/renderblocks`
+- Origin: `PrimeDeviation/renderblocks`

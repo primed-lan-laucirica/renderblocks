@@ -9,7 +9,7 @@ games be developed independently.
 - **Repo:** this repo (`PrimeDeviation/renderblocks`) evolves into the monorepo,
   keeping its name and history. The current number game moves into
   `packages/games/blocks`.
-- **Plugin model:** pnpm/npm **workspace packages in one monorepo** with a
+- **Plugin model:** pnpm **workspace packages in one monorepo** with a
   build-time plugin registry and lazy-loaded games — *not* runtime/dynamic
   loading. The `GameModule` contract is designed so dynamic loading could be
   added later without rewriting games.
@@ -27,10 +27,14 @@ layer becomes the kernel.
 |-----|------------------|------------------------------|
 | `renderblocks` (this repo) | parent + `packages/games/blocks` | 2026-01-04 |
 | `rendershapes` | `packages/games/shapes` | 2026-02-03 |
-| `rendercombos` | `packages/games/combos` (built fresh) | 2026-02-06 |
+| `rendercombos` | `packages/games/combos` (ported) | 2026-02-22 |
 
-Note: post-January pushes to these repos are **Dependabot branches only** — no
-hand-written changes. `master` is the real latest code in each.
+Note (updated 2026-06-11): `rendercombos` is **not** an empty copy of
+rendershapes — it has ~40 commits of real game development (pushed to origin
+2026-06-11): memory matching with progressive difficulty (6/10/20 cards) and a
+face-up beginner mode, plus a "Combo Spin" slot-machine game, through Android
+v0.4.7. It gets ported like the others. `master` is the real latest code in
+each repo; the remaining remote branches are Dependabot-only.
 
 The shared layer to lift into the kernel: `AppShell`, `ResponsiveContainer`,
 `useDarkMode`, `utils/sounds.ts`, `utils/throttle.ts`, the Tailwind preset, and
@@ -48,7 +52,7 @@ renderblocks/
 │   ├── games/
 │   │   ├── blocks/      # current renderblocks game, ported
 │   │   ├── shapes/      # current rendershapes, ported
-│   │   └── combos/      # built fresh against the plugin API
+│   │   └── combos/      # current rendercombos, ported
 │   └── app/             # the one Capacitor Android project + entry point
 ├── package.json         # workspaces root
 └── docs/PLATFORM_PLAN.md
@@ -95,11 +99,13 @@ course-correct at any boundary.
    storage service model. Two working tiles.
 4. **Port blocks.** Wire voice/LLM hooks as the optional kernel capability — this
    phase proves the services design.
-5. **Build combos.** Per the spec in `rendercombos/CLAUDE.md`, written against the
-   plugin API from day one (its `src/` is currently an unmodified copy of
-   rendershapes, so nothing is lost).
+5. **Port combos.** Memory matching + Combo Spin, same treatment as shapes and
+   blocks. It shares shapes' ancestry, so most of its kernel seams are already
+   known from phase 3.
 6. **Finish.** Single Android config + icons, per-game dev harness scripts, an
    "add a game" guide, then archive the `rendershapes` and `rendercombos` repos.
+   (Their open Dependabot alerts die with the archive — the monorepo's fresh
+   dependency tree supersedes them, so don't spend time merging those branches.)
 
 Once the kernel exists (after phase 2), games can be developed in parallel
 without touching each other.
