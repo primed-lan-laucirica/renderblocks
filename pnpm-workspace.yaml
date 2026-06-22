@@ -1,0 +1,14 @@
+packages:
+  - 'packages/*'
+  - 'packages/games/*'
+
+allowBuilds:
+  esbuild: true
+
+# Capacitor's Android Gradle build resolves @capacitor/* via plain relative
+# node_modules paths, so we need a flat, npm-style layout rather than pnpm's
+# default isolated/symlinked store.
+nodeLinker: hoisted
+
+onlyBuiltDependencies:
+  - esbuild

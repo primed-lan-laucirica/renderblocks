@@ -1,0 +1,26 @@
+{
+  "name": "@renderblocks/app",
+  "private": true,
+  "version": "1.4.16",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "android:sync": "pnpm run build && cap sync android",
+    "android:apk": "android/gradlew -p android clean assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.0",
+    "@renderblocks/blocks": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "vite-plugin-pwa": "^1.2.0"
+  }
+}
