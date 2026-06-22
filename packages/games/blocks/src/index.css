@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* This game's components live in a workspace package that the app reaches via a
+   node_modules symlink, which Tailwind's auto content-detection skips. Scan this
+   package's own source explicitly (path is relative to this CSS file). */
+@source "./**/*.{ts,tsx}";
+
 @theme {
   /* Numberblocks official color palette */
   --color-nb-1: #FF0000;  /* Red */
