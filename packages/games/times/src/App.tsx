@@ -30,19 +30,17 @@ function shuffle<T>(items: T[]): T[] {
 
 function makeChoices(table: number, step: number): number[] {
   const correct = table * step
-  const candidates = shuffle([
-    table * (step + 1),
-    table * (step - 1),
-    (table + 1) * step,
-    (table - 1) * step,
-    correct + table,
-    correct - table,
-    correct + 1,
-    correct + 2,
-  ])
+  // Near-misses only: distractors must never be multiples of the key number,
+  // so spotting the table's skip-count pattern is what finds the answer.
+  // (Impossible for the 1x table — everything is a multiple of 1 — so there
+  // the divisibility filter is skipped and any nearby number qualifies.)
+  const offsets = shuffle([-4, -3, -2, -1, 1, 2, 3, 4, 5, 6])
   const distractors: number[] = []
-  for (const candidate of candidates) {
-    if (candidate > 0 && candidate !== correct && !distractors.includes(candidate)) {
+  for (const offset of offsets) {
+    const candidate = correct + offset
+    if (candidate <= 0) continue
+    if (table > 1 && candidate % table === 0) continue
+    if (!distractors.includes(candidate)) {
       distractors.push(candidate)
       if (distractors.length === 2) break
     }
