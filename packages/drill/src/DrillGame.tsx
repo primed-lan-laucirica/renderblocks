@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { GameServices } from '@renderblocks/kernel'
 import { PALETTES, type PaletteName } from './palettes'
-import { createEffectPlayer } from './sounds'
+import { createEffectPlayer, playNumber } from './sounds'
 import { useDarkMode } from './useDarkMode'
 import {
   advanceQueue,
@@ -51,6 +51,10 @@ interface Celebration {
   completedKey: number
 }
 
+const SOLVED_PAUSE_MS = 950
+const STREAK_MILESTONES = [5, 10, 15, 20]
+const MISS_ENCOURAGEMENTS = ['Try again!', 'Almost!', 'You can do it!']
+
 function shuffle<T>(items: T[]): T[] {
   const result = [...items]
   for (let i = result.length - 1; i > 0; i--) {
@@ -97,6 +101,12 @@ export function DrillGame({ services, config }: DrillGameProps) {
   // Counts completed encounters, so a re-queued fact still remounts animations.
   const [encounter, setEncounter] = useState(0)
   const [celebrating, setCelebrating] = useState<Celebration | null>(null)
+  // Correct answer shown in place of '?' during a short pause before advancing,
+  // so the completed fact is actually seen (and heard, for answers 1-20).
+  const [solved, setSolved] = useState(false)
+  // Consecutive first-try corrects this session; drives the star bursts.
+  const [streak, setStreak] = useState(0)
+  const [banner, setBanner] = useState<string | null>(null)
 
   useEffect(() => {
     effects.preload()
@@ -134,11 +144,14 @@ export function DrillGame({ services, config }: DrillGameProps) {
     return () => window.clearTimeout(timer)
   }, [celebrating])
 
-  const pick = (value: number) => {
-    if (celebrating || shakeValue !== null) return
-    if (value === problem.answer) {
+  // The solved pause: show + speak the completed fact, then advance the queue.
+  useEffect(() => {
+    if (!solved) return
+    const speakTimer = window.setTimeout(() => playNumber(problem.answer), 300)
+    const advanceTimer = window.setTimeout(() => {
+      setSolved(false)
+      setBanner(null)
       const dirty = encounterDirty
-      setAttempt(0)
       setEncounterDirty(false)
       setEncounter((e) => e + 1)
       const nextQueue = advanceQueue(run.queue, dirty)
@@ -153,13 +166,37 @@ export function DrillGame({ services, config }: DrillGameProps) {
           stars: earnedStar ? { ...s.stars, [String(completedKey)]: true } : s.stars,
         }))
       } else {
-        effects.play('yes')
         setState((s) => ({ ...s, run: { ...s.run, queue: nextQueue } }))
+      }
+    }, SOLVED_PAUSE_MS)
+    return () => {
+      window.clearTimeout(speakTimer)
+      window.clearTimeout(advanceTimer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot the state at solve time
+  }, [solved])
+
+  const pick = (value: number) => {
+    if (celebrating || solved || shakeValue !== null) return
+    if (value === problem.answer) {
+      setAttempt(0)
+      effects.play('yes')
+      setSolved(true)
+      if (!encounterDirty) {
+        const nextStreak = streak + 1
+        setStreak(nextStreak)
+        if (STREAK_MILESTONES.includes(nextStreak)) {
+          setBanner(`${nextStreak} in a row! 🔥`)
+        } else if (run.missed.includes(factIndex)) {
+          // A fact he missed earlier, now answered clean — the comeback moment.
+          setBanner('Got it! 💪')
+        }
       }
     } else {
       effects.play('no')
       setShakeValue(value)
       setEncounterDirty(true)
+      setStreak(0)
       setState((s) =>
         s.run.missed.includes(factIndex)
           ? s
@@ -173,6 +210,9 @@ export function DrillGame({ services, config }: DrillGameProps) {
     setShakeValue(null)
     setEncounterDirty(false)
     setCelebrating(null)
+    setSolved(false)
+    setStreak(0)
+    setBanner(null)
     setState((s) => ({ ...s, run: freshRun(next, config.stepsPerKey) }))
   }
 
@@ -246,19 +286,87 @@ export function DrillGame({ services, config }: DrillGameProps) {
 
       {/* Problem */}
       <div className="flex-1 flex flex-col items-center justify-center gap-10 w-full max-w-xl">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${run.key}-${factIndex}-${encounter}`}
-            initial={{ opacity: 0, y: 24, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -24, scale: 0.9 }}
-            transition={{ type: 'spring', bounce: 0.4, duration: 0.5 }}
-            className={`text-7xl font-extrabold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-700'}`}
-          >
-            {problem.a} {config.symbol} {problem.b} ={' '}
-            <span className={isDark ? palette.accentDark : palette.accent}>?</span>
-          </motion.div>
-        </AnimatePresence>
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`${run.key}-${factIndex}-${encounter}`}
+              initial={{ opacity: 0, y: 24, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -24, scale: 0.9 }}
+              transition={{ type: 'spring', bounce: 0.4, duration: 0.5 }}
+              className={`text-7xl font-extrabold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-700'}`}
+            >
+              {problem.a} {config.symbol} {problem.b} ={' '}
+              {solved ? (
+                <motion.span
+                  initial={{ scale: 0.3 }}
+                  animate={{ scale: [0.3, 1.25, 1] }}
+                  transition={{ duration: 0.45 }}
+                  className={`inline-block ${isDark ? palette.accentDark : palette.accent}`}
+                >
+                  {problem.answer}
+                </motion.span>
+              ) : (
+                <span className={isDark ? palette.accentDark : palette.accent}>?</span>
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Star burst — scales with the streak */}
+          {solved && streak > 0 && (
+            <div className="absolute inset-0 pointer-events-none">
+              {Array.from({ length: Math.min(3 + streak, 12) }, (_, i) => {
+                const angle = (i / Math.min(3 + streak, 12)) * Math.PI * 2
+                const distance = 80 + Math.random() * 60
+                return (
+                  <motion.span
+                    key={`${encounter}-${i}`}
+                    className="absolute left-1/2 top-1/2 text-3xl"
+                    initial={{ x: 0, y: 0, opacity: 1, scale: 0.5 }}
+                    animate={{
+                      x: Math.cos(angle) * distance,
+                      y: Math.sin(angle) * distance,
+                      opacity: 0,
+                      scale: 1.3,
+                      rotate: Math.random() * 180 - 90,
+                    }}
+                    transition={{ duration: 0.8, ease: 'easeOut' }}
+                  >
+                    {i % 3 === 0 ? '⭐' : '✨'}
+                  </motion.span>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Feedback line: streak/comeback banner, or encouragement on a miss */}
+        <div className="h-10 flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            {banner && solved ? (
+              <motion.div
+                key={banner}
+                initial={{ opacity: 0, scale: 0.6, y: 8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ type: 'spring', bounce: 0.6 }}
+                className="text-3xl font-extrabold text-amber-500 drop-shadow-sm"
+              >
+                {banner}
+              </motion.div>
+            ) : shakeValue !== null ? (
+              <motion.div
+                key={`miss-${attempt}`}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className={`text-2xl font-extrabold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}
+              >
+                {MISS_ENCOURAGEMENTS[attempt % MISS_ENCOURAGEMENTS.length]}
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </div>
 
         {/* Choices */}
         <div className="flex gap-5 w-full justify-center">
