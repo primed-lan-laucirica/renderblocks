@@ -22,8 +22,18 @@
     "paths": {
       "@renderblocks/blocks": ["../games/blocks/src/index.ts"],
       "@renderblocks/blocks/module": ["../games/blocks/src/module.ts"],
+      "@renderblocks/shapes": ["../games/shapes/src/index.ts"],
+      "@renderblocks/shapes/module": ["../games/shapes/src/module.ts"],
+      "@renderblocks/combos": ["../games/combos/src/index.ts"],
+      "@renderblocks/combos/module": ["../games/combos/src/module.ts"],
       "@renderblocks/kernel": ["../kernel/src/index.ts"]
     }
   },
-  "include": ["src", "../games/blocks/src", "../kernel/src"]
+  "include": [
+    "src",
+    "../games/blocks/src",
+    "../games/shapes/src",
+    "../games/combos/src",
+    "../kernel/src"
+  ]
 }

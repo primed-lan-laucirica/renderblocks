@@ -1,0 +1,217 @@
+/* Tailwind entry lives in the app package CSS, which imports this file. */
+
+@theme {
+  /* Shape colors (matching types/index.ts) */
+  --color-shape-circle: #FF0000;
+  --color-shape-semicircle: #FF8C00;
+  --color-shape-hexagon: #FFD700;
+  --color-shape-square: #00CC00;
+  --color-shape-rectangle: #00BFFF;
+  --color-shape-pentagon: #4B0082;
+  --color-shape-triangle: #8B00FF;
+  --color-shape-heptagon: #FF00FF;
+  --color-shape-octagon: #FF6B6B;
+  --color-shape-oval: #4ECDC4;
+  --color-shape-heart: #E91E63;
+  --color-shape-cross: #9C27B0;
+  --color-shape-star: #FFC107;
+  --color-shape-diamond: #00BCD4;
+  --color-shape-arrow: #795548;
+  --color-shape-trapezoid: #607D8B;
+
+  /* UI accent colors */
+  --color-accent-pink: #FF6B9D;
+  --color-accent-purple: #9B5DE5;
+
+  /* Background colors */
+  --color-cloud-light: #FFF5F7;
+  --color-cloud: #F0F9FF;
+  --color-cloud-lavender: #F5F3FF;
+
+  /* Shadows */
+  --shadow-playful: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+  --shadow-shape: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+  --shadow-shape-hover: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+
+  /* Shape dimensions - vmin-based for responsive scaling */
+  --shape-size: 8vmin;
+  --shape-gap: 1vmin;
+}
+
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(155, 93, 229, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(155, 93, 229, 0.6); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes snap-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@layer base {
+  :root {
+    font-family: 'Nunito', 'Quicksand', system-ui, sans-serif;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: none;
+  }
+
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    touch-action: none;
+    overscroll-behavior: none;
+  }
+
+  body {
+    background: linear-gradient(135deg, var(--color-cloud-light) 0%, var(--color-cloud) 50%, var(--color-cloud-lavender) 100%);
+    overflow: hidden;
+    transition: background 0.3s ease;
+  }
+
+  /* Dark mode styles */
+  .dark body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+  }
+}
+
+@layer components {
+  /* Shape piece */
+  .shape-piece {
+    width: var(--shape-size);
+    height: var(--shape-size);
+    position: relative;
+    cursor: grab;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .shape-piece:active {
+    cursor: grabbing;
+  }
+
+  .shape-piece.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+  }
+
+  /* Shape palette at bottom of screen */
+  .shape-palette {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--shape-gap);
+    padding: 1vmin;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(200,220,255,0.8) 100%);
+    border-radius: 2vmin;
+    box-shadow: var(--shadow-playful);
+    backdrop-filter: blur(8px);
+  }
+
+  .dark .shape-palette {
+    background: linear-gradient(135deg, rgba(30,30,50,0.9) 0%, rgba(40,50,80,0.8) 100%);
+  }
+
+  /* Puzzle hole */
+  .puzzle-hole {
+    position: absolute;
+    border: 3px dashed rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .puzzle-hole.filled {
+    border-style: solid;
+    border-color: rgba(0, 200, 0, 0.5);
+    background: rgba(0, 200, 0, 0.1);
+  }
+
+  .dark .puzzle-hole {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Timer display */
+  .timer {
+    font-size: 4vmin;
+    font-weight: bold;
+    padding: 1vmin 2vmin;
+    border-radius: 2vmin;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--shadow-playful);
+  }
+
+  .timer.warning {
+    color: #f59e0b;
+    animation: pulse-glow 0.5s ease-in-out infinite;
+  }
+
+  .timer.critical {
+    color: #ef4444;
+    animation: pulse-glow 0.25s ease-in-out infinite;
+    font-size: 6vmin;
+  }
+
+  .dark .timer {
+    background: rgba(30, 30, 50, 0.9);
+    color: #e5e7eb;
+  }
+
+  /* Touch targets */
+  .touch-target {
+    min-width: 8vmin;
+    min-height: 8vmin;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Shadow utilities */
+  .shadow-playful {
+    box-shadow: var(--shadow-playful);
+  }
+
+  .shadow-shape {
+    box-shadow: var(--shadow-shape);
+  }
+}
+
+@layer utilities {
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .drag-none {
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
+}

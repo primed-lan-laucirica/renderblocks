@@ -1,0 +1,365 @@
+import type { ScreenDefinition, ScreenSetType } from '../types';
+
+// Screen Set 1: Memory Matching — 18 screens (9 face-up + 9 face-down)
+const memoryScreens: ScreenDefinition[] = [
+  // Face-up screens (beginners — cards visible, tap to match pairs)
+  {
+    id: 'memory-fu-1',
+    screenSetType: 'memory',
+    name: 'Match 6 Face-Up (Two-Word)',
+    timeLimit: 60,
+    comboType: 'two-word',
+    targetCount: 6,
+    faceUp: true,
+  },
+  {
+    id: 'memory-fu-2',
+    screenSetType: 'memory',
+    name: 'Match 10 Face-Up (Two-Word)',
+    timeLimit: 90,
+    comboType: 'two-word',
+    targetCount: 10,
+    faceUp: true,
+  },
+  {
+    id: 'memory-fu-3',
+    screenSetType: 'memory',
+    name: 'Match 20 Face-Up (Two-Word)',
+    timeLimit: 150,
+    comboType: 'two-word',
+    targetCount: 20,
+    faceUp: true,
+  },
+  {
+    id: 'memory-fu-4',
+    screenSetType: 'memory',
+    name: 'Match 6 Face-Up (Mixed)',
+    timeLimit: 60,
+    comboType: 'mixed',
+    targetCount: 6,
+    faceUp: true,
+  },
+  {
+    id: 'memory-fu-5',
+    screenSetType: 'memory',
+    name: 'Match 10 Face-Up (Mixed)',
+    timeLimit: 90,
+    comboType: 'mixed',
+    targetCount: 10,
+    faceUp: true,
+  },
+  {
+    id: 'memory-fu-6',
+    screenSetType: 'memory',
+    name: 'Match 20 Face-Up (Mixed)',
+    timeLimit: 180,
+    comboType: 'mixed',
+    targetCount: 20,
+    faceUp: true,
+  },
+  {
+    id: 'memory-fu-7',
+    screenSetType: 'memory',
+    name: 'Match 6 Face-Up (Three-Word)',
+    timeLimit: 60,
+    comboType: 'three-word',
+    targetCount: 6,
+    faceUp: true,
+  },
+  {
+    id: 'memory-fu-8',
+    screenSetType: 'memory',
+    name: 'Match 10 Face-Up (Three-Word)',
+    timeLimit: 120,
+    comboType: 'three-word',
+    targetCount: 10,
+    faceUp: true,
+  },
+  {
+    id: 'memory-fu-9',
+    screenSetType: 'memory',
+    name: 'Match 20 Face-Up (Three-Word)',
+    timeLimit: 180,
+    comboType: 'three-word',
+    targetCount: 20,
+    faceUp: true,
+  },
+  // Face-down screens (classic memory matching)
+  {
+    id: 'memory-1',
+    screenSetType: 'memory',
+    name: 'Match 6 (Two-Word)',
+    timeLimit: 60,
+    comboType: 'two-word',
+    targetCount: 6,
+  },
+  {
+    id: 'memory-2',
+    screenSetType: 'memory',
+    name: 'Match 10 (Two-Word)',
+    timeLimit: 90,
+    comboType: 'two-word',
+    targetCount: 10,
+  },
+  {
+    id: 'memory-3',
+    screenSetType: 'memory',
+    name: 'Match 20 (Two-Word)',
+    timeLimit: 150,
+    comboType: 'two-word',
+    targetCount: 20,
+  },
+  {
+    id: 'memory-4',
+    screenSetType: 'memory',
+    name: 'Match 6 (Mixed)',
+    timeLimit: 60,
+    comboType: 'mixed',
+    targetCount: 6,
+  },
+  {
+    id: 'memory-5',
+    screenSetType: 'memory',
+    name: 'Match 10 (Mixed)',
+    timeLimit: 90,
+    comboType: 'mixed',
+    targetCount: 10,
+  },
+  {
+    id: 'memory-6',
+    screenSetType: 'memory',
+    name: 'Match 20 (Mixed)',
+    timeLimit: 180,
+    comboType: 'mixed',
+    targetCount: 20,
+  },
+  {
+    id: 'memory-7',
+    screenSetType: 'memory',
+    name: 'Match 6 (Three-Word)',
+    timeLimit: 60,
+    comboType: 'three-word',
+    targetCount: 6,
+  },
+  {
+    id: 'memory-8',
+    screenSetType: 'memory',
+    name: 'Match 10 (Three-Word)',
+    timeLimit: 120,
+    comboType: 'three-word',
+    targetCount: 10,
+  },
+  {
+    id: 'memory-9',
+    screenSetType: 'memory',
+    name: 'Match 20 (Three-Word)',
+    timeLimit: 180,
+    comboType: 'three-word',
+    targetCount: 20,
+  },
+];
+
+// Screen Set 2: Card Building — 6 screens
+const buildingScreens: ScreenDefinition[] = [
+  {
+    id: 'building-1',
+    screenSetType: 'building',
+    name: 'Build 5 (Two-Word)',
+    timeLimit: 90,
+    comboType: 'two-word',
+    paletteCount: 2,
+    targetCount: 5,
+  },
+  {
+    id: 'building-2',
+    screenSetType: 'building',
+    name: 'Build 10 (Two-Word)',
+    timeLimit: 150,
+    comboType: 'two-word',
+    paletteCount: 2,
+    targetCount: 10,
+  },
+  {
+    id: 'building-3',
+    screenSetType: 'building',
+    name: 'Build 20 (Two-Word)',
+    timeLimit: 240,
+    comboType: 'two-word',
+    paletteCount: 2,
+    targetCount: 20,
+  },
+  {
+    id: 'building-4',
+    screenSetType: 'building',
+    name: 'Build 5 (Three-Word)',
+    timeLimit: 120,
+    comboType: 'three-word',
+    paletteCount: 3,
+    targetCount: 5,
+  },
+  {
+    id: 'building-5',
+    screenSetType: 'building',
+    name: 'Build 10 (Three-Word)',
+    timeLimit: 180,
+    comboType: 'three-word',
+    paletteCount: 3,
+    targetCount: 10,
+  },
+  {
+    id: 'building-6',
+    screenSetType: 'building',
+    name: 'Build 20 (Three-Word)',
+    timeLimit: 300,
+    comboType: 'three-word',
+    paletteCount: 3,
+    targetCount: 20,
+  },
+];
+
+// Screen Set 3: Component Matching — 8 screens
+const matchingScreens: ScreenDefinition[] = [
+  {
+    id: 'matching-1',
+    screenSetType: 'matching',
+    name: 'Match 6 (Two-Word)',
+    timeLimit: 60,
+    comboType: 'two-word',
+    paletteCount: 2,
+    targetCount: 6,
+  },
+  {
+    id: 'matching-2',
+    screenSetType: 'matching',
+    name: 'Match 10 (Two-Word)',
+    timeLimit: 90,
+    comboType: 'two-word',
+    paletteCount: 2,
+    targetCount: 10,
+  },
+  {
+    id: 'matching-3',
+    screenSetType: 'matching',
+    name: 'Match 14 (Two-Word)',
+    timeLimit: 120,
+    comboType: 'two-word',
+    paletteCount: 2,
+    targetCount: 14,
+  },
+  {
+    id: 'matching-4',
+    screenSetType: 'matching',
+    name: 'Match 20 (Two-Word)',
+    timeLimit: 180,
+    comboType: 'two-word',
+    paletteCount: 2,
+    targetCount: 20,
+  },
+  {
+    id: 'matching-5',
+    screenSetType: 'matching',
+    name: 'Match 6 (Three-Word)',
+    timeLimit: 90,
+    comboType: 'three-word',
+    paletteCount: 3,
+    targetCount: 6,
+  },
+  {
+    id: 'matching-6',
+    screenSetType: 'matching',
+    name: 'Match 10 (Three-Word)',
+    timeLimit: 120,
+    comboType: 'three-word',
+    paletteCount: 3,
+    targetCount: 10,
+  },
+  {
+    id: 'matching-7',
+    screenSetType: 'matching',
+    name: 'Match 14 (Three-Word)',
+    timeLimit: 150,
+    comboType: 'three-word',
+    paletteCount: 3,
+    targetCount: 14,
+  },
+  {
+    id: 'matching-8',
+    screenSetType: 'matching',
+    name: 'Match 20 (Three-Word)',
+    timeLimit: 240,
+    comboType: 'three-word',
+    paletteCount: 3,
+    targetCount: 20,
+  },
+];
+
+// Screen Set 4: Combo Spin — 6 screens
+const spinScreens: ScreenDefinition[] = [
+  {
+    id: 'spin-1',
+    screenSetType: 'spin',
+    name: 'Spin 5 (Two-Word)',
+    timeLimit: 60,
+    comboType: 'two-word',
+    targetCount: 5,
+  },
+  {
+    id: 'spin-2',
+    screenSetType: 'spin',
+    name: 'Spin 10 (Two-Word)',
+    timeLimit: 90,
+    comboType: 'two-word',
+    targetCount: 10,
+  },
+  {
+    id: 'spin-3',
+    screenSetType: 'spin',
+    name: 'Spin 20 (Two-Word)',
+    timeLimit: 150,
+    comboType: 'two-word',
+    targetCount: 20,
+  },
+  {
+    id: 'spin-4',
+    screenSetType: 'spin',
+    name: 'Spin 5 (Three-Word)',
+    timeLimit: 60,
+    comboType: 'three-word',
+    targetCount: 5,
+  },
+  {
+    id: 'spin-5',
+    screenSetType: 'spin',
+    name: 'Spin 10 (Three-Word)',
+    timeLimit: 90,
+    comboType: 'three-word',
+    targetCount: 10,
+  },
+  {
+    id: 'spin-6',
+    screenSetType: 'spin',
+    name: 'Spin 20 (Three-Word)',
+    timeLimit: 150,
+    comboType: 'three-word',
+    targetCount: 20,
+  },
+];
+
+// All screen sets indexed by type
+export const SCREEN_SETS: Record<ScreenSetType, ScreenDefinition[]> = {
+  memory: memoryScreens,
+  building: buildingScreens,
+  matching: matchingScreens,
+  spin: spinScreens,
+};
+
+// Get a specific screen by set type and index
+export function getScreen(setType: ScreenSetType, index: number): ScreenDefinition | null {
+  const screens = SCREEN_SETS[setType];
+  return screens[index] ?? null;
+}
+
+// Get total screen count for a set
+export function getScreenCount(setType: ScreenSetType): number {
+  return SCREEN_SETS[setType].length;
+}

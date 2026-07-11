@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useMemo, useState } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { App as CapacitorApp } from '@capacitor/app'
 import { HomeScreen } from './HomeScreen'
 import { createNamespacedStorage } from './services/storage'
@@ -12,10 +12,14 @@ interface KernelAppProps {
 export function KernelApp({ games, upcoming = [] }: KernelAppProps) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const active = games.find((g) => g.id === activeId) ?? null
+  const gameBackHandler = useRef<(() => boolean) | null>(null)
 
-  // Android hardware/gesture back: in a game -> home; at home -> background the app.
+  // Android hardware/gesture back: the active game gets first refusal (its
+  // onBack handler returns true to consume, e.g. leaving an in-progress
+  // round); otherwise in a game -> home, at home -> background the app.
   useEffect(() => {
     const listener = CapacitorApp.addListener('backButton', () => {
+      if (gameBackHandler.current?.()) return
       if (activeId !== null) {
         setActiveId(null)
       } else {
@@ -34,6 +38,14 @@ export function KernelApp({ games, upcoming = [] }: KernelAppProps) {
         ? {
             storage: createNamespacedStorage(active.id),
             exitToHome: () => setActiveId(null),
+            onBack: (handler) => {
+              gameBackHandler.current = handler
+              return () => {
+                if (gameBackHandler.current === handler) {
+                  gameBackHandler.current = null
+                }
+              }
+            },
           }
         : null,
     [active],

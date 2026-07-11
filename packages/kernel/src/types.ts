@@ -46,4 +46,11 @@ export interface GameServices {
   storage: NamespacedStorage
   /** Return to the game-select home screen. */
   exitToHome: () => void
+  /**
+   * Register a handler for the Android hardware/gesture back button.
+   * Return true to consume the event (e.g. leave an in-progress round);
+   * return false to let the kernel exit to the home screen.
+   * Returns an unregister function — call it in the effect cleanup.
+   */
+  onBack: (handler: () => boolean) => () => void
 }

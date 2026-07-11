@@ -1,0 +1,1 @@
+export { ComponentMatchingGame } from './ComponentMatchingGame';

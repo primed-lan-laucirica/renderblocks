@@ -1,0 +1,17 @@
+{
+  "name": "@renderblocks/shapes",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./module": "./src/module.ts",
+    "./index.css": "./src/index.css"
+  },
+  "dependencies": {
+    "@renderblocks/kernel": "workspace:*",
+    "framer-motion": "^12.23.26",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}
