@@ -4,6 +4,13 @@ import type { GameServices } from '@renderblocks/kernel'
 import { PALETTES, type PaletteName } from './palettes'
 import { createEffectPlayer } from './sounds'
 import { useDarkMode } from './useDarkMode'
+import {
+  advanceQueue,
+  freshRun,
+  loadDrillState,
+  saveDrillState,
+  type LoadedDrillState,
+} from './drillState'
 
 const STORAGE_KEY = 'progress'
 
@@ -21,7 +28,7 @@ export interface DrillConfig {
   /** Key numbers selectable in the dropdown, drilled in this order. */
   keys: number[]
   stepsPerKey: number
-  /** Operands and answer for a key + 0-based step. */
+  /** Operands and answer for a key + 0-based fact index. */
   operands: (key: number, stepIndex: number) => DrillProblem
   /** Lowest value allowed as an answer choice (default 1). */
   minAnswer?: number
@@ -37,6 +44,11 @@ export interface DrillConfig {
 interface DrillGameProps {
   services: GameServices
   config: DrillConfig
+}
+
+interface Celebration {
+  earnedStar: boolean
+  completedKey: number
 }
 
 function shuffle<T>(items: T[]): T[] {
@@ -70,45 +82,41 @@ export function DrillGame({ services, config }: DrillGameProps) {
   const { isDark, toggle: toggleDarkMode } = useDarkMode()
   const effects = useMemo(() => createEffectPlayer(config.audioBase), [config.audioBase])
 
-  const [{ key, step }, setPosition] = useState(() => {
-    try {
-      const raw = services.storage.get(STORAGE_KEY)
-      if (raw) {
-        const saved = JSON.parse(raw) as { key?: number; table?: number; step?: number }
-        // `table` is the pre-engine Times save format.
-        const savedKey = saved.key ?? saved.table
-        const savedStep = typeof saved.step === 'number' ? Math.floor(saved.step) : 1
-        return {
-          key: config.keys.includes(savedKey as number) ? (savedKey as number) : config.keys[0],
-          step: savedStep >= 1 && savedStep <= config.stepsPerKey ? savedStep : 1,
-        }
-      }
-    } catch {
-      // Corrupt save — start fresh.
-    }
-    return { key: config.keys[0], step: 1 }
-  })
+  const [state, setState] = useState<LoadedDrillState>(() =>
+    loadDrillState(services.storage.get(STORAGE_KEY), config.keys, config.stepsPerKey),
+  )
+  const { run, stars } = state
   // Bumped after each wrong answer: regenerates distractor values AND order,
   // so neither remembered positions nor remembered wrong values help — the
   // only winning strategy is knowing the answer.
   const [attempt, setAttempt] = useState(0)
   const [shakeValue, setShakeValue] = useState<number | null>(null)
-  const [celebrating, setCelebrating] = useState(false)
+  // True once the current encounter has any miss — a dirty fact re-enters the
+  // queue instead of retiring, and forfeits this run's star.
+  const [encounterDirty, setEncounterDirty] = useState(false)
+  // Counts completed encounters, so a re-queued fact still remounts animations.
+  const [encounter, setEncounter] = useState(0)
+  const [celebrating, setCelebrating] = useState<Celebration | null>(null)
 
   useEffect(() => {
     effects.preload()
   }, [effects])
 
   useEffect(() => {
-    services.storage.set(STORAGE_KEY, JSON.stringify({ version: 1, key, step }))
-  }, [services, key, step])
+    services.storage.set(STORAGE_KEY, saveDrillState(run, stars))
+  }, [services, run, stars])
+
+  const factIndex = run.queue[0]
+  const problem = config.operands(run.key, factIndex)
 
   const choices = useMemo(
-    () => makeChoices(config, key, step - 1),
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- attempt reshuffles on wrong answers
-    [config, key, step, attempt],
+    () => makeChoices(config, run.key, factIndex),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- attempt redeals on wrong answers; encounter freshens re-queued facts
+    [config, run.key, factIndex, attempt, encounter],
   )
-  const problem = config.operands(key, step - 1)
+
+  const nextKeyOf = (key: number) =>
+    config.keys[(config.keys.indexOf(key) + 1) % config.keys.length]
 
   // Wrong answer: shake + brief input lock, then deal a fresh set of choices.
   useEffect(() => {
@@ -120,41 +128,55 @@ export function DrillGame({ services, config }: DrillGameProps) {
     return () => window.clearTimeout(timer)
   }, [shakeValue])
 
-  const keyIndex = config.keys.indexOf(key)
-  const nextKey = config.keys[(keyIndex + 1) % config.keys.length]
-
   useEffect(() => {
     if (!celebrating) return
-    const timer = window.setTimeout(() => {
-      setCelebrating(false)
-      setPosition({ key: nextKey, step: 1 })
-    }, 2200)
+    const timer = window.setTimeout(() => setCelebrating(null), 2200)
     return () => window.clearTimeout(timer)
-  }, [celebrating, nextKey])
+  }, [celebrating])
 
   const pick = (value: number) => {
     if (celebrating || shakeValue !== null) return
     if (value === problem.answer) {
+      const dirty = encounterDirty
       setAttempt(0)
-      if (step < config.stepsPerKey) {
-        effects.play('yes')
-        setPosition({ key, step: step + 1 })
-      } else {
-        setCelebrating(true)
+      setEncounterDirty(false)
+      setEncounter((e) => e + 1)
+      const nextQueue = advanceQueue(run.queue, dirty)
+      if (nextQueue.length === 0) {
+        // Run complete — star only if every fact was answered clean first try.
+        const earnedStar = run.missed.length === 0
+        const completedKey = run.key
         effects.play('cheer', 0.8)
+        setCelebrating({ earnedStar, completedKey })
+        setState((s) => ({
+          run: freshRun(nextKeyOf(completedKey), config.stepsPerKey),
+          stars: earnedStar ? { ...s.stars, [String(completedKey)]: true } : s.stars,
+        }))
+      } else {
+        effects.play('yes')
+        setState((s) => ({ ...s, run: { ...s.run, queue: nextQueue } }))
       }
     } else {
       effects.play('no')
       setShakeValue(value)
+      setEncounterDirty(true)
+      setState((s) =>
+        s.run.missed.includes(factIndex)
+          ? s
+          : { ...s, run: { ...s.run, missed: [...s.run.missed, factIndex] } },
+      )
     }
   }
 
   const selectKey = (next: number) => {
     setAttempt(0)
     setShakeValue(null)
-    setCelebrating(false)
-    setPosition({ key: next, step: 1 })
+    setEncounterDirty(false)
+    setCelebrating(null)
+    setState((s) => ({ ...s, run: freshRun(next, config.stepsPerKey) }))
   }
+
+  const factsDone = config.stepsPerKey - run.queue.length
 
   return (
     <div
@@ -167,27 +189,31 @@ export function DrillGame({ services, config }: DrillGameProps) {
         >
           {config.keyLabel}
           <select
-            value={key}
+            value={run.key}
             onChange={(e) => selectKey(Number(e.target.value))}
             className={`text-2xl font-extrabold rounded-2xl px-4 py-2 shadow-playful border-2 ${isDark ? palette.selectDark : palette.select}`}
           >
             {config.keys.map((k) => (
               <option key={k} value={k}>
                 {k}
+                {stars[String(k)] ? ' ⭐' : ''}
               </option>
             ))}
           </select>
         </label>
         <div className="flex items-center gap-3">
-          <div className="flex gap-1.5" aria-label={`Problem ${step} of ${config.stepsPerKey}`}>
+          <div
+            className="flex gap-1.5"
+            aria-label={`${factsDone} of ${config.stepsPerKey} facts done`}
+          >
             {Array.from({ length: config.stepsPerKey }, (_, i) => (
               <div
                 key={i}
                 className={`w-3 h-3 rounded-full ${
-                  i < step - 1
-                    ? palette.dotDone
-                    : i === step - 1
-                      ? 'bg-amber-400'
+                  factIndex === i
+                    ? 'bg-amber-400'
+                    : !run.queue.includes(i)
+                      ? palette.dotDone
                       : isDark
                         ? 'bg-slate-600'
                         : 'bg-slate-300'
@@ -222,7 +248,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
       <div className="flex-1 flex flex-col items-center justify-center gap-10 w-full max-w-xl">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${key}-${step}`}
+            key={`${run.key}-${factIndex}-${encounter}`}
             initial={{ opacity: 0, y: 24, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -24, scale: 0.9 }}
@@ -238,7 +264,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
         <div className="flex gap-5 w-full justify-center">
           {choices.map((value) => (
             <motion.button
-              key={`${key}-${step}-${attempt}-${value}`}
+              key={`${run.key}-${factIndex}-${encounter}-${attempt}-${value}`}
               type="button"
               // onPointerDown, not onClick: a long or slightly-moving toddler
               // press never completes the WebView's click gesture (same fix
@@ -271,13 +297,18 @@ export function DrillGame({ services, config }: DrillGameProps) {
               transition={{ duration: 0.6 }}
               className="text-8xl"
             >
-              🎉
+              {celebrating.earnedStar ? '⭐' : '🎉'}
             </motion.div>
             <div className="text-5xl font-extrabold text-white drop-shadow text-center px-6">
-              {config.completeMessage(key)}
+              {config.completeMessage(celebrating.completedKey)}
             </div>
+            {celebrating.earnedStar && (
+              <div className="text-3xl font-extrabold text-yellow-300 drop-shadow">
+                Perfect — you earned a star!
+              </div>
+            )}
             <div className={`text-2xl font-bold ${palette.overlaySub}`}>
-              {config.nextMessage(nextKey)}
+              {config.nextMessage(nextKeyOf(celebrating.completedKey))}
             </div>
           </motion.div>
         )}
