@@ -227,8 +227,12 @@ export function DrillGame({ services, config }: DrillGameProps) {
               <motion.button
                 key={`${key}-${step}-${value}`}
                 type="button"
-                onClick={() => pick(value)}
+                // onPointerDown, not onClick: a long or slightly-moving toddler
+                // press never completes the WebView's click gesture (same fix
+                // combos applied to its cards).
+                onPointerDown={() => pick(value)}
                 disabled={disabled}
+                style={{ touchAction: 'manipulation' }}
                 onAnimationEnd={() => setShaking(null)}
                 className={`${shaking === value ? 'drill-shake' : ''} w-32 h-24 rounded-3xl text-5xl font-extrabold shadow-playful transition-colors ${
                   disabled
