@@ -88,8 +88,11 @@ export function DrillGame({ services, config }: DrillGameProps) {
     }
     return { key: config.keys[0], step: 1 }
   })
-  const [wrongPicks, setWrongPicks] = useState<number[]>([])
-  const [shaking, setShaking] = useState<number | null>(null)
+  // Bumped after each wrong answer: regenerates distractor values AND order,
+  // so neither remembered positions nor remembered wrong values help — the
+  // only winning strategy is knowing the answer.
+  const [attempt, setAttempt] = useState(0)
+  const [shakeValue, setShakeValue] = useState<number | null>(null)
   const [celebrating, setCelebrating] = useState(false)
 
   useEffect(() => {
@@ -100,8 +103,22 @@ export function DrillGame({ services, config }: DrillGameProps) {
     services.storage.set(STORAGE_KEY, JSON.stringify({ version: 1, key, step }))
   }, [services, key, step])
 
-  const choices = useMemo(() => makeChoices(config, key, step - 1), [config, key, step])
+  const choices = useMemo(
+    () => makeChoices(config, key, step - 1),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- attempt reshuffles on wrong answers
+    [config, key, step, attempt],
+  )
   const problem = config.operands(key, step - 1)
+
+  // Wrong answer: shake + brief input lock, then deal a fresh set of choices.
+  useEffect(() => {
+    if (shakeValue === null) return
+    const timer = window.setTimeout(() => {
+      setShakeValue(null)
+      setAttempt((a) => a + 1)
+    }, 500)
+    return () => window.clearTimeout(timer)
+  }, [shakeValue])
 
   const keyIndex = config.keys.indexOf(key)
   const nextKey = config.keys[(keyIndex + 1) % config.keys.length]
@@ -116,10 +133,9 @@ export function DrillGame({ services, config }: DrillGameProps) {
   }, [celebrating, nextKey])
 
   const pick = (value: number) => {
-    if (celebrating) return
+    if (celebrating || shakeValue !== null) return
     if (value === problem.answer) {
-      setWrongPicks([])
-      setShaking(null)
+      setAttempt(0)
       if (step < config.stepsPerKey) {
         effects.play('yes')
         setPosition({ key, step: step + 1 })
@@ -127,16 +143,15 @@ export function DrillGame({ services, config }: DrillGameProps) {
         setCelebrating(true)
         effects.play('cheer', 0.8)
       }
-    } else if (!wrongPicks.includes(value)) {
+    } else {
       effects.play('no')
-      setWrongPicks((prev) => [...prev, value])
-      setShaking(value)
+      setShakeValue(value)
     }
   }
 
   const selectKey = (next: number) => {
-    setWrongPicks([])
-    setShaking(null)
+    setAttempt(0)
+    setShakeValue(null)
     setCelebrating(false)
     setPosition({ key: next, step: 1 })
   }
@@ -221,32 +236,23 @@ export function DrillGame({ services, config }: DrillGameProps) {
 
         {/* Choices */}
         <div className="flex gap-5 w-full justify-center">
-          {choices.map((value) => {
-            const disabled = wrongPicks.includes(value)
-            return (
-              <motion.button
-                key={`${key}-${step}-${value}`}
-                type="button"
-                // onPointerDown, not onClick: a long or slightly-moving toddler
-                // press never completes the WebView's click gesture (same fix
-                // combos applied to its cards).
-                onPointerDown={() => pick(value)}
-                disabled={disabled}
-                style={{ touchAction: 'manipulation' }}
-                onAnimationEnd={() => setShaking(null)}
-                className={`${shaking === value ? 'drill-shake' : ''} w-32 h-24 rounded-3xl text-5xl font-extrabold shadow-playful transition-colors ${
-                  disabled
-                    ? isDark
-                      ? 'bg-slate-700 text-slate-500'
-                      : 'bg-slate-200 text-slate-400'
-                    : `border-4 ${isDark ? palette.buttonDark : palette.button}`
-                }`}
-                whileTap={disabled ? undefined : { scale: 0.92 }}
-              >
-                {value}
-              </motion.button>
-            )
-          })}
+          {choices.map((value) => (
+            <motion.button
+              key={`${key}-${step}-${attempt}-${value}`}
+              type="button"
+              // onPointerDown, not onClick: a long or slightly-moving toddler
+              // press never completes the WebView's click gesture (same fix
+              // combos applied to its cards).
+              onPointerDown={() => pick(value)}
+              style={{ touchAction: 'manipulation' }}
+              className={`${shakeValue === value ? 'drill-shake' : ''} w-32 h-24 rounded-3xl text-5xl font-extrabold shadow-playful transition-colors border-4 ${
+                isDark ? palette.buttonDark : palette.button
+              }`}
+              whileTap={{ scale: 0.92 }}
+            >
+              {value}
+            </motion.button>
+          ))}
         </div>
       </div>
 
