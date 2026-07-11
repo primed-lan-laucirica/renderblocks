@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { GameServices } from '@renderblocks/kernel'
 import { PALETTES, type PaletteName } from './palettes'
 import { createEffectPlayer, playNumber } from './sounds'
 import { useDarkMode } from './useDarkMode'
+import { FactReveal, type RevealKind } from './FactReveal'
 import {
   advanceQueue,
   freshRun,
@@ -39,6 +40,8 @@ export interface DrillConfig {
   palette: PaletteName
   /** Public base path for yes/no/cheer effects, e.g. '/games/times/audio'. */
   audioBase: string
+  /** How FactReveal draws this operation as cube groups. */
+  reveal: RevealKind
 }
 
 interface DrillGameProps {
@@ -51,7 +54,7 @@ interface Celebration {
   completedKey: number
 }
 
-const SOLVED_PAUSE_MS = 950
+const SOLVED_PAUSE_MS = 1800
 const STREAK_MILESTONES = [5, 10, 15, 20]
 const MISS_ENCOURAGEMENTS = ['Try again!', 'Almost!', 'You can do it!']
 
@@ -144,31 +147,39 @@ export function DrillGame({ services, config }: DrillGameProps) {
     return () => window.clearTimeout(timer)
   }, [celebrating])
 
-  // The solved pause: show + speak the completed fact, then advance the queue.
+  // Synchronous guard so tap-to-skip and the timer can't both advance.
+  const solvedRef = useRef(false)
+
+  const completeEncounter = () => {
+    if (!solvedRef.current) return
+    solvedRef.current = false
+    setSolved(false)
+    setBanner(null)
+    const dirty = encounterDirty
+    setEncounterDirty(false)
+    setEncounter((e) => e + 1)
+    const nextQueue = advanceQueue(run.queue, dirty)
+    if (nextQueue.length === 0) {
+      // Run complete — star only if every fact was answered clean first try.
+      const earnedStar = run.missed.length === 0
+      const completedKey = run.key
+      effects.play('cheer', 0.8)
+      setCelebrating({ earnedStar, completedKey })
+      setState((s) => ({
+        run: freshRun(nextKeyOf(completedKey), config.stepsPerKey),
+        stars: earnedStar ? { ...s.stars, [String(completedKey)]: true } : s.stars,
+      }))
+    } else {
+      setState((s) => ({ ...s, run: { ...s.run, queue: nextQueue } }))
+    }
+  }
+
+  // The solved pause: show + speak the completed fact with its cube reveal,
+  // then advance the queue (or immediately on tap — see the problem area).
   useEffect(() => {
     if (!solved) return
     const speakTimer = window.setTimeout(() => playNumber(problem.answer), 300)
-    const advanceTimer = window.setTimeout(() => {
-      setSolved(false)
-      setBanner(null)
-      const dirty = encounterDirty
-      setEncounterDirty(false)
-      setEncounter((e) => e + 1)
-      const nextQueue = advanceQueue(run.queue, dirty)
-      if (nextQueue.length === 0) {
-        // Run complete — star only if every fact was answered clean first try.
-        const earnedStar = run.missed.length === 0
-        const completedKey = run.key
-        effects.play('cheer', 0.8)
-        setCelebrating({ earnedStar, completedKey })
-        setState((s) => ({
-          run: freshRun(nextKeyOf(completedKey), config.stepsPerKey),
-          stars: earnedStar ? { ...s.stars, [String(completedKey)]: true } : s.stars,
-        }))
-      } else {
-        setState((s) => ({ ...s, run: { ...s.run, queue: nextQueue } }))
-      }
-    }, SOLVED_PAUSE_MS)
+    const advanceTimer = window.setTimeout(completeEncounter, SOLVED_PAUSE_MS)
     return () => {
       window.clearTimeout(speakTimer)
       window.clearTimeout(advanceTimer)
@@ -181,6 +192,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
     if (value === problem.answer) {
       setAttempt(0)
       effects.play('yes')
+      solvedRef.current = true
       setSolved(true)
       if (!encounterDirty) {
         const nextStreak = streak + 1
@@ -210,6 +222,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
     setShakeValue(null)
     setEncounterDirty(false)
     setCelebrating(null)
+    solvedRef.current = false
     setSolved(false)
     setStreak(0)
     setBanner(null)
@@ -284,8 +297,13 @@ export function DrillGame({ services, config }: DrillGameProps) {
         </div>
       </div>
 
-      {/* Problem */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-10 w-full max-w-xl">
+      {/* Problem (tap during the reveal to skip ahead) */}
+      <div
+        className="flex-1 flex flex-col items-center justify-center gap-6 w-full max-w-xl"
+        onPointerDown={() => {
+          if (solvedRef.current) completeEncounter()
+        }}
+      >
         <div className="relative">
           <AnimatePresence mode="wait">
             <motion.div
@@ -368,25 +386,55 @@ export function DrillGame({ services, config }: DrillGameProps) {
           </AnimatePresence>
         </div>
 
-        {/* Choices */}
-        <div className="flex gap-5 w-full justify-center">
-          {choices.map((value) => (
-            <motion.button
-              key={`${run.key}-${factIndex}-${encounter}-${attempt}-${value}`}
-              type="button"
-              // onPointerDown, not onClick: a long or slightly-moving toddler
-              // press never completes the WebView's click gesture (same fix
-              // combos applied to its cards).
-              onPointerDown={() => pick(value)}
-              style={{ touchAction: 'manipulation' }}
-              className={`${shakeValue === value ? 'drill-shake' : ''} w-32 h-24 rounded-3xl text-5xl font-extrabold shadow-playful transition-colors border-4 ${
-                isDark ? palette.buttonDark : palette.button
-              }`}
-              whileTap={{ scale: 0.92 }}
-            >
-              {value}
-            </motion.button>
-          ))}
+        {/* Struggling? After the second miss the fact appears as countable cubes. */}
+        {!solved && attempt >= 2 && (
+          <FactReveal
+            kind={config.reveal}
+            a={problem.a}
+            b={problem.b}
+            answer={problem.answer}
+            cubeColor={palette.cube}
+            animate={false}
+            compact
+          />
+        )}
+
+        {/* Choices — swapped for the cube reveal during the solved pause */}
+        <div className="h-40 flex items-center justify-center w-full">
+          {solved ? (
+            <FactReveal
+              kind={config.reveal}
+              a={problem.a}
+              b={problem.b}
+              answer={problem.answer}
+              cubeColor={palette.cube}
+              animate
+            />
+          ) : (
+            <div className="flex gap-5 w-full justify-center">
+              {choices.map((value) => (
+                <motion.button
+                  key={`${run.key}-${factIndex}-${encounter}-${attempt}-${value}`}
+                  type="button"
+                  // onPointerDown, not onClick: a long or slightly-moving toddler
+                  // press never completes the WebView's click gesture (same fix
+                  // combos applied to its cards). stopPropagation so the
+                  // answering tap can't bubble to the container's skip handler.
+                  onPointerDown={(e) => {
+                    e.stopPropagation()
+                    pick(value)
+                  }}
+                  style={{ touchAction: 'manipulation' }}
+                  className={`${shakeValue === value ? 'drill-shake' : ''} w-32 h-24 rounded-3xl text-5xl font-extrabold shadow-playful transition-colors border-4 ${
+                    isDark ? palette.buttonDark : palette.button
+                  }`}
+                  whileTap={{ scale: 0.92 }}
+                >
+                  {value}
+                </motion.button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

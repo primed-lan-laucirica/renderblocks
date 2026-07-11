@@ -10,6 +10,8 @@ export interface Palette {
   select: string
   selectDark: string
   dotDone: string
+  /** Hex color for FactReveal cubes (inline style, not a class). */
+  cube: string
   accent: string
   accentDark: string
   button: string
@@ -25,6 +27,7 @@ export const PALETTES: Record<PaletteName, Palette> = {
     select: 'bg-white text-emerald-700 border-emerald-300',
     selectDark: 'bg-slate-800 text-emerald-300 border-emerald-700',
     dotDone: 'bg-emerald-500',
+    cube: '#10b981',
     accent: 'text-emerald-600',
     accentDark: 'text-emerald-400',
     button: 'bg-white text-emerald-700 border-emerald-300 active:bg-emerald-50',
@@ -38,6 +41,7 @@ export const PALETTES: Record<PaletteName, Palette> = {
     select: 'bg-white text-orange-700 border-orange-300',
     selectDark: 'bg-slate-800 text-orange-300 border-orange-700',
     dotDone: 'bg-orange-500',
+    cube: '#f97316',
     accent: 'text-orange-600',
     accentDark: 'text-orange-400',
     button: 'bg-white text-orange-700 border-orange-300 active:bg-orange-50',
@@ -51,6 +55,7 @@ export const PALETTES: Record<PaletteName, Palette> = {
     select: 'bg-white text-cyan-700 border-cyan-300',
     selectDark: 'bg-slate-800 text-cyan-300 border-cyan-700',
     dotDone: 'bg-cyan-500',
+    cube: '#06b6d4',
     accent: 'text-cyan-600',
     accentDark: 'text-cyan-400',
     button: 'bg-white text-cyan-700 border-cyan-300 active:bg-cyan-50',
@@ -64,6 +69,7 @@ export const PALETTES: Record<PaletteName, Palette> = {
     select: 'bg-white text-rose-700 border-rose-300',
     selectDark: 'bg-slate-800 text-rose-300 border-rose-700',
     dotDone: 'bg-rose-500',
+    cube: '#f43f5e',
     accent: 'text-rose-600',
     accentDark: 'text-rose-400',
     button: 'bg-white text-rose-700 border-rose-300 active:bg-rose-50',

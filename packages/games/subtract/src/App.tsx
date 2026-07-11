@@ -17,6 +17,7 @@ const config: DrillConfig = {
   nextMessage: (nextKey) =>
     nextKey === 0 ? 'Starting over from 0…' : `Here comes minus ${nextKey}…`,
   palette: 'cyan',
+  reveal: 'takeaway',
   audioBase: '/games/subtract/audio',
 }
 

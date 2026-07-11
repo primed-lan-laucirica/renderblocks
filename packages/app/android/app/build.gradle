@@ -7,8 +7,8 @@ android {
         applicationId "com.renderblocks.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 58
-        versionName "1.11.0"
+        versionCode 59
+        versionName "1.12.0"
         setProperty("archivesBaseName", "renderblocks-v${versionName}")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

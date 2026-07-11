@@ -18,6 +18,7 @@ const config: DrillConfig = {
   nextMessage: (nextKey) =>
     nextKey === 1 ? 'Starting over from 1…' : `Here come the ${nextKey}s…`,
   palette: 'emerald',
+  reveal: 'rows',
   audioBase: '/games/times/audio',
 }
 
