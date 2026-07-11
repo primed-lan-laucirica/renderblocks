@@ -1,9 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from '@renderblocks/blocks'
+import { KernelApp } from '@renderblocks/kernel'
+import './index.css'
+import { games, upcoming } from './registry'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <KernelApp games={games} upcoming={upcoming} />
   </StrictMode>,
 )

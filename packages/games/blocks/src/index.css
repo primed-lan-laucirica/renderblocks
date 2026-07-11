@@ -1,9 +1,5 @@
-@import "tailwindcss";
-
-/* This game's components live in a workspace package that the app reaches via a
-   node_modules symlink, which Tailwind's auto content-detection skips. Scan this
-   package's own source explicitly (path is relative to this CSS file). */
-@source "./**/*.{ts,tsx}";
+/* Tailwind's entry (@import "tailwindcss") lives in the app package's CSS,
+   which imports this file; keep exactly one Tailwind entry per build. */
 
 @theme {
   /* Numberblocks official color palette */

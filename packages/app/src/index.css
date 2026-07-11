@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "@renderblocks/blocks/index.css";
+
+/* Workspace packages are reached through node_modules symlinks, which
+   Tailwind's auto content-detection skips — list each package's source
+   explicitly (paths relative to this file). Every ported game needs a line. */
+@source "../../kernel/src";
+@source "../../games/blocks/src";
