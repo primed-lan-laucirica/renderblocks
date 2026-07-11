@@ -26,6 +26,8 @@
       "@renderblocks/shapes/module": ["../games/shapes/src/module.ts"],
       "@renderblocks/combos": ["../games/combos/src/index.ts"],
       "@renderblocks/combos/module": ["../games/combos/src/module.ts"],
+      "@renderblocks/times": ["../games/times/src/index.ts"],
+      "@renderblocks/times/module": ["../games/times/src/module.ts"],
       "@renderblocks/kernel": ["../kernel/src/index.ts"]
     }
   },
@@ -34,6 +36,7 @@
     "../games/blocks/src",
     "../games/shapes/src",
     "../games/combos/src",
+    "../games/times/src",
     "../kernel/src"
   ]
 }

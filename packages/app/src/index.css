@@ -2,6 +2,7 @@
 @import "@renderblocks/blocks/index.css";
 @import "@renderblocks/shapes/index.css";
 @import "@renderblocks/combos/index.css";
+@import "@renderblocks/times/index.css";
 /* shapes and combos define identical custom classes/theme vars (shared
    ancestry) — importing both is a no-op today and safe if they diverge. */
 
@@ -12,3 +13,4 @@
 @source "../../games/blocks/src";
 @source "../../games/shapes/src";
 @source "../../games/combos/src";
+@source "../../games/times/src";

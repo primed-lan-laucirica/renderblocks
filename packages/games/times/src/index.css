@@ -1,0 +1,11 @@
+/* Tailwind entry lives in the app package CSS, which imports this file. */
+
+@keyframes times-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.times-shake {
+  animation: times-shake 0.3s ease-in-out;
+}
