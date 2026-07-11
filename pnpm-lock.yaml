@@ -71,18 +71,30 @@ importers:
       '@capacitor/status-bar':
         specifier: ^8.0.0
         version: 8.0.2(@capacitor/core@8.4.1)
+      '@renderblocks/add':
+        specifier: workspace:*
+        version: link:../games/add
       '@renderblocks/blocks':
         specifier: workspace:*
         version: link:../games/blocks
       '@renderblocks/combos':
         specifier: workspace:*
         version: link:../games/combos
+      '@renderblocks/divide':
+        specifier: workspace:*
+        version: link:../games/divide
+      '@renderblocks/drill':
+        specifier: workspace:*
+        version: link:../drill
       '@renderblocks/kernel':
         specifier: workspace:*
         version: link:../kernel
       '@renderblocks/shapes':
         specifier: workspace:*
         version: link:../games/shapes
+      '@renderblocks/subtract':
+        specifier: workspace:*
+        version: link:../games/subtract
       '@renderblocks/times':
         specifier: workspace:*
         version: link:../games/times
@@ -99,6 +111,39 @@ importers:
       vite-plugin-pwa:
         specifier: ^1.2.0
         version: 1.3.0(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0))(workbox-build@7.4.1(@types/babel__core@7.20.5))(workbox-window@7.4.1)
+
+  packages/drill:
+    dependencies:
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../kernel
+      framer-motion:
+        specifier: ^12.23.26
+        version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+
+  packages/games/add:
+    dependencies:
+      '@renderblocks/drill':
+        specifier: workspace:*
+        version: link:../../drill
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      framer-motion:
+        specifier: ^12.23.26
+        version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
 
   packages/games/blocks:
     dependencies:
@@ -130,6 +175,24 @@ importers:
         specifier: ^19.2.0
         version: 19.2.7(react@19.2.7)
 
+  packages/games/divide:
+    dependencies:
+      '@renderblocks/drill':
+        specifier: workspace:*
+        version: link:../../drill
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      framer-motion:
+        specifier: ^12.23.26
+        version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+
   packages/games/shapes:
     dependencies:
       '@renderblocks/kernel':
@@ -145,8 +208,29 @@ importers:
         specifier: ^19.2.0
         version: 19.2.7(react@19.2.7)
 
+  packages/games/subtract:
+    dependencies:
+      '@renderblocks/drill':
+        specifier: workspace:*
+        version: link:../../drill
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      framer-motion:
+        specifier: ^12.23.26
+        version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+
   packages/games/times:
     dependencies:
+      '@renderblocks/drill':
+        specifier: workspace:*
+        version: link:../../drill
       '@renderblocks/kernel':
         specifier: workspace:*
         version: link:../../kernel

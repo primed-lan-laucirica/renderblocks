@@ -2,7 +2,7 @@
 @import "@renderblocks/blocks/index.css";
 @import "@renderblocks/shapes/index.css";
 @import "@renderblocks/combos/index.css";
-@import "@renderblocks/times/index.css";
+@import "@renderblocks/drill/index.css";
 /* shapes and combos define identical custom classes/theme vars (shared
    ancestry) — importing both is a no-op today and safe if they diverge. */
 
@@ -10,7 +10,11 @@
    Tailwind's auto content-detection skips — list each package's source
    explicitly (paths relative to this file). Every ported game needs a line. */
 @source "../../kernel/src";
+@source "../../drill/src";
 @source "../../games/blocks/src";
 @source "../../games/shapes/src";
 @source "../../games/combos/src";
 @source "../../games/times/src";
+@source "../../games/add/src";
+@source "../../games/subtract/src";
+@source "../../games/divide/src";

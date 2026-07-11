@@ -28,6 +28,13 @@
       "@renderblocks/combos/module": ["../games/combos/src/module.ts"],
       "@renderblocks/times": ["../games/times/src/index.ts"],
       "@renderblocks/times/module": ["../games/times/src/module.ts"],
+      "@renderblocks/add": ["../games/add/src/index.ts"],
+      "@renderblocks/add/module": ["../games/add/src/module.ts"],
+      "@renderblocks/subtract": ["../games/subtract/src/index.ts"],
+      "@renderblocks/subtract/module": ["../games/subtract/src/module.ts"],
+      "@renderblocks/divide": ["../games/divide/src/index.ts"],
+      "@renderblocks/divide/module": ["../games/divide/src/module.ts"],
+      "@renderblocks/drill": ["../drill/src/index.ts"],
       "@renderblocks/kernel": ["../kernel/src/index.ts"]
     }
   },
@@ -37,6 +44,10 @@
     "../games/shapes/src",
     "../games/combos/src",
     "../games/times/src",
+    "../games/add/src",
+    "../games/subtract/src",
+    "../games/divide/src",
+    "../drill/src",
     "../kernel/src"
   ]
 }
