@@ -1,5 +1,27 @@
 export type Effect = 'yes' | 'no' | 'cheer'
 
+let toneContext: AudioContext | null = null
+
+/** Short synthesized pop at the given pitch (no asset needed). */
+export function playTone(frequency: number, duration = 0.18, volume = 0.35): void {
+  try {
+    toneContext ??= new AudioContext()
+    if (toneContext.state === 'suspended') void toneContext.resume()
+    const osc = toneContext.createOscillator()
+    const gain = toneContext.createGain()
+    osc.type = 'sine'
+    osc.frequency.value = frequency
+    gain.gain.setValueAtTime(volume, toneContext.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, toneContext.currentTime + duration)
+    osc.connect(gain)
+    gain.connect(toneContext.destination)
+    osc.start()
+    osc.stop(toneContext.currentTime + duration)
+  } catch {
+    // No audio available — visual activation still works.
+  }
+}
+
 const NUMBER_WORDS = [
   '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',

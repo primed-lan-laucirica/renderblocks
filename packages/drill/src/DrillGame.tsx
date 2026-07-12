@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { GameServices } from '@renderblocks/kernel'
 import { PALETTES, type PaletteName } from './palettes'
-import { createEffectPlayer, playNumber } from './sounds'
+import { createEffectPlayer, playNumber, playTone } from './sounds'
 import { useDarkMode } from './useDarkMode'
 import { FactReveal, type RevealKind } from './FactReveal'
 import {
@@ -57,6 +57,12 @@ interface Celebration {
 const SOLVED_PAUSE_MS = 1800
 const STREAK_MILESTONES = [5, 10, 15, 20]
 const MISS_ENCOURAGEMENTS = ['Try again!', 'Almost!', 'You can do it!']
+// After a wrong answer all choices grey out, then reactivate left to right,
+// each with a rising tone — a cognitive re-engagement beat that breaks
+// rapid-fire mashing (C5, E5, G5).
+const LOCKOUT_MS = 1200
+const REACTIVATE_STEP_MS = 500
+const REACTIVATE_TONES = [523.25, 659.25, 783.99]
 
 function shuffle<T>(items: T[]): T[] {
   const result = [...items]
@@ -98,6 +104,9 @@ export function DrillGame({ services, config }: DrillGameProps) {
   // only winning strategy is knowing the answer.
   const [attempt, setAttempt] = useState(0)
   const [shakeValue, setShakeValue] = useState<number | null>(null)
+  // How many choice buttons are currently tappable (3 = all, normal state).
+  // A wrong answer drops this to 0; buttons then reactivate one at a time.
+  const [enabledCount, setEnabledCount] = useState(3)
   // True once the current encounter has any miss — a dirty fact re-enters the
   // queue instead of retiring, and forfeits this run's star.
   const [encounterDirty, setEncounterDirty] = useState(false)
@@ -131,15 +140,28 @@ export function DrillGame({ services, config }: DrillGameProps) {
   const nextKeyOf = (key: number) =>
     config.keys[(config.keys.indexOf(key) + 1) % config.keys.length]
 
-  // Wrong answer: shake + brief input lock, then deal a fresh set of choices.
+  // Wrong answer: shake, then deal a fresh set of choices — all greyed out.
   useEffect(() => {
     if (shakeValue === null) return
     const timer = window.setTimeout(() => {
       setShakeValue(null)
       setAttempt((a) => a + 1)
+      setEnabledCount(0)
     }, 500)
     return () => window.clearTimeout(timer)
   }, [shakeValue])
+
+  // Staged reactivation: after the lockout, buttons come alive left to right,
+  // each announced by a rising tone. Forces a beat of re-engagement.
+  useEffect(() => {
+    if (enabledCount >= 3 || shakeValue !== null || solved || celebrating) return
+    const delay = enabledCount === 0 ? LOCKOUT_MS : REACTIVATE_STEP_MS
+    const timer = window.setTimeout(() => {
+      playTone(REACTIVATE_TONES[enabledCount])
+      setEnabledCount((c) => c + 1)
+    }, delay)
+    return () => window.clearTimeout(timer)
+  }, [enabledCount, shakeValue, solved, celebrating])
 
   useEffect(() => {
     if (!celebrating) return
@@ -187,10 +209,11 @@ export function DrillGame({ services, config }: DrillGameProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot the state at solve time
   }, [solved])
 
-  const pick = (value: number) => {
-    if (celebrating || solved || shakeValue !== null) return
+  const pick = (value: number, index: number) => {
+    if (celebrating || solved || shakeValue !== null || index >= enabledCount) return
     if (value === problem.answer) {
       setAttempt(0)
+      setEnabledCount(3)
       effects.play('yes')
       solvedRef.current = true
       setSolved(true)
@@ -226,6 +249,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
     setSolved(false)
     setStreak(0)
     setBanner(null)
+    setEnabledCount(3)
     setState((s) => ({ ...s, run: freshRun(next, config.stepsPerKey) }))
   }
 
@@ -412,27 +436,38 @@ export function DrillGame({ services, config }: DrillGameProps) {
             />
           ) : (
             <div className="flex gap-5 w-full justify-center">
-              {choices.map((value) => (
-                <motion.button
-                  key={`${run.key}-${factIndex}-${encounter}-${attempt}-${value}`}
-                  type="button"
-                  // onPointerDown, not onClick: a long or slightly-moving toddler
-                  // press never completes the WebView's click gesture (same fix
-                  // combos applied to its cards). stopPropagation so the
-                  // answering tap can't bubble to the container's skip handler.
-                  onPointerDown={(e) => {
-                    e.stopPropagation()
-                    pick(value)
-                  }}
-                  style={{ touchAction: 'manipulation' }}
-                  className={`${shakeValue === value ? 'drill-shake' : ''} w-32 h-24 rounded-3xl text-5xl font-extrabold shadow-playful transition-colors border-4 ${
-                    isDark ? palette.buttonDark : palette.button
-                  }`}
-                  whileTap={{ scale: 0.92 }}
-                >
-                  {value}
-                </motion.button>
-              ))}
+              {choices.map((value, index) => {
+                const enabled = index < enabledCount
+                return (
+                  <motion.button
+                    key={`${run.key}-${factIndex}-${encounter}-${attempt}-${value}`}
+                    type="button"
+                    // onPointerDown, not onClick: a long or slightly-moving toddler
+                    // press never completes the WebView's click gesture (same fix
+                    // combos applied to its cards). stopPropagation so the
+                    // answering tap can't bubble to the container's skip handler.
+                    onPointerDown={(e) => {
+                      e.stopPropagation()
+                      pick(value, index)
+                    }}
+                    style={{ touchAction: 'manipulation' }}
+                    animate={{ scale: enabled ? 1 : 0.9, opacity: enabled ? 1 : 0.35 }}
+                    transition={{ type: 'spring', bounce: 0.5, duration: 0.35 }}
+                    className={`${shakeValue === value ? 'drill-shake' : ''} w-32 h-24 rounded-3xl text-5xl font-extrabold shadow-playful transition-colors border-4 ${
+                      enabled
+                        ? isDark
+                          ? palette.buttonDark
+                          : palette.button
+                        : isDark
+                          ? 'bg-slate-700 text-slate-500 border-slate-600'
+                          : 'bg-slate-200 text-slate-400 border-slate-300'
+                    }`}
+                    whileTap={enabled ? { scale: 0.92 } : undefined}
+                  >
+                    {value}
+                  </motion.button>
+                )
+              })}
             </div>
           )}
         </div>
