@@ -210,7 +210,10 @@ export function DrillGame({ services, config }: DrillGameProps) {
   }, [solved])
 
   const pick = (value: number, index: number) => {
-    if (celebrating || solved || shakeValue !== null || index >= enabledCount) return
+    // No picks until the reactivation sequence has fully played out — lit
+    // buttons are display-only until all three are back.
+    void index
+    if (celebrating || solved || shakeValue !== null || enabledCount < 3) return
     if (value === problem.answer) {
       setAttempt(0)
       setEnabledCount(3)
@@ -438,6 +441,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
             <div className="flex gap-5 w-full justify-center">
               {choices.map((value, index) => {
                 const enabled = index < enabledCount
+                const interactive = enabledCount >= 3
                 return (
                   <motion.button
                     key={`${run.key}-${factIndex}-${encounter}-${attempt}-${value}`}
@@ -462,7 +466,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
                           ? 'bg-slate-700 text-slate-500 border-slate-600'
                           : 'bg-slate-200 text-slate-400 border-slate-300'
                     }`}
-                    whileTap={enabled ? { scale: 0.92 } : undefined}
+                    whileTap={interactive ? { scale: 0.92 } : undefined}
                   >
                     {value}
                   </motion.button>
