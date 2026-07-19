@@ -22,7 +22,13 @@ const STORAGE_KEY = 'data'
 const TAP_LOCK_MS = 600
 const HOLD_MS = 3000
 
-/** Press-and-hold gear: 3 seconds of continuous hold opens the parent editor. */
+/**
+ * Press-and-hold gear: 3 seconds of continuous hold opens the parent editor.
+ * Android WebView needs care here: pointer capture keeps small finger drift
+ * from firing pointerleave (a touch finger is never truly still), and the
+ * long-press context-menu/selection gesture must be suppressed or the WebView
+ * cancels the pointer stream mid-hold.
+ */
 function HoldGate({ onOpen }: { onOpen: () => void }) {
   const [progress, setProgress] = useState(0)
   const timerRef = useRef<number | null>(null)
@@ -36,8 +42,13 @@ function HoldGate({ onOpen }: { onOpen: () => void }) {
     setProgress(0)
   }
 
-  const start = () => {
+  const start = (e: React.PointerEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    // Keep receiving pointer events even when the finger drifts off the button.
+    e.currentTarget.setPointerCapture(e.pointerId)
     startRef.current = Date.now()
+    setProgress(0.01)
+    if (timerRef.current !== null) window.clearInterval(timerRef.current)
     timerRef.current = window.setInterval(() => {
       const p = (Date.now() - startRef.current) / HOLD_MS
       if (p >= 1) {
@@ -51,18 +62,22 @@ function HoldGate({ onOpen }: { onOpen: () => void }) {
 
   useEffect(() => stop, [])
 
+  const holding = progress > 0
+
   return (
     <button
       type="button"
       onPointerDown={start}
       onPointerUp={stop}
-      onPointerLeave={stop}
       onPointerCancel={stop}
-      style={{ touchAction: 'none' }}
+      onContextMenu={(e) => e.preventDefault()}
+      style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
       aria-label="Hold for grown-up settings"
-      className="relative w-11 h-11 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xl select-none"
+      className={`relative w-11 h-11 rounded-full flex items-center justify-center text-xl select-none transition-colors ${
+        holding ? 'bg-indigo-200 text-indigo-600' : 'bg-slate-200 text-slate-500'
+      }`}
     >
-      {progress > 0 && (
+      {holding && (
         <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 44 44">
           <circle
             cx="22"
@@ -70,7 +85,8 @@ function HoldGate({ onOpen }: { onOpen: () => void }) {
             r="19"
             fill="none"
             stroke="#5C6BC0"
-            strokeWidth="4"
+            strokeWidth="5"
+            strokeLinecap="round"
             strokeDasharray={`${progress * 119.4} 119.4`}
           />
         </svg>
