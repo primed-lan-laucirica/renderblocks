@@ -1,4 +1,4 @@
-type Effect = 'yes' | 'cheer'
+type Effect = 'yes' | 'no' | 'cheer'
 
 const cache = new Map<Effect, HTMLAudioElement>()
 

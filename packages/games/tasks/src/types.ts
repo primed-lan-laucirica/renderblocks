@@ -15,14 +15,17 @@ export interface Routine {
   tasks: TaskCard[]
 }
 
+export type TaskMark = 'check' | 'x'
+
 interface RoutineProgress {
   /** YYYY-MM-DD the progress belongs to — a new day resets it. */
   date: string
-  doneIds: string[]
+  /** taskId -> check (done properly) | x (not done / done improperly). */
+  marks: Record<string, TaskMark>
 }
 
 export interface TasksData {
-  version: 1
+  version: 2
   routines: Routine[]
   progress: Record<string, RoutineProgress>
 }
@@ -38,7 +41,7 @@ export function newId(): string {
 
 function seedData(): TasksData {
   return {
-    version: 1,
+    version: 2,
     routines: [
       {
         id: newId(),
@@ -70,22 +73,36 @@ function seedData(): TasksData {
   }
 }
 
-/** Load, validate, and apply the daily progress reset. */
+/** Load, validate, migrate v1 (doneIds) -> v2 (marks), apply daily reset. */
 export function loadTasksData(raw: string | null): TasksData {
   if (!raw) return seedData()
   try {
-    const parsed = JSON.parse(raw) as TasksData
-    if (parsed.version !== 1 || !Array.isArray(parsed.routines)) return seedData()
+    const parsed = JSON.parse(raw) as {
+      version: number
+      routines: Routine[]
+      progress?: Record<string, { date: string; doneIds?: string[]; marks?: Record<string, TaskMark> }>
+    }
+    if ((parsed.version !== 1 && parsed.version !== 2) || !Array.isArray(parsed.routines)) {
+      return seedData()
+    }
     const date = today()
     const progress: TasksData['progress'] = {}
     for (const routine of parsed.routines) {
       const p = parsed.progress?.[routine.id]
-      if (p && p.date === date && Array.isArray(p.doneIds)) {
-        const valid = new Set(routine.tasks.map((t) => t.id))
-        progress[routine.id] = { date, doneIds: p.doneIds.filter((id) => valid.has(id)) }
+      if (!p || p.date !== date) continue
+      const valid = new Set(routine.tasks.map((t) => t.id))
+      const marks: Record<string, TaskMark> = {}
+      if (p.marks) {
+        for (const [id, mark] of Object.entries(p.marks)) {
+          if (valid.has(id) && (mark === 'check' || mark === 'x')) marks[id] = mark
+        }
+      } else if (Array.isArray(p.doneIds)) {
+        // v1: completed meant done-properly.
+        for (const id of p.doneIds) if (valid.has(id)) marks[id] = 'check'
       }
+      progress[routine.id] = { date, marks }
     }
-    return { version: 1, routines: parsed.routines, progress }
+    return { version: 2, routines: parsed.routines, progress }
   } catch {
     return seedData()
   }

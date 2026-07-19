@@ -8,6 +8,7 @@ import {
   newId,
   today,
   type Routine,
+  type TaskMark,
   type TasksData,
 } from './types'
 
@@ -120,7 +121,7 @@ function App({ services }: GameProps) {
     data.routines.length === 1 ? { t: 'board', id: data.routines[0].id } : { t: 'picker' },
   )
   const [tapLocked, setTapLocked] = useState(false)
-  const [celebrating, setCelebrating] = useState(false)
+  const [celebrating, setCelebrating] = useState<{ checks: number; xs: number } | null>(null)
   const [emojiTarget, setEmojiTarget] = useState<
     | { kind: 'routine'; routineId: string }
     | { kind: 'task'; routineId: string; taskId: string }
@@ -147,7 +148,8 @@ function App({ services }: GameProps) {
     })
   }, [services, view, celebrating])
 
-  const doneIds = (routineId: string): string[] => data.progress[routineId]?.doneIds ?? []
+  const marksOf = (routineId: string): Record<string, TaskMark> =>
+    data.progress[routineId]?.marks ?? {}
 
   const updateRoutine = (id: string, patch: (r: Routine) => Routine) => {
     setData((d) => ({
@@ -156,34 +158,33 @@ function App({ services }: GameProps) {
     }))
   }
 
-  const toggleTask = (routine: Routine, taskId: string, isDone: boolean) => {
+  const setMark = (routine: Routine, taskId: string, mark: TaskMark | null) => {
     if (tapLocked || celebrating) return
-    const done = doneIds(routine.id)
-    if (isDone) {
-      // Un-doing a mistaken tap: silent, no lock.
-      setData((d) => ({
-        ...d,
-        progress: {
-          ...d.progress,
-          [routine.id]: { date: today(), doneIds: done.filter((x) => x !== taskId) },
-        },
-      }))
-      return
+    const marks = { ...marksOf(routine.id) }
+    if (mark === null) {
+      // Un-doing a mistaken mark from the chip row: silent, no lock.
+      delete marks[taskId]
+    } else {
+      playEffect(mark === 'check' ? 'yes' : 'no', mark === 'check' ? 1 : 0.55)
+      setTapLocked(true)
+      window.setTimeout(() => setTapLocked(false), TAP_LOCK_MS)
+      marks[taskId] = mark
     }
-    playEffect('yes')
-    setTapLocked(true)
-    window.setTimeout(() => setTapLocked(false), TAP_LOCK_MS)
-    const nextDone = [...done, taskId]
     setData((d) => ({
       ...d,
-      progress: { ...d.progress, [routine.id]: { date: today(), doneIds: nextDone } },
+      progress: { ...d.progress, [routine.id]: { date: today(), marks } },
     }))
-    if (nextDone.length === routine.tasks.length && routine.tasks.length > 0) {
+    const total = routine.tasks.length
+    if (mark !== null && total > 0 && Object.keys(marks).length === total) {
+      const values = Object.values(marks)
+      const checks = values.filter((m) => m === 'check').length
+      const xs = total - checks
       window.setTimeout(() => {
-        playEffect('cheer', 0.8)
-        setCelebrating(true)
+        // Perfect routine gets the big cheer; a mixed result closes quietly.
+        if (xs === 0) playEffect('cheer', 0.8)
+        setCelebrating({ checks, xs })
         window.setTimeout(() => {
-          setCelebrating(false)
+          setCelebrating(null)
           setView({ t: 'picker' })
         }, 2600)
       }, 350)
@@ -201,9 +202,11 @@ function App({ services }: GameProps) {
         </div>
         <div className="flex-1 flex flex-wrap items-center justify-center gap-5">
           {data.routines.map((routine, i) => {
-            const done = doneIds(routine.id).length
+            const marks = marksOf(routine.id)
             const total = routine.tasks.length
-            const complete = total > 0 && done === total
+            const checks = Object.values(marks).filter((m) => m === 'check').length
+            const xs = Object.keys(marks).length - checks
+            const complete = total > 0 && Object.keys(marks).length === total
             return (
               <motion.button
                 key={routine.id}
@@ -215,10 +218,12 @@ function App({ services }: GameProps) {
                 whileTap={{ scale: 0.93 }}
                 className="w-40 h-40 rounded-3xl bg-white shadow-playful flex flex-col items-center justify-center gap-1 border-4 border-indigo-200"
               >
-                <span className="text-6xl">{complete ? '✅' : routine.emoji}</span>
+                <span className="text-6xl">
+                  {complete ? (xs === 0 ? '✅' : '🏁') : routine.emoji}
+                </span>
                 <span className="text-xl font-extrabold text-slate-700">{routine.title}</span>
                 <span className="text-sm font-bold text-indigo-400">
-                  {done}/{total}
+                  {checks}✓{xs > 0 ? ` ${xs}✗` : ''} / {total}
                 </span>
               </motion.button>
             )
@@ -234,9 +239,10 @@ function App({ services }: GameProps) {
       setView({ t: 'picker' })
       return null
     }
-    const done = doneIds(routine.id)
-    const pending = routine.tasks.filter((t) => !done.includes(t.id))
+    const marks = marksOf(routine.id)
+    const pending = routine.tasks.filter((t) => !(t.id in marks))
     const firstPendingId = pending[0]?.id
+    const marked = routine.tasks.filter((t) => t.id in marks)
 
     return (
       <div className="min-h-dvh bg-linear-to-b from-indigo-100 via-cloud to-cloud-lavender flex flex-col p-4 gap-4 select-none">
@@ -261,23 +267,41 @@ function App({ services }: GameProps) {
             {pending.map((task) => {
               const locked = routine.inOrder && task.id !== firstPendingId
               return (
-                <motion.button
+                <motion.div
                   key={task.id}
-                  type="button"
                   layout
                   exit={{ opacity: 0, scale: 0.6, y: 40 }}
-                  onPointerDown={() => !locked && toggleTask(routine, task.id, false)}
-                  style={{ touchAction: 'manipulation' }}
-                  whileTap={locked ? undefined : { scale: 0.96 }}
-                  className={`w-full max-w-md flex items-center gap-4 rounded-3xl px-5 py-4 shadow-playful border-4 ${
+                  className={`w-full max-w-md flex items-center gap-3 rounded-3xl px-4 py-3 shadow-playful border-4 ${
                     locked
                       ? 'bg-slate-100 border-slate-200 opacity-45'
                       : 'bg-white border-indigo-200'
                   }`}
                 >
                   <span className="text-5xl">{task.emoji}</span>
-                  <span className="text-2xl font-extrabold text-slate-700">{task.label}</span>
-                </motion.button>
+                  <span className="flex-1 text-2xl font-extrabold text-slate-700">
+                    {task.label}
+                  </span>
+                  <motion.button
+                    type="button"
+                    onPointerDown={() => !locked && setMark(routine, task.id, 'check')}
+                    style={{ touchAction: 'manipulation' }}
+                    whileTap={locked ? undefined : { scale: 0.85 }}
+                    aria-label={`${task.label} done properly`}
+                    className="w-16 h-16 shrink-0 rounded-2xl bg-emerald-100 border-4 border-emerald-300 text-3xl font-extrabold text-emerald-600 flex items-center justify-center"
+                  >
+                    ✓
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    onPointerDown={() => !locked && setMark(routine, task.id, 'x')}
+                    style={{ touchAction: 'manipulation' }}
+                    whileTap={locked ? undefined : { scale: 0.85 }}
+                    aria-label={`${task.label} not done`}
+                    className="w-16 h-16 shrink-0 rounded-2xl bg-rose-100 border-4 border-rose-300 text-3xl font-extrabold text-rose-500 flex items-center justify-center"
+                  >
+                    ✗
+                  </motion.button>
+                </motion.div>
               )
             })}
           </AnimatePresence>
@@ -286,29 +310,38 @@ function App({ services }: GameProps) {
           )}
         </div>
 
-        {/* Done row — tap a chip to un-do a mistaken completion */}
-        {done.length > 0 && (
+        {/* Marked row — tap a chip to un-do a mistaken mark */}
+        {marked.length > 0 && (
           <div className="shrink-0 w-full max-w-md mx-auto">
             <div className="text-sm font-extrabold text-slate-400 uppercase tracking-wide mb-1">
-              Done
+              Finished
             </div>
             <div className="flex flex-wrap gap-2">
-              {routine.tasks
-                .filter((t) => done.includes(t.id))
-                .map((task) => (
+              {marked.map((task) => {
+                const isCheck = marks[task.id] === 'check'
+                return (
                   <motion.button
                     key={task.id}
                     type="button"
                     layout
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    onPointerDown={() => toggleTask(routine, task.id, true)}
-                    className="flex items-center gap-1 rounded-full bg-emerald-100 border-2 border-emerald-300 px-3 py-1"
+                    onPointerDown={() => setMark(routine, task.id, null)}
+                    className={`flex items-center gap-1 rounded-full border-2 px-3 py-1 ${
+                      isCheck
+                        ? 'bg-emerald-100 border-emerald-300'
+                        : 'bg-rose-100 border-rose-300'
+                    }`}
                   >
                     <span className="text-xl">{task.emoji}</span>
-                    <span className="text-emerald-600 font-extrabold">✓</span>
+                    <span
+                      className={`font-extrabold ${isCheck ? 'text-emerald-600' : 'text-rose-500'}`}
+                    >
+                      {isCheck ? '✓' : '✗'}
+                    </span>
                   </motion.button>
-                ))}
+                )
+              })}
             </div>
           </div>
         )}
@@ -319,7 +352,9 @@ function App({ services }: GameProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-indigo-500/90 flex flex-col items-center justify-center gap-6 z-50"
+              className={`fixed inset-0 flex flex-col items-center justify-center gap-6 z-50 ${
+                celebrating.xs === 0 ? 'bg-indigo-500/90' : 'bg-slate-500/90'
+              }`}
             >
               <motion.div
                 initial={{ scale: 0.5 }}
@@ -327,11 +362,17 @@ function App({ services }: GameProps) {
                 transition={{ duration: 0.6 }}
                 className="text-8xl"
               >
-                🎉
+                {celebrating.xs === 0 ? '🎉' : '🏁'}
               </motion.div>
               <div className="text-5xl font-extrabold text-white drop-shadow text-center px-6">
-                {routine.title} all done!
+                {celebrating.xs === 0 ? `${routine.title} all done!` : `${routine.title} finished`}
               </div>
+              <div className="text-3xl font-extrabold text-white/90">
+                {celebrating.checks}✓{celebrating.xs > 0 ? `  ${celebrating.xs}✗` : ''}
+              </div>
+              {celebrating.xs === 0 && (
+                <div className="text-2xl font-bold text-yellow-300">Every task done right! ⭐</div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
