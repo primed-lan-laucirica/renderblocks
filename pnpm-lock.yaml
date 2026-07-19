@@ -65,6 +65,9 @@ importers:
       '@capacitor/app':
         specifier: ^8.0.0
         version: 8.1.0(@capacitor/core@8.4.1)
+      '@capacitor/camera':
+        specifier: ^8.0.0
+        version: 8.2.1(@capacitor/core@8.4.1)
       '@capacitor/core':
         specifier: ^8.0.0
         version: 8.4.1
@@ -231,6 +234,9 @@ importers:
 
   packages/games/tasks:
     dependencies:
+      '@capacitor/camera':
+        specifier: ^8.0.0
+        version: 8.2.1(@capacitor/core@8.4.1)
       '@renderblocks/kernel':
         specifier: workspace:*
         version: link:../../kernel
@@ -805,6 +811,11 @@ packages:
 
   '@capacitor/app@8.1.0':
     resolution: {integrity: sha512-MlmttTOWHDedr/G4SrhNRxsXMqY+R75S4MM4eIgzsgCzOYhb/MpCkA5Q3nuOCfL1oHm26xjUzqZ5aupbOwdfYg==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
+  '@capacitor/camera@8.2.1':
+    resolution: {integrity: sha512-yq4TbVcv9Z91JLr7C5407s3rrXr/Dmk+Pr9FAVRn65s3Jg4iYabjwG4fVKUYlQL5TiUdBbZA3LiNAbUxJNcUkw==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
 
@@ -3729,6 +3740,10 @@ snapshots:
       '@capacitor/core': 8.4.1
 
   '@capacitor/app@8.1.0(@capacitor/core@8.4.1)':
+    dependencies:
+      '@capacitor/core': 8.4.1
+
+  '@capacitor/camera@8.2.1(@capacitor/core@8.4.1)':
     dependencies:
       '@capacitor/core': 8.4.1
 

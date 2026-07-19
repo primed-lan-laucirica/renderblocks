@@ -8,6 +8,7 @@
     "./module": "./src/module.ts"
   },
   "dependencies": {
+    "@capacitor/camera": "^8.0.0",
     "@renderblocks/kernel": "workspace:*",
     "framer-motion": "^12.23.26",
     "react": "^19.2.0",
