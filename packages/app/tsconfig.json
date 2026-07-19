@@ -34,6 +34,8 @@
       "@renderblocks/subtract/module": ["../games/subtract/src/module.ts"],
       "@renderblocks/divide": ["../games/divide/src/index.ts"],
       "@renderblocks/divide/module": ["../games/divide/src/module.ts"],
+      "@renderblocks/tasks": ["../games/tasks/src/index.ts"],
+      "@renderblocks/tasks/module": ["../games/tasks/src/module.ts"],
       "@renderblocks/drill": ["../drill/src/index.ts"],
       "@renderblocks/kernel": ["../kernel/src/index.ts"]
     }
@@ -47,6 +49,7 @@
     "../games/add/src",
     "../games/subtract/src",
     "../games/divide/src",
+    "../games/tasks/src",
     "../drill/src",
     "../kernel/src"
   ]

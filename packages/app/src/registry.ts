@@ -5,6 +5,7 @@ import { addModule } from '@renderblocks/add/module'
 import { subtractModule } from '@renderblocks/subtract/module'
 import { timesModule } from '@renderblocks/times/module'
 import { divideModule } from '@renderblocks/divide/module'
+import { tasksModule } from '@renderblocks/tasks/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
 
 export const games: GameModule[] = [
@@ -15,6 +16,7 @@ export const games: GameModule[] = [
   subtractModule,
   timesModule,
   divideModule,
+  tasksModule,
 ]
 
 export const upcoming: UpcomingGame[] = []
