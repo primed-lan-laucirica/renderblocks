@@ -24,6 +24,7 @@
     "@renderblocks/drill": "workspace:*",
     "@renderblocks/graph": "workspace:*",
     "@renderblocks/kernel": "workspace:*",
+    "@renderblocks/numline": "workspace:*",
     "@renderblocks/shapes": "workspace:*",
     "@renderblocks/subtract": "workspace:*",
     "@renderblocks/tasks": "workspace:*",

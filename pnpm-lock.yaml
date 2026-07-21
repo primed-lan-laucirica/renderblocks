@@ -95,6 +95,9 @@ importers:
       '@renderblocks/kernel':
         specifier: workspace:*
         version: link:../kernel
+      '@renderblocks/numline':
+        specifier: workspace:*
+        version: link:../games/numline
       '@renderblocks/shapes':
         specifier: workspace:*
         version: link:../games/shapes
@@ -203,6 +206,21 @@ importers:
         version: 19.2.7(react@19.2.7)
 
   packages/games/graph:
+    dependencies:
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      framer-motion:
+        specifier: ^12.23.26
+        version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+
+  packages/games/numline:
     dependencies:
       '@renderblocks/kernel':
         specifier: workspace:*
