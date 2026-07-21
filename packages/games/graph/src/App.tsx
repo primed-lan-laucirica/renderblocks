@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { GameProps } from '@renderblocks/kernel'
-import { Plane, RANGE, sx, sy, type Pt } from './Plane'
+import { BASE_RANGE, MAX_RANGE, Plane, rangeToFit, scaleFor, type Pt } from './Plane'
 import { playEffect } from './sounds'
 import { useDarkMode } from './useDarkMode'
 
@@ -10,10 +10,15 @@ type Mode = 'tap' | 'draw' | 'find'
 const STORAGE_KEY = 'progress'
 const fmt = (p: Pt) => `(${p.x}, ${p.y})`
 
-function randomTarget(prev?: Pt): Pt {
+/** Targets widen with mastery: ±5, then +5 more every 10 stars (max ±20). */
+function targetRange(found: number): number {
+  return Math.min(MAX_RANGE, BASE_RANGE + Math.floor(found / 10) * BASE_RANGE)
+}
+
+function randomTarget(spread: number, prev?: Pt): Pt {
   for (;;) {
-    const x = Math.floor(Math.random() * (RANGE * 2 + 1)) - RANGE
-    const y = Math.floor(Math.random() * (RANGE * 2 + 1)) - RANGE
+    const x = Math.floor(Math.random() * (spread * 2 + 1)) - spread
+    const y = Math.floor(Math.random() * (spread * 2 + 1)) - spread
     if (x === 0 && y === 0) continue
     if (prev && x === prev.x && y === prev.y) continue
     return { x, y }
@@ -32,6 +37,8 @@ function Stepper({
   onChange: (v: number) => void
   dark: boolean
 }) {
+  const clampMin = -MAX_RANGE
+  const clampMax = MAX_RANGE
   const btn = `w-14 h-14 rounded-2xl text-3xl font-extrabold border-4 ${
     dark
       ? 'bg-slate-800 text-teal-300 border-teal-700 active:bg-slate-700'
@@ -44,7 +51,7 @@ function Stepper({
       </span>
       <button
         type="button"
-        onPointerDown={() => onChange(Math.max(-RANGE, value - 1))}
+        onPointerDown={() => onChange(Math.max(clampMin, value - 1))}
         style={{ touchAction: 'manipulation' }}
         className={btn}
       >
@@ -59,7 +66,7 @@ function Stepper({
       </span>
       <button
         type="button"
-        onPointerDown={() => onChange(Math.min(RANGE, value + 1))}
+        onPointerDown={() => onChange(Math.min(clampMax, value + 1))}
         style={{ touchAction: 'manipulation' }}
         className={btn}
       >
@@ -76,7 +83,7 @@ function App({ services }: GameProps) {
   const [y, setY] = useState(0)
   const [tapped, setTapped] = useState<Pt | null>(null)
   const [drawn, setDrawn] = useState<Pt[]>([])
-  const [target, setTarget] = useState<Pt>(() => randomTarget())
+  const [target, setTarget] = useState<Pt>(() => randomTarget(BASE_RANGE))
   const [wrong, setWrong] = useState<Pt | null>(null)
   const [hit, setHit] = useState(false)
   const [found, setFound] = useState<number>(() => {
@@ -101,6 +108,17 @@ function App({ services }: GameProps) {
 
   const preview: Pt = { x, y }
 
+  // Auto-window: fit everything currently in play, in steps of 5 (±5..±20).
+  const inPlay: number[] = [x, y]
+  if (mode === 'draw') for (const p of drawn) inPlay.push(p.x, p.y)
+  if (mode === 'tap' && tapped) inPlay.push(tapped.x, tapped.y)
+  if (mode === 'find') {
+    inPlay.push(target.x, target.y)
+    if (wrong) inPlay.push(wrong.x, wrong.y)
+  }
+  const range = rangeToFit(inPlay)
+  const s = scaleFor(range)
+
   const plotFind = () => {
     if (hit) return
     if (x === target.x && y === target.y) {
@@ -110,7 +128,7 @@ function App({ services }: GameProps) {
       window.setTimeout(() => {
         if (found > 0 && (found + 1) % 5 === 0) playEffect('cheer', 0.7)
         setHit(false)
-        setTarget(randomTarget(target))
+        setTarget(randomTarget(targetRange(found + 1), target))
         setX(0)
         setY(0)
       }, 1800)
@@ -128,8 +146,8 @@ function App({ services }: GameProps) {
 
   const dashedGuides = (p: Pt, color: string) => (
     <g stroke={color} strokeWidth="2" strokeDasharray="5 4">
-      <line x1={sx(p.x)} y1={sy(0)} x2={sx(p.x)} y2={sy(p.y)} />
-      <line x1={sx(0)} y1={sy(p.y)} x2={sx(p.x)} y2={sy(p.y)} />
+      <line x1={s.sx(p.x)} y1={s.sy(0)} x2={s.sx(p.x)} y2={s.sy(p.y)} />
+      <line x1={s.sx(0)} y1={s.sy(p.y)} x2={s.sx(p.x)} y2={s.sy(p.y)} />
     </g>
   )
 
@@ -204,13 +222,13 @@ function App({ services }: GameProps) {
         )}
       </div>
 
-      <Plane dark={isDark} onTap={mode === 'tap' ? setTapped : undefined}>
+      <Plane range={range} dark={isDark} onTap={mode === 'tap' ? setTapped : undefined}>
         {/* draw mode: stamped points + connecting segments + live preview */}
         {mode === 'draw' && (
           <>
             {drawn.length > 1 && (
               <polyline
-                points={drawn.map((p) => `${sx(p.x)},${sy(p.y)}`).join(' ')}
+                points={drawn.map((p) => `${s.sx(p.x)},${s.sy(p.y)}`).join(' ')}
                 fill="none"
                 stroke="#14b8a6"
                 strokeWidth="3.5"
@@ -218,13 +236,13 @@ function App({ services }: GameProps) {
               />
             )}
             {drawn.map((p, i) => (
-              <circle key={i} cx={sx(p.x)} cy={sy(p.y)} r="7" fill="#0d9488" />
+              <circle key={i} cx={s.sx(p.x)} cy={s.sy(p.y)} r={s.r} fill="#0d9488" />
             ))}
             {dashedGuides(preview, '#f59e0b')}
             <circle
-              cx={sx(preview.x)}
-              cy={sy(preview.y)}
-              r="9"
+              cx={s.sx(preview.x)}
+              cy={s.sy(preview.y)}
+              r={s.r + 2}
               fill="none"
               stroke="#f59e0b"
               strokeWidth="3"
@@ -236,7 +254,7 @@ function App({ services }: GameProps) {
         {mode === 'tap' && tapped && (
           <>
             {dashedGuides(tapped, '#14b8a6')}
-            <circle cx={sx(tapped.x)} cy={sy(tapped.y)} r="9" fill="#0d9488" />
+            <circle cx={s.sx(tapped.x)} cy={s.sy(tapped.y)} r={s.r + 1} fill="#0d9488" />
           </>
         )}
 
@@ -245,10 +263,10 @@ function App({ services }: GameProps) {
           <>
             {wrong && (
               <g opacity="0.8">
-                <circle cx={sx(wrong.x)} cy={sy(wrong.y)} r="8" fill="#94a3b8" />
+                <circle cx={s.sx(wrong.x)} cy={s.sy(wrong.y)} r={s.r} fill="#94a3b8" />
                 <text
-                  x={sx(wrong.x)}
-                  y={sy(wrong.y) - 14}
+                  x={s.sx(wrong.x)}
+                  y={s.sy(wrong.y) - 14}
                   textAnchor="middle"
                   fontSize="15"
                   fontWeight="800"
@@ -261,9 +279,9 @@ function App({ services }: GameProps) {
             {!hit && dashedGuides(preview, '#14b8a6')}
             {!hit && (
               <circle
-                cx={sx(preview.x)}
-                cy={sy(preview.y)}
-                r="9"
+                cx={s.sx(preview.x)}
+                cy={s.sy(preview.y)}
+                r={s.r + 2}
                 fill="none"
                 stroke="#14b8a6"
                 strokeWidth="3"
@@ -271,10 +289,10 @@ function App({ services }: GameProps) {
             )}
             {hit && (
               <text
-                x={sx(target.x)}
-                y={sy(target.y) + 10}
+                x={s.sx(target.x)}
+                y={s.sy(target.y) + 10}
                 textAnchor="middle"
-                fontSize="30"
+                fontSize={Math.max(18, s.cell * 0.8)}
               >
                 ⭐
               </text>

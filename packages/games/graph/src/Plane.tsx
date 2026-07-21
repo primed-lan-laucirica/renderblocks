@@ -1,89 +1,124 @@
 import type { ReactNode } from 'react'
 import { useRef } from 'react'
 
-export const RANGE = 5
+export const BASE_RANGE = 5
+export const MAX_RANGE = 20
 
-const CELL = 40
 const PAD = 26
-const SIDE = PAD * 2 + CELL * RANGE * 2
+const SIDE = 480
 
 export interface Pt {
   x: number
   y: number
 }
 
-/** World -> svg coords. */
-export function sx(x: number): number {
-  return PAD + (x + RANGE) * CELL
+export interface Scale {
+  sx: (x: number) => number
+  sy: (y: number) => number
+  cell: number
+  /** Marker radius sized to the current cell density. */
+  r: number
 }
-export function sy(y: number): number {
-  return PAD + (RANGE - y) * CELL
+
+/** Fixed canvas, variable window: more range = smaller cells. */
+export function scaleFor(range: number): Scale {
+  const cell = (SIDE - PAD * 2) / (range * 2)
+  return {
+    sx: (x) => PAD + (x + range) * cell,
+    sy: (y) => PAD + (range - y) * cell,
+    cell,
+    r: Math.min(9, Math.max(4.5, cell * 0.28)),
+  }
+}
+
+/** Grow the window in steps of 5 to fit the largest coordinate in play. */
+export function rangeToFit(values: number[]): number {
+  const maxAbs = Math.max(BASE_RANGE, ...values.map((v) => Math.abs(v)))
+  return Math.min(MAX_RANGE, Math.ceil(maxAbs / BASE_RANGE) * BASE_RANGE)
 }
 
 interface PlaneProps {
+  range: number
   dark: boolean
   onTap?: (p: Pt) => void
   children?: ReactNode
 }
 
 /**
- * Graph-paper SVG plane: light gridlines, heavier axes, every integer
- * labelled (negatives included — the axes are the number lines that make
- * negative coordinates legible). Children render in svg space via sx/sy.
+ * Graph-paper SVG plane with an auto-sized window. Axis labels thin out as
+ * the window grows (every 1 / 2 / 5) so the numerals stay readable — the
+ * labelled axes are the number lines that make negatives legible.
  */
-export function Plane({ dark, onTap, children }: PlaneProps) {
+export function Plane({ range, dark, onTap, children }: PlaneProps) {
   const ref = useRef<SVGSVGElement>(null)
+  const s = scaleFor(range)
 
   const grid = dark ? '#334155' : '#dbeafe'
   const axis = dark ? '#cbd5e1' : '#475569'
   const label = dark ? '#94a3b8' : '#64748b'
+  const labelStep = range <= 6 ? 1 : range <= 12 ? 2 : 5
 
   const handleTap = (e: React.PointerEvent<SVGSVGElement>) => {
     if (!onTap || !ref.current) return
     const rect = ref.current.getBoundingClientRect()
     const px = ((e.clientX - rect.left) / rect.width) * SIDE
     const py = ((e.clientY - rect.top) / rect.height) * SIDE
-    const x = Math.round((px - PAD) / CELL - RANGE)
-    const y = Math.round(RANGE - (py - PAD) / CELL)
-    if (x < -RANGE || x > RANGE || y < -RANGE || y > RANGE) return
+    const x = Math.round((px - PAD) / s.cell - range)
+    const y = Math.round(range - (py - PAD) / s.cell)
+    if (x < -range || x > range || y < -range || y > range) return
     onTap({ x, y })
   }
 
   const ticks: number[] = []
-  for (let i = -RANGE; i <= RANGE; i++) ticks.push(i)
+  for (let i = -range; i <= range; i++) ticks.push(i)
 
   return (
     <svg
       ref={ref}
       viewBox={`0 0 ${SIDE} ${SIDE}`}
-      className="w-full max-w-md aspect-square touch-none select-none"
+      className="w-full max-w-2xl aspect-square touch-none select-none"
       onPointerDown={handleTap}
     >
       <rect width={SIDE} height={SIDE} fill={dark ? '#0f172a' : '#ffffff'} rx="16" />
       {ticks.map((i) => (
         <g key={i}>
-          <line x1={sx(i)} y1={sy(-RANGE)} x2={sx(i)} y2={sy(RANGE)} stroke={grid} strokeWidth="1" />
-          <line x1={sx(-RANGE)} y1={sy(i)} x2={sx(RANGE)} y2={sy(i)} stroke={grid} strokeWidth="1" />
+          <line
+            x1={s.sx(i)}
+            y1={s.sy(-range)}
+            x2={s.sx(i)}
+            y2={s.sy(range)}
+            stroke={grid}
+            strokeWidth={s.cell >= 20 ? 1 : 0.6}
+          />
+          <line
+            x1={s.sx(-range)}
+            y1={s.sy(i)}
+            x2={s.sx(range)}
+            y2={s.sy(i)}
+            stroke={grid}
+            strokeWidth={s.cell >= 20 ? 1 : 0.6}
+          />
         </g>
       ))}
       {/* axes */}
-      <line x1={sx(0)} y1={sy(-RANGE)} x2={sx(0)} y2={sy(RANGE)} stroke={axis} strokeWidth="2.5" />
-      <line x1={sx(-RANGE)} y1={sy(0)} x2={sx(RANGE)} y2={sy(0)} stroke={axis} strokeWidth="2.5" />
-      {/* integer labels along both axes (0 once, at the origin corner) */}
+      <line x1={s.sx(0)} y1={s.sy(-range)} x2={s.sx(0)} y2={s.sy(range)} stroke={axis} strokeWidth="2.5" />
+      <line x1={s.sx(-range)} y1={s.sy(0)} x2={s.sx(range)} y2={s.sy(0)} stroke={axis} strokeWidth="2.5" />
+      {/* integer labels, thinned to the window size */}
       {ticks.map(
         (i) =>
-          i !== 0 && (
+          i !== 0 &&
+          i % labelStep === 0 && (
             <g key={`l${i}`} fill={label} fontSize="13" fontWeight="700">
-              <text x={sx(i)} y={sy(0) + 17} textAnchor="middle">
+              <text x={s.sx(i)} y={s.sy(0) + 17} textAnchor="middle">
                 {i}
               </text>
-              <text x={sx(0) - 8} y={sy(i) + 5} textAnchor="end">
+              <text x={s.sx(0) - 7} y={s.sy(i) + 5} textAnchor="end">
                 {i}
               </text>
             </g>
           ),
       )}
-      <text x={sx(0) - 8} y={sy(0) + 17} fill={label} fontSize="13" fontWeight="700" textAnchor="end">
+      <text x={s.sx(0) - 7} y={s.sy(0) + 17} fill={label} fontSize="13" fontWeight="700" textAnchor="end">
         0
       </text>
       {children}
