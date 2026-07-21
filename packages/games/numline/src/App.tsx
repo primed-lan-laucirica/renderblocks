@@ -4,7 +4,9 @@ import { NumberLine, type Op } from './NumberLine'
 import { playEffect } from './sounds'
 import { useDarkMode } from './useDarkMode'
 
-const MAX_DIGITS = 3
+// Not a design choice: past 15 digits JS floats can no longer represent
+// every integer, and a calculator that silently rounds typed digits lies.
+const MAX_DIGITS = 15
 
 const round2 = (v: number) => Math.round(v * 100) / 100
 
@@ -133,7 +135,7 @@ function App({ services }: GameProps) {
       {/* display row */}
       <div className="w-full max-w-4xl flex items-center justify-between gap-3 shrink-0">
         <div
-          className={`flex-1 text-right text-4xl font-extrabold tabular-nums rounded-2xl px-5 py-2 min-h-14 ${
+          className={`flex-1 text-right text-4xl font-extrabold tabular-nums rounded-2xl px-5 py-2 min-h-14 overflow-x-auto whitespace-nowrap ${
             isDark ? 'bg-slate-800 text-slate-100' : 'bg-white text-slate-700 shadow-playful'
           }`}
         >
