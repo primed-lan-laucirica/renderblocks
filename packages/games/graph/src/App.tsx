@@ -37,28 +37,36 @@ function Stepper({
   onChange: (v: number) => void
   dark: boolean
 }) {
-  const clampMin = -MAX_RANGE
-  const clampMax = MAX_RANGE
-  const btn = `w-14 h-14 rounded-2xl text-3xl font-extrabold border-4 ${
+  const step = (delta: number) =>
+    onChange(Math.max(-MAX_RANGE, Math.min(MAX_RANGE, value + delta)))
+  const btn = `h-14 rounded-2xl font-extrabold border-4 ${
     dark
       ? 'bg-slate-800 text-teal-300 border-teal-700 active:bg-slate-700'
       : 'bg-white text-teal-700 border-teal-300 active:bg-teal-50'
   }`
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       <span className={`w-6 text-2xl font-extrabold italic ${dark ? 'text-slate-300' : 'text-slate-600'}`}>
         {label}
       </span>
       <button
         type="button"
-        onPointerDown={() => onChange(Math.max(clampMin, value - 1))}
+        onPointerDown={() => step(-10)}
         style={{ touchAction: 'manipulation' }}
-        className={btn}
+        className={`${btn} w-16 text-lg`}
+      >
+        −10
+      </button>
+      <button
+        type="button"
+        onPointerDown={() => step(-1)}
+        style={{ touchAction: 'manipulation' }}
+        className={`${btn} w-14 text-3xl`}
       >
         −
       </button>
       <span
-        className={`w-16 text-center text-4xl font-extrabold tabular-nums ${
+        className={`w-20 text-center text-4xl font-extrabold tabular-nums ${
           dark ? 'text-slate-100' : 'text-slate-700'
         }`}
       >
@@ -66,11 +74,19 @@ function Stepper({
       </span>
       <button
         type="button"
-        onPointerDown={() => onChange(Math.min(clampMax, value + 1))}
+        onPointerDown={() => step(1)}
         style={{ touchAction: 'manipulation' }}
-        className={btn}
+        className={`${btn} w-14 text-3xl`}
       >
         +
+      </button>
+      <button
+        type="button"
+        onPointerDown={() => step(10)}
+        style={{ touchAction: 'manipulation' }}
+        className={`${btn} w-16 text-lg`}
+      >
+        +10
       </button>
     </div>
   )

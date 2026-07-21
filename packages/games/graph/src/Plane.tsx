@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { useRef } from 'react'
 
 export const BASE_RANGE = 5
-export const MAX_RANGE = 20
+export const MAX_RANGE = 100
 
 const PAD = 26
 const SIDE = 480
@@ -31,10 +31,19 @@ export function scaleFor(range: number): Scale {
   }
 }
 
-/** Grow the window in steps of 5 to fit the largest coordinate in play. */
+/** Grow the window to fit the largest coordinate: steps of 5 to ±20, then 10s. */
 export function rangeToFit(values: number[]): number {
   const maxAbs = Math.max(BASE_RANGE, ...values.map((v) => Math.abs(v)))
-  return Math.min(MAX_RANGE, Math.ceil(maxAbs / BASE_RANGE) * BASE_RANGE)
+  const fit = maxAbs <= 20 ? Math.ceil(maxAbs / 5) * 5 : Math.ceil(maxAbs / 10) * 10
+  return Math.min(MAX_RANGE, fit)
+}
+
+/** Smallest step from the ladder whose on-screen spacing clears `minPx`. */
+function stepFor(cell: number, minPx: number): number {
+  for (const step of [1, 2, 5, 10, 20, 25, 50]) {
+    if (step * cell >= minPx) return step
+  }
+  return 50
 }
 
 interface PlaneProps {
@@ -56,7 +65,10 @@ export function Plane({ range, dark, onTap, children }: PlaneProps) {
   const grid = dark ? '#334155' : '#dbeafe'
   const axis = dark ? '#cbd5e1' : '#475569'
   const label = dark ? '#94a3b8' : '#64748b'
-  const labelStep = range <= 6 ? 1 : range <= 12 ? 2 : 5
+  // Level of detail: gridlines need ~9px spacing, labels ~26px, so the
+  // paper coarsens (every 1 -> 2 -> 5 -> 10...) as the window grows.
+  const gridStep = stepFor(s.cell, 9)
+  const labelStep = Math.max(stepFor(s.cell, 26), gridStep)
 
   const handleTap = (e: React.PointerEvent<SVGSVGElement>) => {
     if (!onTap || !ref.current) return
@@ -70,7 +82,7 @@ export function Plane({ range, dark, onTap, children }: PlaneProps) {
   }
 
   const ticks: number[] = []
-  for (let i = -range; i <= range; i++) ticks.push(i)
+  for (let i = -range; i <= range; i += gridStep) ticks.push(i)
 
   return (
     <svg
