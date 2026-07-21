@@ -16,13 +16,23 @@ interface NumberLineProps {
   dark: boolean
 }
 
-/** Smallest step from the ladder whose on-screen spacing clears `minPx`. */
+/**
+ * Smallest 1/2/5 × 10^n step whose on-screen spacing clears `minPx` —
+ * unbounded above, floored at 1 so the line never shows fraction ticks.
+ */
 function stepFor(pxPerUnit: number, minPx: number): number {
-  for (const step of [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000]) {
-    if (step * pxPerUnit >= minPx) return step
+  const raw = Math.max(minPx / pxPerUnit, 1e-9)
+  let mag = Math.pow(10, Math.floor(Math.log10(raw)))
+  for (;;) {
+    for (const m of [1, 2, 5]) {
+      const step = m * mag
+      if (step >= raw) return Math.max(1, step)
+    }
+    mag *= 10
   }
-  return 1000
 }
+
+const fmtTick = (v: number) => v.toLocaleString('en-US')
 
 const round2 = (v: number) => Math.round(v * 100) / 100
 
@@ -53,7 +63,10 @@ export function NumberLine({ a, op, b, result, dark }: NumberLineProps) {
   const amber = '#f59e0b'
 
   const minorStep = stepFor(ppu, 9)
-  const labelStep = Math.max(stepFor(ppu, 44), minorStep)
+  // Label spacing scales with how wide the numerals actually are, so
+  // six-figure labels don't collide at large windows.
+  const widest = fmtTick(Math.round(Math.max(Math.abs(lo), Math.abs(hi)))).length
+  const labelStep = Math.max(stepFor(ppu, Math.max(44, widest * 10 + 16)), minorStep)
 
   const ticksBy = (step: number): number[] => {
     const out: number[] = []
@@ -151,7 +164,7 @@ export function NumberLine({ a, op, b, result, dark }: NumberLineProps) {
             fontWeight={v === 0 ? 800 : 700}
             fill={v === 0 ? axis : labelC}
           >
-            {v}
+            {fmtTick(v)}
           </text>
         </g>
       ))}
@@ -174,7 +187,7 @@ export function NumberLine({ a, op, b, result, dark }: NumberLineProps) {
             fontWeight="800"
             fill={amber}
           >
-            {round2(result)}
+            {round2(result).toLocaleString('en-US')}
           </text>
         </g>
       )}

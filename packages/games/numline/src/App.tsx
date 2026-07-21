@@ -93,7 +93,9 @@ function App({ services }: GameProps) {
   }
 
   const expression = `${a || '0'}${op ? ` ${op} ${b}` : ''}${
-    committed ? ` = ${result === null ? '?' : round2(result)}` : ''
+    committed
+      ? ` = ${result === null ? '?' : round2(result).toLocaleString('en-US')}`
+      : ''
   }`
 
   const keyBase = `h-14 rounded-2xl text-2xl font-extrabold border-4 select-none ${
