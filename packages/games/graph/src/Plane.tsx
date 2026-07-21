@@ -6,6 +6,7 @@ export const MAX_RANGE = 100
 
 const PAD = 26
 const SIDE = 480
+const TAP_SLOP_PX = 10
 
 export interface Pt {
   x: number
@@ -50,18 +51,27 @@ interface PlaneProps {
   range: number
   dark: boolean
   onTap?: (p: Pt) => void
+  /** Pinch zoom: reports the desired window; the app clamps and applies. */
+  onRangeChange?: (range: number) => void
   children?: ReactNode
 }
 
 /**
- * Graph-paper SVG plane with an auto-sized window. Axis labels thin out as
- * the window grows (every 1 / 2 / 5) so the numerals stay readable — the
- * labelled axes are the number lines that make negatives legible.
+ * Graph-paper SVG plane with an auto-sized window, pinch zoom, and
+ * letterbox-aware tap snapping (the svg fills whatever box the layout
+ * gives it; content centers with preserveAspectRatio meet).
  */
-export function Plane({ range, dark, onTap, children }: PlaneProps) {
+export function Plane({ range, dark, onTap, onRangeChange, children }: PlaneProps) {
   const ref = useRef<SVGSVGElement>(null)
-  const s = scaleFor(range)
+  const pointers = useRef(new Map<number, { x: number; y: number }>())
+  const gesture = useRef<{
+    pinching: boolean
+    startDist: number
+    startRange: number
+    tapStart: { id: number; x: number; y: number } | null
+  }>({ pinching: false, startDist: 0, startRange: range, tapStart: null })
 
+  const s = scaleFor(range)
   const grid = dark ? '#334155' : '#dbeafe'
   const axis = dark ? '#cbd5e1' : '#475569'
   const label = dark ? '#94a3b8' : '#64748b'
@@ -70,29 +80,89 @@ export function Plane({ range, dark, onTap, children }: PlaneProps) {
   const gridStep = stepFor(s.cell, 9)
   const labelStep = Math.max(stepFor(s.cell, 26), gridStep)
 
-  const handleTap = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (!onTap || !ref.current) return
+  /** Client point -> world point, accounting for meet letterboxing. */
+  const toWorld = (clientX: number, clientY: number): Pt | null => {
+    if (!ref.current) return null
     const rect = ref.current.getBoundingClientRect()
-    const px = ((e.clientX - rect.left) / rect.width) * SIDE
-    const py = ((e.clientY - rect.top) / rect.height) * SIDE
+    const scale = Math.min(rect.width, rect.height) / SIDE
+    const ox = rect.left + (rect.width - SIDE * scale) / 2
+    const oy = rect.top + (rect.height - SIDE * scale) / 2
+    const px = (clientX - ox) / scale
+    const py = (clientY - oy) / scale
     const x = Math.round((px - PAD) / s.cell - range)
     const y = Math.round(range - (py - PAD) / s.cell)
-    if (x < -range || x > range || y < -range || y > range) return
-    onTap({ x, y })
+    if (x < -range || x > range || y < -range || y > range) return null
+    return { x, y }
   }
 
-  const ticks: number[] = []
-  for (let i = -range; i <= range; i += gridStep) ticks.push(i)
+  const dist = (): number => {
+    const [a, b] = [...pointers.current.values()]
+    return Math.hypot(a.x - b.x, a.y - b.y)
+  }
+
+  const onPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
+    ref.current?.setPointerCapture(e.pointerId)
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (pointers.current.size === 1) {
+      gesture.current.tapStart = { id: e.pointerId, x: e.clientX, y: e.clientY }
+    } else if (pointers.current.size === 2) {
+      gesture.current.pinching = true
+      gesture.current.startDist = dist()
+      gesture.current.startRange = range
+      gesture.current.tapStart = null
+    }
+  }
+
+  const onPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!pointers.current.has(e.pointerId)) return
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (gesture.current.pinching && pointers.current.size === 2 && onRangeChange) {
+      const d = dist()
+      if (d > 0 && gesture.current.startDist > 0) {
+        // Fingers apart = zoom in = smaller window.
+        onRangeChange(Math.round(gesture.current.startRange * (gesture.current.startDist / d)))
+      }
+    }
+  }
+
+  const onPointerEnd = (e: React.PointerEvent<SVGSVGElement>) => {
+    const tap = gesture.current.tapStart
+    if (
+      tap &&
+      tap.id === e.pointerId &&
+      !gesture.current.pinching &&
+      Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < TAP_SLOP_PX &&
+      onTap
+    ) {
+      const p = toWorld(e.clientX, e.clientY)
+      if (p) onTap(p)
+    }
+    pointers.current.delete(e.pointerId)
+    if (pointers.current.size === 0) {
+      gesture.current.pinching = false
+      gesture.current.tapStart = null
+    }
+  }
+
+  // Gridlines/labels aligned to step multiples so arbitrary pinch ranges work.
+  const stepTicks = (step: number): number[] => {
+    const ticks: number[] = []
+    for (let i = Math.ceil(-range / step) * step; i <= range; i += step) ticks.push(i)
+    return ticks
+  }
 
   return (
     <svg
       ref={ref}
       viewBox={`0 0 ${SIDE} ${SIDE}`}
-      className="w-full max-w-2xl aspect-square touch-none select-none"
-      onPointerDown={handleTap}
+      className="w-full h-full touch-none select-none"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerEnd}
+      onPointerCancel={onPointerEnd}
     >
       <rect width={SIDE} height={SIDE} fill={dark ? '#0f172a' : '#ffffff'} rx="16" />
-      {ticks.map((i) => (
+      {stepTicks(gridStep).map((i) => (
         <g key={i}>
           <line
             x1={s.sx(i)}
@@ -116,10 +186,9 @@ export function Plane({ range, dark, onTap, children }: PlaneProps) {
       <line x1={s.sx(0)} y1={s.sy(-range)} x2={s.sx(0)} y2={s.sy(range)} stroke={axis} strokeWidth="2.5" />
       <line x1={s.sx(-range)} y1={s.sy(0)} x2={s.sx(range)} y2={s.sy(0)} stroke={axis} strokeWidth="2.5" />
       {/* integer labels, thinned to the window size */}
-      {ticks.map(
+      {stepTicks(labelStep).map(
         (i) =>
-          i !== 0 &&
-          i % labelStep === 0 && (
+          i !== 0 && (
             <g key={`l${i}`} fill={label} fontSize="13" fontWeight="700">
               <text x={s.sx(i)} y={s.sy(0) + 17} textAnchor="middle">
                 {i}

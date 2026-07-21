@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { GameProps } from '@renderblocks/kernel'
 import { BASE_RANGE, MAX_RANGE, Plane, rangeToFit, scaleFor, type Pt } from './Plane'
@@ -10,7 +10,7 @@ type Mode = 'tap' | 'draw' | 'find'
 const STORAGE_KEY = 'progress'
 const fmt = (p: Pt) => `(${p.x}, ${p.y})`
 
-/** Targets widen with mastery: ±5, then +5 more every 10 stars (max ±20). */
+/** Targets widen with mastery: ±5, then +5 more every 10 stars. */
 function targetRange(found: number): number {
   return Math.min(MAX_RANGE, BASE_RANGE + Math.floor(found / 10) * BASE_RANGE)
 }
@@ -25,7 +25,10 @@ function randomTarget(spread: number, prev?: Pt): Pt {
   }
 }
 
-/** One signed axis stepper: −  value  + */
+/**
+ * One signed axis stepper. Just − and +, but holding repeats and
+ * accelerates, so walking to ±100 is a press-and-hold, not 100 taps.
+ */
 function Stepper({
   label,
   value,
@@ -34,34 +37,54 @@ function Stepper({
 }: {
   label: string
   value: number
-  onChange: (v: number) => void
+  onChange: (updater: (v: number) => number) => void
   dark: boolean
 }) {
-  const step = (delta: number) =>
-    onChange(Math.max(-MAX_RANGE, Math.min(MAX_RANGE, value + delta)))
-  const btn = `h-14 rounded-2xl font-extrabold border-4 ${
+  const timerRef = useRef<number | null>(null)
+
+  const stopRepeat = () => {
+    if (timerRef.current !== null) {
+      window.clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+  }
+
+  const startRepeat = (e: React.PointerEvent<HTMLButtonElement>, delta: number) => {
+    e.currentTarget.setPointerCapture(e.pointerId)
+    stopRepeat()
+    const apply = () =>
+      onChange((v) => Math.max(-MAX_RANGE, Math.min(MAX_RANGE, v + delta)))
+    apply()
+    let ticks = 0
+    const tick = () => {
+      ticks++
+      apply()
+      timerRef.current = window.setTimeout(tick, ticks > 12 ? 45 : 110)
+    }
+    timerRef.current = window.setTimeout(tick, 400)
+  }
+
+  useEffect(() => stopRepeat, [])
+
+  const btn = `w-14 h-14 rounded-2xl text-3xl font-extrabold border-4 select-none ${
     dark
       ? 'bg-slate-800 text-teal-300 border-teal-700 active:bg-slate-700'
       : 'bg-white text-teal-700 border-teal-300 active:bg-teal-50'
   }`
+
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-2">
       <span className={`w-6 text-2xl font-extrabold italic ${dark ? 'text-slate-300' : 'text-slate-600'}`}>
         {label}
       </span>
       <button
         type="button"
-        onPointerDown={() => step(-10)}
-        style={{ touchAction: 'manipulation' }}
-        className={`${btn} w-16 text-lg`}
-      >
-        −10
-      </button>
-      <button
-        type="button"
-        onPointerDown={() => step(-1)}
-        style={{ touchAction: 'manipulation' }}
-        className={`${btn} w-14 text-3xl`}
+        onPointerDown={(e) => startRepeat(e, -1)}
+        onPointerUp={stopRepeat}
+        onPointerCancel={stopRepeat}
+        onContextMenu={(e) => e.preventDefault()}
+        style={{ touchAction: 'none' }}
+        className={btn}
       >
         −
       </button>
@@ -74,19 +97,14 @@ function Stepper({
       </span>
       <button
         type="button"
-        onPointerDown={() => step(1)}
-        style={{ touchAction: 'manipulation' }}
-        className={`${btn} w-14 text-3xl`}
+        onPointerDown={(e) => startRepeat(e, 1)}
+        onPointerUp={stopRepeat}
+        onPointerCancel={stopRepeat}
+        onContextMenu={(e) => e.preventDefault()}
+        style={{ touchAction: 'none' }}
+        className={btn}
       >
         +
-      </button>
-      <button
-        type="button"
-        onPointerDown={() => step(10)}
-        style={{ touchAction: 'manipulation' }}
-        className={`${btn} w-16 text-lg`}
-      >
-        +10
       </button>
     </div>
   )
@@ -102,6 +120,7 @@ function App({ services }: GameProps) {
   const [target, setTarget] = useState<Pt>(() => randomTarget(BASE_RANGE))
   const [wrong, setWrong] = useState<Pt | null>(null)
   const [hit, setHit] = useState(false)
+  const [range, setRange] = useState(BASE_RANGE)
   const [found, setFound] = useState<number>(() => {
     try {
       const raw = services.storage.get(STORAGE_KEY)
@@ -124,7 +143,8 @@ function App({ services }: GameProps) {
 
   const preview: Pt = { x, y }
 
-  // Auto-window: fit everything currently in play, in steps of 5 (±5..±20).
+  // Everything currently in play must stay visible: the window auto-grows
+  // when plots move past it. Pinch can zoom freely between that floor and ±100.
   const inPlay: number[] = [x, y]
   if (mode === 'draw') for (const p of drawn) inPlay.push(p.x, p.y)
   if (mode === 'tap' && tapped) inPlay.push(tapped.x, tapped.y)
@@ -132,7 +152,15 @@ function App({ services }: GameProps) {
     inPlay.push(target.x, target.y)
     if (wrong) inPlay.push(wrong.x, wrong.y)
   }
-  const range = rangeToFit(inPlay)
+  const fitFloor = rangeToFit(inPlay)
+
+  useEffect(() => {
+    if (fitFloor > range) setRange(fitFloor)
+  }, [fitFloor, range])
+
+  const onPinch = (desired: number) =>
+    setRange(Math.max(fitFloor, Math.min(MAX_RANGE, desired)))
+
   const s = scaleFor(range)
 
   const plotFind = () => {
@@ -169,14 +197,14 @@ function App({ services }: GameProps) {
 
   return (
     <div
-      className={`min-h-dvh flex flex-col items-center p-4 gap-3 select-none ${
+      className={`h-dvh overflow-hidden flex flex-col items-center p-3 gap-2 select-none ${
         isDark
           ? 'bg-linear-to-b from-slate-800 via-slate-900 to-slate-950'
           : 'bg-linear-to-b from-teal-50 via-cloud to-cloud-lavender'
       }`}
     >
-      {/* mode tabs + dark toggle */}
-      <div className="w-full max-w-md flex items-center justify-between gap-2">
+      {/* mode tabs + status + dark toggle */}
+      <div className="w-full max-w-5xl flex items-center justify-between gap-2 shrink-0">
         <div className={`flex rounded-2xl p-1 ${isDark ? 'bg-slate-800' : 'bg-white shadow-playful'}`}>
           {tabs.map((t) => (
             <button
@@ -200,6 +228,24 @@ function App({ services }: GameProps) {
             </button>
           ))}
         </div>
+        {/* headline readout */}
+        <div className="flex-1 text-center">
+          {mode === 'tap' && (
+            <span className={`text-3xl font-extrabold tabular-nums ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
+              {tapped ? fmt(tapped) : 'Tap a point'}
+            </span>
+          )}
+          {mode === 'draw' && (
+            <span className={`text-3xl font-extrabold tabular-nums ${isDark ? 'text-teal-300' : 'text-teal-600'}`}>
+              {fmt(preview)}
+            </span>
+          )}
+          {mode === 'find' && (
+            <span className={`text-3xl font-extrabold tabular-nums ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
+              Find <span className={isDark ? 'text-amber-300' : 'text-amber-500'}>{fmt(target)}</span>
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           {mode === 'find' && (
             <span className={`text-lg font-extrabold ${isDark ? 'text-amber-300' : 'text-amber-500'}`}>
@@ -219,127 +265,110 @@ function App({ services }: GameProps) {
         </div>
       </div>
 
-      {/* headline readout */}
-      <div className="h-14 flex items-center">
-        {mode === 'tap' && (
-          <div className={`text-4xl font-extrabold tabular-nums ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
-            {tapped ? fmt(tapped) : 'Tap a point'}
-          </div>
-        )}
-        {mode === 'draw' && (
-          <div className={`text-4xl font-extrabold tabular-nums ${isDark ? 'text-teal-300' : 'text-teal-600'}`}>
-            {fmt(preview)}
-          </div>
-        )}
-        {mode === 'find' && (
-          <div className={`text-4xl font-extrabold tabular-nums ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
-            Find <span className={isDark ? 'text-amber-300' : 'text-amber-500'}>{fmt(target)}</span>
-          </div>
-        )}
-      </div>
-
-      <Plane range={range} dark={isDark} onTap={mode === 'tap' ? setTapped : undefined}>
-        {/* draw mode: stamped points + connecting segments + live preview */}
-        {mode === 'draw' && (
-          <>
-            {drawn.length > 1 && (
-              <polyline
-                points={drawn.map((p) => `${s.sx(p.x)},${s.sy(p.y)}`).join(' ')}
-                fill="none"
-                stroke="#14b8a6"
-                strokeWidth="3.5"
-                strokeLinejoin="round"
-              />
-            )}
-            {drawn.map((p, i) => (
-              <circle key={i} cx={s.sx(p.x)} cy={s.sy(p.y)} r={s.r} fill="#0d9488" />
-            ))}
-            {dashedGuides(preview, '#f59e0b')}
-            <circle
-              cx={s.sx(preview.x)}
-              cy={s.sy(preview.y)}
-              r={s.r + 2}
-              fill="none"
-              stroke="#f59e0b"
-              strokeWidth="3"
-            />
-          </>
-        )}
-
-        {/* tap mode: the tapped point with guides */}
-        {mode === 'tap' && tapped && (
-          <>
-            {dashedGuides(tapped, '#14b8a6')}
-            <circle cx={s.sx(tapped.x)} cy={s.sy(tapped.y)} r={s.r + 1} fill="#0d9488" />
-          </>
-        )}
-
-        {/* find mode: preview crosshair, wrong attempts, revealed star */}
-        {mode === 'find' && (
-          <>
-            {wrong && (
-              <g opacity="0.8">
-                <circle cx={s.sx(wrong.x)} cy={s.sy(wrong.y)} r={s.r} fill="#94a3b8" />
-                <text
-                  x={s.sx(wrong.x)}
-                  y={s.sy(wrong.y) - 14}
-                  textAnchor="middle"
-                  fontSize="15"
-                  fontWeight="800"
-                  fill="#94a3b8"
-                >
-                  {fmt(wrong)}
-                </text>
-              </g>
-            )}
-            {!hit && dashedGuides(preview, '#14b8a6')}
-            {!hit && (
-              <circle
-                cx={s.sx(preview.x)}
-                cy={s.sy(preview.y)}
-                r={s.r + 2}
-                fill="none"
-                stroke="#14b8a6"
-                strokeWidth="3"
-              />
-            )}
-            {hit && (
-              <text
-                x={s.sx(target.x)}
-                y={s.sy(target.y) + 10}
-                textAnchor="middle"
-                fontSize={Math.max(18, s.cell * 0.8)}
-              >
-                ⭐
-              </text>
-            )}
-          </>
-        )}
-      </Plane>
-
-      {/* controls */}
-      {mode !== 'tap' && (
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            <Stepper label="x" value={x} onChange={setX} dark={isDark} />
-            <Stepper label="y" value={y} onChange={setY} dark={isDark} />
-          </div>
-          <div className="flex items-center gap-3 mt-1">
+      {/* plane + controls: stacked in portrait, side by side in landscape */}
+      <div className="flex-1 min-h-0 w-full max-w-5xl flex flex-col landscape:flex-row items-center justify-center gap-2 landscape:gap-4">
+        <div className="flex-1 min-h-0 min-w-0 self-stretch flex items-center justify-center">
+          <Plane
+            range={range}
+            dark={isDark}
+            onTap={mode === 'tap' ? setTapped : undefined}
+            onRangeChange={onPinch}
+          >
             {mode === 'draw' && (
               <>
+                {drawn.length > 1 && (
+                  <polyline
+                    points={drawn.map((p) => `${s.sx(p.x)},${s.sy(p.y)}`).join(' ')}
+                    fill="none"
+                    stroke="#14b8a6"
+                    strokeWidth="3.5"
+                    strokeLinejoin="round"
+                  />
+                )}
+                {drawn.map((p, i) => (
+                  <circle key={i} cx={s.sx(p.x)} cy={s.sy(p.y)} r={s.r} fill="#0d9488" />
+                ))}
+                {dashedGuides(preview, '#f59e0b')}
+                <circle
+                  cx={s.sx(preview.x)}
+                  cy={s.sy(preview.y)}
+                  r={s.r + 2}
+                  fill="none"
+                  stroke="#f59e0b"
+                  strokeWidth="3"
+                />
+              </>
+            )}
+
+            {mode === 'tap' && tapped && (
+              <>
+                {dashedGuides(tapped, '#14b8a6')}
+                <circle cx={s.sx(tapped.x)} cy={s.sy(tapped.y)} r={s.r + 1} fill="#0d9488" />
+              </>
+            )}
+
+            {mode === 'find' && (
+              <>
+                {wrong && (
+                  <g opacity="0.8">
+                    <circle cx={s.sx(wrong.x)} cy={s.sy(wrong.y)} r={s.r} fill="#94a3b8" />
+                    <text
+                      x={s.sx(wrong.x)}
+                      y={s.sy(wrong.y) - 14}
+                      textAnchor="middle"
+                      fontSize="15"
+                      fontWeight="800"
+                      fill="#94a3b8"
+                    >
+                      {fmt(wrong)}
+                    </text>
+                  </g>
+                )}
+                {!hit && dashedGuides(preview, '#14b8a6')}
+                {!hit && (
+                  <circle
+                    cx={s.sx(preview.x)}
+                    cy={s.sy(preview.y)}
+                    r={s.r + 2}
+                    fill="none"
+                    stroke="#14b8a6"
+                    strokeWidth="3"
+                  />
+                )}
+                {hit && (
+                  <text
+                    x={s.sx(target.x)}
+                    y={s.sy(target.y) + 10}
+                    textAnchor="middle"
+                    fontSize={Math.max(18, s.cell * 0.8)}
+                  >
+                    ⭐
+                  </text>
+                )}
+              </>
+            )}
+          </Plane>
+        </div>
+
+        {mode !== 'tap' && (
+          <div className="shrink-0 flex flex-col items-center gap-2 pb-1">
+            <Stepper label="x" value={x} onChange={setX} dark={isDark} />
+            <Stepper label="y" value={y} onChange={setY} dark={isDark} />
+            {mode === 'draw' && (
+              <div className="flex items-center gap-2 mt-1">
                 <motion.button
                   type="button"
                   onPointerDown={() => setDrawn((d) => [...d, preview])}
                   style={{ touchAction: 'manipulation' }}
                   whileTap={{ scale: 0.93 }}
-                  className="px-8 py-3 rounded-2xl bg-teal-500 text-white text-2xl font-extrabold shadow-playful"
+                  className="px-6 py-3 rounded-2xl bg-teal-500 text-white text-xl font-extrabold shadow-playful"
                 >
                   Plot {fmt(preview)}
                 </motion.button>
                 <button
                   type="button"
                   onPointerDown={() => setDrawn((d) => d.slice(0, -1))}
-                  className={`px-4 py-3 rounded-2xl font-extrabold ${
+                  className={`px-3 py-3 rounded-2xl font-extrabold ${
                     isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -348,13 +377,13 @@ function App({ services }: GameProps) {
                 <button
                   type="button"
                   onPointerDown={() => setDrawn([])}
-                  className={`px-4 py-3 rounded-2xl font-extrabold ${
+                  className={`px-3 py-3 rounded-2xl font-extrabold ${
                     isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
                   }`}
                 >
                   Clear
                 </button>
-              </>
+              </div>
             )}
             {mode === 'find' && (
               <motion.button
@@ -362,14 +391,14 @@ function App({ services }: GameProps) {
                 onPointerDown={plotFind}
                 style={{ touchAction: 'manipulation' }}
                 whileTap={{ scale: 0.93 }}
-                className="px-10 py-3 rounded-2xl bg-teal-500 text-white text-2xl font-extrabold shadow-playful"
+                className="px-8 py-3 rounded-2xl bg-teal-500 text-white text-xl font-extrabold shadow-playful mt-1"
               >
                 Plot {fmt(preview)}
               </motion.button>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* find-mode hit flash */}
       <AnimatePresence>
