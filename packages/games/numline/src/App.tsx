@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
 import { NumberLine, type Op } from './NumberLine'
 import { playEffect } from './sounds'
@@ -56,13 +56,20 @@ function App({ services }: GameProps) {
   const pressOp = (next: Op) => {
     playEffect('click', 0.5)
     if (committed) {
-      // Chain from the result.
-      if (result !== null) {
-        setA(String(round2(result)))
+      if (result === null) {
+        // Nothing to chain from an undefined result — start fresh at 0
+        // rather than dead-ending the calculator.
+        setA('')
         setOp(next)
         setB('')
         setCommitted(false)
+        return
       }
+      // Chain from the result.
+      setA(String(round2(result)))
+      setOp(next)
+      setB('')
+      setCommitted(false)
       return
     }
     if (op !== null && b !== '') {
@@ -78,8 +85,9 @@ function App({ services }: GameProps) {
   }
 
   const pressEquals = () => {
-    if (op !== null && b !== '' && result !== null && !committed) {
-      playEffect('yes')
+    if (op !== null && b !== '' && !committed) {
+      // ÷0 commits too — it just resolves to "undefined" rather than a number.
+      playEffect(result === null ? 'click' : 'yes', result === null ? 0.5 : 1)
       setCommitted(true)
     } else {
       playEffect('click', 0.5)
@@ -96,9 +104,17 @@ function App({ services }: GameProps) {
 
   const expression = `${a || '0'}${op ? ` ${op} ${b}` : ''}${
     committed
-      ? ` = ${result === null ? '?' : round2(result).toLocaleString('en-US')}`
+      ? ` = ${result === null ? 'undefined' : round2(result).toLocaleString('en-US')}`
       : ''
   }`
+
+  // Keep the display pinned to its right edge, so a long answer stays on
+  // screen and the equation scrolls off the left instead.
+  const displayRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = displayRef.current
+    if (el) el.scrollLeft = el.scrollWidth
+  }, [expression])
 
   const keyBase = `h-14 rounded-2xl text-2xl font-extrabold border-4 select-none ${
     isDark
@@ -135,6 +151,7 @@ function App({ services }: GameProps) {
       {/* display row */}
       <div className="w-full max-w-4xl flex items-center justify-between gap-3 shrink-0">
         <div
+          ref={displayRef}
           className={`flex-1 text-right text-4xl font-extrabold tabular-nums rounded-2xl px-5 py-2 min-h-14 overflow-x-auto whitespace-nowrap ${
             isDark ? 'bg-slate-800 text-slate-100' : 'bg-white text-slate-700 shadow-playful'
           }`}
