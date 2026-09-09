@@ -94,6 +94,22 @@ function App({ services }: GameProps) {
     }
   }
 
+  /** Undo one keypress: result -> expression -> b -> operator -> a. */
+  const pressBackspace = () => {
+    playEffect('click', 0.5)
+    if (committed) {
+      // Un-press equals: back to the editable expression.
+      setCommitted(false)
+      return
+    }
+    if (op !== null) {
+      if (b !== '') setB((s) => s.slice(0, -1))
+      else setOp(null)
+      return
+    }
+    setA((s) => s.slice(0, -1))
+  }
+
   const pressClear = () => {
     playEffect('click', 0.5)
     setA('')
@@ -177,6 +193,24 @@ function App({ services }: GameProps) {
         </div>
 
         <div className="grid grid-cols-4 gap-2 w-full max-w-sm shrink-0">
+          {key(
+            'C',
+            pressClear,
+            `col-span-2 h-14 rounded-2xl text-2xl font-extrabold border-4 select-none ${
+              isDark
+                ? 'bg-slate-800 text-rose-300 border-rose-700 active:bg-slate-700'
+                : 'bg-rose-100 text-rose-600 border-rose-300 active:bg-rose-200'
+            }`,
+          )}
+          {key(
+            '⌫',
+            pressBackspace,
+            `col-span-2 h-14 rounded-2xl text-2xl font-extrabold border-4 select-none ${
+              isDark
+                ? 'bg-slate-800 text-slate-200 border-slate-600 active:bg-slate-700'
+                : 'bg-slate-200 text-slate-600 border-slate-300 active:bg-slate-300'
+            }`,
+          )}
           {key('7', () => pressDigit('7'), keyBase)}
           {key('8', () => pressDigit('8'), keyBase)}
           {key('9', () => pressDigit('9'), keyBase)}
@@ -189,16 +223,7 @@ function App({ services }: GameProps) {
           {key('2', () => pressDigit('2'), keyBase)}
           {key('3', () => pressDigit('3'), keyBase)}
           {key('−', () => pressOp('−'), op === '−' && !committed ? `${opKey} ring-4 ring-amber-400` : opKey)}
-          {key(
-            'C',
-            pressClear,
-            `h-14 rounded-2xl text-2xl font-extrabold border-4 select-none ${
-              isDark
-                ? 'bg-slate-800 text-rose-300 border-rose-700 active:bg-slate-700'
-                : 'bg-rose-100 text-rose-600 border-rose-300 active:bg-rose-200'
-            }`,
-          )}
-          {key('0', () => pressDigit('0'), keyBase)}
+          {key('0', () => pressDigit('0'), `col-span-2 ${keyBase}`)}
           {key(
             '=',
             pressEquals,
