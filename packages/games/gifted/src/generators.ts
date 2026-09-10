@@ -75,7 +75,7 @@ function assemble(
 
 const AXIS_WORD: Record<Axis, string> = {
   shape: 'shape',
-  color: 'colour',
+  color: 'color',
   size: 'size',
   rotation: 'turn',
   fill: 'shading',
@@ -107,7 +107,7 @@ function figureClassify(level: number): Item {
   const sizePool = [...SIZE_STEPS]
   const rotPool = [0, 90, 180, 270]
   // Only the two extremes: 'light' (30% opacity) reads too close to 'solid'
-  // to be judged fairly when the colour differs from figure to figure.
+  // to be judged fairly when the color differs from figure to figure.
   const fillPool: Fill[] = shuffle(['outline', 'solid'])
   const countPool = [1, 2, 3]
   const anchor = {
@@ -187,7 +187,7 @@ function figureSeries(level: number): Item {
   const axes = shuffle(k.axisPool as Axis[]).slice(0, Math.min(k.rules, 2))
   const period = Math.min(maxPeriod, pick([2, 3]))
   const colorCycle = shuffle(COLORS).slice(0, period)
-  // Shading cycles like colour/shape. The old rule saturated (outline,
+  // Shading cycles like color/shape. The old rule saturated (outline,
   // light, solid, solid…) leaving the next term genuinely ambiguous.
   const fillCycle = shuffle([...FILLS]).slice(0, Math.min(period, FILLS.length))
   // A quarter turn must be visible, so a rotation rule restricts the shapes.
@@ -220,7 +220,7 @@ function figureSeries(level: number): Item {
     varyCell(cloneCell(correct), pick(perceptibleAxes(correct, k.axisPool as Axis[])))
 
   const parts = axes.map((a) => {
-    if (a === 'color') return `the colours repeat every ${colorCycle.length}`
+    if (a === 'color') return `the colors repeat every ${colorCycle.length}`
     if (a === 'shape') return `the shapes repeat every ${shapeCycle.length}`
     if (a === 'rotation') return 'each step turns a quarter turn'
     if (a === 'size') return 'each one grows bigger'
@@ -330,7 +330,7 @@ function patternCompletion(level: number): Item {
   }
   const ruleWord =
     rule === 'checker'
-      ? 'the colours alternate like a checkerboard'
+      ? 'the colors alternate like a checkerboard'
       : rule === 'vstripe'
         ? 'the design runs in vertical stripes'
         : rule === 'diag'

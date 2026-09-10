@@ -19,7 +19,7 @@ export interface Glyph {
   fill: Fill
 }
 
-/** Grid of colour indices; -1 is empty. Used by pattern-completion fields. */
+/** Grid of color indices; -1 is empty. Used by pattern-completion fields. */
 export type ColorGrid = number[][]
 
 export type Cell =
