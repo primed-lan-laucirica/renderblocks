@@ -18,6 +18,7 @@ import {
   varyCell,
   type Axis,
   type Cell,
+  type Fill,
   type ColorGrid,
   type Item,
   type SubtestId,
@@ -105,7 +106,9 @@ function figureClassify(level: number): Item {
   const colorPool = shuffle(COLORS).slice(0, 4)
   const sizePool = [...SIZE_STEPS]
   const rotPool = [0, 90, 180, 270]
-  const fillPool = shuffle([...FILLS])
+  // Only the two extremes: 'light' (30% opacity) reads too close to 'solid'
+  // to be judged fairly when the colour differs from figure to figure.
+  const fillPool: Fill[] = shuffle(['outline', 'solid'])
   const countPool = [1, 2, 3]
   const anchor = {
     shape: shapePool[0],
@@ -131,7 +134,13 @@ function figureClassify(level: number): Item {
   const stimulus = [member(0), member(1), member(2)]
   const correct = member(3)
   let seed = 4
-  const distractor = (): Cell => varyCell(member(seed++), property)
+  const distractor = (): Cell => {
+    const c = member(seed++)
+    if (property !== 'fill') return varyCell(c, property)
+    // Flip to the opposite extreme so the difference is unmistakable.
+    if (c.kind === 'glyphs') c.glyphs.forEach((g) => (g.fill = fillPool[1]))
+    return c
+  }
 
   const shares = (c: Cell): boolean => {
     if (c.kind !== 'glyphs' || correct.kind !== 'glyphs') return false
@@ -178,6 +187,9 @@ function figureSeries(level: number): Item {
   const axes = shuffle(k.axisPool as Axis[]).slice(0, Math.min(k.rules, 2))
   const period = Math.min(maxPeriod, pick([2, 3]))
   const colorCycle = shuffle(COLORS).slice(0, period)
+  // Shading cycles like colour/shape. The old rule saturated (outline,
+  // light, solid, solid…) leaving the next term genuinely ambiguous.
+  const fillCycle = shuffle([...FILLS]).slice(0, Math.min(period, FILLS.length))
   // A quarter turn must be visible, so a rotation rule restricts the shapes.
   const shapePool = axes.includes('rotation') ? ROTATABLE : SHAPES
   const shapeCycle = shuffle(shapePool).slice(0, period)
@@ -194,7 +206,7 @@ function figureSeries(level: number): Item {
       else if (a === 'shape') g.shape = shapeCycle[i % shapeCycle.length]
       else if (a === 'rotation') g.rotation = (i * 90) % 360
       else if (a === 'size') g.size = 0.4 + 0.2 * i
-      else if (a === 'fill') g.fill = FILLS[Math.min(i, FILLS.length - 1)]
+      else if (a === 'fill') g.fill = fillCycle[i % fillCycle.length]
     }
     const n = axes.includes('count') ? 1 + i : 1
     return gcell(...Array.from({ length: Math.min(n, 6) }, () => ({ ...g })))
@@ -212,7 +224,7 @@ function figureSeries(level: number): Item {
     if (a === 'shape') return `the shapes repeat every ${shapeCycle.length}`
     if (a === 'rotation') return 'each step turns a quarter turn'
     if (a === 'size') return 'each one grows bigger'
-    if (a === 'fill') return 'the shading fills in step by step'
+    if (a === 'fill') return `the shading repeats every ${fillCycle.length}`
     return 'one more shape is added each step'
   })
   return assemble(
