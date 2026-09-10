@@ -40,6 +40,8 @@
       "@renderblocks/graph/module": ["../games/graph/src/module.ts"],
       "@renderblocks/numline": ["../games/numline/src/index.ts"],
       "@renderblocks/numline/module": ["../games/numline/src/module.ts"],
+      "@renderblocks/gifted": ["../games/gifted/src/index.ts"],
+      "@renderblocks/gifted/module": ["../games/gifted/src/module.ts"],
       "@renderblocks/drill": ["../drill/src/index.ts"],
       "@renderblocks/kernel": ["../kernel/src/index.ts"]
     }
@@ -56,6 +58,7 @@
     "../games/tasks/src",
     "../games/graph/src",
     "../games/numline/src",
+    "../games/gifted/src",
     "../drill/src",
     "../kernel/src"
   ]

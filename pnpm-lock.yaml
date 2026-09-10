@@ -89,6 +89,9 @@ importers:
       '@renderblocks/drill':
         specifier: workspace:*
         version: link:../drill
+      '@renderblocks/gifted':
+        specifier: workspace:*
+        version: link:../games/gifted
       '@renderblocks/graph':
         specifier: workspace:*
         version: link:../games/graph
@@ -192,6 +195,21 @@ importers:
       '@renderblocks/drill':
         specifier: workspace:*
         version: link:../../drill
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      framer-motion:
+        specifier: ^12.23.26
+        version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+
+  packages/games/gifted:
+    dependencies:
       '@renderblocks/kernel':
         specifier: workspace:*
         version: link:../../kernel
@@ -1538,6 +1556,7 @@ packages:
   '@xmldom/xmldom@0.9.10':
     resolution: {integrity: sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==}
     engines: {node: '>=14.6'}
+    deprecated: this version has critical issues, please update to the latest version
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -1866,6 +1885,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
