@@ -98,6 +98,8 @@ export interface Item {
   blankIndex: number
   choices: Cell[]
   answer: number
+  /** Why the answer is the answer — shown after responding. */
+  explain: string
 }
 
 export const SHAPES: ShapeKind[] = [

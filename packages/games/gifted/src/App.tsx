@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
 import type { GameProps } from '@renderblocks/kernel'
 import { CellView } from './Figure'
 import { MAX_LEVEL, generate } from './generators'
@@ -9,8 +9,8 @@ import { useDarkMode } from './useDarkMode'
 import { SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from './types'
 
 const STORAGE_KEY = 'progress'
-const CORRECT_MS = 900
-const WRONG_MS = 1800
+/** Long enough to read the explanation aloud together. */
+const SOLVED_MS = 2600
 
 function App({ services }: GameProps) {
   const { isDark, toggle: toggleDarkMode } = useDarkMode()
@@ -23,9 +23,14 @@ function App({ services }: GameProps) {
     const sub = chooseGen(p, [])
     return generate(sub, p.levels[sub])
   })
-  const [picked, setPicked] = useState<number | null>(null)
+  /** Choices already tried and rejected — he can keep probing. */
+  const [tried, setTried] = useState<number[]>([])
+  const [solved, setSolved] = useState(false)
+  const [scored, setScored] = useState(false)
+  const [dragging, setDragging] = useState(false)
+  const [rejecting, setRejecting] = useState(false)
   const [banner, setBanner] = useState<string | null>(null)
-  const locked = picked !== null
+  const slotRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     services.storage.set(STORAGE_KEY, JSON.stringify(progress))
@@ -35,26 +40,50 @@ function App({ services }: GameProps) {
     const sub = chooseGen(p, recent.current)
     recent.current = [...recent.current, sub].slice(-3)
     setItem(generate(sub, p.levels[sub]))
-    setPicked(null)
+    setTried([])
+    setSolved(false)
+    setScored(false)
   }
 
-  const pick = (i: number) => {
-    if (locked) return
+  /** Try a choice. The first attempt is what the adaptive ladder scores. */
+  const attempt = (i: number) => {
+    if (solved || tried.includes(i)) return
     const right = i === item.answer
-    setPicked(i)
-    playEffect(right ? 'yes' : 'no', right ? 1 : 0.55)
-    const { next, levelledUp, unlockedGen } = record(progress, item.sub, right)
-    setProgress(next)
-    if (unlockedGen) setBanner(`New: ${SUBTEST_NAME[unlockedGen]}`)
-    else if (levelledUp) setBanner('Level up!')
-    if (right && next.correct % 10 === 0) playEffect('cheer', 0.7)
-    window.setTimeout(
-      () => {
+
+    let updated = progress
+    if (!scored) {
+      const { next, levelledUp, unlockedGen } = record(progress, item.sub, right)
+      updated = next
+      setProgress(next)
+      setScored(true)
+      if (unlockedGen) setBanner(`New: ${SUBTEST_NAME[unlockedGen]}`)
+      else if (levelledUp) setBanner('Level up!')
+    }
+
+    if (right) {
+      playEffect('yes')
+      setSolved(true)
+      if (updated.correct % 10 === 0) playEffect('cheer', 0.7)
+      window.setTimeout(() => {
         setBanner(null)
-        nextItem(next)
-      },
-      right ? CORRECT_MS : WRONG_MS,
-    )
+        nextItem(updated)
+      }, SOLVED_MS)
+    } else {
+      playEffect('no', 0.55)
+      setTried((t) => [...t, i])
+      setRejecting(true)
+      window.setTimeout(() => setRejecting(false), 400)
+    }
+  }
+
+  /** Did this drag finish over the answer slot? */
+  const droppedOnSlot = (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const r = slotRef.current?.getBoundingClientRect()
+    if (!r) return false
+    const x = 'clientX' in e ? (e as PointerEvent).clientX : info.point.x
+    const y = 'clientY' in e ? (e as PointerEvent).clientY : info.point.y
+    const pad = 24 // forgiving target for small hands
+    return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad
   }
 
   const frame = (extra = '') =>
@@ -62,29 +91,58 @@ function App({ services }: GameProps) {
       isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
     } ${extra}`
 
-  const stimulus = useMemo(() => {
-    const box = (i: number, key: string, sz: string) => (
-      <div key={key} className={`${frame()} ${sz}`}>
-        <CellView
-          cell={item.stimulus[i]}
-          blank={i === item.blankIndex}
-          dark={isDark}
+  /** The drop target: dashed, and it lights up while a piece is in the air. */
+  const slotClass = `rounded-2xl border-4 border-dashed flex items-center justify-center p-1 transition-colors ${
+    solved
+      ? 'border-emerald-400 bg-emerald-50/40'
+      : rejecting
+        ? 'border-rose-400 bg-rose-50/40'
+        : dragging
+          ? 'border-violet-500 bg-violet-100/50 scale-105'
+          : isDark
+            ? 'border-slate-600 bg-slate-800/60'
+            : 'border-violet-300 bg-white/70'
+  }`
+
+  const answerCell = solved ? item.choices[item.answer] : undefined
+
+  const Slot = ({ size }: { size: string }) => (
+    <div ref={slotRef} className={`${slotClass} ${size}`}>
+      {answerCell ? (
+        <motion.div
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
           className="w-full h-full"
-        />
-      </div>
-    )
-    const glyphOnly = (i: number, key: string, sz: string) => (
-      <div key={key} className={sz}>
-        <CellView cell={item.stimulus[i]} dark={isDark} className="w-full h-full" />
-      </div>
-    )
+        >
+          <CellView cell={answerCell} dark={isDark} className="w-full h-full" />
+        </motion.div>
+      ) : (
+        <span className={`text-4xl font-extrabold ${isDark ? 'text-slate-600' : 'text-violet-300'}`}>
+          ?
+        </span>
+      )}
+    </div>
+  )
+
+  const stimulus = useMemo(() => {
+    const box = (i: number, key: string, sz: string) =>
+      i === item.blankIndex ? (
+        <Slot key={key} size={sz} />
+      ) : (
+        <div key={key} className={`${frame()} ${sz}`}>
+          <CellView cell={item.stimulus[i]} dark={isDark} className="w-full h-full" />
+        </div>
+      )
 
     switch (item.layout) {
       case 'classify':
-        // Three that belong together, set apart from the answer row.
         return (
           <div className="flex items-center justify-center gap-2">
             {item.stimulus.map((_, i) => box(i, `c${i}`, 'w-20 h-20'))}
+            <span className={`text-2xl font-extrabold px-1 ${isDark ? 'text-slate-600' : 'text-slate-300'}`}>
+              +
+            </span>
+            <Slot size="w-20 h-20" />
           </div>
         )
 
@@ -96,7 +154,6 @@ function App({ services }: GameProps) {
         )
 
       case 'pairs':
-        // [a → b] [c → d] [e → ?]
         return (
           <div className="flex flex-col gap-2 items-center">
             {[0, 2, 4].map((base, row) => (
@@ -115,7 +172,9 @@ function App({ services }: GameProps) {
         return (
           <div className="flex items-center justify-center gap-1">
             {item.stimulus.map((c, i) =>
-              c.kind === 'text' && c.text !== '?' ? (
+              c.kind === 'text' && c.text === '?' ? (
+                <Slot key={`e${i}`} size="w-16 h-16" />
+              ) : c.kind === 'text' ? (
                 <span
                   key={`e${i}`}
                   className={`text-4xl font-extrabold px-1 ${isDark ? 'text-slate-300' : 'text-slate-500'}`}
@@ -129,23 +188,50 @@ function App({ services }: GameProps) {
           </div>
         )
 
-      case 'field':
-        return <div className={`${frame()} w-56 h-56`}>{glyphOnly(0, 'f0', 'w-full h-full')}</div>
+      case 'field': {
+        // The hole in the design is itself the drop target.
+        const f = item.stimulus[0]
+        const hole = f.kind === 'field' ? f.hole : undefined
+        const n = f.kind === 'field' ? f.grid.length : 8
+        return (
+          <div className={`${frame()} w-60 h-60 relative`}>
+            <CellView cell={f} dark={isDark} className="w-full h-full" />
+            {hole && (
+              <div
+                ref={slotRef}
+                className={`absolute rounded-md border-4 border-dashed transition-colors ${
+                  solved
+                    ? 'border-emerald-400'
+                    : rejecting
+                      ? 'border-rose-400'
+                      : dragging
+                        ? 'border-violet-500'
+                        : 'border-violet-300'
+                }`}
+                style={{
+                  left: `${(hole.c / n) * 100}%`,
+                  top: `${(hole.r / n) * 100}%`,
+                  width: `${(hole.n / n) * 100}%`,
+                  height: `${(hole.n / n) * 100}%`,
+                }}
+              >
+                {answerCell && <CellView cell={answerCell} dark={isDark} className="w-full h-full" />}
+              </div>
+            )}
+          </div>
+        )
+      }
 
       case 'fold':
         return (
           <div className="flex items-center gap-3">
-            <div className={`${frame()} w-40 h-40`}>{glyphOnly(0, 'fo0', 'w-full h-full')}</div>
+            <div className={`${frame()} w-36 h-36`}>
+              <CellView cell={item.stimulus[0]} dark={isDark} className="w-full h-full" />
+            </div>
             <span className={`text-3xl font-extrabold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
               →
             </span>
-            <div
-              className={`${frame()} w-40 h-40 border-dashed flex items-center justify-center text-5xl font-extrabold ${
-                isDark ? 'text-slate-600' : 'text-slate-300'
-              }`}
-            >
-              ?
-            </div>
+            <Slot size="w-36 h-36" />
           </div>
         )
 
@@ -161,11 +247,10 @@ function App({ services }: GameProps) {
         )
       }
     }
-  }, [item, isDark])
+  }, [item, isDark, solved, dragging, rejecting, answerCell])
 
   const level = progress.levels[item.sub]
   const accuracy = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : 0
-  const choiceSize = item.layout === 'fold' || item.layout === 'field' ? 'w-24 h-24' : 'w-24 h-24 sm:w-28 sm:h-28'
 
   return (
     <div
@@ -175,10 +260,9 @@ function App({ services }: GameProps) {
           : 'bg-linear-to-b from-violet-50 via-cloud to-cloud-lavender'
       }`}
     >
-      {/* header: subtest name (parent-facing) + kid hint + level pips */}
       <div className="w-full max-w-3xl flex items-center justify-between gap-2 shrink-0">
         <div className="min-w-0">
-          <div className={`text-xs font-extrabold uppercase tracking-wide truncate ${isDark ? 'text-violet-400' : 'text-violet-400'}`}>
+          <div className="text-xs font-extrabold uppercase tracking-wide truncate text-violet-400">
             {SUBTEST_NAME[item.sub]}
           </div>
           <div className={`text-xl font-extrabold truncate ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
@@ -215,46 +299,71 @@ function App({ services }: GameProps) {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 w-full max-w-3xl flex flex-col items-center justify-center gap-4 overflow-y-auto py-1">
+      <div className="flex-1 min-h-0 w-full max-w-3xl flex flex-col items-center justify-center gap-3 overflow-y-auto py-1">
         <AnimatePresence mode="wait">
           <motion.div
-            key={`${progress.seen}-stim`}
-            initial={{ opacity: 0, y: 12 }}
+            key={`${progress.seen}-${tried.length}-stim`}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
           >
             {stimulus}
           </motion.div>
         </AnimatePresence>
 
-        <div className={`w-full h-px ${isDark ? 'bg-slate-700' : 'bg-slate-200'}`} />
+        {/* Why the answer is the answer */}
+        <div className="h-12 flex items-center justify-center px-2">
+          <AnimatePresence>
+            {solved && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className={`text-center text-base font-bold leading-tight ${
+                  isDark ? 'text-slate-300' : 'text-slate-600'
+                }`}
+              >
+                {item.explain}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
+        {/* Drag a piece into the slot — or just tap it. */}
         <div className="flex flex-wrap items-center justify-center gap-3">
           {item.choices.map((c, i) => {
+            const rejected = tried.includes(i)
             const isAnswer = i === item.answer
-            const chosen = picked === i
-            const state =
-              picked === null
-                ? ''
-                : isAnswer
-                  ? 'border-emerald-400 ring-4 ring-emerald-300'
-                  : chosen
-                    ? 'border-rose-400 ring-4 ring-rose-300'
-                    : 'opacity-50'
+            const hidden = solved && isAnswer
             return (
-              <motion.button
+              <motion.div
                 key={`${progress.seen}-${i}`}
-                type="button"
-                onPointerDown={() => pick(i)}
-                style={{ touchAction: 'manipulation' }}
-                whileTap={locked ? undefined : { scale: 0.93 }}
-                animate={chosen && !isAnswer ? { x: [0, -7, 7, -5, 0] } : {}}
-                transition={{ duration: 0.3 }}
-                className={`${frame(state)} ${choiceSize}`}
+                drag={!solved && !rejected}
+                dragSnapToOrigin
+                dragMomentum={false}
+                whileDrag={{ scale: 1.15, zIndex: 50 }}
+                onDragStart={() => setDragging(true)}
+                onDragEnd={(e, info) => {
+                  setDragging(false)
+                  if (droppedOnSlot(e, info)) attempt(i)
+                }}
+                // onTap (not onPointerDown) so it doesn't fire when a drag
+                // begins — framer cancels the tap once dragging starts.
+                onTap={() => {
+                  if (!solved && !rejected) attempt(i)
+                }}
+                animate={{
+                  opacity: hidden ? 0.25 : rejected ? 0.3 : 1,
+                  scale: rejected ? 0.9 : 1,
+                }}
+                style={{ touchAction: 'none' }}
+                className={`${frame(
+                  rejected ? 'border-rose-300' : solved && isAnswer ? 'border-emerald-400' : 'cursor-grab',
+                )} w-24 h-24 sm:w-28 sm:h-28`}
               >
-                <CellView cell={c} dark={isDark} className="w-full h-full" />
-              </motion.button>
+                <CellView cell={c} dark={isDark} className="w-full h-full pointer-events-none" />
+              </motion.div>
             )
           })}
         </div>

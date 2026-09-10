@@ -19,6 +19,7 @@ import {
   type Item,
   type SubtestId,
 } from './types'
+import { fitPairRules, fitRules, isDetermined, plausibleNext } from './rules'
 
 export const MAX_LEVEL = 6
 
@@ -30,7 +31,11 @@ function knobs(level: number) {
   }
 }
 
-/** Assemble an item, filling the option list out with unique distractors. */
+/**
+ * Assemble an item. `reject` lets a generator veto distractors that would be
+ * defensible answers in their own right — the difference between a fair item
+ * and a trick question.
+ */
 function assemble(
   sub: SubtestId,
   level: number,
@@ -39,13 +44,16 @@ function assemble(
   blankIndex: number,
   correct: Cell,
   makeDistractor: () => Cell,
+  explain: string,
+  reject: (c: Cell) => boolean = () => false,
 ): Item {
   const want = knobs(level).choices
   const opts: Cell[] = [correct]
   let guard = 0
-  while (opts.length < want && guard++ < 400) {
+  while (opts.length < want && guard++ < 500) {
     const d = makeDistractor()
     if (opts.some((o) => sameCell(o, d))) continue
+    if (reject(d)) continue
     opts.push(d)
   }
   const shuffled = shuffle(opts)
@@ -57,76 +65,158 @@ function assemble(
     blankIndex,
     choices: shuffled,
     answer: shuffled.findIndex((c) => sameCell(c, correct)),
+    explain,
   }
+}
+
+const AXIS_WORD: Record<Axis, string> = {
+  shape: 'shape',
+  color: 'colour',
+  size: 'size',
+  rotation: 'turn',
+  fill: 'shading',
+  count: 'number of shapes',
 }
 
 /* ============ NONVERBAL ============ */
 
 /**
- * Figure Classification (CogAT/OLSAT): three figures share one property;
- * choose the fourth that belongs with them.
+ * Figure Classification: three figures share exactly one property. The item is
+ * regenerated unless that property is the ONLY thing they share — otherwise a
+ * distractor matching the accidental second property is equally defensible.
  */
 function figureClassify(level: number): Item {
   const k = knobs(level)
-  // The shared property is one attribute held constant; everything else varies.
   const property = pick(k.axisPool) as Axis
-  const anchor = glyph({ fill: pick(FILLS) })
 
-  const member = (): Cell => {
-    const g = glyph({ fill: pick(FILLS) })
-    // Inherit the defining property, randomise the rest.
-    if (property === 'shape') g.shape = anchor.shape
-    else if (property === 'color') g.color = anchor.color
-    else if (property === 'fill') g.fill = anchor.fill
-    else if (property === 'size') g.size = anchor.size
-    else if (property === 'rotation') g.rotation = anchor.rotation
-    if (property === 'count') return gcell(...Array.from({ length: 3 }, () => ({ ...g })))
-    return gcell(g)
+  // Every axis except the defining one is cycled through at least two values,
+  // so the family provably shares ONE property. (Randomising instead lets
+  // defaults collide — a family that also shares size and rotation gives a
+  // distractor a second, equally defensible reason to belong.)
+  const shapePool = shuffle(SHAPES).slice(0, 4)
+  const colorPool = shuffle(COLORS).slice(0, 4)
+  const sizePool = [0.6, 0.8, 1]
+  const rotPool = [0, 45, 90, 180]
+  const fillPool = shuffle([...FILLS])
+  const countPool = [1, 2, 3]
+  const anchor = {
+    shape: shapePool[0],
+    color: colorPool[0],
+    size: sizePool[0],
+    rotation: rotPool[0],
+    fill: fillPool[0],
+    count: 3,
   }
 
-  const stimulus = [member(), member(), member()]
-  const correct = member()
-  const distractor = (): Cell => {
-    const c = member()
-    return varyCell(c, property) // breaks exactly the defining property
+  const member = (i: number): Cell => {
+    const g = glyph({
+      shape: property === 'shape' ? anchor.shape : shapePool[i % shapePool.length],
+      color: property === 'color' ? anchor.color : colorPool[i % colorPool.length],
+      size: property === 'size' ? anchor.size : sizePool[i % sizePool.length],
+      rotation: property === 'rotation' ? anchor.rotation : rotPool[i % rotPool.length],
+      fill: property === 'fill' ? anchor.fill : fillPool[i % fillPool.length],
+    })
+    const n = property === 'count' ? anchor.count : countPool[i % countPool.length]
+    return gcell(...Array.from({ length: n }, () => ({ ...g })))
   }
-  return assemble('figureClassify', level, 'classify', stimulus, -1, correct, distractor)
+
+  const stimulus = [member(0), member(1), member(2)]
+  const correct = member(3)
+  let seed = 4
+  const distractor = (): Cell => varyCell(member(seed++), property)
+
+  const shares = (c: Cell): boolean => {
+    if (c.kind !== 'glyphs' || correct.kind !== 'glyphs') return false
+    const g = c.glyphs[0]
+    const a = correct.glyphs[0]
+    switch (property) {
+      case 'shape':
+        return g.shape === a.shape
+      case 'color':
+        return g.color === a.color
+      case 'fill':
+        return g.fill === a.fill
+      case 'size':
+        return Math.abs(g.size - a.size) < 0.01
+      case 'rotation':
+        return g.rotation === a.rotation
+      case 'count':
+        return c.glyphs.length === correct.glyphs.length
+    }
+  }
+
+  return assemble(
+    'figureClassify',
+    level,
+    'classify',
+    stimulus,
+    -1,
+    correct,
+    distractor,
+    `All three share the same ${AXIS_WORD[property]}; only the answer matches it.`,
+    shares,
+  )
 }
 
-/** Figure Series (CogAT/NNAT serial reasoning): one transformation per step. */
+/**
+ * Figure Series. Cyclic rules must repeat at least once inside the visible
+ * terms (len >= period + 2), otherwise "A B C ?" is legitimately ambiguous
+ * between restarting the cycle and introducing a new element.
+ */
 function figureSeries(level: number): Item {
   const k = knobs(level)
   const len = level <= 2 ? 4 : 5
+  const maxPeriod = len - 2
   const axes = shuffle(k.axisPool as Axis[]).slice(0, Math.min(k.rules, 2))
-  const colorCycle = shuffle(COLORS).slice(0, pick([2, 3]))
-  const shapeCycle = shuffle(SHAPES).slice(0, pick([2, 3]))
+  const period = Math.min(maxPeriod, pick([2, 3]))
+  const colorCycle = shuffle(COLORS).slice(0, period)
+  const shapeCycle = shuffle(SHAPES).slice(0, period)
+
+  // Anything the rule doesn't govern is held CONSTANT across the series.
+  // Otherwise that attribute is unconstrained, and a choice differing only on
+  // it would be just as defensible as the intended answer.
+  const base = glyph({ fill: 'solid', size: 1, rotation: 0 })
 
   const at = (i: number): Cell => {
-    const g = glyph({ fill: 'solid', size: 1, rotation: 0 })
+    const g = { ...base }
     for (const a of axes) {
       if (a === 'color') g.color = colorCycle[i % colorCycle.length]
       else if (a === 'shape') g.shape = shapeCycle[i % shapeCycle.length]
       else if (a === 'rotation') g.rotation = (i * 90) % 360
-      else if (a === 'size') g.size = 0.5 + 0.25 * (i % 3)
-      else if (a === 'fill') g.fill = FILLS[i % FILLS.length]
+      else if (a === 'size') g.size = 0.55 + 0.2 * Math.min(i, 2)
+      else if (a === 'fill') g.fill = FILLS[Math.min(i, FILLS.length - 1)]
     }
-    const n = axes.includes('count') ? 1 + (i % 4) : 1
-    return gcell(...Array.from({ length: n }, () => ({ ...g })))
+    const n = axes.includes('count') ? 1 + i : 1
+    return gcell(...Array.from({ length: Math.min(n, 6) }, () => ({ ...g })))
   }
 
   const cells = Array.from({ length: len }, (_, i) => at(i))
   const blank = len - 1
   const correct = cells[blank]
   const stimulus = cells.map((c, i) => (i === blank ? gcell() : c))
-  const distractor = () => {
-    let d = cloneCell(correct)
-    d = varyCell(d, pick(k.axisPool) as Axis)
-    return d
-  }
-  return assemble('figureSeries', level, 'row', stimulus, blank, correct, distractor)
+  const distractor = () => varyCell(cloneCell(correct), pick(k.axisPool) as Axis)
+
+  const parts = axes.map((a) => {
+    if (a === 'color') return `the colours repeat every ${colorCycle.length}`
+    if (a === 'shape') return `the shapes repeat every ${shapeCycle.length}`
+    if (a === 'rotation') return 'each step turns a quarter turn'
+    if (a === 'size') return 'the size grows then holds'
+    if (a === 'fill') return 'the shading fills in step by step'
+    return 'one more shape is added each step'
+  })
+  return assemble(
+    'figureSeries',
+    level,
+    'row',
+    stimulus,
+    blank,
+    correct,
+    distractor,
+    `Following the series: ${parts.join(', and ')}.`,
+  )
 }
 
-/** Figure Matrices (CogAT/NNAT): independent row and column rules. */
+/** Figure Matrices: one rule across rows, another down columns. */
 function figureMatrix(level: number): Item {
   const three = level >= 3
   const n = three ? 3 : 2
@@ -136,8 +226,11 @@ function figureMatrix(level: number): Item {
   const shapesC = shuffle(SHAPES).slice(0, n)
   const fillsR = shuffle(FILLS).slice(0, n)
 
+  // Non-rule attributes stay constant across the whole matrix (see above).
+  const base = glyph({ fill: 'solid', size: 1, rotation: 0 })
+
   const at = (r: number, c: number): Cell => {
-    const g = glyph({ fill: 'solid', size: 1, rotation: 0 })
+    const g = { ...base }
     if (rowAxis === 'color') g.color = colorsR[r]
     else if (rowAxis === 'fill') g.fill = fillsR[r]
     else g.size = 0.55 + 0.22 * r
@@ -153,33 +246,37 @@ function figureMatrix(level: number): Item {
   const correct = cells[blank]
   const stimulus = cells.map((c, i) => (i === blank ? gcell() : c))
   const distractor = () => varyCell(cloneCell(correct), pick([rowAxis, colAxis]) as Axis)
-  return assemble('figureMatrix', level, three ? 'matrix3' : 'matrix2', stimulus, blank, correct, distractor)
+  return assemble(
+    'figureMatrix',
+    level,
+    three ? 'matrix3' : 'matrix2',
+    stimulus,
+    blank,
+    correct,
+    distractor,
+    `Across each row the ${AXIS_WORD[rowAxis]} stays the same; down each column the ${AXIS_WORD[colAxis]} follows the pattern. The empty box needs both.`,
+  )
 }
 
-/**
- * Pattern Completion (NNAT signature item): a patterned field with a square
- * hole; pick the piece that continues the design.
- */
+/** Pattern Completion: the piece must continue the design at the hole. */
 function patternCompletion(level: number): Item {
   const size = 8
   const holeN = level <= 2 ? 3 : 2
-  const palette = shuffle(COLORS).slice(0, level <= 2 ? 2 : level <= 4 ? 3 : 4)
+  const palette = level <= 2 ? 2 : level <= 4 ? 3 : 4
   const rule = pick(
-    level <= 2
-      ? (['checker', 'vstripe'] as const)
-      : (['checker', 'vstripe', 'diag', 'block'] as const),
+    level <= 2 ? (['checker', 'vstripe'] as const) : (['checker', 'vstripe', 'diag', 'block'] as const),
   )
 
   const colorAt = (r: number, c: number): number => {
     switch (rule) {
       case 'checker':
-        return (r + c) % palette.length
+        return (r + c) % palette
       case 'vstripe':
-        return c % palette.length
+        return c % palette
       case 'diag':
-        return (r + 2 * c) % palette.length
+        return (r + 2 * c) % palette
       case 'block':
-        return (Math.floor(r / 2) + Math.floor(c / 2)) % palette.length
+        return (Math.floor(r / 2) + Math.floor(c / 2)) % palette
     }
   }
 
@@ -189,46 +286,54 @@ function patternCompletion(level: number): Item {
   const hr = 1 + Math.floor(Math.random() * (size - holeN - 1))
   const hc = 1 + Math.floor(Math.random() * (size - holeN - 1))
   const crop = (r0: number, c0: number): ColorGrid =>
-    Array.from({ length: holeN }, (_, r) =>
-      Array.from({ length: holeN }, (_, c) => grid[r0 + r][c0 + c]),
-    )
+    Array.from({ length: holeN }, (_, r) => Array.from({ length: holeN }, (_, c) => grid[r0 + r][c0 + c]))
 
   const field: Cell = { kind: 'field', grid, hole: { r: hr, c: hc, n: holeN } }
-  const correct: Cell = { kind: 'field', grid: crop(hr, hc) }
+  const correctGrid = crop(hr, hc)
+  const correct: Cell = { kind: 'field', grid: correctGrid }
   const distractor = (): Cell => {
-    // Pieces cropped from elsewhere in the field, or a nudged copy — both
-    // plausible, neither continuing the design at the hole.
     if (Math.random() < 0.7) {
       const r = Math.floor(Math.random() * (size - holeN))
       const c = Math.floor(Math.random() * (size - holeN))
       return { kind: 'field', grid: crop(r, c) }
     }
-    const g = crop(hr, hc).map((row) => [...row])
+    const g = correctGrid.map((row) => [...row])
     const rr = Math.floor(Math.random() * holeN)
     const cc = Math.floor(Math.random() * holeN)
-    g[rr][cc] = (g[rr][cc] + 1) % palette.length
+    g[rr][cc] = (g[rr][cc] + 1) % palette
     return { kind: 'field', grid: g }
   }
-  const withPalette = (c: Cell): Cell =>
-    c.kind === 'field'
-      ? { ...c, grid: c.grid.map((row) => row.map((v) => v)) }
-      : c
-  void withPalette
-  const item = assemble('patternCompletion', level, 'field', [field], -1, correct, distractor)
-  return { ...item, stimulus: [field], choices: item.choices.map((c) => ({ ...c })) }
+  const ruleWord =
+    rule === 'checker'
+      ? 'the colours alternate like a checkerboard'
+      : rule === 'vstripe'
+        ? 'the design runs in vertical stripes'
+        : rule === 'diag'
+          ? 'the stripes run diagonally'
+          : 'the design repeats in blocks'
+  // Any piece identical to the true crop would be equally correct.
+  const identical = (c: Cell) =>
+    c.kind === 'field' && JSON.stringify(c.grid) === JSON.stringify(correctGrid)
+  return assemble(
+    'patternCompletion',
+    level,
+    'field',
+    [field],
+    -1,
+    correct,
+    distractor,
+    `In this design ${ruleWord}. Only one piece continues it through the hole.`,
+    identical,
+  )
 }
 
-/**
- * Paper Folding (CogAT/NNAT): a sheet is folded, holes are punched through,
- * pick how it looks unfolded.
- */
+/** Paper Folding: punches mirror across the fold when the sheet opens. */
 function paperFolding(level: number): Item {
   const size = 4
   const axis: 'v' | 'h' = pick(['v', 'h'] as const)
   const punchCount = level <= 2 ? 1 : level <= 4 ? 2 : 3
   const half = size / 2
 
-  // Punches live in the visible (folded) half.
   const spots: Array<[number, number]> = []
   for (let r = 0; r < (axis === 'h' ? half : size); r++)
     for (let c = 0; c < (axis === 'v' ? half : size); c++) spots.push([r, c])
@@ -236,9 +341,7 @@ function paperFolding(level: number): Item {
 
   const mirror = ([r, c]: [number, number]): [number, number] =>
     axis === 'v' ? [r, size - 1 - c] : [size - 1 - r, c]
-
-  const key = (hs: Array<[number, number]>) =>
-    hs.map(([r, c]) => `${r},${c}`).sort().join('|')
+  const key = (hs: Array<[number, number]>) => hs.map(([r, c]) => `${r},${c}`).sort().join('|')
   const unfolded = [...punches, ...punches.map(mirror)]
 
   const folded: Cell = { kind: 'fold', axis, size, punches }
@@ -247,112 +350,149 @@ function paperFolding(level: number): Item {
   const distractor = (): Cell => {
     const mode = Math.random()
     let holes: Array<[number, number]>
-    if (mode < 0.3) holes = [...punches] // forgot to mirror
-    else if (mode < 0.55) holes = punches.map(mirror) // mirrored only
+    if (mode < 0.3) holes = [...punches]
+    else if (mode < 0.55) holes = punches.map(mirror)
     else if (mode < 0.8) {
-      // mirrored across the wrong axis
       const wrong = ([r, c]: [number, number]): [number, number] =>
         axis === 'v' ? [size - 1 - r, c] : [r, size - 1 - c]
       holes = [...punches, ...punches.map(wrong)]
     } else {
-      // right count, one hole displaced
-      const shifted = unfolded.map(([r, c], i) =>
+      holes = unfolded.map(([r, c], i) =>
         i === 0 ? ([(r + 1) % size, c] as [number, number]) : ([r, c] as [number, number]),
       )
-      holes = shifted
     }
     const dedup = new Map(holes.map((h) => [`${h[0]},${h[1]}`, h]))
     return { kind: 'sheet', size, holes: [...dedup.values()] }
   }
 
-  const item = assemble('paperFolding', level, 'fold', [folded], -1, correct, distractor)
-  // Guard: no distractor may coincide with the true unfolded pattern.
-  const fixed = item.choices.map((c, i) =>
-    i !== item.answer && c.kind === 'sheet' && key(c.holes) === key(unfolded)
-      ? ({ kind: 'sheet', size, holes: punches } as Cell)
-      : c,
+  // Any sheet with the true hole set is the answer, however it was produced.
+  const equalsAnswer = (c: Cell) => c.kind === 'sheet' && key(c.holes) === key(unfolded)
+
+  return assemble(
+    'paperFolding',
+    level,
+    'fold',
+    [folded],
+    -1,
+    correct,
+    distractor,
+    `The ${punches.length === 1 ? 'hole goes' : 'holes go'} through both layers, so opening the sheet mirrors ${
+      punches.length === 1 ? 'it' : 'them'
+    } across the fold — ${unfolded.length} holes in total.`,
+    equalsAnswer,
   )
-  return { ...item, choices: fixed }
 }
 
 /* ============ QUANTITATIVE ============ */
 
-interface NumRule {
-  apply: (n: number, i: number) => number
-  label: string
-}
-
-function numRule(level: number): NumRule {
-  const step = 1 + Math.floor(Math.random() * (level <= 2 ? 4 : 9))
-  const pool: NumRule[] = [
-    { apply: (n) => n + step, label: `+${step}` },
-    { apply: (n) => n - step, label: `-${step}` },
-  ]
-  if (level >= 2) pool.push({ apply: (n) => n * 2, label: '×2' })
-  if (level >= 3) pool.push({ apply: (n) => n * 3, label: '×3' })
-  if (level >= 4)
-    pool.push({
-      apply: (n, i) => n + (i % 2 === 0 ? step : -Math.max(1, step - 1)),
-      label: 'alternating',
-    })
-  if (level >= 5) pool.push({ apply: (n, i) => n + step * (i + 1), label: 'growing' })
-  return pick(pool)
-}
-
-/** Number Series (CogAT quantitative): find the rule, extend the sequence. */
+/**
+ * Number Series. The sequence is kept only if every rule that fits the visible
+ * terms predicts the same next value, and distractors never coincide with a
+ * value some other fitting rule would justify.
+ */
 function numberSeries(level: number): Item {
   const len = level <= 2 ? 4 : 5
-  for (let attempt = 0; attempt < 40; attempt++) {
-    const rule = numRule(level)
+  for (let attempt = 0; attempt < 200; attempt++) {
+    const step = 1 + Math.floor(Math.random() * (level <= 2 ? 4 : 9))
+    const kind = pick(
+      level <= 1
+        ? (['add'] as const)
+        : level <= 2
+          ? (['add', 'sub'] as const)
+          : level <= 4
+            ? (['add', 'sub', 'mul'] as const)
+            : (['add', 'sub', 'mul', 'grow', 'alt'] as const),
+    )
     const start = 1 + Math.floor(Math.random() * (level <= 2 ? 9 : 20))
     const seq: number[] = [start]
-    for (let i = 1; i < len; i++) seq.push(rule.apply(seq[i - 1], i - 1))
+    for (let i = 1; i < len; i++) {
+      const prev = seq[i - 1]
+      if (kind === 'add') seq.push(prev + step)
+      else if (kind === 'sub') seq.push(prev - step)
+      else if (kind === 'mul') seq.push(prev * 2)
+      else if (kind === 'grow') seq.push(prev + step * i)
+      else seq.push(prev + (i % 2 === 1 ? step : -Math.max(1, step - 1)))
+    }
     if (seq.some((v) => v < 0 || v > 999 || !Number.isInteger(v))) continue
     if (new Set(seq).size !== seq.length) continue
+
+    const shown = seq.slice(0, len - 1)
+    // The visible terms must admit exactly one continuation.
+    if (!isDetermined(shown)) continue
+    const fitted = fitRules(shown)
+    if (fitted.length === 0 || fitted[0].next !== seq[len - 1]) continue
+
     const answer = seq[len - 1]
     const stimulus = seq.map((v, i) => (i === len - 1 ? tcell('?') : ncell(v)))
-    const distractor = () => {
-      const delta = pick([-2, -1, 1, 2, 3])
-      return ncell(Math.max(0, answer + delta))
-    }
-    return assemble('numberSeries', level, 'row', stimulus, len - 1, ncell(answer), distractor)
+    // Values another rule could justify are barred from the options.
+    const barred = new Set(plausibleNext(shown))
+    const distractor = () => ncell(Math.max(0, answer + pick([-3, -2, -1, 1, 2, 3, 4])))
+    const reject = (c: Cell) => c.kind === 'number' && c.value !== answer && barred.has(c.value)
+
+    return assemble(
+      'numberSeries',
+      level,
+      'row',
+      stimulus,
+      len - 1,
+      ncell(answer),
+      distractor,
+      `${fitted[0].explain} ${shown.join(', ')} → ${answer}.`,
+      reject,
+    )
   }
   return numberSeries(1)
 }
 
-/** Number Analogies (CogAT): [a → b] [c → d] [e → ?] with one shared rule. */
+/** Number Analogies: the same rule must be the only one fitting both pairs. */
 function numberAnalogy(level: number): Item {
-  for (let attempt = 0; attempt < 40; attempt++) {
-    const rule = numRule(Math.min(level, 4))
-    const xs = shuffle(Array.from({ length: 20 }, (_, i) => i + 1)).slice(0, 3)
-    const ys = xs.map((x) => rule.apply(x, 0))
-    if (ys.some((y) => y < 0 || y > 999 || !Number.isInteger(y))) continue
-    const stimulus = [
-      ncell(xs[0]),
-      ncell(ys[0]),
-      ncell(xs[1]),
-      ncell(ys[1]),
-      ncell(xs[2]),
-      tcell('?'),
+  for (let attempt = 0; attempt < 200; attempt++) {
+    const mode = pick(
+      level <= 2 ? (['add', 'sub'] as const) : (['add', 'sub', 'mul', 'div'] as const),
+    )
+    const k = 1 + Math.floor(Math.random() * (level <= 2 ? 5 : 9))
+    const xs = shuffle(Array.from({ length: 24 }, (_, i) => i + 2)).slice(0, 3)
+    const f = (x: number) =>
+      mode === 'add' ? x + k : mode === 'sub' ? x - k : mode === 'mul' ? x * 2 : x / 2
+    const ys = xs.map(f)
+    if (ys.some((y) => y < 1 || y > 999 || !Number.isInteger(y))) continue
+
+    const shownPairs: Array<[number, number]> = [
+      [xs[0], ys[0]],
+      [xs[1], ys[1]],
     ]
-    const answer = ys[2]
+    const fitted = fitPairRules(shownPairs)
+    // Exactly one rule may fit the two demonstrated pairs.
+    if (fitted.length !== 1) continue
+    const answer = fitted[0].apply(xs[2])
+    if (answer !== ys[2]) continue
+
+    const stimulus = [ncell(xs[0]), ncell(ys[0]), ncell(xs[1]), ncell(ys[1]), ncell(xs[2]), tcell('?')]
     const distractor = () => ncell(Math.max(0, answer + pick([-3, -2, -1, 1, 2, 3])))
-    return assemble('numberAnalogy', level, 'pairs', stimulus, 5, ncell(answer), distractor)
+    return assemble(
+      'numberAnalogy',
+      level,
+      'pairs',
+      stimulus,
+      5,
+      ncell(answer),
+      distractor,
+      `${fitted[0].explain} ${xs[0]}→${ys[0]}, ${xs[1]}→${ys[1]}, so ${xs[2]}→${answer}.`,
+    )
   }
   return numberAnalogy(1)
 }
 
-/** Number Puzzles (CogAT): solve for the missing value in an equation. */
+/** Number Puzzles: solve for the missing term. */
 function numberPuzzle(level: number): Item {
   const big = level <= 2 ? 10 : level <= 4 ? 20 : 50
   const a = 1 + Math.floor(Math.random() * big)
   const b = 1 + Math.floor(Math.random() * big)
   const op = level <= 2 ? '+' : pick(['+', '−'] as const)
-  const total = op === '+' ? a + b : Math.max(a, b) - Math.min(a, b)
   const lhs = op === '+' ? a : Math.max(a, b)
   const rhs = op === '+' ? b : Math.min(a, b)
+  const total = op === '+' ? lhs + rhs : lhs - rhs
 
-  // Two shapes: "? = a + b"  or  "total = a + ?"
   const missingRight = Math.random() < 0.5
   const answer = missingRight ? rhs : total
   const stimulus: Cell[] = missingRight
@@ -360,10 +500,11 @@ function numberPuzzle(level: number): Item {
     : [tcell('?'), tcell('='), ncell(lhs), tcell(op), ncell(rhs)]
 
   const distractor = () => ncell(Math.max(0, answer + pick([-3, -2, -1, 1, 2, 3])))
-  return assemble('numberPuzzle', level, 'equation', stimulus, -1, ncell(answer), distractor)
+  const explain = missingRight
+    ? `${total} = ${lhs} ${op} ?, so the missing number is ${answer}.`
+    : `${lhs} ${op} ${rhs} = ${answer}.`
+  return assemble('numberPuzzle', level, 'equation', stimulus, -1, ncell(answer), distractor, explain)
 }
-
-/* ---------- dispatch ---------- */
 
 export function generate(sub: SubtestId, level: number): Item {
   const lvl = Math.max(1, Math.min(MAX_LEVEL, level))
