@@ -9,49 +9,95 @@ export type ShapeKind =
   | 'cross'
   | 'arrow'
 
-/** Shading axis: outline -> light -> solid also serves as a progression. */
 export type Fill = 'outline' | 'light' | 'solid'
 
 export interface Glyph {
   shape: ShapeKind
   color: string
-  /** Relative size, 1 = full cell. */
   size: number
-  /** Degrees. */
   rotation: number
   fill: Fill
 }
 
-/** A cell holds 1..6 glyphs; count is itself a variation axis. */
-export interface Cell {
-  glyphs: Glyph[]
+/** Grid of colour indices; -1 is empty. Used by pattern-completion fields. */
+export type ColorGrid = number[][]
+
+export type Cell =
+  | { kind: 'glyphs'; glyphs: Glyph[] }
+  | { kind: 'number'; value: number }
+  | { kind: 'text'; text: string }
+  /** A patterned field, optionally with a square hole punched out of it. */
+  | { kind: 'field'; grid: ColorGrid; hole?: { r: number; c: number; n: number } }
+  /** A folded sheet: half (or quarter) shown, with punch positions. */
+  | { kind: 'fold'; axis: 'v' | 'h'; size: number; punches: Array<[number, number]> }
+  /** An unfolded sheet showing every hole. */
+  | { kind: 'sheet'; size: number; holes: Array<[number, number]> }
+
+export type SubtestId =
+  | 'figureMatrix'
+  | 'figureClassify'
+  | 'figureSeries'
+  | 'patternCompletion'
+  | 'paperFolding'
+  | 'numberSeries'
+  | 'numberAnalogy'
+  | 'numberPuzzle'
+
+/** Ordered easiest -> hardest; also the unlock order. */
+export const SUBTESTS: SubtestId[] = [
+  'figureClassify',
+  'numberSeries',
+  'figureSeries',
+  'figureMatrix',
+  'numberAnalogy',
+  'patternCompletion',
+  'numberPuzzle',
+  'paperFolding',
+]
+
+/** Subtest names as they appear on the real batteries. */
+export const SUBTEST_NAME: Record<SubtestId, string> = {
+  figureClassify: 'Figure Classification',
+  numberSeries: 'Number Series',
+  figureSeries: 'Figure Series',
+  figureMatrix: 'Figure Matrices',
+  numberAnalogy: 'Number Analogies',
+  patternCompletion: 'Pattern Completion',
+  numberPuzzle: 'Number Puzzles',
+  paperFolding: 'Paper Folding',
 }
 
-export type Layout = 'sample' | 'none' | 'row' | 'matrix2' | 'matrix3' | 'analogy'
+/** Kid-facing instruction — short, sight-word level. */
+export const SUBTEST_HINT: Record<SubtestId, string> = {
+  figureClassify: 'Which one goes with these?',
+  numberSeries: 'What number comes next?',
+  figureSeries: 'What comes next?',
+  figureMatrix: 'Fill the empty box',
+  numberAnalogy: 'Finish the pair',
+  patternCompletion: 'Which piece fits the hole?',
+  numberPuzzle: 'What is missing?',
+  paperFolding: 'Which one when it opens up?',
+}
+
+export type Layout =
+  | 'classify'
+  | 'row'
+  | 'matrix2'
+  | 'matrix3'
+  | 'pairs'
+  | 'field'
+  | 'fold'
+  | 'equation'
 
 export interface Item {
-  gen: GenId
+  sub: SubtestId
   level: number
   layout: Layout
-  /** Cells forming the question; the blank is rendered as "?". */
   stimulus: Cell[]
-  /** Index within stimulus that is the missing cell (-1 when not applicable). */
+  /** Index of the missing cell in stimulus, or -1. */
   blankIndex: number
   choices: Cell[]
   answer: number
-  /** Very short label; the visual convention carries the task, not the text. */
-  label: string
-}
-
-export const GENERATORS = ['sample', 'odd', 'sequence', 'analogy', 'matrix'] as const
-export type GenId = (typeof GENERATORS)[number]
-
-export const GEN_LABEL: Record<GenId, string> = {
-  sample: 'Find the same one',
-  odd: 'Which is different?',
-  sequence: 'What comes next?',
-  analogy: 'Finish the pair',
-  matrix: 'Fill the empty box',
 }
 
 export const SHAPES: ShapeKind[] = [
@@ -66,18 +112,10 @@ export const SHAPES: ShapeKind[] = [
   'arrow',
 ]
 
-export const COLORS = [
-  '#ef4444',
-  '#3b82f6',
-  '#22c55e',
-  '#f59e0b',
-  '#a855f7',
-  '#14b8a6',
-]
-
+export const COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#a855f7', '#14b8a6']
 export const FILLS: Fill[] = ['outline', 'light', 'solid']
 
-/* ---------- small random helpers ---------- */
+/* ---------- helpers ---------- */
 
 export function pick<T>(xs: readonly T[]): T {
   return xs[Math.floor(Math.random() * xs.length)]
@@ -106,29 +144,53 @@ export const glyph = (g: Partial<Glyph> = {}): Glyph => ({
   fill: g.fill ?? 'solid',
 })
 
-export const cell = (...glyphs: Glyph[]): Cell => ({ glyphs })
+export const gcell = (...glyphs: Glyph[]): Cell => ({ kind: 'glyphs', glyphs })
+export const ncell = (value: number): Cell => ({ kind: 'number', value })
+export const tcell = (text: string): Cell => ({ kind: 'text', text })
 
-export const cloneCell = (c: Cell): Cell => ({ glyphs: c.glyphs.map((g) => ({ ...g })) })
-
-export function sameCell(a: Cell, b: Cell): boolean {
-  if (a.glyphs.length !== b.glyphs.length) return false
-  return a.glyphs.every((g, i) => {
-    const h = b.glyphs[i]
-    return (
-      g.shape === h.shape &&
-      g.color === h.color &&
-      g.fill === h.fill &&
-      Math.abs(g.size - h.size) < 0.01 &&
-      ((g.rotation % 360) + 360) % 360 === ((h.rotation % 360) + 360) % 360
-    )
-  })
+export function cloneCell(c: Cell): Cell {
+  if (c.kind === 'glyphs') return { kind: 'glyphs', glyphs: c.glyphs.map((g) => ({ ...g })) }
+  return JSON.parse(JSON.stringify(c)) as Cell
 }
 
-/** Variation axes used to build both correct answers and near-miss distractors. */
+const norm = (r: number) => ((r % 360) + 360) % 360
+
+export function sameCell(a: Cell, b: Cell): boolean {
+  if (a.kind !== b.kind) return false
+  if (a.kind === 'number' && b.kind === 'number') return a.value === b.value
+  if (a.kind === 'text' && b.kind === 'text') return a.text === b.text
+  if (a.kind === 'glyphs' && b.kind === 'glyphs') {
+    if (a.glyphs.length !== b.glyphs.length) return false
+    return a.glyphs.every((g, i) => {
+      const h = b.glyphs[i]
+      return (
+        g.shape === h.shape &&
+        g.color === h.color &&
+        g.fill === h.fill &&
+        Math.abs(g.size - h.size) < 0.01 &&
+        norm(g.rotation) === norm(h.rotation)
+      )
+    })
+  }
+  if (a.kind === 'field' && b.kind === 'field')
+    return JSON.stringify(a.grid) === JSON.stringify(b.grid)
+  if (a.kind === 'sheet' && b.kind === 'sheet') {
+    const key = (h: Array<[number, number]>) =>
+      h
+        .map(([r, c]) => `${r},${c}`)
+        .sort()
+        .join('|')
+    return a.size === b.size && key(a.holes) === key(b.holes)
+  }
+  if (a.kind === 'fold' && b.kind === 'fold') return JSON.stringify(a) === JSON.stringify(b)
+  return false
+}
+
 export type Axis = 'shape' | 'color' | 'size' | 'rotation' | 'fill' | 'count'
 
 export function varyCell(c: Cell, axis: Axis): Cell {
-  const out = cloneCell(c)
+  if (c.kind !== 'glyphs') return cloneCell(c)
+  const out = cloneCell(c) as Extract<Cell, { kind: 'glyphs' }>
   const g = out.glyphs[0]
   switch (axis) {
     case 'shape':
@@ -154,6 +216,5 @@ export function varyCell(c: Cell, axis: Axis): Cell {
   return out
 }
 
-/** Axes whose visual change is obvious vs subtle — used to scale difficulty. */
 export const COARSE_AXES: Axis[] = ['shape', 'color', 'count']
 export const FINE_AXES: Axis[] = ['size', 'fill', 'rotation']

@@ -1,4 +1,4 @@
-import { GENERATORS, type GenId } from './types'
+import { SUBTESTS, type SubtestId } from './types'
 import { MAX_LEVEL } from './generators'
 
 /** Consecutive correct answers needed to move up a level. */
@@ -10,25 +10,25 @@ const UNLOCK_AT = 3
 
 export interface Progress {
   version: 1
-  levels: Record<GenId, number>
-  streak: Record<GenId, number>
-  misses: Record<GenId, number>
-  unlocked: GenId[]
+  levels: Record<SubtestId, number>
+  streak: Record<SubtestId, number>
+  misses: Record<SubtestId, number>
+  unlocked: SubtestId[]
   seen: number
   correct: number
 }
 
 function fresh(): Progress {
-  const levels = {} as Record<GenId, number>
-  const streak = {} as Record<GenId, number>
-  const misses = {} as Record<GenId, number>
-  for (const g of GENERATORS) {
+  const levels = {} as Record<SubtestId, number>
+  const streak = {} as Record<SubtestId, number>
+  const misses = {} as Record<SubtestId, number>
+  for (const g of SUBTESTS) {
     levels[g] = 1
     streak[g] = 0
     misses[g] = 0
   }
   // Start with only the most accessible task available.
-  return { version: 1, levels, streak, misses, unlocked: ['sample'], seen: 0, correct: 0 }
+  return { version: 1, levels, streak, misses, unlocked: ['figureClassify'], seen: 0, correct: 0 }
 }
 
 export function loadProgress(raw: string | null): Progress {
@@ -37,7 +37,7 @@ export function loadProgress(raw: string | null): Progress {
     const p = JSON.parse(raw) as Partial<Progress>
     if (p.version !== 1) return fresh()
     const base = fresh()
-    for (const g of GENERATORS) {
+    for (const g of SUBTESTS) {
       const lv = p.levels?.[g]
       if (typeof lv === 'number' && lv >= 1 && lv <= MAX_LEVEL) base.levels[g] = Math.floor(lv)
       const st = p.streak?.[g]
@@ -46,9 +46,9 @@ export function loadProgress(raw: string | null): Progress {
       if (typeof ms === 'number' && ms >= 0) base.misses[g] = Math.floor(ms)
     }
     const unlocked = Array.isArray(p.unlocked)
-      ? (p.unlocked.filter((g) => (GENERATORS as readonly string[]).includes(g)) as GenId[])
+      ? (p.unlocked.filter((g) => (SUBTESTS as readonly string[]).includes(g)) as SubtestId[])
       : []
-    base.unlocked = unlocked.length ? [...new Set<GenId>(['sample', ...unlocked])] : base.unlocked
+    base.unlocked = unlocked.length ? [...new Set<SubtestId>(['figureClassify', ...unlocked])] : base.unlocked
     if (typeof p.seen === 'number' && p.seen >= 0) base.seen = Math.floor(p.seen)
     if (typeof p.correct === 'number' && p.correct >= 0) base.correct = Math.floor(p.correct)
     return base
@@ -58,8 +58,8 @@ export function loadProgress(raw: string | null): Progress {
 }
 
 /** Choose the next task type: unlocked, never the same one three times running. */
-export function chooseGen(p: Progress, recent: GenId[]): GenId {
-  const pool = p.unlocked.length ? p.unlocked : (['sample'] as GenId[])
+export function chooseGen(p: Progress, recent: SubtestId[]): SubtestId {
+  const pool = p.unlocked.length ? p.unlocked : (['figureClassify'] as SubtestId[])
   const lastTwo = recent.slice(-2)
   const varied =
     lastTwo.length === 2 && lastTwo[0] === lastTwo[1]
@@ -72,11 +72,11 @@ export function chooseGen(p: Progress, recent: GenId[]): GenId {
 export interface Outcome {
   next: Progress
   levelledUp: boolean
-  unlockedGen: GenId | null
+  unlockedGen: SubtestId | null
 }
 
 /** Apply an answer: ladder the level, and unlock the next task type in turn. */
-export function record(p: Progress, gen: GenId, correct: boolean): Outcome {
+export function record(p: Progress, gen: SubtestId, correct: boolean): Outcome {
   const next: Progress = {
     ...p,
     levels: { ...p.levels },
@@ -106,9 +106,9 @@ export function record(p: Progress, gen: GenId, correct: boolean): Outcome {
   }
 
   // Unlock the next generator in sequence once this one is established.
-  let unlockedGen: GenId | null = null
-  const idx = GENERATORS.indexOf(gen)
-  const following = GENERATORS[idx + 1]
+  let unlockedGen: SubtestId | null = null
+  const idx = SUBTESTS.indexOf(gen)
+  const following = SUBTESTS[idx + 1]
   if (
     following &&
     next.levels[gen] >= UNLOCK_AT &&
