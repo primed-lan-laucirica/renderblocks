@@ -3,11 +3,14 @@ import {
   COLORS,
   FILLS,
   FINE_AXES,
+  ROTATABLE,
   SHAPES,
+  SIZE_STEPS,
   cloneCell,
   gcell,
   glyph,
   ncell,
+  perceptibleAxes,
   pick,
   sameCell,
   shuffle,
@@ -86,8 +89,13 @@ const AXIS_WORD: Record<Axis, string> = {
  * distractor matching the accidental second property is equally defensible.
  */
 function figureClassify(level: number): Item {
-  const k = knobs(level)
-  const property = pick(k.axisPool) as Axis
+  // Size and rotation are excluded as the DEFINING property here: judging
+  // "same size" across different shapes is genuinely hard, and "same
+  // rotation" is meaningless on symmetric shapes. Both remain available in
+  // series/matrices, where they appear as a progression instead.
+  const pool: Axis[] =
+    level <= 2 ? ['shape', 'color'] : level <= 4 ? ['shape', 'color', 'count'] : ['color', 'fill', 'count']
+  const property = pick(pool)
 
   // Every axis except the defining one is cycled through at least two values,
   // so the family provably shares ONE property. (Randomising instead lets
@@ -95,8 +103,8 @@ function figureClassify(level: number): Item {
   // distractor a second, equally defensible reason to belong.)
   const shapePool = shuffle(SHAPES).slice(0, 4)
   const colorPool = shuffle(COLORS).slice(0, 4)
-  const sizePool = [0.6, 0.8, 1]
-  const rotPool = [0, 45, 90, 180]
+  const sizePool = [...SIZE_STEPS]
+  const rotPool = [0, 90, 180, 270]
   const fillPool = shuffle([...FILLS])
   const countPool = [1, 2, 3]
   const anchor = {
@@ -170,12 +178,14 @@ function figureSeries(level: number): Item {
   const axes = shuffle(k.axisPool as Axis[]).slice(0, Math.min(k.rules, 2))
   const period = Math.min(maxPeriod, pick([2, 3]))
   const colorCycle = shuffle(COLORS).slice(0, period)
-  const shapeCycle = shuffle(SHAPES).slice(0, period)
+  // A quarter turn must be visible, so a rotation rule restricts the shapes.
+  const shapePool = axes.includes('rotation') ? ROTATABLE : SHAPES
+  const shapeCycle = shuffle(shapePool).slice(0, period)
 
   // Anything the rule doesn't govern is held CONSTANT across the series.
   // Otherwise that attribute is unconstrained, and a choice differing only on
   // it would be just as defensible as the intended answer.
-  const base = glyph({ fill: 'solid', size: 1, rotation: 0 })
+  const base = glyph({ fill: 'solid', size: 1, rotation: 0, shape: pick(shapePool) })
 
   const at = (i: number): Cell => {
     const g = { ...base }
@@ -183,7 +193,7 @@ function figureSeries(level: number): Item {
       if (a === 'color') g.color = colorCycle[i % colorCycle.length]
       else if (a === 'shape') g.shape = shapeCycle[i % shapeCycle.length]
       else if (a === 'rotation') g.rotation = (i * 90) % 360
-      else if (a === 'size') g.size = 0.55 + 0.2 * Math.min(i, 2)
+      else if (a === 'size') g.size = 0.4 + 0.2 * i
       else if (a === 'fill') g.fill = FILLS[Math.min(i, FILLS.length - 1)]
     }
     const n = axes.includes('count') ? 1 + i : 1
@@ -194,13 +204,14 @@ function figureSeries(level: number): Item {
   const blank = len - 1
   const correct = cells[blank]
   const stimulus = cells.map((c, i) => (i === blank ? gcell() : c))
-  const distractor = () => varyCell(cloneCell(correct), pick(k.axisPool) as Axis)
+  const distractor = () =>
+    varyCell(cloneCell(correct), pick(perceptibleAxes(correct, k.axisPool as Axis[])))
 
   const parts = axes.map((a) => {
     if (a === 'color') return `the colours repeat every ${colorCycle.length}`
     if (a === 'shape') return `the shapes repeat every ${shapeCycle.length}`
     if (a === 'rotation') return 'each step turns a quarter turn'
-    if (a === 'size') return 'the size grows then holds'
+    if (a === 'size') return 'each one grows bigger'
     if (a === 'fill') return 'the shading fills in step by step'
     return 'one more shape is added each step'
   })
@@ -223,17 +234,18 @@ function figureMatrix(level: number): Item {
   const rowAxis = pick(['color', 'fill', 'size'] as Axis[])
   const colAxis = pick(['shape', 'count', 'rotation'] as Axis[])
   const colorsR = shuffle(COLORS).slice(0, n)
-  const shapesC = shuffle(SHAPES).slice(0, n)
+  const shapePool = colAxis === 'rotation' ? ROTATABLE : SHAPES
+  const shapesC = shuffle(shapePool).slice(0, n)
   const fillsR = shuffle(FILLS).slice(0, n)
 
   // Non-rule attributes stay constant across the whole matrix (see above).
-  const base = glyph({ fill: 'solid', size: 1, rotation: 0 })
+  const base = glyph({ fill: 'solid', size: 1, rotation: 0, shape: pick(shapePool) })
 
   const at = (r: number, c: number): Cell => {
     const g = { ...base }
     if (rowAxis === 'color') g.color = colorsR[r]
     else if (rowAxis === 'fill') g.fill = fillsR[r]
-    else g.size = 0.55 + 0.22 * r
+    else g.size = SIZE_STEPS[Math.min(r, SIZE_STEPS.length - 1)]
     if (colAxis === 'shape') g.shape = shapesC[c]
     else if (colAxis === 'rotation') g.rotation = (c * 90) % 360
     const count = colAxis === 'count' ? c + 1 : 1
@@ -245,7 +257,8 @@ function figureMatrix(level: number): Item {
   const blank = n * n - 1
   const correct = cells[blank]
   const stimulus = cells.map((c, i) => (i === blank ? gcell() : c))
-  const distractor = () => varyCell(cloneCell(correct), pick([rowAxis, colAxis]) as Axis)
+  const distractor = () =>
+    varyCell(cloneCell(correct), pick(perceptibleAxes(correct, [rowAxis, colAxis])))
   return assemble(
     'figureMatrix',
     level,

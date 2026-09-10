@@ -117,6 +117,16 @@ export const SHAPES: ShapeKind[] = [
 export const COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#a855f7', '#14b8a6']
 export const FILLS: Fill[] = ['outline', 'light', 'solid']
 
+/**
+ * Shapes where a quarter turn is actually visible. A rotated circle or square
+ * is pixel-identical to the original, so using rotation on them produces an
+ * item with two indistinguishable choices.
+ */
+export const ROTATABLE: ShapeKind[] = ['triangle', 'arrow', 'pentagon', 'star', 'diamond', 'hexagon']
+
+/** Size steps far enough apart to judge by eye (not 0.6 vs 0.8). */
+export const SIZE_STEPS = [0.45, 0.72, 1] as const
+
 /* ---------- helpers ---------- */
 
 export function pick<T>(xs: readonly T[]): T {
@@ -202,10 +212,11 @@ export function varyCell(c: Cell, axis: Axis): Cell {
       out.glyphs.forEach((x) => (x.color = pickNot(COLORS, g.color)))
       break
     case 'size':
-      out.glyphs.forEach((x) => (x.size = x.size >= 0.85 ? 0.55 : 1))
+      // Jump to the far end of the scale so the difference is unmistakable.
+      out.glyphs.forEach((x) => (x.size = x.size >= 0.7 ? SIZE_STEPS[0] : SIZE_STEPS[2]))
       break
     case 'rotation':
-      out.glyphs.forEach((x) => (x.rotation = (x.rotation + pick([45, 90, 180])) % 360))
+      out.glyphs.forEach((x) => (x.rotation = (x.rotation + pick([90, 270])) % 360))
       break
     case 'fill':
       out.glyphs.forEach((x) => (x.fill = pickNot(FILLS, g.fill)))
@@ -220,3 +231,14 @@ export function varyCell(c: Cell, axis: Axis): Cell {
 
 export const COARSE_AXES: Axis[] = ['shape', 'color', 'count']
 export const FINE_AXES: Axis[] = ['size', 'fill', 'rotation']
+
+/**
+ * Axes whose change would actually be *visible* on this cell. Varying an
+ * imperceptible axis yields two choices that look identical — indefensible
+ * whichever the child picks.
+ */
+export function perceptibleAxes(c: Cell, pool: Axis[]): Axis[] {
+  if (c.kind !== 'glyphs' || c.glyphs.length === 0) return pool
+  const shape = c.glyphs[0].shape
+  return pool.filter((a) => (a === 'rotation' ? ROTATABLE.includes(shape) : true))
+}

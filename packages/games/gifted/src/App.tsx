@@ -86,6 +86,32 @@ function App({ services }: GameProps) {
     return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad
   }
 
+  /**
+   * Stimulus cells and choice cells MUST render at the same physical size —
+   * otherwise a figure at the same logical size looks bigger in the answer
+   * row and "which is the same size" becomes unanswerable.
+   */
+  const cellPx = (() => {
+    switch (item.layout) {
+      case 'matrix3':
+        return 76
+      case 'pairs':
+      case 'equation':
+        return 68
+      case 'fold':
+        return 136
+      case 'field': {
+        const f = item.stimulus[0]
+        // A piece is shown at exactly the size of the hole it must fill.
+        if (f.kind === 'field' && f.hole) return Math.round((f.hole.n / f.grid.length) * 240)
+        return 88
+      }
+      default:
+        return 88
+    }
+  })()
+  const px = { width: cellPx, height: cellPx }
+
   const frame = (extra = '') =>
     `rounded-2xl border-4 flex items-center justify-center p-1 ${
       isDark ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
@@ -106,8 +132,8 @@ function App({ services }: GameProps) {
 
   const answerCell = solved ? item.choices[item.answer] : undefined
 
-  const Slot = ({ size }: { size: string }) => (
-    <div ref={slotRef} className={`${slotClass} ${size}`}>
+  const Slot = () => (
+    <div ref={slotRef} className={slotClass} style={px}>
       {answerCell ? (
         <motion.div
           initial={{ scale: 0.6, opacity: 0 }}
@@ -125,11 +151,11 @@ function App({ services }: GameProps) {
   )
 
   const stimulus = useMemo(() => {
-    const box = (i: number, key: string, sz: string) =>
+    const box = (i: number, key: string) =>
       i === item.blankIndex ? (
-        <Slot key={key} size={sz} />
+        <Slot key={key} />
       ) : (
-        <div key={key} className={`${frame()} ${sz}`}>
+        <div key={key} className={frame()} style={px}>
           <CellView cell={item.stimulus[i]} dark={isDark} className="w-full h-full" />
         </div>
       )
@@ -138,18 +164,18 @@ function App({ services }: GameProps) {
       case 'classify':
         return (
           <div className="flex items-center justify-center gap-2">
-            {item.stimulus.map((_, i) => box(i, `c${i}`, 'w-20 h-20'))}
+            {item.stimulus.map((_, i) => box(i, `c${i}`))}
             <span className={`text-2xl font-extrabold px-1 ${isDark ? 'text-slate-600' : 'text-slate-300'}`}>
               +
             </span>
-            <Slot size="w-20 h-20" />
+            <Slot />
           </div>
         )
 
       case 'row':
         return (
           <div className="flex items-center justify-center gap-2 flex-wrap">
-            {item.stimulus.map((_, i) => box(i, `r${i}`, 'w-20 h-20'))}
+            {item.stimulus.map((_, i) => box(i, `r${i}`))}
           </div>
         )
 
@@ -158,11 +184,11 @@ function App({ services }: GameProps) {
           <div className="flex flex-col gap-2 items-center">
             {[0, 2, 4].map((base, row) => (
               <div key={row} className="flex items-center gap-2">
-                {box(base, `p${base}`, 'w-16 h-16')}
+                {box(base, `p${base}`)}
                 <span className={`text-2xl font-extrabold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                   →
                 </span>
-                {box(base + 1, `p${base + 1}`, 'w-16 h-16')}
+                {box(base + 1, `p${base + 1}`)}
               </div>
             ))}
           </div>
@@ -173,7 +199,7 @@ function App({ services }: GameProps) {
           <div className="flex items-center justify-center gap-1">
             {item.stimulus.map((c, i) =>
               c.kind === 'text' && c.text === '?' ? (
-                <Slot key={`e${i}`} size="w-16 h-16" />
+                <Slot key={`e${i}`} />
               ) : c.kind === 'text' ? (
                 <span
                   key={`e${i}`}
@@ -182,7 +208,7 @@ function App({ services }: GameProps) {
                   {c.text}
                 </span>
               ) : (
-                box(i, `e${i}`, 'w-16 h-16')
+                box(i, `e${i}`)
               ),
             )}
           </div>
@@ -194,7 +220,7 @@ function App({ services }: GameProps) {
         const hole = f.kind === 'field' ? f.hole : undefined
         const n = f.kind === 'field' ? f.grid.length : 8
         return (
-          <div className={`${frame()} w-60 h-60 relative`}>
+          <div className={`${frame()} relative`} style={{ width: 240, height: 240 }}>
             <CellView cell={f} dark={isDark} className="w-full h-full" />
             {hole && (
               <div
@@ -225,13 +251,13 @@ function App({ services }: GameProps) {
       case 'fold':
         return (
           <div className="flex items-center gap-3">
-            <div className={`${frame()} w-36 h-36`}>
+            <div className={frame()} style={px}>
               <CellView cell={item.stimulus[0]} dark={isDark} className="w-full h-full" />
             </div>
             <span className={`text-3xl font-extrabold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
               →
             </span>
-            <Slot size="w-36 h-36" />
+            <Slot />
           </div>
         )
 
@@ -242,12 +268,12 @@ function App({ services }: GameProps) {
             className="grid gap-2 justify-center"
             style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, width: n === 3 ? 250 : 176 }}
           >
-            {item.stimulus.map((_, i) => box(i, `m${i}`, 'w-[76px] h-[76px]'))}
+            {item.stimulus.map((_, i) => box(i, `m${i}`))}
           </div>
         )
       }
     }
-  }, [item, isDark, solved, dragging, rejecting, answerCell])
+  }, [item, isDark, solved, dragging, rejecting, answerCell, cellPx])
 
   const level = progress.levels[item.sub]
   const accuracy = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : 0
@@ -357,10 +383,10 @@ function App({ services }: GameProps) {
                   opacity: hidden ? 0.25 : rejected ? 0.3 : 1,
                   scale: rejected ? 0.9 : 1,
                 }}
-                style={{ touchAction: 'none' }}
-                className={`${frame(
+                style={{ ...px, touchAction: 'none' }}
+                className={frame(
                   rejected ? 'border-rose-300' : solved && isAnswer ? 'border-emerald-400' : 'cursor-grab',
-                )} w-24 h-24 sm:w-28 sm:h-28`}
+                )}
               >
                 <CellView cell={c} dark={isDark} className="w-full h-full pointer-events-none" />
               </motion.div>
