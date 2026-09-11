@@ -10,6 +10,8 @@ import { SUBTESTS, SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from 
 
 const STORAGE_KEY = 'progress'
 const HEARD_KEY = 'heardInstructions'
+/** Long enough to see the answer land and hear the "yes", short enough not to drag. */
+const ADVANCE_MS = 1700
 
 function App({ services }: GameProps) {
   const { isDark, toggle: toggleDarkMode } = useDarkMode()
@@ -122,12 +124,15 @@ function App({ services }: GameProps) {
       playEffect('correct')
       window.setTimeout(() => playFeedback('yes'), 220)
       setSolved(true)
-      if (updated.correct % 10 === 0) {
+      const milestone = updated.correct % 10 === 0
+      if (milestone) {
         playEffect('celebrate', 0.7)
         window.setTimeout(() => playFeedback('cheer', 0.8), 500)
       }
-      // No timer — the item stays up so he can look at it, replay it, and
-      // move on when he chooses. This is prep, not a timed assessment.
+      // Move on by itself once it is right — clicking Next after every
+      // correct answer was friction. A revealed answer ("Show me") still
+      // waits for him, since that one is there to be studied.
+      window.setTimeout(() => nextItem(updated), milestone ? ADVANCE_MS + 900 : ADVANCE_MS)
     } else {
       playEffect('wrong', 0.6)
       window.setTimeout(() => playFeedback('no', 0.5), 200)
@@ -188,10 +193,12 @@ function App({ services }: GameProps) {
       playEffect('correct')
       window.setTimeout(() => playFeedback('yes'), 220)
       setSolved(true)
-      if (updated.correct % 10 === 0) {
+      const milestone = updated.correct % 10 === 0
+      if (milestone) {
         playEffect('celebrate', 0.7)
         window.setTimeout(() => playFeedback('cheer', 0.8), 500)
       }
+      window.setTimeout(() => nextItem(updated), milestone ? ADVANCE_MS + 900 : ADVANCE_MS)
     }
   }
 
@@ -641,7 +648,7 @@ function App({ services }: GameProps) {
 
         {/* Probing controls: take as long as you like, then move on. */}
         <div className="flex items-center justify-center gap-3">
-          {!solved && (tried.length > 0 || hit.length > 0 || item.touch) && (
+          {!solved && (
             <button
               type="button"
               onPointerDown={showMe}
@@ -652,7 +659,7 @@ function App({ services }: GameProps) {
               Show me
             </button>
           )}
-          {solved && (
+          {solved && revealed && (
             <motion.button
               type="button"
               onPointerDown={() => nextItem(progress)}
@@ -661,21 +668,6 @@ function App({ services }: GameProps) {
             >
               Next →
             </motion.button>
-          )}
-          {solved && (
-            <button
-              type="button"
-              onPointerDown={() => {
-                const sub = item.sub
-                setItem(generate(sub, progress.levels[sub]))
-                setTried([]); setHit([]); setSolved(false); setScored(false); setRevealed(false)
-              }}
-              className={`px-4 py-2 rounded-2xl text-sm font-extrabold ${
-                isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
-              }`}
-            >
-              Another like this
-            </button>
           )}
         </div>
 
