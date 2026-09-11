@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { OPERATOR_CLIP, playClips, type GameProps } from '@renderblocks/kernel'
 import { NumberLine, type Op } from './NumberLine'
+import { Flashcards } from './Flashcards'
+import { buildDeck, shuffled, type Card, type DeckId } from './decks'
 import { playEffect } from './sounds'
 import { useDarkMode } from './useDarkMode'
 
@@ -23,13 +25,50 @@ function compute(a: number, op: Op, b: number): number | null {
   }
 }
 
+const PANEL_KEY = 'panel'
+const DECK_KEY = 'deck'
+
 function App({ services }: GameProps) {
-  void services
   const { isDark, toggle: toggleDarkMode } = useDarkMode()
   const [a, setA] = useState('')
   const [op, setOp] = useState<Op | null>(null)
   const [b, setB] = useState('')
   const [committed, setCommitted] = useState(false)
+  /** The number-line area shows either the line or a flashcard. */
+  const [panel, setPanel] = useState<'line' | 'cards'>(
+    () => (services.storage.get(PANEL_KEY) === 'cards' ? 'cards' : 'line'),
+  )
+  const [deck, setDeck] = useState<DeckId>(
+    () => (services.storage.get(DECK_KEY) as DeckId) || 'addsub10',
+  )
+  const [cards, setCards] = useState<Card[]>(() => shuffled(buildDeck(deck)))
+  const [cardIndex, setCardIndex] = useState(0)
+  const card = cards[cardIndex] ?? null
+
+  useEffect(() => {
+    services.storage.set(PANEL_KEY, panel)
+  }, [services, panel])
+  useEffect(() => {
+    services.storage.set(DECK_KEY, deck)
+  }, [services, deck])
+
+  const chooseDeck = (id: DeckId) => {
+    setDeck(id)
+    setCards(shuffled(buildDeck(id)))
+    setCardIndex(0)
+    clearCalc()
+  }
+
+  /** Draw the next card and clear the keypad ready for it. */
+  const nextCard = () => {
+    setCardIndex((i) => {
+      const next = i + 1
+      if (next < cards.length) return next
+      setCards(shuffled(buildDeck(deck))) // deck exhausted — reshuffle
+      return 0
+    })
+    clearCalc()
+  }
 
   const aNum = Number(a || '0')
   const bTyped = op !== null && b !== ''
@@ -117,12 +156,16 @@ function App({ services }: GameProps) {
     setA((s) => s.slice(0, -1))
   }
 
-  const pressClear = () => {
-    playEffect('click', 0.5)
+  const clearCalc = () => {
     setA('')
     setOp(null)
     setB('')
     setCommitted(false)
+  }
+
+  const pressClear = () => {
+    playEffect('click', 0.5)
+    clearCalc()
   }
 
   const expression = `${a || '0'}${op ? ` ${op} ${b}` : ''}${
@@ -195,8 +238,46 @@ function App({ services }: GameProps) {
 
       {/* number line + pad: stacked in portrait, side by side in landscape */}
       <div className="flex-1 min-h-0 w-full max-w-5xl flex flex-col landscape:flex-row items-center justify-center gap-2 landscape:gap-6">
-        <div className="w-full landscape:flex-1 landscape:min-w-0 flex items-center justify-center">
-          <NumberLine a={aNum} op={op} b={bNum} result={result} dark={isDark} />
+        <div className="w-full landscape:flex-1 landscape:min-w-0 flex flex-col items-center justify-center gap-2">
+          <div className={`flex rounded-2xl p-1 ${isDark ? 'bg-slate-800' : 'bg-white shadow-playful'}`}>
+            {(
+              [
+                ['line', '📈 Number line'],
+                ['cards', '🃏 Flashcards'],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onPointerDown={() => setPanel(id)}
+                style={{ touchAction: 'manipulation' }}
+                className={`px-4 py-1.5 rounded-xl text-sm font-extrabold ${
+                  panel === id
+                    ? 'bg-orange-500 text-white'
+                    : isDark
+                      ? 'text-slate-400'
+                      : 'text-slate-500'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {panel === 'line' ? (
+            <NumberLine a={aNum} op={op} b={bNum} result={result} dark={isDark} />
+          ) : (
+            <Flashcards
+              deck={deck}
+              onDeck={chooseDeck}
+              card={card}
+              revealed={committed}
+              index={cardIndex}
+              total={cards.length}
+              onNext={nextCard}
+              dark={isDark}
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-4 gap-2 w-full max-w-sm shrink-0">
