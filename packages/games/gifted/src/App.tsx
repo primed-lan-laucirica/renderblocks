@@ -4,7 +4,7 @@ import type { GameProps } from '@renderblocks/kernel'
 import { CellView } from './Figure'
 import { MAX_LEVEL, generate } from './generators'
 import { chooseGen, loadProgress, record, type Progress } from './adaptive'
-import { playEffect, playVoice, playDirection, stopVoice } from './sounds'
+import { playEffect, playFeedback, playVoice, playDirection, stopVoice } from './sounds'
 import { useDarkMode } from './useDarkMode'
 import { SUBTESTS, SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from './types'
 
@@ -120,12 +120,17 @@ function App({ services }: GameProps) {
     if (right) {
       stopVoice()
       playEffect('correct')
+      window.setTimeout(() => playFeedback('yes'), 220)
       setSolved(true)
-      if (updated.correct % 10 === 0) playEffect('celebrate', 0.7)
+      if (updated.correct % 10 === 0) {
+        playEffect('celebrate', 0.7)
+        window.setTimeout(() => playFeedback('cheer', 0.8), 500)
+      }
       // No timer — the item stays up so he can look at it, replay it, and
       // move on when he chooses. This is prep, not a timed assessment.
     } else {
       playEffect('wrong', 0.6)
+      window.setTimeout(() => playFeedback('no', 0.5), 200)
       setTried((t) => [...t, i])
       setRejecting(true)
       window.setTimeout(() => setRejecting(false), 400)
@@ -157,6 +162,7 @@ function App({ services }: GameProps) {
     let updated = progress
     if (!isTarget) {
       playEffect('wrong', 0.6)
+      window.setTimeout(() => playFeedback('no', 0.5), 200)
       setRejecting(true)
       window.setTimeout(() => setRejecting(false), 400)
       if (!scored) {
@@ -180,8 +186,12 @@ function App({ services }: GameProps) {
         else if (levelledUp) setBanner('Level up!')
       }
       playEffect('correct')
+      window.setTimeout(() => playFeedback('yes'), 220)
       setSolved(true)
-      if (updated.correct % 10 === 0) playEffect('celebrate', 0.7)
+      if (updated.correct % 10 === 0) {
+        playEffect('celebrate', 0.7)
+        window.setTimeout(() => playFeedback('cheer', 0.8), 500)
+      }
     }
   }
 
