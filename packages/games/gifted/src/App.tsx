@@ -683,17 +683,16 @@ function App({ services }: GameProps) {
                 drag={!solved && !rejected}
                 dragSnapToOrigin
                 dragMomentum={false}
-                whileDrag={{ scale: 1.15, zIndex: 50 }}
+                whileDrag={{ scale: 1.15, zIndex: 50, rotate: 2 }}
                 onDragStart={() => setDragging(true)}
                 onDragEnd={(e, info) => {
                   setDragging(false)
                   if (droppedOnSlot(e, info)) attempt(i)
                 }}
-                // onTap (not onPointerDown) so it doesn't fire when a drag
-                // begins — framer cancels the tap once dragging starts.
-                onTap={() => {
-                  if (!solved && !rejected) attempt(i)
-                }}
+                // No tap-to-select: answering is a drop on the slot and
+                // nothing else, so he can pick a piece up, hold it against
+                // the puzzle to see it in context, and put it back without
+                // committing to it.
                 animate={{
                   opacity: hidden ? 0.25 : rejected ? 0.3 : 1,
                   scale: rejected ? 0.9 : 1,
