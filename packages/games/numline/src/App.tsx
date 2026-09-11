@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { OPERATOR_CLIP, playClips, speakNumber, type GameProps } from '@renderblocks/kernel'
+import { OPERATOR_CLIP, playClips, type GameProps } from '@renderblocks/kernel'
 import { NumberLine, type Op } from './NumberLine'
 import { playEffect } from './sounds'
 import { useDarkMode } from './useDarkMode'
@@ -40,21 +40,20 @@ function App({ services }: GameProps) {
     playEffect('click', 0.5)
     if (committed) {
       // Fresh calculation.
-      speakNumber(Number(d))
       setA(d)
       setOp(null)
       setB('')
       setCommitted(false)
       return
     }
-    // Speak what he ENTERS, never the result — the answer stays his to work
-    // out. Computed outside the state updater so it can't double-fire.
+    // Digits are not spoken: each keypress would re-read the whole number so
+    // far ("seven", "seventy three", "seven hundred thirty…"), which gets
+    // chatty fast. Operators and equals still speak — they carry the
+    // structure of the expression rather than repeating what he can see.
     const grow = (prev: string) =>
       prev === '0' || prev === '' ? d : prev.length < MAX_DIGITS ? prev + d : prev
-    const next = grow(op === null ? a : b)
-    speakNumber(Number(next))
-    if (op === null) setA(next)
-    else setB(next)
+    if (op === null) setA(grow(a))
+    else setB(grow(b))
   }
 
   const pressOp = (next: Op) => {
