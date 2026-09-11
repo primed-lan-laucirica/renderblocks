@@ -10,8 +10,6 @@ import { SUBTESTS, SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from 
 
 const STORAGE_KEY = 'progress'
 const HEARD_KEY = 'heardInstructions'
-/** Long enough to read the explanation aloud together. */
-const SOLVED_MS = 2600
 
 function App({ services }: GameProps) {
   const { isDark, toggle: toggleDarkMode } = useDarkMode()
@@ -30,6 +28,8 @@ function App({ services }: GameProps) {
   const [tried, setTried] = useState<number[]>([])
   /** Touch-mode: indices tapped correctly so far, in order. */
   const [hit, setHit] = useState<number[]>([])
+  /** He asked to be shown the answer — teaches rather than scores. */
+  const [revealed, setRevealed] = useState(false)
   const [solved, setSolved] = useState(false)
   const [scored, setScored] = useState(false)
   const [dragging, setDragging] = useState(false)
@@ -96,6 +96,8 @@ function App({ services }: GameProps) {
     setHit([])
     setSolved(false)
     setScored(false)
+    setRevealed(false)
+    setBanner(null)
   }
 
   /** Try a choice. The first attempt is what the adaptive ladder scores. */
@@ -120,10 +122,8 @@ function App({ services }: GameProps) {
       playEffect('correct')
       setSolved(true)
       if (updated.correct % 10 === 0) playEffect('celebrate', 0.7)
-      window.setTimeout(() => {
-        setBanner(null)
-        nextItem(updated)
-      }, SOLVED_MS)
+      // No timer — the item stays up so he can look at it, replay it, and
+      // move on when he chooses. This is prep, not a timed assessment.
     } else {
       playEffect('wrong', 0.6)
       setTried((t) => [...t, i])
@@ -141,6 +141,7 @@ function App({ services }: GameProps) {
     setHit([])
     setSolved(false)
     setScored(false)
+    setRevealed(false)
     setBanner(null)
     setMode(m)
   }
@@ -181,11 +182,24 @@ function App({ services }: GameProps) {
       playEffect('correct')
       setSolved(true)
       if (updated.correct % 10 === 0) playEffect('celebrate', 0.7)
-      window.setTimeout(() => {
-        setBanner(null)
-        nextItem(updated)
-      }, 1400)
     }
+  }
+
+  /**
+   * Show the answer. Counts as a miss if the item hasn't been scored yet —
+   * asking to be shown is legitimate here, it just shouldn't advance a level.
+   */
+  const showMe = () => {
+    if (solved) return
+    stopVoice()
+    if (!scored) {
+      const { next } = record(progress, item.sub, false)
+      setProgress(next)
+      setScored(true)
+    }
+    if (item.touch) setHit(item.touch.targets)
+    setRevealed(true)
+    setSolved(true)
   }
 
   /** Did this drag finish over the answer slot? */
@@ -593,8 +607,9 @@ function App({ services }: GameProps) {
           </motion.div>
         </AnimatePresence>
 
-        {/* Why the answer is the answer */}
-        <div className="h-12 flex items-center justify-center px-2">
+        {/* What the item was asking — for touch items this is the spoken
+            sentence in print, which also supports his sight-word reading. */}
+        <div className="min-h-12 flex items-center justify-center px-2">
           <AnimatePresence>
             {solved && (
               <motion.div
@@ -602,13 +617,56 @@ function App({ services }: GameProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 className={`text-center text-base font-bold leading-tight ${
-                  isDark ? 'text-slate-300' : 'text-slate-600'
+                  revealed
+                    ? isDark ? 'text-amber-300' : 'text-amber-600'
+                    : isDark ? 'text-slate-300' : 'text-slate-600'
                 }`}
               >
+                {revealed && <span className="mr-1">Here it is —</span>}
                 {item.explain}
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        {/* Probing controls: take as long as you like, then move on. */}
+        <div className="flex items-center justify-center gap-3">
+          {!solved && (tried.length > 0 || hit.length > 0 || item.touch) && (
+            <button
+              type="button"
+              onPointerDown={showMe}
+              className={`px-4 py-2 rounded-2xl text-sm font-extrabold ${
+                isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
+              }`}
+            >
+              Show me
+            </button>
+          )}
+          {solved && (
+            <motion.button
+              type="button"
+              onPointerDown={() => nextItem(progress)}
+              whileTap={{ scale: 0.94 }}
+              className="px-7 py-3 rounded-2xl bg-violet-500 text-white text-xl font-extrabold shadow-playful"
+            >
+              Next →
+            </motion.button>
+          )}
+          {solved && (
+            <button
+              type="button"
+              onPointerDown={() => {
+                const sub = item.sub
+                setItem(generate(sub, progress.levels[sub]))
+                setTried([]); setHit([]); setSolved(false); setScored(false); setRevealed(false)
+              }}
+              className={`px-4 py-2 rounded-2xl text-sm font-extrabold ${
+                isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
+              }`}
+            >
+              Another like this
+            </button>
+          )}
         </div>
 
         {/* Drag a piece into the slot — or just tap it. */}
