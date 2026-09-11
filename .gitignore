@@ -34,3 +34,10 @@ keystore.properties
 # Local environment
 .env
 .env.local
+
+# API keys / secrets — never commit. The ElevenLabs key lives at
+# ~/.config/elevenlabs/key, OUTSIDE this repo; these are belt-and-braces.
+*.key
+secrets/
+.elevenlabs*
+elevenlabs-key*

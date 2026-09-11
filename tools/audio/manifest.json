@@ -1,0 +1,105 @@
+{
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "model": "eleven_multilingual_v2",
+    "settings": {
+      "stability": 0.45,
+      "similarity_boost": 0.75,
+      "style": 0.35,
+      "speed": 0.92
+    }
+  },
+  "speech": [
+    {
+      "dir": "gifted/voice",
+      "items": {
+        "figureClassify": "Which one goes with these?",
+        "numberSeries": "What number comes next?",
+        "figureSeries": "What comes next?",
+        "figureMatrix": "Which one fills the empty box?",
+        "numberAnalogy": "Finish the pair.",
+        "patternCompletion": "Which piece fits the hole?",
+        "numberPuzzle": "What number is missing?",
+        "paperFolding": "Which one is it when it opens up?",
+        "tryAgain": "Not quite. Try another one.",
+        "nice": "Nice work!",
+        "levelUp": "Level up!",
+        "newPuzzle": "Here is a new kind of puzzle."
+      }
+    },
+    {
+      "dir": "shared/number",
+      "items": {
+        "zero": "zero",
+        "one": "one",
+        "two": "two",
+        "three": "three",
+        "four": "four",
+        "five": "five",
+        "six": "six",
+        "seven": "seven",
+        "eight": "eight",
+        "nine": "nine",
+        "ten": "ten",
+        "eleven": "eleven",
+        "twelve": "twelve",
+        "thirteen": "thirteen",
+        "fourteen": "fourteen",
+        "fifteen": "fifteen",
+        "sixteen": "sixteen",
+        "seventeen": "seventeen",
+        "eighteen": "eighteen",
+        "nineteen": "nineteen",
+        "twenty": "twenty",
+        "thirty": "thirty",
+        "forty": "forty",
+        "fifty": "fifty",
+        "sixty": "sixty",
+        "seventy": "seventy",
+        "eighty": "eighty",
+        "ninety": "ninety",
+        "hundred": "hundred",
+        "thousand": "thousand",
+        "million": "million",
+        "billion": "billion",
+        "trillion": "trillion",
+        "plus": "plus",
+        "minus": "minus",
+        "times": "times",
+        "dividedBy": "divided by",
+        "equals": "equals",
+        "negative": "negative",
+        "point": "point",
+        "undefined": "undefined",
+        "and": "and"
+      }
+    }
+  ],
+  "sfx": [
+    {
+      "dir": "shared/sfx",
+      "items": {
+        "correct": {
+          "prompt": "short bright cheerful two-note chime, correct answer, glockenspiel, clean, no reverb tail",
+          "seconds": 0.9
+        },
+        "wrong": {
+          "prompt": "soft gentle low wooden thunk, gentle negative feedback for a child, not harsh, not buzzer",
+          "seconds": 0.7
+        },
+        "celebrate": {
+          "prompt": "happy short celebratory sparkle arpeggio rising, magical success fanfare, bells",
+          "seconds": 1.8
+        },
+        "pop": {
+          "prompt": "single soft UI pop click, bubble tap, very short, clean",
+          "seconds": 0.5
+        },
+        "whoosh": {
+          "prompt": "quick soft whoosh, card sliding into place, gentle",
+          "seconds": 0.6
+        }
+      }
+    }
+  ]
+}

@@ -9,3 +9,11 @@ export type {
   NamespacedStorage,
   UpcomingGame,
 } from './types'
+export {
+  numberToClips,
+  playClips,
+  speakNumber,
+  speakEquation,
+  stopSpeech,
+  OPERATOR_CLIP,
+} from './numberSpeech'

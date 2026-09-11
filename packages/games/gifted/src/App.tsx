@@ -4,7 +4,7 @@ import type { GameProps } from '@renderblocks/kernel'
 import { CellView } from './Figure'
 import { MAX_LEVEL, generate } from './generators'
 import { chooseGen, loadProgress, record, type Progress } from './adaptive'
-import { playEffect } from './sounds'
+import { playEffect, playVoice, stopVoice } from './sounds'
 import { useDarkMode } from './useDarkMode'
 import { SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from './types'
 
@@ -36,6 +36,16 @@ function App({ services }: GameProps) {
     services.storage.set(STORAGE_KEY, JSON.stringify(progress))
   }, [services, progress])
 
+  // Read the instruction aloud each time a new puzzle appears — he can't
+  // read the prompt yet, so the spoken line is the real instruction.
+  useEffect(() => {
+    const t = window.setTimeout(() => playVoice(item.sub), 250)
+    return () => {
+      window.clearTimeout(t)
+      stopVoice()
+    }
+  }, [item])
+
   const nextItem = (p: Progress) => {
     const sub = chooseGen(p, recent.current)
     recent.current = [...recent.current, sub].slice(-3)
@@ -58,21 +68,26 @@ function App({ services }: GameProps) {
       setScored(true)
       if (unlockedGen) setBanner(`New: ${SUBTEST_NAME[unlockedGen]}`)
       else if (levelledUp) setBanner('Level up!')
+      if (unlockedGen) window.setTimeout(() => playVoice('newPuzzle'), 900)
+      else if (levelledUp) window.setTimeout(() => playVoice('levelUp'), 900)
     }
 
     if (right) {
-      playEffect('yes')
+      stopVoice()
+      playEffect('correct')
       setSolved(true)
-      if (updated.correct % 10 === 0) playEffect('cheer', 0.7)
+      if (updated.correct % 10 === 0) playEffect('celebrate', 0.7)
       window.setTimeout(() => {
         setBanner(null)
         nextItem(updated)
       }, SOLVED_MS)
     } else {
-      playEffect('no', 0.55)
+      playEffect('wrong', 0.6)
       setTried((t) => [...t, i])
       setRejecting(true)
       window.setTimeout(() => setRejecting(false), 400)
+      // After a second miss, say so out loud rather than only shaking.
+      if (tried.length === 1) window.setTimeout(() => playVoice('tryAgain'), 450)
     }
   }
 
@@ -314,6 +329,14 @@ function App({ services }: GameProps) {
               </span>
             )}
           </span>
+          <button
+            type="button"
+            onPointerDown={() => playVoice(item.sub)}
+            className={`p-2 rounded-full ${isDark ? 'bg-gray-700 text-violet-300' : 'bg-gray-200 text-violet-600'}`}
+            aria-label="Say the instruction again"
+          >
+            🔊
+          </button>
           <button
             type="button"
             onClick={toggleDarkMode}
