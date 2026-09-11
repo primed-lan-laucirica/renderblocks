@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { speakNumber } from '@renderblocks/kernel';
 import {
   type NumberBlock,
   type Position,
@@ -38,6 +39,8 @@ export function useNumberBlocks() {
 
   const addBlock = useCallback((value: number, position: Position): string => {
     const id = generateId();
+    // The number a block IS is this app's prime concept — name it aloud.
+    speakNumber(value);
     setBlocks(prev => [...prev, { id, value, position, isDragging: false, createdAt: Date.now() }]);
     return id;
   }, []);

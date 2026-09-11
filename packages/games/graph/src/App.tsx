@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import type { GameProps } from '@renderblocks/kernel'
+import { numberToClips, playClips, type GameProps } from '@renderblocks/kernel'
 import { BASE_RANGE, MAX_RANGE, Plane, rangeToFit, scaleFor, type Pt } from './Plane'
 import { playEffect } from './sounds'
 import { useDarkMode } from './useDarkMode'
@@ -108,6 +108,11 @@ function Stepper({
       </button>
     </div>
   )
+}
+
+/** "negative three, two" — the coordinate pair is this app's prime concept. */
+function speakPoint(p: Pt) {
+  playClips([...numberToClips(p.x), ...numberToClips(p.y)])
 }
 
 function App({ services }: GameProps) {
@@ -271,7 +276,14 @@ function App({ services }: GameProps) {
           <Plane
             range={range}
             dark={isDark}
-            onTap={mode === 'tap' ? setTapped : undefined}
+            onTap={
+              mode === 'tap'
+                ? (p) => {
+                    setTapped(p)
+                    speakPoint(p)
+                  }
+                : undefined
+            }
             onRangeChange={onPinch}
           >
             {mode === 'draw' && (
@@ -358,7 +370,10 @@ function App({ services }: GameProps) {
               <div className="flex items-center gap-2 mt-1">
                 <motion.button
                   type="button"
-                  onPointerDown={() => setDrawn((d) => [...d, preview])}
+                  onPointerDown={() => {
+                    setDrawn((d) => [...d, preview])
+                    speakPoint(preview)
+                  }}
                   style={{ touchAction: 'manipulation' }}
                   whileTap={{ scale: 0.93 }}
                   className="px-6 py-3 rounded-2xl bg-teal-500 text-white text-xl font-extrabold shadow-playful"

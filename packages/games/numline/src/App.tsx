@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { GameProps } from '@renderblocks/kernel'
+import { speakNumber, type GameProps } from '@renderblocks/kernel'
 import { NumberLine, type Op } from './NumberLine'
 import { playEffect } from './sounds'
 import { useDarkMode } from './useDarkMode'
@@ -40,17 +40,21 @@ function App({ services }: GameProps) {
     playEffect('click', 0.5)
     if (committed) {
       // Fresh calculation.
+      speakNumber(Number(d))
       setA(d)
       setOp(null)
       setB('')
       setCommitted(false)
       return
     }
-    if (op === null) {
-      setA((s) => (s === '0' || s === '' ? d : s.length < MAX_DIGITS ? s + d : s))
-    } else {
-      setB((s) => (s === '0' || s === '' ? d : s.length < MAX_DIGITS ? s + d : s))
-    }
+    // Speak what he ENTERS, never the result — the answer stays his to work
+    // out. Computed outside the state updater so it can't double-fire.
+    const grow = (prev: string) =>
+      prev === '0' || prev === '' ? d : prev.length < MAX_DIGITS ? prev + d : prev
+    const next = grow(op === null ? a : b)
+    speakNumber(Number(next))
+    if (op === null) setA(next)
+    else setB(next)
   }
 
   const pressOp = (next: Op) => {

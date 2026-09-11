@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { GameServices } from '@renderblocks/kernel'
 import { PALETTES, type PaletteName } from './palettes'
-import { createEffectPlayer, playNumber, playTone } from './sounds'
+import { speakNumber } from '@renderblocks/kernel'
+import { createEffectPlayer, playTone } from './sounds'
 import { useDarkMode } from './useDarkMode'
 import { FactReveal, type RevealKind } from './FactReveal'
 import {
@@ -200,7 +201,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
   // then advance the queue (or immediately on tap — see the problem area).
   useEffect(() => {
     if (!solved) return
-    const speakTimer = window.setTimeout(() => playNumber(problem.answer), 300)
+    const speakTimer = window.setTimeout(() => speakNumber(problem.answer), 300)
     const advanceTimer = window.setTimeout(completeEncounter, SOLVED_PAUSE_MS)
     return () => {
       window.clearTimeout(speakTimer)
