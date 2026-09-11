@@ -1,4 +1,4 @@
-type Effect = 'click' | 'yes'
+type Effect = 'click'
 
 const cache = new Map<Effect, HTMLAudioElement>()
 

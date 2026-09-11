@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { OPERATOR_CLIP, playClips, type GameProps } from '@renderblocks/kernel'
+import type { GameProps } from '@renderblocks/kernel'
 import { NumberLine, type Op } from './NumberLine'
 import { Flashcards } from './Flashcards'
 import { buildDeck, shuffled, type Card, type DeckId } from './decks'
@@ -85,10 +85,7 @@ function App({ services }: GameProps) {
       setCommitted(false)
       return
     }
-    // Digits are not spoken: each keypress would re-read the whole number so
-    // far ("seven", "seventy three", "seven hundred thirty…"), which gets
-    // chatty fast. Operators and equals still speak — they carry the
-    // structure of the expression rather than repeating what he can see.
+    // Nothing here is spoken — see pressEquals.
     const grow = (prev: string) =>
       prev === '0' || prev === '' ? d : prev.length < MAX_DIGITS ? prev + d : prev
     if (op === null) setA(grow(a))
@@ -97,9 +94,6 @@ function App({ services }: GameProps) {
 
   const pressOp = (next: Op) => {
     playEffect('click', 0.5)
-    // Say the operator too, so the whole expression is spoken as he builds it.
-    const clip = OPERATOR_CLIP[next]
-    if (clip) playClips([clip])
     if (committed) {
       if (result === null) {
         // Nothing to chain from an undefined result — start fresh at 0
@@ -132,8 +126,9 @@ function App({ services }: GameProps) {
   const pressEquals = () => {
     if (op !== null && b !== '' && !committed) {
       // ÷0 commits too — it just resolves to "undefined" rather than a number.
-      playEffect(result === null ? 'click' : 'yes', result === null ? 0.5 : 1)
-      playClips(['equals'])
+      // Calc is silent apart from key clicks: it is a tool he drives, not a
+      // game that talks back.
+      playEffect('click', 0.5)
       setCommitted(true)
     } else {
       playEffect('click', 0.5)
