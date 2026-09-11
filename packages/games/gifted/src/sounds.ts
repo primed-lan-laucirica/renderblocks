@@ -1,13 +1,16 @@
+import type { SubtestId } from './types'
+
 /**
  * All audio is pre-generated (tools/audio/generate.mjs) and shipped as files —
  * the app never calls a speech API at runtime.
  */
 type Sfx = 'correct' | 'wrong' | 'celebrate' | 'pop' | 'whoosh'
-/** Spoken lines live in /games/gifted/voice/. */
-export type Voice =
-  | 'figureClassify' | 'numberSeries' | 'figureSeries' | 'figureMatrix'
-  | 'numberAnalogy' | 'patternCompletion' | 'numberPuzzle' | 'paperFolding'
-  | 'tryAgain' | 'nice' | 'levelUp' | 'newPuzzle'
+/**
+ * Spoken lines live in /games/gifted/voice/. Subtest ids double as clip
+ * names; Following Directions has no hint clip (its sentences are the item,
+ * and live in /games/gifted/directions/ instead).
+ */
+export type Voice = SubtestId | 'tryAgain' | 'nice' | 'levelUp' | 'newPuzzle'
 
 const cache = new Map<string, HTMLAudioElement>()
 
@@ -37,6 +40,19 @@ export function playVoice(name: Voice, volume = 1): void {
     speaking.currentTime = 0
   }
   const a = get(`/games/gifted/voice/${name}.mp3`)
+  a.volume = volume
+  a.currentTime = 0
+  speaking = a
+  void a.play().catch(() => {})
+}
+
+/** Following Directions sentences live in /games/gifted/directions/. */
+export function playDirection(clip: string, volume = 1): void {
+  if (speaking) {
+    speaking.pause()
+    speaking.currentTime = 0
+  }
+  const a = get(`/games/gifted/directions/${clip}.mp3`)
   a.volume = volume
   a.currentTime = 0
   speaking = a

@@ -12,7 +12,8 @@
  * The API key is read from ~/.config/elevenlabs/key (or $ELEVENLABS_API_KEY)
  * and is never written into the repo.
  */
-import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { readFileSync, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { homedir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -61,6 +62,42 @@ function target(dir, name) {
   return p
 }
 
+/**
+ * Match the existing hand-made assets: 192kbps / 48kHz / stereo, leading
+ * silence trimmed, loudness levelled, padded to a fixed length so clips
+ * stitch together evenly.
+ */
+function normalize(path, seconds) {
+  const tmp = `${path}.tmp.mp3`
+  try {
+    execFileSync('ffmpeg', [
+      '-hide_banner', '-loglevel', 'error', '-y', '-i', path,
+      '-af',
+      'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03,' +
+        'loudnorm=I=-16:TP=-1.5:LRA=11,apad',
+      '-t', String(seconds),
+      '-ar', '48000', '-ac', '2', '-b:a', '192k',
+      tmp,
+    ])
+    writeFileSync(path, readFileSync(tmp))
+    unlinkSync(tmp)
+  } catch (e) {
+    console.warn(`  (ffmpeg normalize skipped for ${path}: ${e.message.split('\n')[0]})`)
+  }
+}
+
+/**
+ * The children's-chorus voice used for app OUTPUT is produced with the
+ * SOUND-EFFECTS endpoint, not text-to-speech: the prompt asks for a group of
+ * kids saying the word. (Voice *design* of a child voice is blocked by
+ * ElevenLabs policy; this is a one-off sound, which they allow.)
+ */
+function chorusPrompt(word) {
+  // Lan's original February prompt, which produced the existing assets.
+  // Deliberately terse — elaborate staging prompts drift in character.
+  return `a child's voice saying "${word}"`
+}
+
 let made = 0
 let skipped = 0
 
@@ -76,6 +113,24 @@ for (const group of manifest.speech ?? []) {
     )
     writeFileSync(path, buf)
     console.log(`speech  ${group.dir}/${name}.mp3  ${(buf.length / 1024).toFixed(0)}kB  "${text}"`)
+    made++
+  }
+}
+
+for (const group of manifest.chorus ?? []) {
+  if (only && !group.dir.includes(only)) continue
+  const seconds = group.seconds ?? 1.032
+  for (const [name, word] of Object.entries(group.items)) {
+    const path = target(group.dir, name)
+    if (existsSync(path) && !force) { skipped++; continue }
+    const buf = await post('https://api.elevenlabs.io/v1/sound-generation', {
+      text: chorusPrompt(word),
+      duration_seconds: Math.max(0.5, seconds),
+      prompt_influence: group.influence ?? 0.9,
+    })
+    writeFileSync(path, buf)
+    normalize(path, seconds)
+    console.log(`chorus  ${group.dir}/${name}.mp3  ${(readFileSync(path).length / 1024).toFixed(0)}kB  "${word}"`)
     made++
   }
 }

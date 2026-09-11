@@ -4,9 +4,9 @@ import type { GameProps } from '@renderblocks/kernel'
 import { CellView } from './Figure'
 import { MAX_LEVEL, generate } from './generators'
 import { chooseGen, loadProgress, record, type Progress } from './adaptive'
-import { playEffect, playVoice, stopVoice } from './sounds'
+import { playEffect, playVoice, playDirection, stopVoice } from './sounds'
 import { useDarkMode } from './useDarkMode'
-import { SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from './types'
+import { SUBTESTS, SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from './types'
 
 const STORAGE_KEY = 'progress'
 const HEARD_KEY = 'heardInstructions'
@@ -19,6 +19,8 @@ function App({ services }: GameProps) {
     loadProgress(services.storage.get(STORAGE_KEY)),
   )
   const recent = useRef<SubtestId[]>([])
+  /** null = menu; 'mixed' = adaptive mix; otherwise practise one subtest. */
+  const [mode, setMode] = useState<SubtestId | 'mixed' | null>(null)
   const [item, setItem] = useState<Item>(() => {
     const p = loadProgress(services.storage.get(STORAGE_KEY))
     const sub = chooseGen(p, [])
@@ -26,6 +28,8 @@ function App({ services }: GameProps) {
   })
   /** Choices already tried and rejected — he can keep probing. */
   const [tried, setTried] = useState<number[]>([])
+  /** Touch-mode: indices tapped correctly so far, in order. */
+  const [hit, setHit] = useState<number[]>([])
   const [solved, setSolved] = useState(false)
   const [scored, setScored] = useState(false)
   const [dragging, setDragging] = useState(false)
@@ -47,6 +51,17 @@ function App({ services }: GameProps) {
   }, [services, heard])
 
   useEffect(() => {
+    return services.onBack(() => {
+      if (mode !== null) {
+        stopVoice()
+        setMode(null)
+        return true
+      }
+      return false
+    })
+  }, [services, mode])
+
+  useEffect(() => {
     services.storage.set(STORAGE_KEY, JSON.stringify(progress))
   }, [services, progress])
 
@@ -55,6 +70,15 @@ function App({ services }: GameProps) {
   // instruction only the FIRST time it is ever seen; after that the format is
   // self-evident and the 🔊 button is there if he wants it again.
   useEffect(() => {
+    // Following Directions: the spoken sentence IS the item, so it plays for
+    // every puzzle. Everything else follows the minimal-voicing rule below.
+    if (item.touch) {
+      const t = window.setTimeout(() => playDirection(item.touch!.clip), 250)
+      return () => {
+        window.clearTimeout(t)
+        stopVoice()
+      }
+    }
     if (heard.includes(item.sub)) return
     const t = window.setTimeout(() => playVoice(item.sub), 250)
     setHeard((h) => (h.includes(item.sub) ? h : [...h, item.sub]))
@@ -65,10 +89,11 @@ function App({ services }: GameProps) {
   }, [item, heard])
 
   const nextItem = (p: Progress) => {
-    const sub = chooseGen(p, recent.current)
+    const sub = mode && mode !== 'mixed' ? mode : chooseGen(p, recent.current)
     recent.current = [...recent.current, sub].slice(-3)
     setItem(generate(sub, p.levels[sub]))
     setTried([])
+    setHit([])
     setSolved(false)
     setScored(false)
   }
@@ -107,6 +132,62 @@ function App({ services }: GameProps) {
     }
   }
 
+  const start = (m: SubtestId | 'mixed') => {
+    const p = progress
+    const sub = m === 'mixed' ? chooseGen(p, []) : m
+    recent.current = [sub]
+    setItem(generate(sub, p.levels[sub]))
+    setTried([])
+    setHit([])
+    setSolved(false)
+    setScored(false)
+    setBanner(null)
+    setMode(m)
+  }
+
+  /** Touch mode: tap a shape in the grid. Correct taps stay lit. */
+  const touchTap = (i: number) => {
+    const t = item.touch
+    if (!t || solved) return
+    if (hit.includes(i)) return
+    const expected = t.ordered ? t.targets[hit.length] : null
+    const isTarget = t.ordered ? i === expected : t.targets.includes(i)
+
+    let updated = progress
+    if (!isTarget) {
+      playEffect('wrong', 0.6)
+      setRejecting(true)
+      window.setTimeout(() => setRejecting(false), 400)
+      if (!scored) {
+        const { next } = record(progress, item.sub, false)
+        setProgress(next)
+        setScored(true)
+      }
+      return
+    }
+
+    playEffect('pop', 0.8)
+    const nextHit = [...hit, i]
+    setHit(nextHit)
+    if (nextHit.length === t.targets.length) {
+      if (!scored) {
+        const { next, levelledUp, unlockedGen } = record(progress, item.sub, true)
+        updated = next
+        setProgress(next)
+        setScored(true)
+        if (unlockedGen) setBanner(`New: ${SUBTEST_NAME[unlockedGen]}`)
+        else if (levelledUp) setBanner('Level up!')
+      }
+      playEffect('correct')
+      setSolved(true)
+      if (updated.correct % 10 === 0) playEffect('celebrate', 0.7)
+      window.setTimeout(() => {
+        setBanner(null)
+        nextItem(updated)
+      }, 1400)
+    }
+  }
+
   /** Did this drag finish over the answer slot? */
   const droppedOnSlot = (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const r = slotRef.current?.getBoundingClientRect()
@@ -131,6 +212,8 @@ function App({ services }: GameProps) {
         return 68
       case 'fold':
         return 136
+      case 'touchGrid':
+        return 84
       case 'field': {
         const f = item.stimulus[0]
         // A piece is shown at exactly the size of the hole it must fill.
@@ -245,6 +328,35 @@ function App({ services }: GameProps) {
           </div>
         )
 
+      case 'touchGrid': {
+        const cols = item.stimulus.length <= 6 ? 3 : 3
+        return (
+          <div
+            className="grid gap-3 justify-center"
+            style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+          >
+            {item.stimulus.map((c, i) => {
+              const got = hit.includes(i)
+              return (
+                <motion.button
+                  key={`t${i}`}
+                  type="button"
+                  onPointerDown={() => touchTap(i)}
+                  style={{ ...px, touchAction: 'manipulation' }}
+                  whileTap={solved || got ? undefined : { scale: 0.92 }}
+                  animate={{ scale: got ? 1.04 : 1 }}
+                  className={frame(
+                    got ? 'border-emerald-400 ring-4 ring-emerald-300' : 'cursor-pointer',
+                  )}
+                >
+                  <CellView cell={c} dark={isDark} className="w-full h-full pointer-events-none" />
+                </motion.button>
+              )
+            })}
+          </div>
+        )
+      }
+
       case 'field': {
         // The hole in the design is itself the drop target.
         const f = item.stimulus[0]
@@ -304,10 +416,101 @@ function App({ services }: GameProps) {
         )
       }
     }
-  }, [item, isDark, solved, dragging, rejecting, answerCell, cellPx])
+  }, [item, isDark, solved, dragging, rejecting, answerCell, cellPx, hit])
 
   const level = progress.levels[item.sub]
   const accuracy = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : 0
+
+  /* ---------- subtest menu ---------- */
+  if (mode === null) {
+    return (
+      <div
+        className={`h-dvh overflow-y-auto flex flex-col items-center p-4 gap-4 select-none ${
+          isDark
+            ? 'bg-linear-to-b from-slate-800 via-slate-900 to-slate-950'
+            : 'bg-linear-to-b from-violet-50 via-cloud to-cloud-lavender'
+        }`}
+      >
+        <div className="w-full max-w-3xl flex items-center justify-between shrink-0">
+          <h1 className={`text-2xl font-extrabold ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
+            Gifted
+          </h1>
+          <div className="flex items-center gap-3">
+            <span className={`text-lg font-extrabold ${isDark ? 'text-violet-300' : 'text-violet-500'}`}>
+              {progress.correct}
+              {progress.seen >= 5 && (
+                <span className={`ml-1 text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  {accuracy}%
+                </span>
+              )}
+            </span>
+            <button
+              type="button"
+              onClick={toggleDarkMode}
+              className={`p-2 rounded-full ${isDark ? 'bg-gray-700 text-yellow-300' : 'bg-gray-200 text-gray-700'}`}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark ? '☀️' : '🌙'}
+            </button>
+          </div>
+        </div>
+
+        <div className="w-full max-w-3xl grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <motion.button
+            type="button"
+            onPointerDown={() => start('mixed')}
+            whileTap={{ scale: 0.95 }}
+            className="col-span-2 sm:col-span-3 rounded-3xl bg-violet-500 text-white p-4 shadow-playful flex items-center justify-between"
+          >
+            <span className="text-2xl font-extrabold">🎲 Mixed practice</span>
+            <span className="text-sm font-bold opacity-90">
+              {progress.unlocked.length} of {SUBTESTS.length} unlocked
+            </span>
+          </motion.button>
+
+          {SUBTESTS.map((sub) => {
+            const lv = progress.levels[sub]
+            const unlocked = progress.unlocked.includes(sub)
+            return (
+              <motion.button
+                key={sub}
+                type="button"
+                onPointerDown={() => start(sub)}
+                whileTap={{ scale: 0.95 }}
+                className={`rounded-3xl p-3 border-4 text-left flex flex-col gap-1 ${
+                  isDark
+                    ? 'bg-slate-800 border-slate-700'
+                    : 'bg-white border-slate-200 shadow-playful'
+                } ${unlocked ? '' : 'opacity-70'}`}
+              >
+                <span className={`text-base font-extrabold leading-tight ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
+                  {SUBTEST_NAME[sub]}
+                </span>
+                <span className={`text-xs font-bold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  {SUBTEST_HINT[sub]}
+                </span>
+                <span className="flex gap-1 mt-1">
+                  {Array.from({ length: MAX_LEVEL }, (_, i) => (
+                    <span
+                      key={i}
+                      className={`w-2 h-2 rounded-full ${
+                        i < lv ? 'bg-violet-500' : isDark ? 'bg-slate-700' : 'bg-slate-300'
+                      }`}
+                    />
+                  ))}
+                  {!unlocked && (
+                    <span className={`ml-1 text-[10px] font-extrabold ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
+                      not yet in mix
+                    </span>
+                  )}
+                </span>
+              </motion.button>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -318,6 +521,19 @@ function App({ services }: GameProps) {
       }`}
     >
       <div className="w-full max-w-3xl flex items-center justify-between gap-2 shrink-0">
+        <button
+          type="button"
+          onPointerDown={() => {
+            stopVoice()
+            setMode(null)
+          }}
+          className={`w-10 h-10 shrink-0 rounded-full text-xl font-extrabold ${
+            isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
+          }`}
+          aria-label="Back to the puzzle list"
+        >
+          ←
+        </button>
         <div className="min-w-0">
           <div className="text-xs font-extrabold uppercase tracking-wide truncate text-violet-400">
             {SUBTEST_NAME[item.sub]}
@@ -347,7 +563,7 @@ function App({ services }: GameProps) {
           </span>
           <button
             type="button"
-            onPointerDown={() => playVoice(item.sub)}
+            onPointerDown={() => (item.touch ? playDirection(item.touch.clip) : playVoice(item.sub))}
             className={`p-2 rounded-full ${isDark ? 'bg-gray-700 text-violet-300' : 'bg-gray-200 text-violet-600'}`}
             aria-label="Say the instruction again"
           >
@@ -397,7 +613,7 @@ function App({ services }: GameProps) {
 
         {/* Drag a piece into the slot — or just tap it. */}
         <div className="flex flex-wrap items-center justify-center gap-3">
-          {item.choices.map((c, i) => {
+          {(item.touch ? [] : item.choices).map((c, i) => {
             const rejected = tried.includes(i)
             const isAnswer = i === item.answer
             const hidden = solved && isAnswer

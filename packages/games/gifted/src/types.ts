@@ -42,6 +42,7 @@ export type SubtestId =
   | 'numberSeries'
   | 'numberAnalogy'
   | 'numberPuzzle'
+  | 'followDirections'
 
 /** Ordered easiest -> hardest; also the unlock order. */
 export const SUBTESTS: SubtestId[] = [
@@ -53,6 +54,7 @@ export const SUBTESTS: SubtestId[] = [
   'patternCompletion',
   'numberPuzzle',
   'paperFolding',
+  'followDirections',
 ]
 
 /** Subtest names as they appear on the real batteries. */
@@ -65,6 +67,7 @@ export const SUBTEST_NAME: Record<SubtestId, string> = {
   patternCompletion: 'Pattern Completion',
   numberPuzzle: 'Number Puzzles',
   paperFolding: 'Paper Folding',
+  followDirections: 'Following Directions',
 }
 
 /** Kid-facing instruction — short, sight-word level. */
@@ -77,6 +80,7 @@ export const SUBTEST_HINT: Record<SubtestId, string> = {
   patternCompletion: 'Which piece fits the hole?',
   numberPuzzle: 'What is missing?',
   paperFolding: 'Which one when it opens up?',
+  followDirections: 'Listen, then touch.',
 }
 
 export type Layout =
@@ -88,6 +92,7 @@ export type Layout =
   | 'field'
   | 'fold'
   | 'equation'
+  | 'touchGrid'
 
 export interface Item {
   sub: SubtestId
@@ -100,6 +105,11 @@ export interface Item {
   answer: number
   /** Why the answer is the answer — shown after responding. */
   explain: string
+  /**
+   * Touch-mode items (Following Directions) have no choice row: the child
+   * taps targets inside `stimulus` itself. `clip` names the spoken sentence.
+   */
+  touch?: { targets: number[]; ordered: boolean; clip: string; text: string }
 }
 
 export const SHAPES: ShapeKind[] = [

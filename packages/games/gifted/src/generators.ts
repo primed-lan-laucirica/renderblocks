@@ -24,6 +24,7 @@ import {
   type SubtestId,
 } from './types'
 import { fitPairRules, fitRules, isDetermined, plausibleNext } from './rules'
+import { buildDirection, directionsForLevel } from './directions'
 
 export const MAX_LEVEL = 6
 
@@ -531,6 +532,35 @@ function numberPuzzle(level: number): Item {
   return assemble('numberPuzzle', level, 'equation', stimulus, -1, ncell(answer), distractor, explain)
 }
 
+/**
+ * Following Directions — the spoken sentence IS the item. Sentences come from
+ * a fixed bank (each has a pre-generated clip); the display is built to
+ * satisfy the chosen sentence exactly, so the target set is right by
+ * construction.
+ */
+function followDirections(level: number): Item {
+  const pool = directionsForLevel(level)
+  const spec = pick(pool)
+  const gridSize = level <= 2 ? 6 : level <= 4 ? 8 : 9
+  const built = buildDirection(spec, gridSize)
+  return {
+    sub: 'followDirections',
+    level,
+    layout: 'touchGrid',
+    stimulus: built.grid,
+    blankIndex: -1,
+    choices: [],
+    answer: -1,
+    explain: spec.text,
+    touch: {
+      targets: built.targets,
+      ordered: Boolean(spec.ordered),
+      clip: spec.id,
+      text: spec.text,
+    },
+  }
+}
+
 export function generate(sub: SubtestId, level: number): Item {
   const lvl = Math.max(1, Math.min(MAX_LEVEL, level))
   switch (sub) {
@@ -550,5 +580,7 @@ export function generate(sub: SubtestId, level: number): Item {
       return numberAnalogy(lvl)
     case 'numberPuzzle':
       return numberPuzzle(lvl)
+    case 'followDirections':
+      return followDirections(lvl)
   }
 }
