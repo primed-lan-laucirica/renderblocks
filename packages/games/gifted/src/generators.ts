@@ -541,8 +541,11 @@ function numberPuzzle(level: number): Item {
 function followDirections(level: number): Item {
   const pool = directionsForLevel(level)
   const spec = pick(pool)
-  const gridSize = level <= 2 ? 6 : level <= 4 ? 8 : 9
+  const gridSize = level <= 2 ? 6 : 9
   const built = buildDirection(spec, gridSize)
+  // Ordered-ness is a property of the built display (temporal-inversion
+  // items), so read it from the build rather than the spec.
+  const ordered = spec.build(built.grid.length).ordered
   return {
     sub: 'followDirections',
     level,
@@ -554,7 +557,7 @@ function followDirections(level: number): Item {
     explain: spec.text,
     touch: {
       targets: built.targets,
-      ordered: Boolean(spec.ordered),
+      ordered,
       clip: spec.id,
       text: spec.text,
     },
