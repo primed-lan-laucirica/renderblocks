@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { speakNumber, type GameProps } from '@renderblocks/kernel'
+import { OPERATOR_CLIP, playClips, speakNumber, type GameProps } from '@renderblocks/kernel'
 import { NumberLine, type Op } from './NumberLine'
 import { playEffect } from './sounds'
 import { useDarkMode } from './useDarkMode'
@@ -59,6 +59,9 @@ function App({ services }: GameProps) {
 
   const pressOp = (next: Op) => {
     playEffect('click', 0.5)
+    // Say the operator too, so the whole expression is spoken as he builds it.
+    const clip = OPERATOR_CLIP[next]
+    if (clip) playClips([clip])
     if (committed) {
       if (result === null) {
         // Nothing to chain from an undefined result — start fresh at 0
@@ -92,6 +95,7 @@ function App({ services }: GameProps) {
     if (op !== null && b !== '' && !committed) {
       // ÷0 commits too — it just resolves to "undefined" rather than a number.
       playEffect(result === null ? 'click' : 'yes', result === null ? 0.5 : 1)
+      playClips(['equals'])
       setCommitted(true)
     } else {
       playEffect('click', 0.5)
