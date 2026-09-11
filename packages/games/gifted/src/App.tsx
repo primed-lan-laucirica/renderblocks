@@ -9,6 +9,7 @@ import { useDarkMode } from './useDarkMode'
 import { SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from './types'
 
 const STORAGE_KEY = 'progress'
+const HEARD_KEY = 'heardInstructions'
 /** Long enough to read the explanation aloud together. */
 const SOLVED_MS = 2600
 
@@ -30,21 +31,38 @@ function App({ services }: GameProps) {
   const [dragging, setDragging] = useState(false)
   const [rejecting, setRejecting] = useState(false)
   const [banner, setBanner] = useState<string | null>(null)
+  /** Subtests whose spoken instruction he has already heard. */
+  const [heard, setHeard] = useState<SubtestId[]>(() => {
+    try {
+      const raw = services.storage.get(HEARD_KEY)
+      return raw ? (JSON.parse(raw) as SubtestId[]) : []
+    } catch {
+      return []
+    }
+  })
   const slotRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    services.storage.set(HEARD_KEY, JSON.stringify(heard))
+  }, [services, heard])
 
   useEffect(() => {
     services.storage.set(STORAGE_KEY, JSON.stringify(progress))
   }, [services, progress])
 
-  // Read the instruction aloud each time a new puzzle appears — he can't
-  // read the prompt yet, so the spoken line is the real instruction.
+  // Minimal voicing: a real battery gives an instruction once at the start of
+  // a section, then the child works in silence. So speak a subtest's
+  // instruction only the FIRST time it is ever seen; after that the format is
+  // self-evident and the 🔊 button is there if he wants it again.
   useEffect(() => {
+    if (heard.includes(item.sub)) return
     const t = window.setTimeout(() => playVoice(item.sub), 250)
+    setHeard((h) => (h.includes(item.sub) ? h : [...h, item.sub]))
     return () => {
       window.clearTimeout(t)
       stopVoice()
     }
-  }, [item])
+  }, [item, heard])
 
   const nextItem = (p: Progress) => {
     const sub = chooseGen(p, recent.current)
@@ -86,8 +104,6 @@ function App({ services }: GameProps) {
       setTried((t) => [...t, i])
       setRejecting(true)
       window.setTimeout(() => setRejecting(false), 400)
-      // After a second miss, say so out loud rather than only shaking.
-      if (tried.length === 1) window.setTimeout(() => playVoice('tryAgain'), 450)
     }
   }
 
