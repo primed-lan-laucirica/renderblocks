@@ -119,6 +119,44 @@ export function speakNumber(value: number, volume = 1): void {
   playClips(numberToClips(value), volume)
 }
 
+const OP_SLUG: Record<string, string> = {
+  '+': 'plus',
+  '−': 'minus',
+  '-': 'minus',
+  '×': 'times',
+  '*': 'times',
+  '÷': 'dividedby',
+  '/': 'dividedby',
+}
+
+const equationCache = new Map<string, HTMLAudioElement>()
+/** The prompt currently reading, so answering can cut it off mid-sentence. */
+let speakingEquation: HTMLAudioElement | null = null
+
+/**
+ * Speak the PROBLEM as one pre-generated utterance ending on "equals" —
+ * the cue to solve. Stitched word clips sound robotic for a whole phrase,
+ * so these are generated per equation (tools/audio/generate.mjs).
+ * The answer is spoken separately, and only as the number.
+ */
+export function speakEquationPrompt(a: number, op: string, b: number, volume = 1): boolean {
+  const slug = OP_SLUG[op]
+  if (!slug) return false
+  const name = `${a}_${slug}_${b}`
+  let audio = equationCache.get(name)
+  if (!audio) {
+    audio = new Audio(`/games/shared/equations/${name}.mp3`)
+    audio.preload = 'auto'
+    equationCache.set(name, audio)
+  }
+  stopSpeech() // cut off anything still reading
+  audio.volume = volume
+  audio.currentTime = 0
+  speakingEquation = audio
+  void audio.play().catch(() => {})
+  return true
+}
+
 /** e.g. speakEquation(3, '×', 4, 12) -> "three times four equals twelve" */
 export function speakEquation(a: number, op: string, b: number, answer: number, volume = 1): void {
   const opClip = OPERATOR_CLIP[op]
@@ -129,7 +167,12 @@ export function speakEquation(a: number, op: string, b: number, answer: number, 
   )
 }
 
-/** Stop any in-flight speech. */
+/** Stop any in-flight speech — stitched clips and equation prompts alike. */
 export function stopSpeech(): void {
   token++
+  if (speakingEquation) {
+    speakingEquation.pause()
+    speakingEquation.currentTime = 0
+    speakingEquation = null
+  }
 }

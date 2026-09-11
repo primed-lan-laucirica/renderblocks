@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { GameServices } from '@renderblocks/kernel'
 import { PALETTES, type PaletteName } from './palettes'
-import { speakNumber } from '@renderblocks/kernel'
+import { speakNumber, speakEquationPrompt, stopSpeech } from '@renderblocks/kernel'
 import { createEffectPlayer, playTone } from './sounds'
 import { useDarkMode } from './useDarkMode'
 import { FactReveal, type RevealKind } from './FactReveal'
@@ -132,6 +132,21 @@ export function DrillGame({ services, config }: DrillGameProps) {
   const factIndex = run.queue[0]
   const problem = config.operands(run.key, factIndex)
 
+  // Read the problem aloud when it appears, ending on "equals" — that is the
+  // cue to solve. The answer is spoken separately, as just the number.
+  useEffect(() => {
+    if (solved || celebrating) return
+    const t = window.setTimeout(
+      () => speakEquationPrompt(problem.a, config.symbol, problem.b),
+      250,
+    )
+    return () => {
+      window.clearTimeout(t)
+      stopSpeech()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- one read per encounter
+  }, [run.key, factIndex, encounter])
+
   const choices = useMemo(
     () => makeChoices(config, run.key, factIndex),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- attempt redeals on wrong answers; encounter freshens re-queued facts
@@ -201,6 +216,8 @@ export function DrillGame({ services, config }: DrillGameProps) {
   // then advance the queue (or immediately on tap — see the problem area).
   useEffect(() => {
     if (!solved) return
+    // Cut the problem off if he answered while it was still reading.
+    stopSpeech()
     const speakTimer = window.setTimeout(() => speakNumber(problem.answer), 300)
     const advanceTimer = window.setTimeout(completeEncounter, SOLVED_PAUSE_MS)
     return () => {

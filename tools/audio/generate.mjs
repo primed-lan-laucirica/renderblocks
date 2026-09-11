@@ -67,15 +67,23 @@ function target(dir, name) {
  * silence trimmed, loudness levelled, padded to a fixed length so clips
  * stitch together evenly.
  */
-function normalize(path, seconds) {
+function normalize(path, seconds, { pad = true } = {}) {
   const tmp = `${path}.tmp.mp3`
+  // Clips that get STITCHED into phrases must not be padded to a fixed
+  // length — the trailing silence stacks up into robotic gaps. Trim both
+  // ends instead and let them run back to back.
+  const trimBoth =
+    'silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.02:' +
+    'stop_periods=-1:stop_threshold=-45dB:stop_silence=0.06'
   try {
     execFileSync('ffmpeg', [
       '-hide_banner', '-loglevel', 'error', '-y', '-i', path,
       '-af',
-      'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03,' +
-        'loudnorm=I=-16:TP=-1.5:LRA=11,apad',
-      '-t', String(seconds),
+      pad
+        ? 'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03,' +
+          'loudnorm=I=-16:TP=-1.5:LRA=11,apad'
+        : `${trimBoth},loudnorm=I=-16:TP=-1.5:LRA=11`,
+      ...(pad ? ['-t', String(seconds)] : []),
       '-ar', '48000', '-ac', '2', '-b:a', '192k',
       tmp,
     ])
@@ -120,16 +128,19 @@ for (const group of manifest.speech ?? []) {
 for (const group of manifest.chorus ?? []) {
   if (only && !group.dir.includes(only)) continue
   const seconds = group.seconds ?? 1.032
-  for (const [name, word] of Object.entries(group.items)) {
+  // An item is either a bare word or { text, seconds } for a whole phrase.
+  for (const [name, spec] of Object.entries(group.items)) {
+    const word = typeof spec === 'string' ? spec : spec.text
+    const dur = typeof spec === 'string' ? seconds : spec.seconds
     const path = target(group.dir, name)
     if (existsSync(path) && !force) { skipped++; continue }
     const buf = await post('https://api.elevenlabs.io/v1/sound-generation', {
       text: chorusPrompt(word),
-      duration_seconds: Math.max(0.5, seconds),
+      duration_seconds: Math.min(30, Math.max(0.5, dur)),
       prompt_influence: group.influence ?? 0.9,
     })
     writeFileSync(path, buf)
-    normalize(path, seconds)
+    normalize(path, dur, { pad: group.pad !== false })
     console.log(`chorus  ${group.dir}/${name}.mp3  ${(readFileSync(path).length / 1024).toFixed(0)}kB  "${word}"`)
     made++
   }

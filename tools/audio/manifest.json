@@ -127,6 +127,1967 @@
         "point": "point",
         "undefined": "undefined",
         "and": "and"
+      },
+      "pad": false
+    },
+    {
+      "dir": "shared/equations",
+      "pad": false,
+      "influence": 0.9,
+      "seconds": 2.5,
+      "items": {
+        "1_times_1": {
+          "text": "one times one equals",
+          "seconds": 2.58
+        },
+        "1_dividedby_1": {
+          "text": "one divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_2": {
+          "text": "one times two equals",
+          "seconds": 2.58
+        },
+        "2_dividedby_1": {
+          "text": "two divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_3": {
+          "text": "one times three equals",
+          "seconds": 2.58
+        },
+        "3_dividedby_1": {
+          "text": "three divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_4": {
+          "text": "one times four equals",
+          "seconds": 2.58
+        },
+        "4_dividedby_1": {
+          "text": "four divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_5": {
+          "text": "one times five equals",
+          "seconds": 2.58
+        },
+        "5_dividedby_1": {
+          "text": "five divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_6": {
+          "text": "one times six equals",
+          "seconds": 2.58
+        },
+        "6_dividedby_1": {
+          "text": "six divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_7": {
+          "text": "one times seven equals",
+          "seconds": 2.58
+        },
+        "7_dividedby_1": {
+          "text": "seven divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_8": {
+          "text": "one times eight equals",
+          "seconds": 2.58
+        },
+        "8_dividedby_1": {
+          "text": "eight divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_9": {
+          "text": "one times nine equals",
+          "seconds": 2.58
+        },
+        "9_dividedby_1": {
+          "text": "nine divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_10": {
+          "text": "one times ten equals",
+          "seconds": 2.58
+        },
+        "10_dividedby_1": {
+          "text": "ten divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_11": {
+          "text": "one times eleven equals",
+          "seconds": 2.58
+        },
+        "11_dividedby_1": {
+          "text": "eleven divided by one equals",
+          "seconds": 3.0
+        },
+        "1_times_12": {
+          "text": "one times twelve equals",
+          "seconds": 2.58
+        },
+        "12_dividedby_1": {
+          "text": "twelve divided by one equals",
+          "seconds": 3.0
+        },
+        "2_times_1": {
+          "text": "two times one equals",
+          "seconds": 2.58
+        },
+        "2_dividedby_2": {
+          "text": "two divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_2": {
+          "text": "two times two equals",
+          "seconds": 2.58
+        },
+        "4_dividedby_2": {
+          "text": "four divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_3": {
+          "text": "two times three equals",
+          "seconds": 2.58
+        },
+        "6_dividedby_2": {
+          "text": "six divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_4": {
+          "text": "two times four equals",
+          "seconds": 2.58
+        },
+        "8_dividedby_2": {
+          "text": "eight divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_5": {
+          "text": "two times five equals",
+          "seconds": 2.58
+        },
+        "10_dividedby_2": {
+          "text": "ten divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_6": {
+          "text": "two times six equals",
+          "seconds": 2.58
+        },
+        "12_dividedby_2": {
+          "text": "twelve divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_7": {
+          "text": "two times seven equals",
+          "seconds": 2.58
+        },
+        "14_dividedby_2": {
+          "text": "fourteen divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_8": {
+          "text": "two times eight equals",
+          "seconds": 2.58
+        },
+        "16_dividedby_2": {
+          "text": "sixteen divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_9": {
+          "text": "two times nine equals",
+          "seconds": 2.58
+        },
+        "18_dividedby_2": {
+          "text": "eighteen divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_10": {
+          "text": "two times ten equals",
+          "seconds": 2.58
+        },
+        "20_dividedby_2": {
+          "text": "twenty divided by two equals",
+          "seconds": 3.0
+        },
+        "2_times_11": {
+          "text": "two times eleven equals",
+          "seconds": 2.58
+        },
+        "22_dividedby_2": {
+          "text": "twenty two divided by two equals",
+          "seconds": 3.42
+        },
+        "2_times_12": {
+          "text": "two times twelve equals",
+          "seconds": 2.58
+        },
+        "24_dividedby_2": {
+          "text": "twenty four divided by two equals",
+          "seconds": 3.42
+        },
+        "3_times_1": {
+          "text": "three times one equals",
+          "seconds": 2.58
+        },
+        "3_dividedby_3": {
+          "text": "three divided by three equals",
+          "seconds": 3.0
+        },
+        "3_times_2": {
+          "text": "three times two equals",
+          "seconds": 2.58
+        },
+        "6_dividedby_3": {
+          "text": "six divided by three equals",
+          "seconds": 3.0
+        },
+        "3_times_3": {
+          "text": "three times three equals",
+          "seconds": 2.58
+        },
+        "9_dividedby_3": {
+          "text": "nine divided by three equals",
+          "seconds": 3.0
+        },
+        "3_times_4": {
+          "text": "three times four equals",
+          "seconds": 2.58
+        },
+        "12_dividedby_3": {
+          "text": "twelve divided by three equals",
+          "seconds": 3.0
+        },
+        "3_times_5": {
+          "text": "three times five equals",
+          "seconds": 2.58
+        },
+        "15_dividedby_3": {
+          "text": "fifteen divided by three equals",
+          "seconds": 3.0
+        },
+        "3_times_6": {
+          "text": "three times six equals",
+          "seconds": 2.58
+        },
+        "18_dividedby_3": {
+          "text": "eighteen divided by three equals",
+          "seconds": 3.0
+        },
+        "3_times_7": {
+          "text": "three times seven equals",
+          "seconds": 2.58
+        },
+        "21_dividedby_3": {
+          "text": "twenty one divided by three equals",
+          "seconds": 3.42
+        },
+        "3_times_8": {
+          "text": "three times eight equals",
+          "seconds": 2.58
+        },
+        "24_dividedby_3": {
+          "text": "twenty four divided by three equals",
+          "seconds": 3.42
+        },
+        "3_times_9": {
+          "text": "three times nine equals",
+          "seconds": 2.58
+        },
+        "27_dividedby_3": {
+          "text": "twenty seven divided by three equals",
+          "seconds": 3.42
+        },
+        "3_times_10": {
+          "text": "three times ten equals",
+          "seconds": 2.58
+        },
+        "30_dividedby_3": {
+          "text": "thirty divided by three equals",
+          "seconds": 3.0
+        },
+        "3_times_11": {
+          "text": "three times eleven equals",
+          "seconds": 2.58
+        },
+        "33_dividedby_3": {
+          "text": "thirty three divided by three equals",
+          "seconds": 3.42
+        },
+        "3_times_12": {
+          "text": "three times twelve equals",
+          "seconds": 2.58
+        },
+        "36_dividedby_3": {
+          "text": "thirty six divided by three equals",
+          "seconds": 3.42
+        },
+        "4_times_1": {
+          "text": "four times one equals",
+          "seconds": 2.58
+        },
+        "4_dividedby_4": {
+          "text": "four divided by four equals",
+          "seconds": 3.0
+        },
+        "4_times_2": {
+          "text": "four times two equals",
+          "seconds": 2.58
+        },
+        "8_dividedby_4": {
+          "text": "eight divided by four equals",
+          "seconds": 3.0
+        },
+        "4_times_3": {
+          "text": "four times three equals",
+          "seconds": 2.58
+        },
+        "12_dividedby_4": {
+          "text": "twelve divided by four equals",
+          "seconds": 3.0
+        },
+        "4_times_4": {
+          "text": "four times four equals",
+          "seconds": 2.58
+        },
+        "16_dividedby_4": {
+          "text": "sixteen divided by four equals",
+          "seconds": 3.0
+        },
+        "4_times_5": {
+          "text": "four times five equals",
+          "seconds": 2.58
+        },
+        "20_dividedby_4": {
+          "text": "twenty divided by four equals",
+          "seconds": 3.0
+        },
+        "4_times_6": {
+          "text": "four times six equals",
+          "seconds": 2.58
+        },
+        "24_dividedby_4": {
+          "text": "twenty four divided by four equals",
+          "seconds": 3.42
+        },
+        "4_times_7": {
+          "text": "four times seven equals",
+          "seconds": 2.58
+        },
+        "28_dividedby_4": {
+          "text": "twenty eight divided by four equals",
+          "seconds": 3.42
+        },
+        "4_times_8": {
+          "text": "four times eight equals",
+          "seconds": 2.58
+        },
+        "32_dividedby_4": {
+          "text": "thirty two divided by four equals",
+          "seconds": 3.42
+        },
+        "4_times_9": {
+          "text": "four times nine equals",
+          "seconds": 2.58
+        },
+        "36_dividedby_4": {
+          "text": "thirty six divided by four equals",
+          "seconds": 3.42
+        },
+        "4_times_10": {
+          "text": "four times ten equals",
+          "seconds": 2.58
+        },
+        "40_dividedby_4": {
+          "text": "forty divided by four equals",
+          "seconds": 3.0
+        },
+        "4_times_11": {
+          "text": "four times eleven equals",
+          "seconds": 2.58
+        },
+        "44_dividedby_4": {
+          "text": "forty four divided by four equals",
+          "seconds": 3.42
+        },
+        "4_times_12": {
+          "text": "four times twelve equals",
+          "seconds": 2.58
+        },
+        "48_dividedby_4": {
+          "text": "forty eight divided by four equals",
+          "seconds": 3.42
+        },
+        "5_times_1": {
+          "text": "five times one equals",
+          "seconds": 2.58
+        },
+        "5_dividedby_5": {
+          "text": "five divided by five equals",
+          "seconds": 3.0
+        },
+        "5_times_2": {
+          "text": "five times two equals",
+          "seconds": 2.58
+        },
+        "10_dividedby_5": {
+          "text": "ten divided by five equals",
+          "seconds": 3.0
+        },
+        "5_times_3": {
+          "text": "five times three equals",
+          "seconds": 2.58
+        },
+        "15_dividedby_5": {
+          "text": "fifteen divided by five equals",
+          "seconds": 3.0
+        },
+        "5_times_4": {
+          "text": "five times four equals",
+          "seconds": 2.58
+        },
+        "20_dividedby_5": {
+          "text": "twenty divided by five equals",
+          "seconds": 3.0
+        },
+        "5_times_5": {
+          "text": "five times five equals",
+          "seconds": 2.58
+        },
+        "25_dividedby_5": {
+          "text": "twenty five divided by five equals",
+          "seconds": 3.42
+        },
+        "5_times_6": {
+          "text": "five times six equals",
+          "seconds": 2.58
+        },
+        "30_dividedby_5": {
+          "text": "thirty divided by five equals",
+          "seconds": 3.0
+        },
+        "5_times_7": {
+          "text": "five times seven equals",
+          "seconds": 2.58
+        },
+        "35_dividedby_5": {
+          "text": "thirty five divided by five equals",
+          "seconds": 3.42
+        },
+        "5_times_8": {
+          "text": "five times eight equals",
+          "seconds": 2.58
+        },
+        "40_dividedby_5": {
+          "text": "forty divided by five equals",
+          "seconds": 3.0
+        },
+        "5_times_9": {
+          "text": "five times nine equals",
+          "seconds": 2.58
+        },
+        "45_dividedby_5": {
+          "text": "forty five divided by five equals",
+          "seconds": 3.42
+        },
+        "5_times_10": {
+          "text": "five times ten equals",
+          "seconds": 2.58
+        },
+        "50_dividedby_5": {
+          "text": "fifty divided by five equals",
+          "seconds": 3.0
+        },
+        "5_times_11": {
+          "text": "five times eleven equals",
+          "seconds": 2.58
+        },
+        "55_dividedby_5": {
+          "text": "fifty five divided by five equals",
+          "seconds": 3.42
+        },
+        "5_times_12": {
+          "text": "five times twelve equals",
+          "seconds": 2.58
+        },
+        "60_dividedby_5": {
+          "text": "sixty divided by five equals",
+          "seconds": 3.0
+        },
+        "6_times_1": {
+          "text": "six times one equals",
+          "seconds": 2.58
+        },
+        "6_dividedby_6": {
+          "text": "six divided by six equals",
+          "seconds": 3.0
+        },
+        "6_times_2": {
+          "text": "six times two equals",
+          "seconds": 2.58
+        },
+        "12_dividedby_6": {
+          "text": "twelve divided by six equals",
+          "seconds": 3.0
+        },
+        "6_times_3": {
+          "text": "six times three equals",
+          "seconds": 2.58
+        },
+        "18_dividedby_6": {
+          "text": "eighteen divided by six equals",
+          "seconds": 3.0
+        },
+        "6_times_4": {
+          "text": "six times four equals",
+          "seconds": 2.58
+        },
+        "24_dividedby_6": {
+          "text": "twenty four divided by six equals",
+          "seconds": 3.42
+        },
+        "6_times_5": {
+          "text": "six times five equals",
+          "seconds": 2.58
+        },
+        "30_dividedby_6": {
+          "text": "thirty divided by six equals",
+          "seconds": 3.0
+        },
+        "6_times_6": {
+          "text": "six times six equals",
+          "seconds": 2.58
+        },
+        "36_dividedby_6": {
+          "text": "thirty six divided by six equals",
+          "seconds": 3.42
+        },
+        "6_times_7": {
+          "text": "six times seven equals",
+          "seconds": 2.58
+        },
+        "42_dividedby_6": {
+          "text": "forty two divided by six equals",
+          "seconds": 3.42
+        },
+        "6_times_8": {
+          "text": "six times eight equals",
+          "seconds": 2.58
+        },
+        "48_dividedby_6": {
+          "text": "forty eight divided by six equals",
+          "seconds": 3.42
+        },
+        "6_times_9": {
+          "text": "six times nine equals",
+          "seconds": 2.58
+        },
+        "54_dividedby_6": {
+          "text": "fifty four divided by six equals",
+          "seconds": 3.42
+        },
+        "6_times_10": {
+          "text": "six times ten equals",
+          "seconds": 2.58
+        },
+        "60_dividedby_6": {
+          "text": "sixty divided by six equals",
+          "seconds": 3.0
+        },
+        "6_times_11": {
+          "text": "six times eleven equals",
+          "seconds": 2.58
+        },
+        "66_dividedby_6": {
+          "text": "sixty six divided by six equals",
+          "seconds": 3.42
+        },
+        "6_times_12": {
+          "text": "six times twelve equals",
+          "seconds": 2.58
+        },
+        "72_dividedby_6": {
+          "text": "seventy two divided by six equals",
+          "seconds": 3.42
+        },
+        "7_times_1": {
+          "text": "seven times one equals",
+          "seconds": 2.58
+        },
+        "7_dividedby_7": {
+          "text": "seven divided by seven equals",
+          "seconds": 3.0
+        },
+        "7_times_2": {
+          "text": "seven times two equals",
+          "seconds": 2.58
+        },
+        "14_dividedby_7": {
+          "text": "fourteen divided by seven equals",
+          "seconds": 3.0
+        },
+        "7_times_3": {
+          "text": "seven times three equals",
+          "seconds": 2.58
+        },
+        "21_dividedby_7": {
+          "text": "twenty one divided by seven equals",
+          "seconds": 3.42
+        },
+        "7_times_4": {
+          "text": "seven times four equals",
+          "seconds": 2.58
+        },
+        "28_dividedby_7": {
+          "text": "twenty eight divided by seven equals",
+          "seconds": 3.42
+        },
+        "7_times_5": {
+          "text": "seven times five equals",
+          "seconds": 2.58
+        },
+        "35_dividedby_7": {
+          "text": "thirty five divided by seven equals",
+          "seconds": 3.42
+        },
+        "7_times_6": {
+          "text": "seven times six equals",
+          "seconds": 2.58
+        },
+        "42_dividedby_7": {
+          "text": "forty two divided by seven equals",
+          "seconds": 3.42
+        },
+        "7_times_7": {
+          "text": "seven times seven equals",
+          "seconds": 2.58
+        },
+        "49_dividedby_7": {
+          "text": "forty nine divided by seven equals",
+          "seconds": 3.42
+        },
+        "7_times_8": {
+          "text": "seven times eight equals",
+          "seconds": 2.58
+        },
+        "56_dividedby_7": {
+          "text": "fifty six divided by seven equals",
+          "seconds": 3.42
+        },
+        "7_times_9": {
+          "text": "seven times nine equals",
+          "seconds": 2.58
+        },
+        "63_dividedby_7": {
+          "text": "sixty three divided by seven equals",
+          "seconds": 3.42
+        },
+        "7_times_10": {
+          "text": "seven times ten equals",
+          "seconds": 2.58
+        },
+        "70_dividedby_7": {
+          "text": "seventy divided by seven equals",
+          "seconds": 3.0
+        },
+        "7_times_11": {
+          "text": "seven times eleven equals",
+          "seconds": 2.58
+        },
+        "77_dividedby_7": {
+          "text": "seventy seven divided by seven equals",
+          "seconds": 3.42
+        },
+        "7_times_12": {
+          "text": "seven times twelve equals",
+          "seconds": 2.58
+        },
+        "84_dividedby_7": {
+          "text": "eighty four divided by seven equals",
+          "seconds": 3.42
+        },
+        "8_times_1": {
+          "text": "eight times one equals",
+          "seconds": 2.58
+        },
+        "8_dividedby_8": {
+          "text": "eight divided by eight equals",
+          "seconds": 3.0
+        },
+        "8_times_2": {
+          "text": "eight times two equals",
+          "seconds": 2.58
+        },
+        "16_dividedby_8": {
+          "text": "sixteen divided by eight equals",
+          "seconds": 3.0
+        },
+        "8_times_3": {
+          "text": "eight times three equals",
+          "seconds": 2.58
+        },
+        "24_dividedby_8": {
+          "text": "twenty four divided by eight equals",
+          "seconds": 3.42
+        },
+        "8_times_4": {
+          "text": "eight times four equals",
+          "seconds": 2.58
+        },
+        "32_dividedby_8": {
+          "text": "thirty two divided by eight equals",
+          "seconds": 3.42
+        },
+        "8_times_5": {
+          "text": "eight times five equals",
+          "seconds": 2.58
+        },
+        "40_dividedby_8": {
+          "text": "forty divided by eight equals",
+          "seconds": 3.0
+        },
+        "8_times_6": {
+          "text": "eight times six equals",
+          "seconds": 2.58
+        },
+        "48_dividedby_8": {
+          "text": "forty eight divided by eight equals",
+          "seconds": 3.42
+        },
+        "8_times_7": {
+          "text": "eight times seven equals",
+          "seconds": 2.58
+        },
+        "56_dividedby_8": {
+          "text": "fifty six divided by eight equals",
+          "seconds": 3.42
+        },
+        "8_times_8": {
+          "text": "eight times eight equals",
+          "seconds": 2.58
+        },
+        "64_dividedby_8": {
+          "text": "sixty four divided by eight equals",
+          "seconds": 3.42
+        },
+        "8_times_9": {
+          "text": "eight times nine equals",
+          "seconds": 2.58
+        },
+        "72_dividedby_8": {
+          "text": "seventy two divided by eight equals",
+          "seconds": 3.42
+        },
+        "8_times_10": {
+          "text": "eight times ten equals",
+          "seconds": 2.58
+        },
+        "80_dividedby_8": {
+          "text": "eighty divided by eight equals",
+          "seconds": 3.0
+        },
+        "8_times_11": {
+          "text": "eight times eleven equals",
+          "seconds": 2.58
+        },
+        "88_dividedby_8": {
+          "text": "eighty eight divided by eight equals",
+          "seconds": 3.42
+        },
+        "8_times_12": {
+          "text": "eight times twelve equals",
+          "seconds": 2.58
+        },
+        "96_dividedby_8": {
+          "text": "ninety six divided by eight equals",
+          "seconds": 3.42
+        },
+        "9_times_1": {
+          "text": "nine times one equals",
+          "seconds": 2.58
+        },
+        "9_dividedby_9": {
+          "text": "nine divided by nine equals",
+          "seconds": 3.0
+        },
+        "9_times_2": {
+          "text": "nine times two equals",
+          "seconds": 2.58
+        },
+        "18_dividedby_9": {
+          "text": "eighteen divided by nine equals",
+          "seconds": 3.0
+        },
+        "9_times_3": {
+          "text": "nine times three equals",
+          "seconds": 2.58
+        },
+        "27_dividedby_9": {
+          "text": "twenty seven divided by nine equals",
+          "seconds": 3.42
+        },
+        "9_times_4": {
+          "text": "nine times four equals",
+          "seconds": 2.58
+        },
+        "36_dividedby_9": {
+          "text": "thirty six divided by nine equals",
+          "seconds": 3.42
+        },
+        "9_times_5": {
+          "text": "nine times five equals",
+          "seconds": 2.58
+        },
+        "45_dividedby_9": {
+          "text": "forty five divided by nine equals",
+          "seconds": 3.42
+        },
+        "9_times_6": {
+          "text": "nine times six equals",
+          "seconds": 2.58
+        },
+        "54_dividedby_9": {
+          "text": "fifty four divided by nine equals",
+          "seconds": 3.42
+        },
+        "9_times_7": {
+          "text": "nine times seven equals",
+          "seconds": 2.58
+        },
+        "63_dividedby_9": {
+          "text": "sixty three divided by nine equals",
+          "seconds": 3.42
+        },
+        "9_times_8": {
+          "text": "nine times eight equals",
+          "seconds": 2.58
+        },
+        "72_dividedby_9": {
+          "text": "seventy two divided by nine equals",
+          "seconds": 3.42
+        },
+        "9_times_9": {
+          "text": "nine times nine equals",
+          "seconds": 2.58
+        },
+        "81_dividedby_9": {
+          "text": "eighty one divided by nine equals",
+          "seconds": 3.42
+        },
+        "9_times_10": {
+          "text": "nine times ten equals",
+          "seconds": 2.58
+        },
+        "90_dividedby_9": {
+          "text": "ninety divided by nine equals",
+          "seconds": 3.0
+        },
+        "9_times_11": {
+          "text": "nine times eleven equals",
+          "seconds": 2.58
+        },
+        "99_dividedby_9": {
+          "text": "ninety nine divided by nine equals",
+          "seconds": 3.42
+        },
+        "9_times_12": {
+          "text": "nine times twelve equals",
+          "seconds": 2.58
+        },
+        "108_dividedby_9": {
+          "text": "one hundred eight divided by nine equals",
+          "seconds": 3.84
+        },
+        "10_times_1": {
+          "text": "ten times one equals",
+          "seconds": 2.58
+        },
+        "10_dividedby_10": {
+          "text": "ten divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_2": {
+          "text": "ten times two equals",
+          "seconds": 2.58
+        },
+        "20_dividedby_10": {
+          "text": "twenty divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_3": {
+          "text": "ten times three equals",
+          "seconds": 2.58
+        },
+        "30_dividedby_10": {
+          "text": "thirty divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_4": {
+          "text": "ten times four equals",
+          "seconds": 2.58
+        },
+        "40_dividedby_10": {
+          "text": "forty divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_5": {
+          "text": "ten times five equals",
+          "seconds": 2.58
+        },
+        "50_dividedby_10": {
+          "text": "fifty divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_6": {
+          "text": "ten times six equals",
+          "seconds": 2.58
+        },
+        "60_dividedby_10": {
+          "text": "sixty divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_7": {
+          "text": "ten times seven equals",
+          "seconds": 2.58
+        },
+        "70_dividedby_10": {
+          "text": "seventy divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_8": {
+          "text": "ten times eight equals",
+          "seconds": 2.58
+        },
+        "80_dividedby_10": {
+          "text": "eighty divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_9": {
+          "text": "ten times nine equals",
+          "seconds": 2.58
+        },
+        "90_dividedby_10": {
+          "text": "ninety divided by ten equals",
+          "seconds": 3.0
+        },
+        "10_times_10": {
+          "text": "ten times ten equals",
+          "seconds": 2.58
+        },
+        "100_dividedby_10": {
+          "text": "one hundred divided by ten equals",
+          "seconds": 3.42
+        },
+        "10_times_11": {
+          "text": "ten times eleven equals",
+          "seconds": 2.58
+        },
+        "110_dividedby_10": {
+          "text": "one hundred ten divided by ten equals",
+          "seconds": 3.84
+        },
+        "10_times_12": {
+          "text": "ten times twelve equals",
+          "seconds": 2.58
+        },
+        "120_dividedby_10": {
+          "text": "one hundred twenty divided by ten equals",
+          "seconds": 3.84
+        },
+        "11_times_1": {
+          "text": "eleven times one equals",
+          "seconds": 2.58
+        },
+        "11_dividedby_11": {
+          "text": "eleven divided by eleven equals",
+          "seconds": 3.0
+        },
+        "11_times_2": {
+          "text": "eleven times two equals",
+          "seconds": 2.58
+        },
+        "22_dividedby_11": {
+          "text": "twenty two divided by eleven equals",
+          "seconds": 3.42
+        },
+        "11_times_3": {
+          "text": "eleven times three equals",
+          "seconds": 2.58
+        },
+        "33_dividedby_11": {
+          "text": "thirty three divided by eleven equals",
+          "seconds": 3.42
+        },
+        "11_times_4": {
+          "text": "eleven times four equals",
+          "seconds": 2.58
+        },
+        "44_dividedby_11": {
+          "text": "forty four divided by eleven equals",
+          "seconds": 3.42
+        },
+        "11_times_5": {
+          "text": "eleven times five equals",
+          "seconds": 2.58
+        },
+        "55_dividedby_11": {
+          "text": "fifty five divided by eleven equals",
+          "seconds": 3.42
+        },
+        "11_times_6": {
+          "text": "eleven times six equals",
+          "seconds": 2.58
+        },
+        "66_dividedby_11": {
+          "text": "sixty six divided by eleven equals",
+          "seconds": 3.42
+        },
+        "11_times_7": {
+          "text": "eleven times seven equals",
+          "seconds": 2.58
+        },
+        "77_dividedby_11": {
+          "text": "seventy seven divided by eleven equals",
+          "seconds": 3.42
+        },
+        "11_times_8": {
+          "text": "eleven times eight equals",
+          "seconds": 2.58
+        },
+        "88_dividedby_11": {
+          "text": "eighty eight divided by eleven equals",
+          "seconds": 3.42
+        },
+        "11_times_9": {
+          "text": "eleven times nine equals",
+          "seconds": 2.58
+        },
+        "99_dividedby_11": {
+          "text": "ninety nine divided by eleven equals",
+          "seconds": 3.42
+        },
+        "11_times_10": {
+          "text": "eleven times ten equals",
+          "seconds": 2.58
+        },
+        "110_dividedby_11": {
+          "text": "one hundred ten divided by eleven equals",
+          "seconds": 3.84
+        },
+        "11_times_11": {
+          "text": "eleven times eleven equals",
+          "seconds": 2.58
+        },
+        "121_dividedby_11": {
+          "text": "one hundred twenty one divided by eleven equals",
+          "seconds": 4.26
+        },
+        "11_times_12": {
+          "text": "eleven times twelve equals",
+          "seconds": 2.58
+        },
+        "132_dividedby_11": {
+          "text": "one hundred thirty two divided by eleven equals",
+          "seconds": 4.26
+        },
+        "12_times_1": {
+          "text": "twelve times one equals",
+          "seconds": 2.58
+        },
+        "12_dividedby_12": {
+          "text": "twelve divided by twelve equals",
+          "seconds": 3.0
+        },
+        "12_times_2": {
+          "text": "twelve times two equals",
+          "seconds": 2.58
+        },
+        "24_dividedby_12": {
+          "text": "twenty four divided by twelve equals",
+          "seconds": 3.42
+        },
+        "12_times_3": {
+          "text": "twelve times three equals",
+          "seconds": 2.58
+        },
+        "36_dividedby_12": {
+          "text": "thirty six divided by twelve equals",
+          "seconds": 3.42
+        },
+        "12_times_4": {
+          "text": "twelve times four equals",
+          "seconds": 2.58
+        },
+        "48_dividedby_12": {
+          "text": "forty eight divided by twelve equals",
+          "seconds": 3.42
+        },
+        "12_times_5": {
+          "text": "twelve times five equals",
+          "seconds": 2.58
+        },
+        "60_dividedby_12": {
+          "text": "sixty divided by twelve equals",
+          "seconds": 3.0
+        },
+        "12_times_6": {
+          "text": "twelve times six equals",
+          "seconds": 2.58
+        },
+        "72_dividedby_12": {
+          "text": "seventy two divided by twelve equals",
+          "seconds": 3.42
+        },
+        "12_times_7": {
+          "text": "twelve times seven equals",
+          "seconds": 2.58
+        },
+        "84_dividedby_12": {
+          "text": "eighty four divided by twelve equals",
+          "seconds": 3.42
+        },
+        "12_times_8": {
+          "text": "twelve times eight equals",
+          "seconds": 2.58
+        },
+        "96_dividedby_12": {
+          "text": "ninety six divided by twelve equals",
+          "seconds": 3.42
+        },
+        "12_times_9": {
+          "text": "twelve times nine equals",
+          "seconds": 2.58
+        },
+        "108_dividedby_12": {
+          "text": "one hundred eight divided by twelve equals",
+          "seconds": 3.84
+        },
+        "12_times_10": {
+          "text": "twelve times ten equals",
+          "seconds": 2.58
+        },
+        "120_dividedby_12": {
+          "text": "one hundred twenty divided by twelve equals",
+          "seconds": 3.84
+        },
+        "12_times_11": {
+          "text": "twelve times eleven equals",
+          "seconds": 2.58
+        },
+        "132_dividedby_12": {
+          "text": "one hundred thirty two divided by twelve equals",
+          "seconds": 4.26
+        },
+        "12_times_12": {
+          "text": "twelve times twelve equals",
+          "seconds": 2.58
+        },
+        "144_dividedby_12": {
+          "text": "one hundred forty four divided by twelve equals",
+          "seconds": 4.26
+        },
+        "0_plus_0": {
+          "text": "zero plus zero equals",
+          "seconds": 2.58
+        },
+        "0_minus_0": {
+          "text": "zero minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_1": {
+          "text": "zero plus one equals",
+          "seconds": 2.58
+        },
+        "1_minus_0": {
+          "text": "one minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_2": {
+          "text": "zero plus two equals",
+          "seconds": 2.58
+        },
+        "2_minus_0": {
+          "text": "two minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_3": {
+          "text": "zero plus three equals",
+          "seconds": 2.58
+        },
+        "3_minus_0": {
+          "text": "three minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_4": {
+          "text": "zero plus four equals",
+          "seconds": 2.58
+        },
+        "4_minus_0": {
+          "text": "four minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_5": {
+          "text": "zero plus five equals",
+          "seconds": 2.58
+        },
+        "5_minus_0": {
+          "text": "five minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_6": {
+          "text": "zero plus six equals",
+          "seconds": 2.58
+        },
+        "6_minus_0": {
+          "text": "six minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_7": {
+          "text": "zero plus seven equals",
+          "seconds": 2.58
+        },
+        "7_minus_0": {
+          "text": "seven minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_8": {
+          "text": "zero plus eight equals",
+          "seconds": 2.58
+        },
+        "8_minus_0": {
+          "text": "eight minus zero equals",
+          "seconds": 2.58
+        },
+        "0_plus_9": {
+          "text": "zero plus nine equals",
+          "seconds": 2.58
+        },
+        "9_minus_0": {
+          "text": "nine minus zero equals",
+          "seconds": 2.58
+        },
+        "1_plus_0": {
+          "text": "one plus zero equals",
+          "seconds": 2.58
+        },
+        "1_minus_1": {
+          "text": "one minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_1": {
+          "text": "one plus one equals",
+          "seconds": 2.58
+        },
+        "2_minus_1": {
+          "text": "two minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_2": {
+          "text": "one plus two equals",
+          "seconds": 2.58
+        },
+        "3_minus_1": {
+          "text": "three minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_3": {
+          "text": "one plus three equals",
+          "seconds": 2.58
+        },
+        "4_minus_1": {
+          "text": "four minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_4": {
+          "text": "one plus four equals",
+          "seconds": 2.58
+        },
+        "5_minus_1": {
+          "text": "five minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_5": {
+          "text": "one plus five equals",
+          "seconds": 2.58
+        },
+        "6_minus_1": {
+          "text": "six minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_6": {
+          "text": "one plus six equals",
+          "seconds": 2.58
+        },
+        "7_minus_1": {
+          "text": "seven minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_7": {
+          "text": "one plus seven equals",
+          "seconds": 2.58
+        },
+        "8_minus_1": {
+          "text": "eight minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_8": {
+          "text": "one plus eight equals",
+          "seconds": 2.58
+        },
+        "9_minus_1": {
+          "text": "nine minus one equals",
+          "seconds": 2.58
+        },
+        "1_plus_9": {
+          "text": "one plus nine equals",
+          "seconds": 2.58
+        },
+        "10_minus_1": {
+          "text": "ten minus one equals",
+          "seconds": 2.58
+        },
+        "2_plus_0": {
+          "text": "two plus zero equals",
+          "seconds": 2.58
+        },
+        "2_minus_2": {
+          "text": "two minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_1": {
+          "text": "two plus one equals",
+          "seconds": 2.58
+        },
+        "3_minus_2": {
+          "text": "three minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_2": {
+          "text": "two plus two equals",
+          "seconds": 2.58
+        },
+        "4_minus_2": {
+          "text": "four minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_3": {
+          "text": "two plus three equals",
+          "seconds": 2.58
+        },
+        "5_minus_2": {
+          "text": "five minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_4": {
+          "text": "two plus four equals",
+          "seconds": 2.58
+        },
+        "6_minus_2": {
+          "text": "six minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_5": {
+          "text": "two plus five equals",
+          "seconds": 2.58
+        },
+        "7_minus_2": {
+          "text": "seven minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_6": {
+          "text": "two plus six equals",
+          "seconds": 2.58
+        },
+        "8_minus_2": {
+          "text": "eight minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_7": {
+          "text": "two plus seven equals",
+          "seconds": 2.58
+        },
+        "9_minus_2": {
+          "text": "nine minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_8": {
+          "text": "two plus eight equals",
+          "seconds": 2.58
+        },
+        "10_minus_2": {
+          "text": "ten minus two equals",
+          "seconds": 2.58
+        },
+        "2_plus_9": {
+          "text": "two plus nine equals",
+          "seconds": 2.58
+        },
+        "11_minus_2": {
+          "text": "eleven minus two equals",
+          "seconds": 2.58
+        },
+        "3_plus_0": {
+          "text": "three plus zero equals",
+          "seconds": 2.58
+        },
+        "3_minus_3": {
+          "text": "three minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_1": {
+          "text": "three plus one equals",
+          "seconds": 2.58
+        },
+        "4_minus_3": {
+          "text": "four minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_2": {
+          "text": "three plus two equals",
+          "seconds": 2.58
+        },
+        "5_minus_3": {
+          "text": "five minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_3": {
+          "text": "three plus three equals",
+          "seconds": 2.58
+        },
+        "6_minus_3": {
+          "text": "six minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_4": {
+          "text": "three plus four equals",
+          "seconds": 2.58
+        },
+        "7_minus_3": {
+          "text": "seven minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_5": {
+          "text": "three plus five equals",
+          "seconds": 2.58
+        },
+        "8_minus_3": {
+          "text": "eight minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_6": {
+          "text": "three plus six equals",
+          "seconds": 2.58
+        },
+        "9_minus_3": {
+          "text": "nine minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_7": {
+          "text": "three plus seven equals",
+          "seconds": 2.58
+        },
+        "10_minus_3": {
+          "text": "ten minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_8": {
+          "text": "three plus eight equals",
+          "seconds": 2.58
+        },
+        "11_minus_3": {
+          "text": "eleven minus three equals",
+          "seconds": 2.58
+        },
+        "3_plus_9": {
+          "text": "three plus nine equals",
+          "seconds": 2.58
+        },
+        "12_minus_3": {
+          "text": "twelve minus three equals",
+          "seconds": 2.58
+        },
+        "4_plus_0": {
+          "text": "four plus zero equals",
+          "seconds": 2.58
+        },
+        "4_minus_4": {
+          "text": "four minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_1": {
+          "text": "four plus one equals",
+          "seconds": 2.58
+        },
+        "5_minus_4": {
+          "text": "five minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_2": {
+          "text": "four plus two equals",
+          "seconds": 2.58
+        },
+        "6_minus_4": {
+          "text": "six minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_3": {
+          "text": "four plus three equals",
+          "seconds": 2.58
+        },
+        "7_minus_4": {
+          "text": "seven minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_4": {
+          "text": "four plus four equals",
+          "seconds": 2.58
+        },
+        "8_minus_4": {
+          "text": "eight minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_5": {
+          "text": "four plus five equals",
+          "seconds": 2.58
+        },
+        "9_minus_4": {
+          "text": "nine minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_6": {
+          "text": "four plus six equals",
+          "seconds": 2.58
+        },
+        "10_minus_4": {
+          "text": "ten minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_7": {
+          "text": "four plus seven equals",
+          "seconds": 2.58
+        },
+        "11_minus_4": {
+          "text": "eleven minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_8": {
+          "text": "four plus eight equals",
+          "seconds": 2.58
+        },
+        "12_minus_4": {
+          "text": "twelve minus four equals",
+          "seconds": 2.58
+        },
+        "4_plus_9": {
+          "text": "four plus nine equals",
+          "seconds": 2.58
+        },
+        "13_minus_4": {
+          "text": "thirteen minus four equals",
+          "seconds": 2.58
+        },
+        "5_plus_0": {
+          "text": "five plus zero equals",
+          "seconds": 2.58
+        },
+        "5_minus_5": {
+          "text": "five minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_1": {
+          "text": "five plus one equals",
+          "seconds": 2.58
+        },
+        "6_minus_5": {
+          "text": "six minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_2": {
+          "text": "five plus two equals",
+          "seconds": 2.58
+        },
+        "7_minus_5": {
+          "text": "seven minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_3": {
+          "text": "five plus three equals",
+          "seconds": 2.58
+        },
+        "8_minus_5": {
+          "text": "eight minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_4": {
+          "text": "five plus four equals",
+          "seconds": 2.58
+        },
+        "9_minus_5": {
+          "text": "nine minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_5": {
+          "text": "five plus five equals",
+          "seconds": 2.58
+        },
+        "10_minus_5": {
+          "text": "ten minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_6": {
+          "text": "five plus six equals",
+          "seconds": 2.58
+        },
+        "11_minus_5": {
+          "text": "eleven minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_7": {
+          "text": "five plus seven equals",
+          "seconds": 2.58
+        },
+        "12_minus_5": {
+          "text": "twelve minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_8": {
+          "text": "five plus eight equals",
+          "seconds": 2.58
+        },
+        "13_minus_5": {
+          "text": "thirteen minus five equals",
+          "seconds": 2.58
+        },
+        "5_plus_9": {
+          "text": "five plus nine equals",
+          "seconds": 2.58
+        },
+        "14_minus_5": {
+          "text": "fourteen minus five equals",
+          "seconds": 2.58
+        },
+        "6_plus_0": {
+          "text": "six plus zero equals",
+          "seconds": 2.58
+        },
+        "6_minus_6": {
+          "text": "six minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_1": {
+          "text": "six plus one equals",
+          "seconds": 2.58
+        },
+        "7_minus_6": {
+          "text": "seven minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_2": {
+          "text": "six plus two equals",
+          "seconds": 2.58
+        },
+        "8_minus_6": {
+          "text": "eight minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_3": {
+          "text": "six plus three equals",
+          "seconds": 2.58
+        },
+        "9_minus_6": {
+          "text": "nine minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_4": {
+          "text": "six plus four equals",
+          "seconds": 2.58
+        },
+        "10_minus_6": {
+          "text": "ten minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_5": {
+          "text": "six plus five equals",
+          "seconds": 2.58
+        },
+        "11_minus_6": {
+          "text": "eleven minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_6": {
+          "text": "six plus six equals",
+          "seconds": 2.58
+        },
+        "12_minus_6": {
+          "text": "twelve minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_7": {
+          "text": "six plus seven equals",
+          "seconds": 2.58
+        },
+        "13_minus_6": {
+          "text": "thirteen minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_8": {
+          "text": "six plus eight equals",
+          "seconds": 2.58
+        },
+        "14_minus_6": {
+          "text": "fourteen minus six equals",
+          "seconds": 2.58
+        },
+        "6_plus_9": {
+          "text": "six plus nine equals",
+          "seconds": 2.58
+        },
+        "15_minus_6": {
+          "text": "fifteen minus six equals",
+          "seconds": 2.58
+        },
+        "7_plus_0": {
+          "text": "seven plus zero equals",
+          "seconds": 2.58
+        },
+        "7_minus_7": {
+          "text": "seven minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_1": {
+          "text": "seven plus one equals",
+          "seconds": 2.58
+        },
+        "8_minus_7": {
+          "text": "eight minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_2": {
+          "text": "seven plus two equals",
+          "seconds": 2.58
+        },
+        "9_minus_7": {
+          "text": "nine minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_3": {
+          "text": "seven plus three equals",
+          "seconds": 2.58
+        },
+        "10_minus_7": {
+          "text": "ten minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_4": {
+          "text": "seven plus four equals",
+          "seconds": 2.58
+        },
+        "11_minus_7": {
+          "text": "eleven minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_5": {
+          "text": "seven plus five equals",
+          "seconds": 2.58
+        },
+        "12_minus_7": {
+          "text": "twelve minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_6": {
+          "text": "seven plus six equals",
+          "seconds": 2.58
+        },
+        "13_minus_7": {
+          "text": "thirteen minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_7": {
+          "text": "seven plus seven equals",
+          "seconds": 2.58
+        },
+        "14_minus_7": {
+          "text": "fourteen minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_8": {
+          "text": "seven plus eight equals",
+          "seconds": 2.58
+        },
+        "15_minus_7": {
+          "text": "fifteen minus seven equals",
+          "seconds": 2.58
+        },
+        "7_plus_9": {
+          "text": "seven plus nine equals",
+          "seconds": 2.58
+        },
+        "16_minus_7": {
+          "text": "sixteen minus seven equals",
+          "seconds": 2.58
+        },
+        "8_plus_0": {
+          "text": "eight plus zero equals",
+          "seconds": 2.58
+        },
+        "8_minus_8": {
+          "text": "eight minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_1": {
+          "text": "eight plus one equals",
+          "seconds": 2.58
+        },
+        "9_minus_8": {
+          "text": "nine minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_2": {
+          "text": "eight plus two equals",
+          "seconds": 2.58
+        },
+        "10_minus_8": {
+          "text": "ten minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_3": {
+          "text": "eight plus three equals",
+          "seconds": 2.58
+        },
+        "11_minus_8": {
+          "text": "eleven minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_4": {
+          "text": "eight plus four equals",
+          "seconds": 2.58
+        },
+        "12_minus_8": {
+          "text": "twelve minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_5": {
+          "text": "eight plus five equals",
+          "seconds": 2.58
+        },
+        "13_minus_8": {
+          "text": "thirteen minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_6": {
+          "text": "eight plus six equals",
+          "seconds": 2.58
+        },
+        "14_minus_8": {
+          "text": "fourteen minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_7": {
+          "text": "eight plus seven equals",
+          "seconds": 2.58
+        },
+        "15_minus_8": {
+          "text": "fifteen minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_8": {
+          "text": "eight plus eight equals",
+          "seconds": 2.58
+        },
+        "16_minus_8": {
+          "text": "sixteen minus eight equals",
+          "seconds": 2.58
+        },
+        "8_plus_9": {
+          "text": "eight plus nine equals",
+          "seconds": 2.58
+        },
+        "17_minus_8": {
+          "text": "seventeen minus eight equals",
+          "seconds": 2.58
+        },
+        "9_plus_0": {
+          "text": "nine plus zero equals",
+          "seconds": 2.58
+        },
+        "9_minus_9": {
+          "text": "nine minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_1": {
+          "text": "nine plus one equals",
+          "seconds": 2.58
+        },
+        "10_minus_9": {
+          "text": "ten minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_2": {
+          "text": "nine plus two equals",
+          "seconds": 2.58
+        },
+        "11_minus_9": {
+          "text": "eleven minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_3": {
+          "text": "nine plus three equals",
+          "seconds": 2.58
+        },
+        "12_minus_9": {
+          "text": "twelve minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_4": {
+          "text": "nine plus four equals",
+          "seconds": 2.58
+        },
+        "13_minus_9": {
+          "text": "thirteen minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_5": {
+          "text": "nine plus five equals",
+          "seconds": 2.58
+        },
+        "14_minus_9": {
+          "text": "fourteen minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_6": {
+          "text": "nine plus six equals",
+          "seconds": 2.58
+        },
+        "15_minus_9": {
+          "text": "fifteen minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_7": {
+          "text": "nine plus seven equals",
+          "seconds": 2.58
+        },
+        "16_minus_9": {
+          "text": "sixteen minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_8": {
+          "text": "nine plus eight equals",
+          "seconds": 2.58
+        },
+        "17_minus_9": {
+          "text": "seventeen minus nine equals",
+          "seconds": 2.58
+        },
+        "9_plus_9": {
+          "text": "nine plus nine equals",
+          "seconds": 2.58
+        },
+        "18_minus_9": {
+          "text": "eighteen minus nine equals",
+          "seconds": 2.58
+        }
       }
     }
   ]

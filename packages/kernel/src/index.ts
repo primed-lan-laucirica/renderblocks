@@ -14,6 +14,7 @@ export {
   playClips,
   speakNumber,
   speakEquation,
+  speakEquationPrompt,
   stopSpeech,
   OPERATOR_CLIP,
 } from './numberSpeech'
