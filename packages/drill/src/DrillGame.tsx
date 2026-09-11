@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { GameServices } from '@renderblocks/kernel'
 import { PALETTES, type PaletteName } from './palettes'
-import { speakNumber, speakEquationPrompt, stopSpeech } from '@renderblocks/kernel'
+import { speakEquationPrompt, stopSpeech } from '@renderblocks/kernel'
 import { createEffectPlayer, playTone } from './sounds'
 import { useDarkMode } from './useDarkMode'
 import { FactReveal, type RevealKind } from './FactReveal'
@@ -218,12 +218,10 @@ export function DrillGame({ services, config }: DrillGameProps) {
     if (!solved) return
     // Cut the problem off if he answered while it was still reading.
     stopSpeech()
-    const speakTimer = window.setTimeout(() => speakNumber(problem.answer), 300)
+    // The answer is NOT spoken: he chose it, so he already knows it — saying
+    // it back adds nothing and collides with the "yes" that confirms it.
     const advanceTimer = window.setTimeout(completeEncounter, SOLVED_PAUSE_MS)
-    return () => {
-      window.clearTimeout(speakTimer)
-      window.clearTimeout(advanceTimer)
-    }
+    return () => window.clearTimeout(advanceTimer)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot the state at solve time
   }, [solved])
 
