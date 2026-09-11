@@ -47,6 +47,17 @@ function App({ services }: GameProps) {
     }
   })
   const slotRef = useRef<HTMLDivElement>(null)
+  /** Cells are sized to fit the screen — a fixed size overflows in portrait. */
+  const [vw, setVw] = useState(() => (typeof window === 'undefined' ? 390 : window.innerWidth))
+  useEffect(() => {
+    const onResize = () => setVw(window.innerWidth)
+    window.addEventListener('resize', onResize)
+    window.addEventListener('orientationchange', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+      window.removeEventListener('orientationchange', onResize)
+    }
+  }, [])
 
   useEffect(() => {
     services.storage.set(HEARD_KEY, JSON.stringify(heard))
@@ -235,24 +246,43 @@ function App({ services }: GameProps) {
    * row and "which is the same size" becomes unanswerable.
    */
   const cellPx = (() => {
+    // Largest cell that lets `count` of them (plus any glue glyph) fit the
+    // width we actually have, capped at the size the layout would like.
+    const GAP = 8
+    const PAD = 28
+    const fit = (count: number, extra = 0) =>
+      Math.floor((Math.min(vw, 760) - PAD - extra - (count - 1) * GAP) / count)
+    const cap = (desired: number, count: number, extra = 0) =>
+      Math.max(44, Math.min(desired, fit(count, extra)))
+
     switch (item.layout) {
+      case 'classify':
+        // three stimuli + the "+" glyph + the answer slot
+        return cap(88, 4, 30)
+      case 'row':
+        return cap(88, Math.max(item.stimulus.length, 4))
       case 'matrix3':
-        return 76
+        return cap(76, 3)
+      case 'matrix2':
+        return cap(88, 2)
       case 'pairs':
+        return cap(68, 2, 30)
       case 'equation':
-        return 68
+        return cap(68, item.stimulus.length, 20)
       case 'fold':
-        return 136
+        return cap(136, 2, 30)
       case 'touchGrid':
-        return 84
+        return cap(84, 3)
       case 'field': {
         const f = item.stimulus[0]
-        // A piece is shown at exactly the size of the hole it must fill.
-        if (f.kind === 'field' && f.hole) return Math.round((f.hole.n / f.grid.length) * 240)
-        return 88
+        if (f.kind === 'field' && f.hole) {
+          const board = Math.min(240, vw - 40)
+          return Math.round((f.hole.n / f.grid.length) * board)
+        }
+        return cap(88, 3)
       }
       default:
-        return 88
+        return cap(88, 4)
     }
   })()
   const px = { width: cellPx, height: cellPx }
@@ -394,7 +424,10 @@ function App({ services }: GameProps) {
         const hole = f.kind === 'field' ? f.hole : undefined
         const n = f.kind === 'field' ? f.grid.length : 8
         return (
-          <div className={`${frame()} relative`} style={{ width: 240, height: 240 }}>
+          <div
+            className={`${frame()} relative`}
+            style={{ width: Math.min(240, vw - 40), height: Math.min(240, vw - 40) }}
+          >
             <CellView cell={f} dark={isDark} className="w-full h-full" />
             {hole && (
               <div
@@ -440,7 +473,10 @@ function App({ services }: GameProps) {
         return (
           <div
             className="grid gap-2 justify-center"
-            style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, width: n === 3 ? 250 : 176 }}
+            style={{
+              gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`,
+              width: n * cellPx + (n - 1) * 8,
+            }}
           >
             {item.stimulus.map((_, i) => box(i, `m${i}`))}
           </div>
@@ -551,14 +587,14 @@ function App({ services }: GameProps) {
           : 'bg-linear-to-b from-violet-50 via-cloud to-cloud-lavender'
       }`}
     >
-      <div className="w-full max-w-3xl flex items-center justify-between gap-2 shrink-0">
+      <div className="w-full max-w-3xl flex items-center justify-between gap-1.5 shrink-0">
         <button
           type="button"
           onPointerDown={() => {
             stopVoice()
             setMode(null)
           }}
-          className={`w-10 h-10 shrink-0 rounded-full text-xl font-extrabold ${
+          className={`w-9 h-9 shrink-0 rounded-full text-lg font-extrabold ${
             isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
           }`}
           aria-label="Back to the puzzle list"
@@ -566,10 +602,14 @@ function App({ services }: GameProps) {
           ←
         </button>
         <div className="min-w-0">
-          <div className="text-xs font-extrabold uppercase tracking-wide truncate text-violet-400">
+          <div className="text-[10px] font-extrabold uppercase tracking-wide truncate text-violet-400">
             {SUBTEST_NAME[item.sub]}
           </div>
-          <div className={`text-xl font-extrabold truncate ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+          <div
+            className={`text-base sm:text-xl font-extrabold leading-tight ${
+              isDark ? 'text-slate-200' : 'text-slate-700'
+            }`}
+          >
             {SUBTEST_HINT[item.sub]}
           </div>
         </div>
@@ -697,7 +737,11 @@ function App({ services }: GameProps) {
                   opacity: hidden ? 0.25 : rejected ? 0.3 : 1,
                   scale: rejected ? 0.9 : 1,
                 }}
-                style={{ ...px, touchAction: 'none' }}
+                style={{
+                  width: Math.min(cellPx, Math.floor((Math.min(vw, 760) - 28 - 16) / 3)),
+                  height: Math.min(cellPx, Math.floor((Math.min(vw, 760) - 28 - 16) / 3)),
+                  touchAction: 'none',
+                }}
                 className={frame(
                   rejected ? 'border-rose-300' : solved && isAnswer ? 'border-emerald-400' : 'cursor-grab',
                 )}
