@@ -2,6 +2,7 @@ export type DeckId =
   | 'addsub10'
   | 'addsub20'
   | 'addsub100'
+  | 'decMirror'
   | 'decTenths'
   | 'decOnes'
   | 'times'
@@ -12,12 +13,15 @@ export interface Card {
   op: '+' | '−' | '×' | '÷'
   b: number
   answer: number
+  /** For decimal cards: the whole-number fact it mirrors, e.g. "25 + 25 = 50". */
+  mirror?: string
 }
 
 export const DECKS: Array<{ id: DeckId; label: string }> = [
   { id: 'addsub10', label: 'Add & Subtract to 10' },
   { id: 'addsub20', label: 'Add & Subtract to 20' },
   { id: 'addsub100', label: 'Add & Subtract to 100' },
+  { id: 'decMirror', label: 'Decimals: Like Whole Numbers' },
   { id: 'decTenths', label: 'Decimals: Tenths' },
   { id: 'decOnes', label: 'Decimals: Ones & Tenths' },
   { id: 'times', label: 'Times Tables 1–12' },
@@ -44,6 +48,26 @@ function tenthsCard(A: number, op: '+' | '−', B: number): Card {
   return { a: A / 10, op, b: B / 10, answer: (op === '+' ? A + B : A - B) / 10 }
 }
 
+/**
+ * A decimal card built FROM the whole-number fact it mirrors, so the pair is
+ * exact by construction: 25 + 25 = 50  ->  2.5 + 2.5 = 5.
+ * For + and − every value moves one place. For × and ÷ the multiplier or
+ * divisor stays whole (25 × 2 = 50 -> 2.5 × 2 = 5), which is what keeps
+ * the analogy true.
+ */
+function mirrorCard(A: number, op: '+' | '−' | '×' | '÷', B: number): Card {
+  const whole =
+    op === '+' ? A + B : op === '−' ? A - B : op === '×' ? A * B : A / B
+  const scaledB = op === '×' || op === '÷' ? B : B / 10
+  return {
+    a: A / 10,
+    op,
+    b: scaledB,
+    answer: whole / 10,
+    mirror: `${A} ${op} ${B} = ${whole}`,
+  }
+}
+
 export function buildDeck(id: DeckId): Card[] {
   switch (id) {
     case 'addsub10':
@@ -57,6 +81,34 @@ export function buildDeck(id: DeckId): Card[] {
         const b = 1 + ((a * 7) % 89)
         if (a + b <= 100) out.push({ a, op: '+', b, answer: a + b })
         if (a - b >= 0) out.push({ a, op: '−', b, answer: a - b })
+      }
+      return out
+    }
+    case 'decMirror': {
+      // Really basic: halves, their doubles, and simple doubles — each the
+      // twin of a whole-number fact he already knows.
+      const out: Card[] = []
+      for (const h of [5, 15, 25, 35, 45]) {
+        out.push(mirrorCard(h, '+', h)) //   2.5 + 2.5 = 5
+        out.push(mirrorCard(h, '×', 2)) //   2.5 × 2 = 5
+        out.push(mirrorCard(2 * h, '÷', 2)) // 5 ÷ 2 = 2.5
+        out.push(mirrorCard(2 * h, '−', h)) // 5 − 2.5 = 2.5
+      }
+      for (const [x, y] of [
+        [15, 5],
+        [25, 5],
+        [35, 5],
+        [75, 25],
+        [25, 75],
+        [12, 13],
+        [21, 14],
+      ]) {
+        out.push(mirrorCard(x, '+', y)) //   7.5 + 2.5 = 10
+        out.push(mirrorCard(x + y, '−', y)) // 10 − 2.5 = 7.5
+      }
+      for (const d of [11, 12, 13, 21, 22]) {
+        out.push(mirrorCard(d, '+', d)) //   1.2 + 1.2 = 2.4
+        out.push(mirrorCard(d, '×', 2)) //   1.2 × 2 = 2.4
       }
       return out
     }
