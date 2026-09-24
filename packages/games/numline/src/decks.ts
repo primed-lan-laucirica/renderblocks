@@ -13,8 +13,6 @@ export interface Card {
   op: '+' | '−' | '×' | '÷'
   b: number
   answer: number
-  /** For decimal cards: the whole-number fact it mirrors, e.g. "25 + 25 = 50". */
-  mirror?: string
 }
 
 export const DECKS: Array<{ id: DeckId; label: string }> = [
@@ -59,13 +57,7 @@ function mirrorCard(A: number, op: '+' | '−' | '×' | '÷', B: number): Card {
   const whole =
     op === '+' ? A + B : op === '−' ? A - B : op === '×' ? A * B : A / B
   const scaledB = op === '×' || op === '÷' ? B : B / 10
-  return {
-    a: A / 10,
-    op,
-    b: scaledB,
-    answer: whole / 10,
-    mirror: `${A} ${op} ${B} = ${whole}`,
-  }
+  return { a: A / 10, op, b: scaledB, answer: whole / 10 }
 }
 
 export function buildDeck(id: DeckId): Card[] {

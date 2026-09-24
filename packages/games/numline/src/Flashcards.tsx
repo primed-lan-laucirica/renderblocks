@@ -57,7 +57,7 @@ export function Flashcards({
         onPointerDown={onNext}
         whileTap={{ scale: 0.97 }}
         style={{ touchAction: 'manipulation' }}
-        className={`w-full max-w-md rounded-3xl border-4 flex flex-col items-center justify-center gap-2 px-4 py-8 min-h-[9rem] ${
+        className={`w-full max-w-md rounded-3xl border-4 flex items-center justify-center px-4 py-8 min-h-[9rem] ${
           dark ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200 shadow-playful'
         }`}
       >
@@ -84,18 +84,6 @@ export function Flashcards({
           <span className={`text-xl font-bold ${dark ? 'text-slate-500' : 'text-slate-400'}`}>
             Deck finished — tap for more
           </span>
-        )}
-        {/* Once he has worked it, show the whole-number fact it mirrors —
-            the analogy lands after he has done the thinking, not before. */}
-        {card?.mirror && revealed && (
-          <motion.span
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className={`text-xl font-extrabold tabular-nums ${dark ? 'text-slate-500' : 'text-slate-400'}`}
-          >
-            like {card.mirror}
-          </motion.span>
         )}
       </motion.button>
 
