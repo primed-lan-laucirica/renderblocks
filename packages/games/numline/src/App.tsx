@@ -10,7 +10,9 @@ import { useDarkMode } from './useDarkMode'
 // every integer, and a calculator that silently rounds typed digits lies.
 const MAX_DIGITS = 15
 
-const round2 = (v: number) => Math.round(v * 100) / 100
+/** Up to 6 decimal places: enough for real decimal work, hides float noise (0.1 + 0.2). */
+const tidy = (v: number) => parseFloat(v.toFixed(6))
+const fmt = (v: number) => tidy(v).toLocaleString('en-US', { maximumFractionDigits: 6 })
 
 function compute(a: number, op: Op, b: number): number | null {
   switch (op) {
@@ -92,6 +94,23 @@ function App({ services }: GameProps) {
     else setB(grow(b))
   }
 
+  /** Add a decimal point to the operand being typed — at most one per number. */
+  const pressDecimal = () => {
+    playEffect('click', 0.5)
+    const dot = (prev: string) =>
+      prev.includes('.') ? prev : prev === '' ? '0.' : prev.length < MAX_DIGITS ? `${prev}.` : prev
+    if (committed) {
+      // A decimal point after a result starts a fresh number, like a digit does.
+      setA('0.')
+      setOp(null)
+      setB('')
+      setCommitted(false)
+      return
+    }
+    if (op === null) setA(dot(a))
+    else setB(dot(b))
+  }
+
   const pressOp = (next: Op) => {
     playEffect('click', 0.5)
     if (committed) {
@@ -105,7 +124,7 @@ function App({ services }: GameProps) {
         return
       }
       // Chain from the result.
-      setA(String(round2(result)))
+      setA(String(tidy(result)))
       setOp(next)
       setB('')
       setCommitted(false)
@@ -114,7 +133,7 @@ function App({ services }: GameProps) {
     if (op !== null && b !== '') {
       // Chained evaluation: collapse a op b, then continue.
       if (result !== null) {
-        setA(String(round2(result)))
+        setA(String(tidy(result)))
         setOp(next)
         setB('')
       }
@@ -165,7 +184,7 @@ function App({ services }: GameProps) {
 
   const expression = `${a || '0'}${op ? ` ${op} ${b}` : ''}${
     committed
-      ? ` = ${result === null ? 'undefined' : round2(result).toLocaleString('en-US')}`
+      ? ` = ${result === null ? 'undefined' : fmt(result)}`
       : ''
   }`
 
@@ -306,7 +325,8 @@ function App({ services }: GameProps) {
           {key('2', () => pressDigit('2'), keyBase)}
           {key('3', () => pressDigit('3'), keyBase)}
           {key('−', () => pressOp('−'), op === '−' && !committed ? `${opKey} ring-4 ring-amber-400` : opKey)}
-          {key('0', () => pressDigit('0'), `col-span-2 ${keyBase}`)}
+          {key('0', () => pressDigit('0'), keyBase)}
+          {key('.', pressDecimal, keyBase)}
           {key(
             '=',
             pressEquals,

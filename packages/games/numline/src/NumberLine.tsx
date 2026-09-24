@@ -34,7 +34,8 @@ function stepFor(pxPerUnit: number, minPx: number): number {
 
 const fmtTick = (v: number) => v.toLocaleString('en-US')
 
-const round2 = (v: number) => Math.round(v * 100) / 100
+const fmtResult = (v: number) =>
+  parseFloat(v.toFixed(6)).toLocaleString('en-US', { maximumFractionDigits: 6 })
 
 /**
  * The calculation drawn on a number line. Window auto-fits everything in
@@ -187,7 +188,7 @@ export function NumberLine({ a, op, b, result, dark }: NumberLineProps) {
             fontWeight="800"
             fill={amber}
           >
-            {round2(result).toLocaleString('en-US')}
+            {fmtResult(result)}
           </text>
         </g>
       )}
