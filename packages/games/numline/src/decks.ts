@@ -19,7 +19,7 @@ export const DECKS: Array<{ id: DeckId; label: string }> = [
   { id: 'addsub10', label: 'Add & Subtract to 10' },
   { id: 'addsub20', label: 'Add & Subtract to 20' },
   { id: 'addsub100', label: 'Add & Subtract to 100' },
-  { id: 'decMirror', label: 'Decimals: Like Whole Numbers' },
+  { id: 'decMirror', label: 'Decimals: Halves & Quarters' },
   { id: 'decTenths', label: 'Decimals: Tenths' },
   { id: 'decOnes', label: 'Decimals: Ones & Tenths' },
   { id: 'times', label: 'Times Tables 1–12' },
@@ -47,17 +47,60 @@ function tenthsCard(A: number, op: '+' | '−', B: number): Card {
 }
 
 /**
- * A decimal card built FROM the whole-number fact it mirrors, so the pair is
- * exact by construction: 25 + 25 = 50  ->  2.5 + 2.5 = 5.
- * For + and − every value moves one place. For × and ÷ the multiplier or
- * divisor stays whole (25 × 2 = 50 -> 2.5 × 2 = 5), which is what keeps
- * the analogy true.
+ * The quarters level: every number on a card — both operands AND the
+ * answer — is a whole number or ends in .25, .5 or .75. Cards are built in
+ * integer quarters and divided at the end; quarters are exact in binary, so
+ * nothing prints as 2.4999999.
  */
-function mirrorCard(A: number, op: '+' | '−' | '×' | '÷', B: number): Card {
-  const whole =
-    op === '+' ? A + B : op === '−' ? A - B : op === '×' ? A * B : A / B
-  const scaledB = op === '×' || op === '÷' ? B : B / 10
-  return { a: A / 10, op, b: scaledB, answer: whole / 10 }
+const q = (n: number) => n / 4
+const isQuarter = (v: number) => Number.isInteger(v * 4)
+const hasDecimal = (...vs: number[]) => vs.some((v) => !Number.isInteger(v))
+
+/** An even spread of `n` items across `list`, fixed rather than random. */
+function spread<T>(list: T[], n: number): T[] {
+  if (list.length <= n) return list
+  return Array.from({ length: n }, (_, i) => list[Math.floor((i * list.length) / n)])
+}
+
+function quartersDeck(): Card[] {
+  const add: Card[] = []
+  const sub: Card[] = []
+  const timesWhole: Card[] = []
+  const timesHalves: Card[] = []
+  const div: Card[] = []
+  // Operands 0.25 – 5, at least one of them a decimal.
+  for (let A = 1; A <= 20; A++)
+    for (let B = 1; B <= 20; B++) {
+      const a = q(A)
+      const b = q(B)
+      if (!hasDecimal(a, b)) continue
+      if (A + B <= 32) add.push({ a, op: '+', b, answer: q(A + B) }) // 2.5 + 2.5 = 5
+      if (A > B) sub.push({ a, op: '−', b, answer: q(A - B) }) //       3.75 − 1.5 = 2.25
+    }
+  // A decimal times a whole number: 2.5 × 2 = 5, 1.25 × 4 = 5, 0.75 × 3 = 2.25.
+  for (let A = 1; A <= 16; A++)
+    for (let k = 2; k <= 6; k++) {
+      const a = q(A)
+      if (!hasDecimal(a)) continue
+      timesWhole.push(A % 2 ? { a: k, op: '×', b: a, answer: q(A * k) } : { a, op: '×', b: k, answer: q(A * k) })
+    }
+  // Halves times halves is the one decimal-by-decimal product that stays in
+  // quarters: 0.5 × 0.5 = 0.25, 1.5 × 2.5 = 3.75.
+  for (let x = 1; x <= 7; x += 2)
+    for (let y = x; y <= 7; y += 2) timesHalves.push({ a: x / 2, op: '×', b: y / 2, answer: (x * y) / 4 })
+  // Sharing into 2 or 4 when the answer is still a quarter: 5 ÷ 2 = 2.5, 3 ÷ 4 = 0.75.
+  for (let A = 2; A <= 40; A++)
+    for (const k of [2, 4]) {
+      const answer = q(A) / k
+      if (isQuarter(answer) && hasDecimal(answer)) div.push({ a: q(A), op: '÷', b: k, answer })
+    }
+  return [
+    ...spread(add, 24),
+    ...spread(sub, 16),
+    ...spread(timesWhole, 16),
+    ...timesHalves,
+    ...spread(div, 8),
+  ]
 }
 
 export function buildDeck(id: DeckId): Card[] {
@@ -76,34 +119,8 @@ export function buildDeck(id: DeckId): Card[] {
       }
       return out
     }
-    case 'decMirror': {
-      // Really basic: halves, their doubles, and simple doubles — each the
-      // twin of a whole-number fact he already knows.
-      const out: Card[] = []
-      for (const h of [5, 15, 25, 35, 45]) {
-        out.push(mirrorCard(h, '+', h)) //   2.5 + 2.5 = 5
-        out.push(mirrorCard(h, '×', 2)) //   2.5 × 2 = 5
-        out.push(mirrorCard(2 * h, '÷', 2)) // 5 ÷ 2 = 2.5
-        out.push(mirrorCard(2 * h, '−', h)) // 5 − 2.5 = 2.5
-      }
-      for (const [x, y] of [
-        [15, 5],
-        [25, 5],
-        [35, 5],
-        [75, 25],
-        [25, 75],
-        [12, 13],
-        [21, 14],
-      ]) {
-        out.push(mirrorCard(x, '+', y)) //   7.5 + 2.5 = 10
-        out.push(mirrorCard(x + y, '−', y)) // 10 − 2.5 = 7.5
-      }
-      for (const d of [11, 12, 13, 21, 22]) {
-        out.push(mirrorCard(d, '+', d)) //   1.2 + 1.2 = 2.4
-        out.push(mirrorCard(d, '×', 2)) //   1.2 × 2 = 2.4
-      }
-      return out
-    }
+    case 'decMirror':
+      return quartersDeck()
     case 'decTenths': {
       // 0.1–0.9 with 0.1–0.9. The sums that cross 1 (0.7 + 0.5 = 1.2) are
       // the heart of beginner decimals; subtraction never goes negative.
