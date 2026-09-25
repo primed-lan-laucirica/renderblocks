@@ -94,9 +94,16 @@ export class Camera {
   }
 
   follow(b: Block, now: number): void {
+    // A fall the camera picks up by itself (no grab first): remember where to come back to.
+    if (this.mode !== 'frozen' && this.mode !== 'follow') this.homeX = this.x
     this.mode = 'follow'
     this.followBlock = b
     this.followUntil = now + 3
+  }
+
+  /** The block being followed, if any. */
+  target(): Block | null {
+    return this.mode === 'follow' || this.mode === 'winner' ? this.followBlock : null
   }
 
   showWinner(b: Block): void {
@@ -137,10 +144,10 @@ export class Camera {
       case 'follow':
       case 'winner': {
         const b = this.followBlock
-        // A block falling toward the lava is followed all the way down, however long that takes.
-        const falling = !!b && b.outAt === null && b.cur.y < 0 && b.cur.x > sim.platform.x0 - 1e3
+        // Over the edge, a block is followed all the way down to the lava — however
+        // high it was thrown and however long the fall takes.
         const offPlatform = !!b && (b.cur.x < sim.platform.x0 || b.cur.x > sim.platform.x1)
-        if (!b || b.removed || (this.mode === 'follow' && (b.outAt !== null || (now > this.followUntil && !(falling && offPlatform))))) {
+        if (!b || b.removed || (this.mode === 'follow' && (b.outAt !== null || (now > this.followUntil && !offPlatform)))) {
           // It went into the lava: come back to where the battle was.
           this.returning = !!b && b.outAt !== null && this.homeX !== null
           this.mode = 'auto'

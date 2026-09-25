@@ -158,7 +158,9 @@ for (const group of manifest.sfx ?? []) {
       prompt_influence: spec.influence ?? 0.6,
     })
     writeFileSync(path, buf)
-    console.log(`sfx     ${group.dir}/${name}.mp3  ${(buf.length / 1024).toFixed(0)}kB`)
+    // Voice-like effects (e.g. LavaBlocks' falling screams) are levelled like the chorus clips.
+    if (group.normalize) normalize(path, spec.seconds, { pad: false })
+    console.log(`sfx     ${group.dir}/${name}.mp3  ${(readFileSync(path).length / 1024).toFixed(0)}kB`)
     made++
   }
 }

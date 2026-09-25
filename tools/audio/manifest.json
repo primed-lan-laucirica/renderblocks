@@ -77,6 +77,32 @@
           "seconds": 0.6
         }
       }
+    },
+    {
+      "dir": "lava/voice",
+      "normalize": true,
+      "items": {
+        "fall1": {
+          "prompt": "a child's voice screaming \"Aaaaaaah!\" while falling from a great height, cartoon, fading away",
+          "seconds": 2.5,
+          "influence": 0.7
+        },
+        "fall2": {
+          "prompt": "a child's voice yelling \"Nooooooo!\" while falling, cartoon, fading away",
+          "seconds": 2.5,
+          "influence": 0.7
+        },
+        "fall3": {
+          "prompt": "a child's voice shouting \"Whoaaaaa!\" while falling, cartoon",
+          "seconds": 2.2,
+          "influence": 0.7
+        },
+        "fall4": {
+          "prompt": "a child's voice screaming \"Heeeelp!\" while falling, cartoon",
+          "seconds": 2.0,
+          "influence": 0.7
+        }
+      }
     }
   ],
   "chorus": [

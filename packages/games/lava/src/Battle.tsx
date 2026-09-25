@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { speakNumber, stopSpeech } from '@renderblocks/kernel'
-import { celebrate, sizzle, stopAudio, thud, unlockAudio } from './audio'
+import { celebrate, cutScream, scream, sizzle, stopAudio, thud, unlockAudio } from './audio'
 import { Camera } from './camera'
 import type { LavaConfig } from './config'
 import { draw } from './render'
@@ -189,6 +189,17 @@ export function Battle({ values, config, onAgain, onNewBattle, onOpenPanel }: Ba
     let ended = false
     let fps = 60
     let shownLeft = values.length
+    /** Screams in progress, per block. */
+    const screams = new Map<Block, ReturnType<typeof scream>>()
+    /** Blocks whose current fall the camera has already picked up (so a pan away sticks). */
+    const watched = new Set<Block>()
+
+    /** Over the edge and dropping: past the platform's end, not held, not yet in the lava. */
+    const goingOver = (b: Block) =>
+      !!sim &&
+      b.outAt === null &&
+      sim.grabbed() !== b &&
+      (b.cur.x < sim.platform.x0 || b.cur.x > sim.platform.x1)
 
     const frame = (t: number) => {
       raf = requestAnimationFrame(frame)
@@ -219,10 +230,36 @@ export function Battle({ values, config, onAgain, onNewBattle, onOpenPanel }: Ba
         const ev = sim.step()
         for (const th of ev.thuds) thud(th.strength, th.block.shape.L)
         if (ev.sizzles.length) sizzle()
+        for (const b of ev.sizzles) {
+          cutScream(screams.get(b) ?? null)
+          screams.delete(b)
+        }
         acc -= STEP
         steps++
       }
       if (steps === 4) acc = 0
+
+      // Falling off the edge: scream, and bring the camera along if it's on screen.
+      for (const b of sim.blocks) {
+        if (b.removed) continue
+        const over = goingOver(b)
+        if (over && !screams.has(b) && b.cur.y < b.prev.y) screams.set(b, scream(b.shape.L))
+        if (!over && screams.has(b)) {
+          // Rescued (grabbed) or somehow back on the platform: stop screaming.
+          cutScream(screams.get(b) ?? null, 0.25)
+          screams.delete(b)
+        }
+        if (!over) {
+          watched.delete(b)
+        } else if (!watched.has(b) && cam.mode !== 'frozen' && cam.mode !== 'manual' && cam.mode !== 'winner') {
+          const [sx] = cam.toScreen(b.cur.x, b.cur.y)
+          const following = cam.mode === 'follow' && cam.target() !== null && goingOver(cam.target()!)
+          if (!following && sx > -0.2 * cam.vw && sx < 1.2 * cam.vw) {
+            watched.add(b)
+            cam.follow(b, sim.time)
+          }
+        }
+      }
 
       cam.update(dt, sim, cfg, sim.time)
       draw(ctx, sim, cam, { alpha: acc / STEP, now: sim.time, debug: cfg.debug, fps, dpr })
