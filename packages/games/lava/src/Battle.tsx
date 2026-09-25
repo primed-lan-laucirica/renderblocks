@@ -165,9 +165,8 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
       pointers.delete(e.pointerId)
       if (e.pointerId === grabPointer && sim) {
         grabPointer = null
-        const flung = sim.endGrab()
-        if (flung) cam.follow(flung, sim.time)
-        else cam.mode = 'auto'
+        sim.endGrab()
+        cam.release()
       } else if (e.pointerId === panPointer) {
         panPointer = null
         // Momentum from the last 100 ms of the drag.
@@ -195,8 +194,14 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
     let shownLeft = values.length
     /** Screams in progress, per block. */
     const screams = new Map<Block, ReturnType<typeof scream>>()
-    /** Blocks whose current fall the camera has already picked up (so a pan away sticks). */
-    const watched = new Set<Block>()
+    /**
+     * Blocks in motion that the camera keeps in view: picked up while on
+     * screen, kept (however far they go) until they have been still for
+     * STILL_S or have gone into the lava.
+     */
+    const inMotion = new Set<Block>()
+    const stillFor = new Map<Block, number>()
+    const STILL_S = 0.3
 
     /** Over the edge and dropping: past the platform's end, not held, not yet in the lava. */
     const goingOver = (b: Block) =>
@@ -245,9 +250,12 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
       }
       if (steps === 4) acc = 0
 
-      // Falling off the edge: scream, and bring the camera along if it's on screen.
+      // Falling off the edge: scream. Anything moving: keep it in view.
       for (const b of sim.blocks) {
-        if (b.removed) continue
+        if (b.removed) {
+          inMotion.delete(b)
+          continue
+        }
         const over = goingOver(b)
         if (over && !screams.has(b) && b.cur.y < b.prev.y) {
           // Sized to the fall: from here, at this speed, down to the lava.
@@ -259,17 +267,22 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
           cutScream(screams.get(b) ?? null, 0.25)
           screams.delete(b)
         }
-        if (!over) {
-          watched.delete(b)
-        } else if (!watched.has(b) && cam.mode !== 'frozen' && cam.mode !== 'manual' && cam.mode !== 'winner') {
-          const [sx] = cam.toScreen(b.cur.x, b.cur.y)
-          const following = cam.mode === 'follow' && cam.target() !== null && goingOver(cam.target()!)
-          if (!following && sx > -0.2 * cam.vw && sx < 1.2 * cam.vw) {
-            watched.add(b)
-            cam.follow(b, sim.time)
-          }
+
+        if (b.outAt !== null) {
+          // Seen hitting the lava; then the camera lets it go.
+          if (sim.time - b.outAt > 0.5) inMotion.delete(b)
+        } else if (sim.grabbed() === b) {
+          inMotion.delete(b)
+        } else if (over || sim.speed(b) > 0.35 * Math.sqrt(b.shape.L)) {
+          stillFor.set(b, 0)
+          if (inMotion.has(b) || cam.onScreen(b)) inMotion.add(b)
+        } else {
+          const still = (stillFor.get(b) ?? 0) + dt
+          stillFor.set(b, still)
+          if (still >= STILL_S) inMotion.delete(b)
         }
       }
+      cam.setMoving([...inMotion])
 
       cam.update(dt, sim, cfg, sim.time)
       draw(ctx, sim, cam, { alpha: acc / STEP, now: sim.time, debug: cfg.debug, fps, dpr })
