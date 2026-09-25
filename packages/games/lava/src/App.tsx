@@ -57,6 +57,7 @@ function App({ services }: GameProps) {
       {battle ? (
         <Battle
           values={battle}
+          style={set === 'squares' ? 'square' : set === 'triangular' ? 'steps' : 'blocks'}
           config={config}
           onAgain={() => setBattle(spawnNumbers(set, range, config.blockCap))}
           onNewBattle={() => setBattle(null)}

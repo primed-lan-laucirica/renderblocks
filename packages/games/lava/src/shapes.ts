@@ -36,7 +36,16 @@ export interface BlockShape {
   kind: 'cubes' | 'grid' | 'zero'
   /** Characteristic size √(w·h): the yardstick for size-relative fling and drag limits. */
   L: number
+  /** Local x of the eyes: centred, except a staircase looks out from its tallest step. */
+  eyeX: number
 }
+
+/**
+ * How a block arranges its cubes: the Blocks-game layout, or — in the
+ * Square Club and Step Squad battles — a square (16 = 4×4) or a staircase
+ * rising to the right (10 = 1+2+3+4), as those clubs look in Numberblocks.
+ */
+export type ShapeStyle = 'blocks' | 'square' | 'steps'
 
 /** Up to this magnitude a block is its true Blocks-game shape, one cube per unit. */
 export const TRUE_SCALE_MAX = 100
@@ -83,18 +92,47 @@ function coverCells(cells: Array<{ x: number; y: number }>): Array<{ x: number; 
   return runs
 }
 
-const shapeCache = new Map<number, BlockShape>()
+const shapeCache = new Map<string, BlockShape>()
 
-export function blockShape(value: number): BlockShape {
-  let shape = shapeCache.get(value)
+export function blockShape(value: number, style: ShapeStyle = 'blocks'): BlockShape {
+  const key = `${style}:${value}`
+  let shape = shapeCache.get(key)
   if (!shape) {
-    shape = buildShape(value)
-    shapeCache.set(value, shape)
+    shape = buildShape(value, style)
+    shapeCache.set(key, shape)
   }
   return shape
 }
 
-function buildShape(value: number): BlockShape {
+/** Largest m with m(m+1)/2 ≤ n. */
+function stepCount(n: number): number {
+  let m = Math.floor((Math.sqrt(8 * n + 1) - 1) / 2)
+  while ((m * (m + 1)) / 2 > n) m--
+  return m
+}
+
+/**
+ * Cube cells (unit grid, y down) in colouring order — bottom row first, left
+ * to right, so the tens (pale) portion sits at the base as in the Blocks game.
+ * Square and staircase styles only apply to members of those clubs.
+ */
+function arrangement(abs: number, style: ShapeStyle): Array<{ x: number; y: number }> {
+  if (style === 'square') {
+    const m = Math.round(Math.sqrt(abs))
+    if (m * m === abs) return Array.from({ length: abs }, (_, i) => ({ x: i % m, y: m - 1 - Math.floor(i / m) }))
+  }
+  if (style === 'steps') {
+    const m = stepCount(abs)
+    if ((m * (m + 1)) / 2 === abs) {
+      const cells: Array<{ x: number; y: number }> = []
+      for (let row = 0; row < m; row++) for (let col = row; col < m; col++) cells.push({ x: col, y: m - 1 - row })
+      return cells
+    }
+  }
+  return getCubePositions(abs, 1, 0).map((p) => ({ x: Math.round(p.x), y: Math.round(p.y) }))
+}
+
+function buildShape(value: number, style: ShapeStyle): BlockShape {
   const abs = Math.abs(value)
   const tint = value < 0 ? (c: string) => darken(c.startsWith('#') ? c : '#808080') : (c: string) => c
 
@@ -109,13 +147,13 @@ function buildShape(value: number): BlockShape {
       body: '#94a3b8',
       kind: 'zero',
       L: 1,
+      eyeX: 0,
     }
   }
 
   if (abs < 1000) {
-    // Blocks-game layout on a unit grid (y down), flipped to y up.
-    const pos = getCubePositions(abs, 1, 0)
-    const cells = pos.map((p) => ({ x: Math.round(p.x), y: Math.round(p.y) }))
+    // Cube layout on a unit grid (y down), flipped to y up.
+    const cells = arrangement(abs, style)
     const maxX = Math.max(...cells.map((c) => c.x))
     const maxY = Math.max(...cells.map((c) => c.y))
     const gridW = maxX + 1
@@ -151,45 +189,58 @@ function buildShape(value: number): BlockShape {
       body: tint(getNumberBlockColor(abs % 10 || Math.floor(abs / 10 ** Math.floor(Math.log10(abs))))),
       kind: 'cubes',
       L: Math.sqrt(w * h),
+      eyeX: style === 'steps' ? w / 2 - k / 2 : 0,
     }
   }
 
-  // 1,000 and up (option a): an equal-area square drawn as a 10×10 grid of
+  // 1,000 and up (option a): equal-area, drawn as a 10×10 grid of
   // hundred-squares in the leading digit's colour — 7 keeps its rainbow
-  // columns and 9 its grey gradient, as in the Blocks game.
+  // columns and 9 its grey gradient, as in the Blocks game. Step Squad
+  // members keep their staircase: 10 steps of the same cells.
   const s = bigSide(abs)
   const lead = Math.floor(abs / 10 ** Math.floor(Math.log10(abs)))
-  const c = s / 10
+  const steps = style === 'steps'
+  const grid: Array<{ col: number; row: number }> = []
+  for (let col = 0; col < 10; col++) for (let row = 0; row < (steps ? col + 1 : 10); row++) grid.push({ col, row })
+  const c = s / Math.sqrt(grid.length)
+  const side = 10 * c
   const cubes: Cube[] = []
-  for (let row = 0; row < 10; row++) {
-    for (let col = 0; col < 10; col++) {
-      const fill =
-        lead === 7
-          ? getNumberBlockColor(Math.min(7, Math.floor((col * 7) / 10) + 1))
-          : lead === 9
-            ? NINE_GRAY_COLORS[Math.min(8, Math.floor(((9 - row) * 3) / 10) * 3)]
-            : lead === 1
-              ? PALE_COLORS[1]
-              : getNumberBlockColor(lead)
-      cubes.push({
-        cx: (col + 0.5) * c - s / 2,
-        cy: (row + 0.5) * c - s / 2,
-        w: c,
-        h: c,
-        fill: tint(fill),
-        outline: lead === 1 ? tint(getNumberBlockColor(1)) : null,
-      })
-    }
+  for (const { col, row } of grid) {
+    const fill =
+      lead === 7
+        ? getNumberBlockColor(Math.min(7, Math.floor((col * 7) / 10) + 1))
+        : lead === 9
+          ? NINE_GRAY_COLORS[Math.min(8, Math.floor(((9 - row) * 3) / 10) * 3)]
+          : lead === 1
+            ? PALE_COLORS[1]
+            : getNumberBlockColor(lead)
+    cubes.push({
+      cx: (col + 0.5) * c - side / 2,
+      cy: (row + 0.5) * c - side / 2,
+      w: c,
+      h: c,
+      fill: tint(fill),
+      outline: lead === 1 ? tint(getNumberBlockColor(1)) : null,
+    })
   }
+  const rects = steps
+    ? coverCells(grid.map(({ col, row }) => ({ x: col, y: 9 - row }))).map((r) => ({
+        cx: (r.x + r.w / 2) * c - side / 2,
+        cy: (9 - (r.y + r.h - 1) + r.h / 2) * c - side / 2,
+        w: r.w * c,
+        h: r.h * c,
+      }))
+    : [{ cx: 0, cy: 0, w: side, h: side }]
   return {
     value,
-    w: s,
-    h: s,
-    rects: [{ cx: 0, cy: 0, w: s, h: s }],
+    w: side,
+    h: side,
+    rects,
     cubes,
     cubeSize: c,
     body: tint(lead === 1 ? '#f1f5f9' : getNumberBlockColor(lead)),
     kind: 'grid',
     L: s,
+    eyeX: steps ? side / 2 - c / 2 : 0,
   }
 }

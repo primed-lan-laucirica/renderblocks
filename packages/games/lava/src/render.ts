@@ -77,7 +77,7 @@ function drawBlock(ctx: CanvasRenderingContext2D, b: Block, p: Pose, zoom: numbe
   const eye = 0.16 * Math.max(1, s.cubeSize * (s.kind === 'grid' ? 2.5 : 1))
   if (eye * zoom >= 2 && s.kind !== 'zero') {
     const ey = s.h / 2 - eye * 1.7
-    const xs = Math.abs(b.value) === 1 ? [0] : [-eye * 1.25, eye * 1.25]
+    const xs = Math.abs(b.value) === 1 ? [s.eyeX] : [s.eyeX - eye * 1.25, s.eyeX + eye * 1.25]
     for (const ex of xs) {
       ctx.fillStyle = '#fff'
       ctx.beginPath()

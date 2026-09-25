@@ -125,6 +125,29 @@ describe('block shapes', () => {
     }
   })
 
+  it('draws Square Club members as squares and Step Squad members as staircases', () => {
+    expect(blockShape(16, 'square')).toMatchObject({ w: 4, h: 4 })
+    expect(blockShape(81, 'square')).toMatchObject({ w: 9, h: 9 })
+    expect(blockShape(10, 'steps')).toMatchObject({ w: 4, h: 4 })
+    expect(blockShape(91, 'steps')).toMatchObject({ w: 13, h: 13 })
+    const area = (s: ReturnType<typeof blockShape>) => s.rects.reduce((sum, r) => sum + r.w * r.h, 0)
+    for (const n of [1, 3, 6, 10, 15, 21, 28, 91]) {
+      const s = blockShape(n, 'steps')
+      expect(s.cubes).toHaveLength(n)
+      expect(area(s)).toBeCloseTo(n)
+      // Rising to the right: the tallest column is the rightmost.
+      const tallestX = Math.max(...s.cubes.filter((c) => c.cy === Math.max(...s.cubes.map((d) => d.cy))).map((c) => c.cx))
+      expect(tallestX).toBeCloseTo(s.w / 2 - 0.5)
+    }
+    for (const n of [121, 961]) {
+      expect(area(blockShape(n, 'square'))).toBeCloseTo(bigSide(n) ** 2, 5)
+      expect(blockShape(n, 'square').w).toBeCloseTo(blockShape(n, 'square').h)
+    }
+    for (const n of [5050, 500_000_500_000]) expect(area(blockShape(n, 'steps'))).toBeCloseTo(bigSide(n) ** 2, 5)
+    // The style only changes club members; 16 in an Integers battle keeps its Blocks shape.
+    expect(blockShape(16)).toMatchObject({ w: 2, h: 8 })
+  })
+
   it('gives negatives the shape of their magnitude, and zero a 1×1 frame', () => {
     expect(blockShape(-25)).toMatchObject({ w: 2, h: 13 })
     expect(blockShape(0)).toMatchObject({ w: 1, h: 1, kind: 'zero' })

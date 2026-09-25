@@ -4,11 +4,14 @@ import { celebrate, cutScream, scream, sizzle, stopAudio, thud, unlockAudio } fr
 import { Camera } from './camera'
 import type { LavaConfig } from './config'
 import { draw } from './render'
+import type { ShapeStyle } from './shapes'
 import { fallSeconds } from './screams'
 import { initPhysics, Sim, STEP, type Block } from './sim'
 
 interface BattleProps {
   values: number[]
+  /** Square Club battles are squares, Step Squad battles staircases. */
+  style: ShapeStyle
   config: LavaConfig
   onAgain: () => void
   onNewBattle: () => void
@@ -20,7 +23,7 @@ const GRAB_SLOP_PX = 24
 
 type End = { winner: number | null } | null
 
-export function Battle({ values, config, onAgain, onNewBattle, onOpenPanel }: BattleProps) {
+export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPanel }: BattleProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const simRef = useRef<Sim | null>(null)
   const configRef = useRef(config)
@@ -298,7 +301,7 @@ export function Battle({ values, config, onAgain, onNewBattle, onOpenPanel }: Ba
 
     void initPhysics().then(() => {
       if (disposed) return
-      sim = new Sim(values, configRef.current)
+      sim = new Sim(values, configRef.current, style)
       simRef.current = sim
       // Debug builds of a battle expose their state for inspection from devtools.
       if (configRef.current.debug) Object.assign(window, { __lava: { sim, cam } })
@@ -324,7 +327,7 @@ export function Battle({ values, config, onAgain, onNewBattle, onOpenPanel }: Ba
       simRef.current = null
       sim?.free()
     }
-  }, [values])
+  }, [values, style])
 
   // Hidden parent panel: a 2-second press on the top-left corner (spec 9).
   const holdTimer = useRef<number | null>(null)

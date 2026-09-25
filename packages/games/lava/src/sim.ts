@@ -1,6 +1,6 @@
 import RAPIER from '@dimforge/rapier2d-compat'
 import type { LavaConfig } from './config'
-import { blockShape, type BlockShape } from './shapes'
+import { blockShape, type BlockShape, type ShapeStyle } from './shapes'
 
 let ready: Promise<void> | null = null
 /** Rapier's WASM is inlined (compat build); this only instantiates it, once. */
@@ -94,7 +94,7 @@ export class Sim {
   private cfg: LavaConfig
   time = 0
 
-  constructor(values: number[], cfg: LavaConfig) {
+  constructor(values: number[], cfg: LavaConfig, style: ShapeStyle = 'blocks') {
     this.cfg = cfg
     this.world = new RAPIER.World({ x: 0, y: -cfg.gravity })
     this.world.timestep = STEP
@@ -103,7 +103,7 @@ export class Sim {
     let x = 0
     let prevW = 0
     values.forEach((value, id) => {
-      const shape = blockShape(value)
+      const shape = blockShape(value, style)
       if (id > 0) x += Math.max(0.5, 0.15 * Math.max(prevW, shape.w))
       const pose = { x: x + shape.w / 2, y: shape.h / 2 + 0.002, a: 0 }
       const body = this.world.createRigidBody(
