@@ -23,10 +23,12 @@ function extents(b: Block): [number, number] {
  * Vertically the platform top sits at HORIZON unless the action needs the
  * view to move: `y` is the world height drawn at HORIZON.
  *
- * While blocks are in motion (thrown, knocked, tumbling, falling to the
- * lava) the camera frames ALL of them, zooming out as far as needed and
- * for as long as they move. Only when everything has settled does it go
- * back to the usual auto-zoom.
+ * While blocks are in motion anywhere (thrown, knocked, tumbling, falling
+ * to the lava) the camera frames ALL of them, zooming out as far as needed
+ * for as long as they move — and touches don't interrupt it: he paws the
+ * screen constantly, so pans, pinches and double taps wait until
+ * everything has settled. Only then does it go back to the usual close-up.
+ * (A grab still freezes the view, so the held block stays under the finger.)
  */
 export class Camera {
   x = 0
@@ -39,8 +41,6 @@ export class Camera {
   vx = 0
   /** Blocks in motion, supplied each frame by the battle loop. */
   private moving: Block[] = []
-  /** The user panned during the action: stop framing it until it settles. */
-  private override = false
   private winnerBlock: Block | null = null
   private manualUntil = 0
   /** Where the view was before the action; restored if it ends somewhere empty. */
@@ -121,14 +121,20 @@ export class Camera {
     this.moving = blocks
   }
 
+  /** True while blocks are moving: touches may not move the view. */
+  busy(): boolean {
+    return this.mode === 'action'
+  }
+
   panBy(dxScreen: number): void {
+    if (this.busy()) return
     this.returning = false
     this.x -= dxScreen / this.zoom
-    if (this.mode === 'action') this.override = true
-    if (this.mode === 'fit' || this.mode === 'action') this.mode = 'auto'
+    if (this.mode === 'fit') this.mode = 'auto'
   }
 
   fit(): void {
+    if (this.busy()) return
     this.mode = 'fit'
     this.vx = 0
   }
@@ -140,6 +146,7 @@ export class Camera {
 
   /** Pinch: scale about a screen x, keeping the world point under it fixed. */
   pinch(factor: number, aboutX: number, sim: Sim, now: number): void {
+    if (this.busy()) return
     const [wx] = this.toWorld(aboutX, 0)
     const [lo, hi] = this.zoomLimits(sim)
     this.zoom = Math.min(hi, Math.max(lo, this.zoom * factor))
@@ -194,15 +201,19 @@ export class Camera {
 
   update(dt: number, sim: Sim, cfg: LavaConfig, now: number): void {
     const ease = 1 - Math.exp(-dt / cfg.cameraTau)
+    // Pulling back to catch fast action is quicker than settling in, so a
+    // hard throw can't outrun the smoothing.
+    const catchUp = 1 - Math.exp(-dt / (cfg.cameraTau * 0.4))
     let target: number | null = null
     let targetY = 0
     let margin = 3
 
     const moving = this.moving.filter((b) => !b.removed)
-    if (moving.length === 0) this.override = false
-    if (this.mode === 'auto' && moving.length > 0 && !this.override) {
+    // Any motion takes over the view — from the close-up, a fit-all or a pinch.
+    if ((this.mode === 'auto' || this.mode === 'fit' || this.mode === 'manual') && moving.length > 0) {
       if (!this.returning) this.homeX ??= this.x
       this.returning = false
+      this.vx = 0
       this.mode = 'action'
     }
 
@@ -228,7 +239,7 @@ export class Camera {
         const f = this.frame(moving, sim, cfg)
         target = f.zoom
         targetY = f.y
-        this.x += (f.x - this.x) * ease
+        this.x += (f.x - this.x) * catchUp
         margin = Infinity // go wherever the action goes
         break
       }
@@ -260,10 +271,13 @@ export class Camera {
         break
     }
 
-    if (target !== null) this.zoom = Math.exp(Math.log(this.zoom) + (Math.log(target) - Math.log(this.zoom)) * ease)
+    if (target !== null) {
+      const k = this.mode === 'action' && target < this.zoom ? catchUp : ease
+      this.zoom = Math.exp(Math.log(this.zoom) + (Math.log(target) - Math.log(this.zoom)) * k)
+    }
     const [lo, hi] = this.zoomLimits(sim)
     this.zoom = Math.min(hi, Math.max(lo, this.zoom))
-    if (this.mode !== 'frozen') this.y += (targetY - this.y) * ease
+    if (this.mode !== 'frozen') this.y += (targetY - this.y) * (this.mode === 'action' ? catchUp : ease)
     this.x = Math.min(sim.platform.x1 + margin, Math.max(sim.platform.x0 - margin, this.x))
   }
 }

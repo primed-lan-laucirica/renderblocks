@@ -195,9 +195,8 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
     /** Screams in progress, per block. */
     const screams = new Map<Block, ReturnType<typeof scream>>()
     /**
-     * Blocks in motion that the camera keeps in view: picked up while on
-     * screen, kept (however far they go) until they have been still for
-     * STILL_S or have gone into the lava.
+     * Blocks in motion anywhere, which the camera keeps in view until they
+     * have been still for STILL_S or have gone into the lava.
      */
     const inMotion = new Set<Block>()
     const stillFor = new Map<Block, number>()
@@ -275,7 +274,7 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
           inMotion.delete(b)
         } else if (over || sim.speed(b) > 0.35 * Math.sqrt(b.shape.L)) {
           stillFor.set(b, 0)
-          if (inMotion.has(b) || cam.onScreen(b)) inMotion.add(b)
+          inMotion.add(b)
         } else {
           const still = (stillFor.get(b) ?? 0) + dt
           stillFor.set(b, still)
