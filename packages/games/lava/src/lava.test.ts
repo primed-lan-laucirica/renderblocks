@@ -200,6 +200,24 @@ describe('physics', () => {
     sim.free()
   })
 
+  it('when every block falls, the last one into the lava is the winner', () => {
+    const sim = new Sim([1, 2], DEFAULTS)
+    const pushOff = (b: (typeof sim.blocks)[number]) => {
+      sim.startGrab(b, b.cur.x, b.cur.y)
+      sim.moveGrab(sim.platform.x1 + 3, 3)
+      for (let i = 0; i < 60; i++) sim.step()
+      sim.moveGrab(sim.platform.x1 + 3, sim.lavaY - 5)
+      for (let i = 0; i < 60 * 4 && b.outAt === null; i++) sim.step()
+    }
+    const [one, two] = sim.blocks
+    pushOff(two)
+    expect(sim.lastOut()).toBe(two)
+    pushOff(one)
+    expect(sim.alive()).toHaveLength(0)
+    expect(sim.lastOut()).toBe(one)
+    sim.free()
+  })
+
   it('a fling rises no more than about flingApex block sizes', () => {
     const sim = new Sim([5], DEFAULTS)
     const b = sim.blocks[0]

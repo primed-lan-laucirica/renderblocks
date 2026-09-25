@@ -280,22 +280,29 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
         setLeft(shownLeft)
       }
 
-      // End: one block left and settled for 1 s, or none at all (spec 4.3).
+      const declareWinner = (w: Block) => {
+        ended = true
+        cam.showWinner(w)
+        celebrate()
+        // "Winner!" … then the number.
+        window.setTimeout(() => !disposed && announceWinner(() => !disposed && speakNumber(w.value)), 900)
+        setEnd({ winner: w.value })
+      }
+
+      // End (spec 4.3): one block left and settled for 1 s — or, if every
+      // block ends up in the lava, the last one to hit it wins.
       if (!ended) {
         if (alive.length === 1 && sim.grabbed() === null) {
           const w = alive[0]
           settledFor = sim.speed(w) < 0.15 * Math.sqrt(w.shape.L) ? settledFor + dt : 0
-          if (settledFor >= 1) {
+          if (settledFor >= 1) declareWinner(w)
+        } else if (alive.length === 0) {
+          const last = sim.lastOut()
+          if (last) declareWinner(last)
+          else {
             ended = true
-            cam.showWinner(w)
-            celebrate()
-            // "Winner!" … then the number.
-            window.setTimeout(() => !disposed && announceWinner(() => !disposed && speakNumber(w.value)), 900)
-            setEnd({ winner: w.value })
+            setEnd({ winner: null })
           }
-        } else if (alive.length === 0 && sim.blocks.every((b) => b.removed)) {
-          ended = true
-          setEnd({ winner: null })
         }
       }
     }

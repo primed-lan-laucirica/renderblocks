@@ -232,6 +232,19 @@ export class Sim {
     return this.blocks.filter((b) => b.outAt === null)
   }
 
+  /**
+   * The block that went into the lava last — the winner when every block
+   * falls. Two in the same step: the one that sank least deep.
+   */
+  lastOut(): Block | null {
+    let last: Block | null = null
+    for (const b of this.blocks) {
+      if (b.outAt === null) continue
+      if (!last || b.outAt > last.outAt! || (b.outAt === last.outAt && b.cur.y > last.cur.y)) last = b
+    }
+    return last
+  }
+
   grabbed(): Block | null {
     return this.grab?.block ?? null
   }

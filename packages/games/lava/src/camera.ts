@@ -147,6 +147,8 @@ export class Camera {
         // Over the edge, a block is followed all the way down to the lava — however
         // high it was thrown and however long the fall takes.
         const offPlatform = !!b && (b.cur.x < sim.platform.x0 || b.cur.x > sim.platform.x1)
+        // A winner that went into the lava: hold the view where it sank.
+        if (this.mode === 'winner' && b?.removed) break
         if (!b || b.removed || (this.mode === 'follow' && (b.outAt !== null || (now > this.followUntil && !offPlatform)))) {
           // It went into the lava: come back to where the battle was.
           this.returning = !!b && b.outAt !== null && this.homeX !== null
