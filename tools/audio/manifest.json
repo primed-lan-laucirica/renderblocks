@@ -2480,6 +2480,17 @@
           "seconds": 2.58
         }
       }
+    },
+    {
+      "dir": "lava/announce",
+      "pad": false,
+      "influence": 0.9,
+      "items": {
+        "winner": {
+          "text": "Winner!",
+          "seconds": 1.3
+        }
+      }
     }
   ]
 }

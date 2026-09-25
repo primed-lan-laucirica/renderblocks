@@ -5,7 +5,15 @@ import { pickScream, type ScreamClip } from './screams'
  * needs overlapping, low-latency playback (spec 14.8). MVP stand-ins:
  * pop = thud, whoosh = sizzle (spec 14.10).
  */
-type Effect = 'pop' | 'whoosh' | 'celebrate'
+type Effect = 'pop' | 'whoosh' | 'celebrate' | 'winner'
+
+const EFFECTS: Record<Effect, string> = {
+  pop: '/games/shared/sfx/pop.mp3',
+  whoosh: '/games/shared/sfx/whoosh.mp3',
+  celebrate: '/games/shared/sfx/celebrate.mp3',
+  // Children's chorus, like the number clips it is followed by.
+  winner: '/games/lava/announce/winner.mp3',
+}
 
 const VOICE_DIR = '/games/lava/voice'
 
@@ -25,8 +33,8 @@ const DECODED_KEEP = 12
 function context(): AudioContext {
   if (!ctx) {
     ctx = new AudioContext()
-    for (const name of ['pop', 'whoosh', 'celebrate'] as Effect[]) {
-      fetch(`/games/shared/sfx/${name}.mp3`)
+    for (const name of Object.keys(EFFECTS) as Effect[]) {
+      fetch(EFFECTS[name])
         .then((r) => r.arrayBuffer())
         .then((data) => ctx!.decodeAudioData(data))
         .then((buf) => effects.set(name, buf))
@@ -169,6 +177,13 @@ export function sizzle(): void {
 
 export function celebrate(): void {
   play('celebrate', 0.9)
+}
+
+/** "Winner!" — then `then()` once it has finished (straight away if it can't play). */
+export function announceWinner(then: () => void): void {
+  const v = play('winner', 1)
+  if (v) v.src.addEventListener('ended', then)
+  else then()
 }
 
 export function stopAudio(): void {

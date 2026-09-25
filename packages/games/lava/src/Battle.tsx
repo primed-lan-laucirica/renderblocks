@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { speakNumber, stopSpeech } from '@renderblocks/kernel'
-import { celebrate, cutScream, scream, sizzle, stopAudio, thud, unlockAudio } from './audio'
+import { announceWinner, celebrate, cutScream, scream, sizzle, stopAudio, thud, unlockAudio } from './audio'
 import { Camera } from './camera'
 import type { LavaConfig } from './config'
 import { draw } from './render'
@@ -289,7 +289,8 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
             ended = true
             cam.showWinner(w)
             celebrate()
-            window.setTimeout(() => !disposed && speakNumber(w.value), 900)
+            // "Winner!" … then the number.
+            window.setTimeout(() => !disposed && announceWinner(() => !disposed && speakNumber(w.value)), 900)
             setEnd({ winner: w.value })
           }
         } else if (alive.length === 0 && sim.blocks.every((b) => b.removed)) {
