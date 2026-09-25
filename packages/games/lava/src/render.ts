@@ -132,12 +132,35 @@ export function draw(ctx: CanvasRenderingContext2D, sim: Sim, cam: Camera, st: D
     if (visible(p, b)) drawBlock(ctx, b, p, zoom, st.now)
   }
 
-  // Platform: a slab hanging in the air above the lava.
+  // Platform: slabs hanging in the air above the lava, with the cracks
+  // between them showing where it will crumble.
   const { x0, x1, depth } = sim.platform
   ctx.fillStyle = '#57534e'
   ctx.fillRect(x0, -depth, x1 - x0, depth)
   ctx.fillStyle = '#292524'
   ctx.fillRect(x0, -depth, x1 - x0, Math.min(depth * 0.35, 4 / zoom))
+  if (zoom * depth > 6) {
+    ctx.strokeStyle = 'rgba(28, 25, 23, 0.55)'
+    ctx.lineWidth = 1.5 / zoom
+    ctx.beginPath()
+    for (const c of sim.cuts) {
+      if (c <= x0 || c >= x1 || c < left || c > right) continue
+      ctx.moveTo(c, 0)
+      ctx.lineTo(c, -depth)
+    }
+    ctx.stroke()
+  }
+
+  // Broken-off slabs tumbling down.
+  ctx.fillStyle = '#57534e'
+  for (const r of sim.rubble) {
+    if (r.x + r.w < left || r.x > right) continue
+    ctx.save()
+    ctx.translate(r.x + r.w / 2, r.y - depth / 2)
+    ctx.rotate(r.a)
+    ctx.fillRect(-r.w / 2, -depth / 2, r.w, depth)
+    ctx.restore()
+  }
   ctx.fillStyle = '#a8a29e'
   ctx.fillRect(x0, -Math.min(0.4, 6 / zoom), x1 - x0, Math.min(0.4, 6 / zoom))
 

@@ -81,26 +81,391 @@
     {
       "dir": "lava/voice",
       "normalize": true,
+      "channels": 1,
       "items": {
-        "fall1": {
-          "prompt": "a child's voice screaming \"Aaaaaaah!\" while falling from a great height, cartoon, fading away",
-          "seconds": 2.5,
-          "influence": 0.7
+        "aah_1": {
+          "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1,
+          "influence": 0.7,
+          "expect": "a+h|ah+"
         },
-        "fall2": {
-          "prompt": "a child's voice yelling \"Nooooooo!\" while falling, cartoon, fading away",
-          "seconds": 2.5,
-          "influence": 0.7
+        "aah_1_5": {
+          "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1.5,
+          "influence": 0.7,
+          "expect": "a+h|ah+"
         },
-        "fall3": {
-          "prompt": "a child's voice shouting \"Whoaaaaa!\" while falling, cartoon",
-          "seconds": 2.2,
-          "influence": 0.7
+        "aah_2": {
+          "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 2,
+          "influence": 0.7,
+          "expect": "a+h|ah+"
         },
-        "fall4": {
-          "prompt": "a child's voice screaming \"Heeeelp!\" while falling, cartoon",
-          "seconds": 2.0,
-          "influence": 0.7
+        "aah_3": {
+          "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 3,
+          "influence": 0.7,
+          "expect": "a+h|ah+"
+        },
+        "aah_4": {
+          "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 4,
+          "influence": 0.7,
+          "expect": "a+h|ah+"
+        },
+        "aah_5": {
+          "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 5,
+          "influence": 0.7,
+          "expect": "a+h|ah+"
+        },
+        "aah_6": {
+          "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 6,
+          "influence": 0.7,
+          "expect": "a+h|ah+"
+        },
+        "aah_8": {
+          "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 8,
+          "influence": 0.7,
+          "expect": "a+h|ah+"
+        },
+        "noo_1": {
+          "prompt": "a child's voice yelling \"Noooooooooo!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1,
+          "influence": 0.7,
+          "expect": "no+"
+        },
+        "noo_1_5": {
+          "prompt": "a child's voice yelling \"Noooooooooo!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1.5,
+          "influence": 0.7,
+          "expect": "no+"
+        },
+        "noo_2": {
+          "prompt": "a child's voice yelling \"Noooooooooo!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 2,
+          "influence": 0.7,
+          "expect": "no+"
+        },
+        "noo_3": {
+          "prompt": "a child's voice yelling \"Noooooooooo!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 3,
+          "influence": 0.7,
+          "expect": "no+"
+        },
+        "noo_4": {
+          "prompt": "a child's voice yelling \"Noooooooooo!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 4,
+          "influence": 0.7,
+          "expect": "no+"
+        },
+        "noo_5": {
+          "prompt": "a child's voice yelling \"Noooooooooo!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 5,
+          "influence": 0.7,
+          "expect": "no+"
+        },
+        "noo_6": {
+          "prompt": "a child's voice yelling \"Noooooooooo!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 6,
+          "influence": 0.7,
+          "expect": "no+"
+        },
+        "noo_8": {
+          "prompt": "a child's voice yelling \"Noooooooooo!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 8,
+          "influence": 0.7,
+          "expect": "no+"
+        },
+        "whoa_1": {
+          "prompt": "a child's voice shouting \"Whoaaaaaaaa!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1,
+          "influence": 0.7,
+          "expect": "wh?oa+|woah|wo+"
+        },
+        "whoa_1_5": {
+          "prompt": "a child's voice shouting \"Whoaaaaaaaa!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1.5,
+          "influence": 0.7,
+          "expect": "wh?oa+|woah|wo+"
+        },
+        "whoa_2": {
+          "prompt": "a child's voice shouting \"Whoaaaaaaaa!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 2,
+          "influence": 0.7,
+          "expect": "wh?oa+|woah|wo+"
+        },
+        "whoa_3": {
+          "prompt": "a child's voice shouting \"Whoaaaaaaaa!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 3,
+          "influence": 0.7,
+          "expect": "wh?oa+|woah|wo+"
+        },
+        "whoa_4": {
+          "prompt": "a child's voice shouting \"Whoaaaaaaaa!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 4,
+          "influence": 0.7,
+          "expect": "wh?oa+|woah|wo+"
+        },
+        "whoa_5": {
+          "prompt": "a child's voice shouting \"Whoaaaaaaaa!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 5,
+          "influence": 0.7,
+          "expect": "wh?oa+|woah|wo+"
+        },
+        "whoa_6": {
+          "prompt": "a child's voice shouting \"Whoaaaaaaaa!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 6,
+          "influence": 0.7,
+          "expect": "wh?oa+|woah|wo+"
+        },
+        "whoa_8": {
+          "prompt": "a child's voice shouting \"Whoaaaaaaaa!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 8,
+          "influence": 0.7,
+          "expect": "wh?oa+|woah|wo+"
+        },
+        "help_1": {
+          "prompt": "a child's voice screaming \"Heeeeeelp!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1,
+          "influence": 0.7,
+          "expect": "he+l+p"
+        },
+        "help_1_5": {
+          "prompt": "a child's voice screaming \"Heeeeeelp!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1.5,
+          "influence": 0.7,
+          "expect": "he+l+p"
+        },
+        "help_2": {
+          "prompt": "a child's voice screaming \"Heeeeeelp!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 2,
+          "influence": 0.7,
+          "expect": "he+l+p"
+        },
+        "help_3": {
+          "prompt": "a child's voice screaming \"Heeeeeelp!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 3,
+          "influence": 0.7,
+          "expect": "he+l+p"
+        },
+        "help_4": {
+          "prompt": "a child's voice screaming \"Heeeeeelp!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 4,
+          "influence": 0.7,
+          "expect": "he+l+p"
+        },
+        "help_5": {
+          "prompt": "a child's voice screaming \"Heeeeeelp!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 5,
+          "influence": 0.7,
+          "expect": "he+l+p"
+        },
+        "help_6": {
+          "prompt": "a child's voice screaming \"Heeeeeelp!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 6,
+          "influence": 0.7,
+          "expect": "he+l+p"
+        },
+        "help_8": {
+          "prompt": "a child's voice screaming \"Heeeeeelp!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 8,
+          "influence": 0.7,
+          "expect": "he+l+p"
+        },
+        "wait_1": {
+          "prompt": "a child's voice frantically shouting \"Wait wait wait wait!\" over and over while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1,
+          "influence": 0.7,
+          "expect": "wait"
+        },
+        "wait_1_5": {
+          "prompt": "a child's voice frantically shouting \"Wait wait wait wait!\" over and over while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1.5,
+          "influence": 0.7,
+          "expect": "wait"
+        },
+        "wait_2": {
+          "prompt": "a child's voice frantically shouting \"Wait wait wait wait!\" over and over while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 2,
+          "influence": 0.7,
+          "expect": "wait"
+        },
+        "wait_3": {
+          "prompt": "a child's voice frantically shouting \"Wait wait wait wait!\" over and over while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 3,
+          "influence": 0.7,
+          "expect": "wait"
+        },
+        "wait_4": {
+          "prompt": "a child's voice frantically shouting \"Wait wait wait wait!\" over and over while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 4,
+          "influence": 0.7,
+          "expect": "wait"
+        },
+        "wait_5": {
+          "prompt": "a child's voice frantically shouting \"Wait wait wait wait!\" over and over while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 5,
+          "influence": 0.7,
+          "expect": "wait"
+        },
+        "wait_6": {
+          "prompt": "a child's voice frantically shouting \"Wait wait wait wait!\" over and over while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 6,
+          "influence": 0.7,
+          "expect": "wait"
+        },
+        "wait_8": {
+          "prompt": "a child's voice frantically shouting \"Wait wait wait wait!\" over and over while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 8,
+          "influence": 0.7,
+          "expect": "wait"
+        },
+        "ohno_1": {
+          "prompt": "a child's voice wailing \"Oh nooooooo!\" as one long cry while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1,
+          "influence": 0.7,
+          "expect": "oh,?\\s*no+"
+        },
+        "ohno_1_5": {
+          "prompt": "a child's voice wailing \"Oh nooooooo!\" as one long cry while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1.5,
+          "influence": 0.7,
+          "expect": "oh,?\\s*no+"
+        },
+        "ohno_2": {
+          "prompt": "a child's voice wailing \"Oh nooooooo!\" as one long cry while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 2,
+          "influence": 0.7,
+          "expect": "oh,?\\s*no+"
+        },
+        "ohno_3": {
+          "prompt": "a child's voice wailing \"Oh nooooooo!\" as one long cry while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 3,
+          "influence": 0.7,
+          "expect": "oh,?\\s*no+"
+        },
+        "ohno_4": {
+          "prompt": "a child's voice wailing \"Oh nooooooo!\" as one long cry while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 4,
+          "influence": 0.7,
+          "expect": "oh,?\\s*no+"
+        },
+        "ohno_5": {
+          "prompt": "a child's voice wailing \"Oh nooooooo!\" as one long cry while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 5,
+          "influence": 0.7,
+          "expect": "oh,?\\s*no+"
+        },
+        "ohno_6": {
+          "prompt": "a child's voice wailing \"Oh nooooooo!\" as one long cry while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 6,
+          "influence": 0.7,
+          "expect": "oh,?\\s*no+"
+        },
+        "ohno_8": {
+          "prompt": "a child's voice wailing \"Oh nooooooo!\" as one long cry while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 8,
+          "influence": 0.7,
+          "expect": "oh,?\\s*no+"
+        },
+        "uhoh_1": {
+          "prompt": "a child's voice saying \"Uh-oh!\" and then screaming \"Aaaaaah!\" while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1,
+          "influence": 0.7,
+          "expect": "uh[- ]?oh"
+        },
+        "uhoh_1_5": {
+          "prompt": "a child's voice saying \"Uh-oh!\" and then screaming \"Aaaaaah!\" while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 1.5,
+          "influence": 0.7,
+          "expect": "uh[- ]?oh"
+        },
+        "uhoh_2": {
+          "prompt": "a child's voice saying \"Uh-oh!\" and then screaming \"Aaaaaah!\" while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 2,
+          "influence": 0.7,
+          "expect": "uh[- ]?oh"
+        },
+        "uhoh_3": {
+          "prompt": "a child's voice saying \"Uh-oh!\" and then screaming \"Aaaaaah!\" while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 3,
+          "influence": 0.7,
+          "expect": "uh[- ]?oh"
+        },
+        "uhoh_4": {
+          "prompt": "a child's voice saying \"Uh-oh!\" and then screaming \"Aaaaaah!\" while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 4,
+          "influence": 0.7,
+          "expect": "uh[- ]?oh"
+        },
+        "uhoh_5": {
+          "prompt": "a child's voice saying \"Uh-oh!\" and then screaming \"Aaaaaah!\" while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 5,
+          "influence": 0.7,
+          "expect": "uh[- ]?oh"
+        },
+        "uhoh_6": {
+          "prompt": "a child's voice saying \"Uh-oh!\" and then screaming \"Aaaaaah!\" while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 6,
+          "influence": 0.7,
+          "expect": "uh[- ]?oh"
+        },
+        "uhoh_8": {
+          "prompt": "a child's voice saying \"Uh-oh!\" and then screaming \"Aaaaaah!\" while falling from a great height, cartoon, lasting the whole clip",
+          "seconds": 8,
+          "influence": 0.7,
+          "expect": "uh[- ]?oh"
+        },
+        "lava_1": {
+          "prompt": "a child's voice screaming \"Not the lavaaaaaa!\" while falling toward lava, cartoon, lasting the whole clip",
+          "seconds": 1,
+          "influence": 0.7,
+          "expect": "lava"
+        },
+        "lava_1_5": {
+          "prompt": "a child's voice screaming \"Not the lavaaaaaa!\" while falling toward lava, cartoon, lasting the whole clip",
+          "seconds": 1.5,
+          "influence": 0.7,
+          "expect": "lava"
+        },
+        "lava_2": {
+          "prompt": "a child's voice screaming \"Not the lavaaaaaa!\" while falling toward lava, cartoon, lasting the whole clip",
+          "seconds": 2,
+          "influence": 0.7,
+          "expect": "lava"
+        },
+        "lava_3": {
+          "prompt": "a child's voice screaming \"Not the lavaaaaaa!\" while falling toward lava, cartoon, lasting the whole clip",
+          "seconds": 3,
+          "influence": 0.7,
+          "expect": "lava"
+        },
+        "lava_4": {
+          "prompt": "a child's voice screaming \"Not the lavaaaaaa!\" while falling toward lava, cartoon, lasting the whole clip",
+          "seconds": 4,
+          "influence": 0.7,
+          "expect": "lava"
+        },
+        "lava_5": {
+          "prompt": "a child's voice screaming \"Not the lavaaaaaa!\" while falling toward lava, cartoon, lasting the whole clip",
+          "seconds": 5,
+          "influence": 0.7,
+          "expect": "lava"
+        },
+        "lava_6": {
+          "prompt": "a child's voice screaming \"Not the lavaaaaaa!\" while falling toward lava, cartoon, lasting the whole clip",
+          "seconds": 6,
+          "influence": 0.7,
+          "expect": "lava"
+        },
+        "lava_8": {
+          "prompt": "a child's voice screaming \"Not the lavaaaaaa!\" while falling toward lava, cartoon, lasting the whole clip",
+          "seconds": 8,
+          "influence": 0.7,
+          "expect": "lava"
         }
       }
     }

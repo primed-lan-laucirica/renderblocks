@@ -4,6 +4,7 @@ import { celebrate, cutScream, scream, sizzle, stopAudio, thud, unlockAudio } fr
 import { Camera } from './camera'
 import type { LavaConfig } from './config'
 import { draw } from './render'
+import { fallSeconds } from './screams'
 import { initPhysics, Sim, STEP, type Block } from './sim'
 
 interface BattleProps {
@@ -230,6 +231,8 @@ export function Battle({ values, config, onAgain, onNewBattle, onOpenPanel }: Ba
         const ev = sim.step()
         for (const th of ev.thuds) thud(th.strength, th.block.shape.L)
         if (ev.sizzles.length) sizzle()
+        // A low, soft rumble per slab that breaks off.
+        for (const w of ev.crumbles) thud(0.35, Math.max(4, w * 2))
         for (const b of ev.sizzles) {
           cutScream(screams.get(b) ?? null)
           screams.delete(b)
@@ -243,7 +246,11 @@ export function Battle({ values, config, onAgain, onNewBattle, onOpenPanel }: Ba
       for (const b of sim.blocks) {
         if (b.removed) continue
         const over = goingOver(b)
-        if (over && !screams.has(b) && b.cur.y < b.prev.y) screams.set(b, scream(b.shape.L))
+        if (over && !screams.has(b) && b.cur.y < b.prev.y) {
+          // Sized to the fall: from here, at this speed, down to the lava.
+          const fall = fallSeconds(b.cur.y, b.body.linvel().y, sim.lavaY, cfg.gravity)
+          screams.set(b, scream(b.shape.L, fall))
+        }
         if (!over && screams.has(b)) {
           // Rescued (grabbed) or somehow back on the platform: stop screaming.
           cutScream(screams.get(b) ?? null, 0.25)

@@ -67,7 +67,7 @@ function target(dir, name) {
  * silence trimmed, loudness levelled, padded to a fixed length so clips
  * stitch together evenly.
  */
-function normalize(path, seconds, { pad = true } = {}) {
+function normalize(path, seconds, { pad = true, endsOnly = false, channels = 2 } = {}) {
   const tmp = `${path}.tmp.mp3`
   // Clips that get STITCHED into phrases must not be padded to a fixed
   // length — the trailing silence stacks up into robotic gaps. Trim both
@@ -75,6 +75,11 @@ function normalize(path, seconds, { pad = true } = {}) {
   const trimBoth =
     'silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.02:' +
     'stop_periods=-1:stop_threshold=-45dB:stop_silence=0.06'
+  // Sustained sounds (a long scream) keep their inner pauses: trim only the
+  // leading and trailing silence, so the clip keeps the length it was made for.
+  const trimEnds =
+    'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03,areverse,' +
+    'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05,areverse'
   try {
     execFileSync('ffmpeg', [
       '-hide_banner', '-loglevel', 'error', '-y', '-i', path,
@@ -82,9 +87,9 @@ function normalize(path, seconds, { pad = true } = {}) {
       pad
         ? 'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03,' +
           'loudnorm=I=-16:TP=-1.5:LRA=11,apad'
-        : `${trimBoth},loudnorm=I=-16:TP=-1.5:LRA=11`,
+        : `${endsOnly ? trimEnds : trimBoth},loudnorm=I=-16:TP=-1.5:LRA=11`,
       ...(pad ? ['-t', String(seconds)] : []),
-      '-ar', '48000', '-ac', '2', '-b:a', '192k',
+      '-ar', '48000', '-ac', String(channels), '-b:a', channels === 1 ? '128k' : '192k',
       tmp,
     ])
     writeFileSync(path, readFileSync(tmp))
@@ -159,7 +164,7 @@ for (const group of manifest.sfx ?? []) {
     })
     writeFileSync(path, buf)
     // Voice-like effects (e.g. LavaBlocks' falling screams) are levelled like the chorus clips.
-    if (group.normalize) normalize(path, spec.seconds, { pad: false })
+    if (group.normalize) normalize(path, spec.seconds, { pad: false, endsOnly: true, channels: group.channels ?? 2 })
     console.log(`sfx     ${group.dir}/${name}.mp3  ${(readFileSync(path).length / 1024).toFixed(0)}kB`)
     made++
   }

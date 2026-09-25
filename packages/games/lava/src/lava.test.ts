@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { DEFAULTS } from './config'
 import { enumerate, isMember, isPrime, spawnNumbers, type SetId } from './sets'
+import { fallSeconds, pickScream, type ScreamClip } from './screams'
 import { bigSide, blockShape } from './shapes'
 import { initPhysics, Sim } from './sim'
 
@@ -133,6 +134,14 @@ describe('block shapes', () => {
 describe('physics', () => {
   beforeAll(() => initPhysics())
 
+  it('a fresh battle does not crumble', () => {
+    const sim = new Sim(spawnNumbers('integers', { from: 1, to: 25 }), DEFAULTS)
+    const { x0, x1 } = sim.platform
+    for (let i = 0; i < 60 * 3; i++) sim.step()
+    expect(sim.platform).toMatchObject({ x0, x1 })
+    sim.free()
+  })
+
   it('a fresh battle stands still on the platform', () => {
     for (const values of [spawnNumbers('integers', { from: 1, to: 25 }), spawnNumbers('integers', { from: -3, to: 1e9 })]) {
       const sim = new Sim(values, DEFAULTS)
@@ -149,6 +158,7 @@ describe('physics', () => {
   it('dragging a block into the lava puts it out, and it is removed', () => {
     const sim = new Sim([1, 2, 3], DEFAULTS)
     const b = sim.blocks[2]
+    const edgeBefore = sim.platform.x1
     sim.startGrab(b, b.cur.x, b.cur.y)
     sim.moveGrab(sim.platform.x1 + 3, 3) // off the end first...
     for (let i = 0; i < 60; i++) sim.step()
@@ -156,9 +166,14 @@ describe('physics', () => {
     let sizzled = false
     for (let i = 0; i < 60 * 4 && !sizzled; i++) sizzled = sim.step().sizzles.includes(b)
     expect(sizzled).toBe(true)
-    for (let i = 0; i < 60 * 2; i++) sim.step()
+    for (let i = 0; i < 60 * 3; i++) sim.step()
     expect(b.removed).toBe(true)
     expect(sim.alive()).toHaveLength(2)
+    // The empty right end crumbled back toward the 2, keeping the margin.
+    const two = sim.blocks[1]
+    expect(sim.platform.x1).toBeLessThan(edgeBefore)
+    expect(sim.platform.x1).toBeGreaterThanOrEqual(two.cur.x + two.shape.w / 2 + 3 - 0.01)
+    expect(sim.platform.x1).toBeLessThan(two.cur.x + two.shape.w / 2 + 3 + 1.01)
     sim.free()
   })
 
@@ -178,3 +193,41 @@ describe('physics', () => {
     sim.free()
   })
 })
+
+describe('screams', () => {
+  const lengths = [1, 1.5, 2, 3, 4, 5, 6, 8]
+  const clips: ScreamClip[] = ['aah', 'noo', 'wait'].flatMap((type) =>
+    lengths.map((seconds) => ({ name: `${type}_${seconds}`, type, seconds })),
+  )
+  const lasts = (c: { name: string; rate: number }) => clips.find((x) => x.name === c.name)!.seconds / c.rate
+
+  it('predicts the fall time to the lava', () => {
+    expect(fallSeconds(0, 0, -8, 4)).toBeCloseTo(2) // ½·4·t² = 8
+    expect(fallSeconds(3, 2, -5, 4)).toBeGreaterThan(fallSeconds(3, 0, -5, 4)) // thrown up: longer
+  })
+
+  it('lasts the whole fall, ending just after impact', () => {
+    // Falls every clip set can cover within the ±15% nudge (longer ones: next test).
+    for (const fall of [0.8, 1.3, 2.2, 3.7, 5.5]) {
+      for (const pitch of [0.7, 1, 1.35]) {
+        const c = pickScream(clips, fall, pitch, 0)!
+        expect(lasts(c)).toBeGreaterThanOrEqual(fall)
+        expect(lasts(c)).toBeLessThan(fall + 1.2)
+        expect(c.rate).toBeGreaterThanOrEqual(pitch * 0.85 - 1e-9)
+        expect(c.rate).toBeLessThanOrEqual(pitch * 1.15 + 1e-9)
+      }
+    }
+  })
+
+  it('rotates through the scream types', () => {
+    const types = [0, 1, 2, 3].map((turn) => pickScream(clips, 2, 1, turn)!.name.split('_')[0])
+    expect(types).toEqual(['aah', 'noo', 'wait', 'aah'])
+  })
+
+  it('slows the longest scream down for a fall longer than any clip', () => {
+    const c = pickScream(clips, 12, 1, 0)!
+    expect(c.name.endsWith('_8')).toBe(true)
+    expect(c.rate).toBeLessThan(1)
+  })
+})
+

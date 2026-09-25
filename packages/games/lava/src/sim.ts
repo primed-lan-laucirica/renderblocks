@@ -12,6 +12,10 @@ export const STEP = 1 / 60
 /** The shortest drop to the lava, in units, however small the blocks are. */
 const MIN_DROP = 6
 const SINK_S = 1.2
+/** Empty platform kept beyond the outermost block before the edge crumbles (spec 5.3's margin). */
+const EDGE_MARGIN = 3
+/** Pause between one slab breaking off and the next — a visible cascade. */
+const CRUMBLE_EVERY_S = 0.1
 
 export interface Pose {
   x: number
@@ -42,6 +46,18 @@ export interface Thud {
 export interface StepEvents {
   thuds: Thud[]
   sizzles: Block[]
+  /** Platform slabs that broke off this step (their widths). */
+  crumbles: number[]
+}
+
+/** A slab broken off the platform: scenery only, tumbling into the lava. */
+export interface Rubble {
+  x: number
+  y: number
+  w: number
+  vy: number
+  a: number
+  spin: number
 }
 
 interface Grab {
@@ -54,8 +70,19 @@ interface Grab {
 export class Sim {
   readonly world: RAPIER.World
   readonly blocks: Block[] = []
-  /** Platform: top at y = 0, a slab `depth` thick, suspended in the air. */
+  /**
+   * Platform: top at y = 0, a slab `depth` thick, suspended in the air.
+   * x0 / x1 move inward as empty ends crumble away.
+   */
   readonly platform: { x0: number; x1: number; depth: number }
+  /** Slab boundaries along the platform; [left, right] index the remaining ends. */
+  readonly cuts: number[] = []
+  private left = 0
+  private right = 0
+  private nextCrumble = 0
+  readonly rubble: Rubble[] = []
+  private ground!: RAPIER.RigidBody
+  private groundCollider!: RAPIER.Collider
   /**
    * Lava surface. Well below the platform — an air gap scaled to the
    * battle's tallest block — so a block knocked off has a long, visible fall.
@@ -108,14 +135,80 @@ export class Sim {
     const depth = Math.min(3, Math.max(1, 0.08 * tallest))
     this.platform = { x0: -3, x1: x + 3, depth }
     this.lavaY = -depth - Math.max(MIN_DROP, cfg.lavaDrop * tallest)
-    const ground = this.world.createRigidBody(RAPIER.RigidBodyDesc.fixed())
-    this.world.createCollider(
-      RAPIER.ColliderDesc.cuboid((this.platform.x1 - this.platform.x0) / 2, depth / 2)
-        .setTranslation((this.platform.x0 + this.platform.x1) / 2, -depth / 2)
-        .setFriction(cfg.friction)
-        .setRestitution(cfg.restitution),
-      ground,
+
+    // Slabs: small under small blocks, bigger under big ones (a quarter of the
+    // nearest block's width, 1–8 units), so crumbling looks right at any scale.
+    const widthNear = (px: number) => {
+      let best = this.blocks[0]?.shape.w ?? 1
+      let bestD = Infinity
+      for (const b of this.blocks) {
+        const d = Math.abs(b.cur.x - px)
+        if (d < bestD) {
+          bestD = d
+          best = b.shape.w
+        }
+      }
+      return best
+    }
+    for (let c = this.platform.x0; c < this.platform.x1 - 0.5; c += Math.min(8, Math.max(1, widthNear(c) / 4))) {
+      this.cuts.push(c)
+    }
+    this.cuts.push(this.platform.x1)
+    this.right = this.cuts.length - 1
+
+    this.ground = this.world.createRigidBody(RAPIER.RigidBodyDesc.fixed())
+    this.buildGround()
+  }
+
+  /** (Re)build the platform collider over what is left of it. */
+  private buildGround(): void {
+    if (this.groundCollider) this.world.removeCollider(this.groundCollider, true)
+    const { x0, x1, depth } = this.platform
+    this.groundCollider = this.world.createCollider(
+      RAPIER.ColliderDesc.cuboid((x1 - x0) / 2, depth / 2)
+        .setTranslation((x0 + x1) / 2, -depth / 2)
+        .setFriction(this.cfg.friction)
+        .setRestitution(this.cfg.restitution),
+      this.ground,
     )
+  }
+
+  /**
+   * Empty platform beyond the outermost blocks breaks off, one slab at a
+   * time from the end, so there is never a long scroll to find the edge.
+   */
+  private crumble(out: StepEvents): void {
+    if (this.time < this.nextCrumble) return
+    const alive = this.alive()
+    if (alive.length === 0) return
+    let minX = Infinity
+    let maxX = -Infinity
+    for (const b of alive) {
+      const ext = 0.5 * (Math.abs(b.shape.w * Math.cos(b.cur.a)) + Math.abs(b.shape.h * Math.sin(b.cur.a)))
+      minX = Math.min(minX, b.cur.x - ext)
+      maxX = Math.max(maxX, b.cur.x + ext)
+    }
+    const breakOff = (from: number, to: number) => {
+      this.rubble.push({ x: from, y: 0, w: to - from, vy: -0.5, a: 0, spin: (Math.random() - 0.5) * 1.5 })
+      out.crumbles.push(to - from)
+      this.nextCrumble = this.time + CRUMBLE_EVERY_S
+    }
+    let changed = false
+    if (this.right - this.left > 1 && this.cuts[this.left + 1] < minX - EDGE_MARGIN) {
+      breakOff(this.cuts[this.left], this.cuts[this.left + 1])
+      this.left++
+      changed = true
+    }
+    if (this.right - this.left > 1 && this.cuts[this.right - 1] > maxX + EDGE_MARGIN) {
+      breakOff(this.cuts[this.right - 1], this.cuts[this.right])
+      this.right--
+      changed = true
+    }
+    if (changed) {
+      this.platform.x0 = this.cuts[this.left]
+      this.platform.x1 = this.cuts[this.right]
+      this.buildGround()
+    }
   }
 
   /** Apply edited tunables to the running world. */
@@ -184,7 +277,7 @@ export class Sim {
   }
 
   step(): StepEvents {
-    const out: StepEvents = { thuds: [], sizzles: [] }
+    const out: StepEvents = { thuds: [], sizzles: [], crumbles: [] }
     for (const b of this.blocks) if (!b.removed) b.prev = b.cur
 
     if (this.grab) this.applyDrag(this.grab)
@@ -221,6 +314,15 @@ export class Sim {
         this.world.removeRigidBody(b.body)
         b.removed = true
       }
+    }
+
+    this.crumble(out)
+    for (let i = this.rubble.length - 1; i >= 0; i--) {
+      const r = this.rubble[i]
+      r.vy -= this.cfg.gravity * STEP
+      r.y += r.vy * STEP
+      r.a += r.spin * STEP
+      if (r.y < this.lavaY - this.platform.depth * 3) this.rubble.splice(i, 1)
     }
     return out
   }
