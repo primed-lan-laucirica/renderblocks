@@ -24,10 +24,13 @@ function extents(b: Block): [number, number] {
  * view to move: `y` is the world height drawn at HORIZON.
  *
  * While blocks are in motion anywhere (thrown, knocked, tumbling, falling
- * to the lava) the camera frames ALL of them, zooming out as far as needed
- * for as long as they move — and touches don't interrupt it: he paws the
- * screen constantly, so pans, pinches and double taps wait until
- * everything has settled. Only then does it go back to the usual close-up.
+ * to the lava) the camera makes a best effort to keep them in view: it
+ * pans and pulls back as needed, but never further out than the whole
+ * platform — a far-flung block may leave the screen. It never zooms in
+ * closer than it was when the action began, and never zooms in at all
+ * while a moving block is off screen; the close-up comes back only once
+ * everything has settled. Touches don't interrupt this: he paws the
+ * screen constantly, so pans, pinches and double taps wait until then.
  * (A grab still freezes the view, so the held block stays under the finger.)
  */
 export class Camera {
@@ -41,6 +44,8 @@ export class Camera {
   vx = 0
   /** Blocks in motion, supplied each frame by the battle loop. */
   private moving: Block[] = []
+  /** Zoom when the action began: the action never zooms in past it. */
+  private actionZoom = Infinity
   private winnerBlock: Block | null = null
   private manualUntil = 0
   /** Where the view was before the action; restored if it ends somewhere empty. */
@@ -164,7 +169,7 @@ export class Camera {
    * Blocks going over the edge are framed together with the lava below
    * while they stay big enough to see — the whole drop in one view.
    */
-  private frame(blocks: Block[], sim: Sim, cfg: LavaConfig): { zoom: number; x: number; y: number } {
+  private frame(blocks: Block[], sim: Sim, cfg: LavaConfig): { zoom: number; x: number; y: (zoom: number) => number } {
     let minX = Infinity
     let maxX = -Infinity
     let minY = Infinity
@@ -190,12 +195,15 @@ export class Camera {
       }
     }
 
-    // Vertically: keep the platform where it usually sits if everything fits
-    // that way; otherwise centre the action — but never look far below the lava.
-    const above = ((HORIZON - 0.06) * this.vh) / zoom
-    const below = ((1 - HORIZON - 0.06) * this.vh) / zoom
-    let y = maxY <= above && minY >= -below ? 0 : (minY + maxY) / 2 - ((HORIZON - 0.5) * this.vh) / zoom
-    y = Math.max(y, sim.lavaY + ((0.92 - HORIZON) * this.vh) / zoom)
+    // Vertically, for whatever zoom is finally used: keep the platform where
+    // it usually sits if everything fits that way; otherwise centre the
+    // action — but never look far below the lava.
+    const y = (z: number) => {
+      const above = ((HORIZON - 0.06) * this.vh) / z
+      const below = ((1 - HORIZON - 0.06) * this.vh) / z
+      const centred = maxY <= above && minY >= -below ? 0 : (minY + maxY) / 2 - ((HORIZON - 0.5) * this.vh) / z
+      return Math.max(centred, sim.lavaY + ((0.92 - HORIZON) * this.vh) / z)
+    }
     return { zoom, x: (minX + maxX) / 2, y }
   }
 
@@ -214,6 +222,7 @@ export class Camera {
       if (!this.returning) this.homeX ??= this.x
       this.returning = false
       this.vx = 0
+      this.actionZoom = this.zoom
       this.mode = 'action'
     }
 
@@ -237,10 +246,16 @@ export class Camera {
           break
         }
         const f = this.frame(moving, sim, cfg)
-        target = f.zoom
-        targetY = f.y
+        // Pull back as far as the moving blocks need, but no further than the
+        // whole platform; never tighter than when the action began.
+        let z = Math.min(this.actionZoom, Math.max(this.fitZoom(sim), f.zoom))
+        // No zooming in while any of the action is off screen.
+        if (z > this.zoom && moving.some((b) => !this.onScreen(b))) z = this.zoom
+        target = z
+        targetY = f.y(z)
         this.x += (f.x - this.x) * catchUp
-        margin = Infinity // go wherever the action goes
+        // Follow the action, but keep the platform on screen.
+        margin = (0.45 * this.vw) / this.zoom
         break
       }
       case 'winner': {
@@ -252,7 +267,7 @@ export class Camera {
         }
         const f = this.frame([b], sim, cfg)
         target = f.zoom
-        targetY = f.y
+        targetY = f.y(f.zoom)
         this.x += (f.x - this.x) * ease
         margin = Infinity
         break
