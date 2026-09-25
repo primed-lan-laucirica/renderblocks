@@ -1,0 +1,23 @@
+{
+  "name": "@renderblocks/lava",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./module": "./src/module.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@dimforge/rapier2d-compat": "^0.20.0",
+    "@renderblocks/blocks": "workspace:*",
+    "@renderblocks/kernel": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.1"
+  }
+}

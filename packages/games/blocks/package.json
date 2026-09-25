@@ -6,7 +6,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./module": "./src/module.ts",
-    "./index.css": "./src/index.css"
+    "./index.css": "./src/index.css",
+    "./cubeLayout": "./src/cubeLayout.ts"
   },
   "dependencies": {
     "@renderblocks/kernel": "workspace:*",
