@@ -71,8 +71,15 @@ const INDEX_SCALE = 0.6
 /** Below this the notation is unreadable, so it is not drawn. */
 const MARK_MIN_PX = 10
 const MARK_MAX_PX = 110
-/** Text widths per px of font size: base, and index (at INDEX_SCALE). */
-const markWidths = new WeakMap<Block, { base: number; index: number }>()
+/** Line height, in px of font size, when an operation is stacked. */
+const STACK_LINE = 1.05
+/** An operation stays on one line (as it is written) while that is at least this big. */
+const LINE_READABLE_PX = 22
+/**
+ * Text widths per px of font size: base, and index (at INDEX_SCALE); and for
+ * an operation (7 × 143), its widest part when stacked one part per line.
+ */
+const markWidths = new WeakMap<Block, { base: number; index: number; stacked: number }>()
 
 /**
  * The block's notation (7², T₄, 10³, 2⁵) in its centre, turning with it:
@@ -82,18 +89,27 @@ const markWidths = new WeakMap<Block, { base: number; index: number }>()
 function drawNotation(ctx: CanvasRenderingContext2D, b: Block, zoom: number): void {
   const n = b.notation!
   const index = n.sup ?? n.sub ?? ''
+  const parts = index ? [n.base] : n.base.split(' ')
   let m = markWidths.get(b)
   if (!m) {
     ctx.font = '800 100px system-ui, sans-serif'
     const base = ctx.measureText(n.base).width / 100
     ctx.font = `800 ${100 * INDEX_SCALE}px system-ui, sans-serif`
-    m = { base, index: ctx.measureText(index).width / 100 }
+    const indexW = ctx.measureText(index).width / 100
+    ctx.font = '800 100px system-ui, sans-serif'
+    const stacked = Math.max(...parts.map((t) => ctx.measureText(t).width / 100))
+    m = { base, index: indexW, stacked }
     markWidths.set(b, m)
   }
-  const gap = 0.04
+  const gap = index ? 0.04 : 0 // a plain operation (7 × 143) has no raised/lowered part
   const { mark } = b.shape
   const px = Math.min((mark.w * zoom) / (m.base + gap + m.index + 0.16), (mark.h * zoom) / 1.3, MARK_MAX_PX)
-  if (px < MARK_MIN_PX) return
+  // A tall, narrow block (7 = 7 × 1, a single column) reads it stacked: 7 / × / 1.
+  const stackPx =
+    parts.length > 1 && px < LINE_READABLE_PX
+      ? Math.min((mark.w * zoom) / (m.stacked + 0.16), (mark.h * zoom) / (parts.length * STACK_LINE + 0.25), MARK_MAX_PX)
+      : 0
+  if (Math.max(px, stackPx) < MARK_MIN_PX) return
 
   ctx.save()
   ctx.translate(mark.x, mark.y)
@@ -103,6 +119,18 @@ function drawNotation(ctx: CanvasRenderingContext2D, b: Block, zoom: number): vo
   ctx.lineJoin = 'round'
   ctx.strokeStyle = 'rgba(15, 23, 42, 0.85)'
   ctx.fillStyle = '#fff'
+  if (stackPx > px) {
+    ctx.textAlign = 'center'
+    ctx.font = `800 ${stackPx}px system-ui, sans-serif`
+    ctx.lineWidth = stackPx * 0.16
+    parts.forEach((t, i) => {
+      const y = (i - (parts.length - 1) / 2) * stackPx * STACK_LINE
+      ctx.strokeText(t, 0, y)
+      ctx.fillText(t, 0, y)
+    })
+    ctx.restore()
+    return
+  }
   const x0 = (-(m.base + gap + m.index) * px) / 2
   ctx.font = `800 ${px}px system-ui, sans-serif`
   ctx.lineWidth = px * 0.16

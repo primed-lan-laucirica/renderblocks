@@ -273,9 +273,15 @@ export interface Notation {
  * The notation a set's block wears (the educational point of those sets):
  * Square Club 49 → 7², Step Squad 10 → T₄, Powers of 10 1000 → 10³,
  * Powers of 2 32 → 2⁵. Other sets, and non-members, have none.
+ *
+ * Times tables show the multiplication itself. Big ranges skip most of the
+ * table (700, then 1,001), so without "7 × 143" the numbers read as
+ * arbitrary, or as if 1,001 came right after 700.
  */
 export function notation(set: SetId, n: number): Notation | null {
   if (!isMember(set, n)) return null
+  const k = multipleOf(set)
+  if (k) return { base: `${k} × ${(n / k || 0).toLocaleString('en-US')}` }
   switch (set) {
     case 'squares':
       return { base: isqrt(n).toLocaleString('en-US'), sup: '2' }
