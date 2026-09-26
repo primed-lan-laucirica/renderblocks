@@ -269,16 +269,22 @@ function buildShape(value: number, style: ShapeStyle): BlockShape {
     // True scale to 100; above it, the same layout scaled to the equal-area square.
     const k = abs <= TRUE_SCALE_MAX ? 1 : bigSide(abs) / Math.sqrt(abs)
     const toLocal = (x: number, y: number) => ({ cx: (x + 0.5 - gridW / 2) * k, cy: (maxY - y + 0.5 - gridH / 2) * k })
-    const cubes: Cube[] = cells.map((c, i) => ({
-      ...toLocal(c.x, c.y),
-      w: k,
-      h: k,
-      fill: tint(getCubeColor(abs, i, cells.length)),
-      outline: (() => {
-        const o = getCubeOutlineColor(abs, i)
-        return o ? tint(o) : null
-      })(),
-    }))
+    // A staircase is its steps side by side, 1 + 2 + 3 + …: step column n is
+    // coloured as Numberblock n (red 1, orange 2 … the rainbow 7, white 10),
+    // cube 0 at its foot, so 55 visibly holds 1 to 10.
+    const stair = style === 'steps' && cells.length === gridW * (gridW + 1) / 2 && gridW === gridH
+    const colourOf = (c: { x: number; y: number }, i: number): [number, number] => (stair ? [c.x + 1, maxY - c.y] : [abs, i])
+    const cubes: Cube[] = cells.map((c, i) => {
+      const [n, j] = colourOf(c, i)
+      const o = getCubeOutlineColor(n, j)
+      return {
+        ...toLocal(c.x, c.y),
+        w: k,
+        h: k,
+        fill: tint(getCubeColor(n, j, n)),
+        outline: o ? tint(o) : null,
+      }
+    })
     const rects = coverCells(cells).map((r) => ({
       cx: (r.x + r.w / 2 - gridW / 2) * k,
       cy: (maxY - (r.y + r.h - 1) + r.h / 2 - gridH / 2) * k,

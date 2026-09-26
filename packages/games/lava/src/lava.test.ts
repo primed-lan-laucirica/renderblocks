@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { DEFAULTS } from './config'
 import { enumerate, isMember, isPrime, notation, spawnNumbers, type SetId } from './sets'
 import { fallSeconds, pickScream, type ScreamClip } from './screams'
+import { getCubeColor, getCubeOutlineColor } from '@renderblocks/blocks/cubeLayout'
 import { bigSide, blockShape } from './shapes'
 import { initPhysics, Sim } from './sim'
 
@@ -198,6 +199,21 @@ describe('block shapes', () => {
       // Rising to the right: the tallest column is the rightmost.
       const tallestX = Math.max(...s.cubes.filter((c) => c.cy === Math.max(...s.cubes.map((d) => d.cy))).map((c) => c.cx))
       expect(tallestX).toBeCloseTo(s.w / 2 - 0.5)
+    }
+    // Each step is its own Numberblock: in 55 the columns are 1, 2 … 10, and
+    // in 465 (1 to 30) column 25 is pale-orange tens under a cyan 5.
+    for (const [n, steps] of [[55, 10], [465, 30]]) {
+      const s = blockShape(n, 'steps')
+      const cols = new Map<number, typeof s.cubes>()
+      for (const c of s.cubes) cols.set(Math.round(c.cx * 1e6), [...(cols.get(Math.round(c.cx * 1e6)) ?? []), c])
+      const sorted = [...cols.entries()].sort((a, b) => a[0] - b[0]).map(([, cs]) => cs.sort((a, b) => a.cy - b.cy))
+      expect(sorted.map((cs) => cs.length)).toEqual(Array.from({ length: steps }, (_, i) => i + 1))
+      sorted.forEach((cs, i) =>
+        cs.forEach((c, j) => {
+          expect(c.fill).toBe(getCubeColor(i + 1, j, i + 1))
+          expect(c.outline).toBe(getCubeOutlineColor(i + 1, j))
+        }),
+      )
     }
     for (const n of [121, 961]) {
       expect(area(blockShape(n, 'square'))).toBeCloseTo(bigSide(n) ** 2, 5)
