@@ -24,7 +24,37 @@ export interface Word {
 /** Built by tools/words/build.py from tools/words/parts.txt. */
 export const WORDS = data as Word[]
 
-export const LEVELS = [1, 2, 3, 4, 5].map((level) => ({
-  level,
-  words: WORDS.filter((w) => w.level === level),
-}))
+/**
+ * Levels 1–5: his Preschool Prep sight words (known already — familiar ground).
+ * Levels 6–12: the point of the app — common words that follow the sound
+ * rules, in phonics order, for sounding out.
+ */
+const PATTERNS: Record<number, string> = {
+  6: 'short a',
+  7: 'short i and o',
+  8: 'short u and e',
+  9: 'sh ch th ck',
+  10: 'blends',
+  11: 'silent e',
+  12: 'ai ee oa ar or',
+}
+
+export interface Level {
+  level: number
+  /** Sight words, or sound-it-out words. */
+  kind: 'sight' | 'sound'
+  /** Spelling pattern, for sound-it-out levels. */
+  pattern?: string
+  words: Word[]
+}
+
+export const LEVELS: Level[] = [...new Set(WORDS.map((w) => w.level))]
+  .sort((a, b) => a - b)
+  .map((level) => ({
+    level,
+    kind: level <= 5 ? 'sight' : 'sound',
+    pattern: PATTERNS[level],
+    words: WORDS.filter((w) => w.level === level),
+  }))
+
+export const levelOf = (n: number) => LEVELS.find((l) => l.level === n)!

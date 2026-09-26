@@ -1,21 +1,16 @@
 #!/usr/bin/env python3
 """
-Build the Words app's data and audio (build time only — the app never calls an API).
+Build the Words app's data and whole-word audio (build time only — the app never calls an API).
 
 For each word in parts.txt:
-  1. Speak it once with ElevenLabs text-to-speech, slowed a little, asking
-     for per-letter timestamps (cached: alignment/<word>.json + the mp3).
-  2. Level the loudness and encode in the house format (MP3 64 kbps mono) —
-     no silence trimming, so the timestamps still line up.
-  3. Correct the timings against the sound: the raw letter timings run from
-     0 s to the clip's end, silence included, and sit a little early. They are
-     fitted onto the part of the clip that actually has sound, and in words
-     with one vowel sound the vowel is snapped to the loudest stretch, with
-     the consonants fitted before and after it.
-  4. Link each part to its own sound, a shared clip made locally by
-     sounds.py (Kokoro) — the whole word comes from ElevenLabs, the parts
-     from Kokoro.
-  5. Write packages/games/words/src/data/words.json.
+  1. Its whole-word recording, by the voice voices.txt names: ElevenLabs
+     (Alexandra, slowed to 0.75 unless listed "elevenlabs-normal"), or
+     Kokoro (made by sounds.py). Levelled, house format (MP3 64 kbps mono).
+     ElevenLabs' per-letter timestamps are cached in alignment/ for later
+     experiments; the app doesn't use them.
+  2. Each part linked to its own sound — a shared Kokoro clip made by
+     sounds.py.
+  3. packages/games/words/src/data/words.json written.
 
     python3 tools/words/build.py            # only fetch what's missing
     python3 tools/words/build.py --force    # re-speak every word
@@ -31,9 +26,7 @@ import subprocess
 import sys
 import urllib.request
 
-import numpy as np
-
-from sounds import part_sounds, sound_id
+from sounds import part_sounds, sound_id, word_voices
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.join(HERE, '..', '..')
@@ -83,15 +76,15 @@ def parse_parts():
     return words
 
 
-def speak(word: str, key: str, force: bool) -> dict:
+def speak(word: str, key: str, force: bool, speed: float = SPEED) -> None:
     mp3 = os.path.join(AUDIO, f'{word}.mp3')
     align_path = os.path.join(ALIGN, f'{word}.json')
     if os.path.exists(mp3) and os.path.exists(align_path) and not force:
-        return json.load(open(align_path))
+        return
     body = json.dumps({
         'text': word,
         'model_id': VOICE['model'],
-        'voice_settings': {**VOICE['settings'], 'speed': SPEED},
+        'voice_settings': {**VOICE['settings'], 'speed': speed},
     }).encode()
     req = urllib.request.Request(
         f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE['id']}/with-timestamps",
@@ -105,75 +98,6 @@ def speak(word: str, key: str, force: bool) -> dict:
     os.remove(raw)
     json.dump(res['alignment'], open(align_path, 'w'))
     print(f'  spoke "{word}"', flush=True)
-    return res['alignment']
-
-
-def envelope(mp3: str):
-    raw = subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-i', mp3, '-f', 'f32le', '-ac', '1', '-ar', '48000', '-'],
-                         capture_output=True, check=True).stdout
-    x = np.frombuffer(raw, dtype=np.float32)
-    hop = 480  # 10 ms
-    env = np.array([np.sqrt(np.mean(x[i:i + hop] ** 2)) for i in range(0, len(x), hop)])
-    db = 20 * np.log10(env / (env.max() + 1e-9) + 1e-9)
-    return db, len(x) / 48000, hop / 48000
-
-
-def timings(entry, alignment, mp3):
-    """Start/end seconds for each part, corrected against the sound (see module docstring)."""
-    parts = entry['parts']
-    starts = alignment['character_start_times_seconds']
-    ends = alignment['character_end_times_seconds']
-    db, duration, dt = envelope(mp3)
-    loud = np.where(db > -40)[0]
-    sound0, sound1 = loud[0] * dt, (loud[-1] + 1) * dt
-    a0, a1 = starts[0], ends[-1]
-    fit = lambda t: sound0 + (t - a0) / (a1 - a0) * (sound1 - sound0)
-
-    i = 0
-    for p in parts:
-        n = len(p['g'])
-        p['t0'], p['t1'] = fit(starts[i]), fit(ends[i + n - 1])
-        i += n
-
-    vowels = [p for p in parts if p['vowel']]
-    if len(vowels) == 1:
-        # One vowel sound: it is the loud middle. Snap it there; fit consonants around it.
-        peak = int(np.argmax(db))
-        lo = hi = peak
-        while lo > 0 and db[lo - 1] > db[peak] - 12:
-            lo -= 1
-        while hi < len(db) - 1 and db[hi + 1] > db[peak] - 12:
-            hi += 1
-        v0, v1 = lo * dt, (hi + 1) * dt
-        vi = parts.index(vowels[0])
-        before, after = parts[:vi], parts[vi + 1:]
-
-        def spread(group, t_from, t_to):
-            sounding = [p for p in group if not p['silent']]
-            total = sum(p['t1'] - p['t0'] for p in sounding) or 1
-            t = t_from
-            for p in group:
-                if p['silent']:
-                    p['t0'] = p['t1'] = t
-                    continue
-                share = (p['t1'] - p['t0']) / total * (t_to - t_from)
-                p['t0'], p['t1'] = t, t + share
-                t += share
-
-        # Nothing sounding before or after it: the vowel runs to that edge of the sound.
-        if not any(not p['silent'] for p in before):
-            v0 = sound0
-        if not any(not p['silent'] for p in after):
-            v1 = sound1
-        spread(before, sound0, v0)
-        vowels[0]['t0'], vowels[0]['t1'] = v0, v1
-        spread(after, v1, sound1)
-
-    for p in parts:
-        if p['silent']:
-            p['t1'] = p['t0']  # silent letters make no sound of their own
-        p['t0'], p['t1'] = round(float(p['t0']), 3), round(float(p['t1']), 3)
-    return round(float(duration), 3), round(float(sound0), 3), round(float(sound1), 3)
 
 
 def main():
@@ -185,13 +109,16 @@ def main():
     words = parse_parts()
     # Each part's own sound (a shared Kokoro clip in public/games/words/sounds/).
     sounds = dict(part_sounds())
+    voices = word_voices()
     for entry in words:
         for part, arpa in zip(entry['parts'], sounds[entry['word']]):
             part['sound'] = sound_id(arpa) if arpa else None
-    for entry in words:
-        alignment = speak(entry['word'], key, force)
-        mp3 = os.path.join(AUDIO, f"{entry['word']}.mp3")
-        entry['duration'], entry['soundStart'], entry['soundEnd'] = timings(entry, alignment, mp3)
+        voice = voices.get(entry['word'], 'elevenlabs')
+        if voice == 'kokoro':
+            if not os.path.exists(os.path.join(AUDIO, f"{entry['word']}.mp3")):
+                print(f"  missing Kokoro recording for \"{entry['word']}\" — run sounds.py")
+            continue
+        speak(entry['word'], key, force, 1.0 if voice == 'elevenlabs-normal' else SPEED)
     json.dump(words, open(OUT, 'w'), indent=1)
     print(f'{len(words)} words → {os.path.relpath(OUT, REPO)}')
 

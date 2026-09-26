@@ -2,6 +2,9 @@
 """
 Individual sounds for the Words app, generated locally with Kokoro (no API).
 
+Also speaks the WHOLE words voices.txt assigns to Kokoro (from their exact
+pronunciation), into public/games/words/audio/.
+
 Each word part in parts.txt gets its sound from the word's dictionary
 pronunciation (CMU, in sight_words.csv): one sound per part, except letter
 groups that make two (or = aw+r, le = u+l, the o in "one" = w+u …). Every
@@ -41,8 +44,8 @@ TWO_SOUNDS_IN = {('one', 'o'), ('use', 'u')}
 
 def part_sounds():
     """[(word, [arpabet list per sounding part])] for every word in parts.txt."""
-    cmu = {r['word']: r['phonemes_arpabet'].split()
-           for r in csv.DictReader(open(os.path.join(HERE, 'sight_words.csv'), encoding='utf-8-sig'))}
+    # Sight words, then the sound-it-out words (phonemes_extra.csv, from CMU too).
+    cmu = pronunciations()
     out = []
     for line in open(os.path.join(HERE, 'parts.txt'), encoding='utf-8'):
         line = line.strip()
@@ -58,13 +61,37 @@ def part_sounds():
                 continue
             # A letter group makes two sounds only if the second really is its r / l
             # ("for" = f + aw-r, but in "word" the "or" is the single sound "er").
-            two = (g in TWO_SOUNDS and len(ph) > 1 and ph[1] == ('L' if g == 'le' else 'R')) or (word, g) in TWO_SOUNDS_IN
+            two = (
+                (g in TWO_SOUNDS and len(ph) > 1 and ph[1] == ('L' if g == 'le' else 'R'))
+                or (word, g) in TWO_SOUNDS_IN
+                or g == 'x'  # k + s
+                or (g == 'u' and ph[:2] == ['Y', 'UW'])  # the "yoo" in cube, cute, use
+            )
             n = 2 if two else 1
             per_part.append(ph[:n])
             ph = ph[n:]
             assert per_part[-1], f'{word}: part "{g}" has no sound'
         assert not ph, f'{word}: sounds left over {ph}'
         out.append((word, per_part))
+    return out
+
+
+def pronunciations():
+    cmu = {}
+    for name in ('sight_words.csv', 'phonemes_extra.csv'):
+        for r in csv.DictReader(open(os.path.join(HERE, name), encoding='utf-8-sig')):
+            cmu.setdefault(r['word'], r['phonemes_arpabet'].split())
+    return cmu
+
+
+def word_voices():
+    """{word: 'elevenlabs-normal' | 'kokoro'} from voices.txt (everything else: ElevenLabs, slowed)."""
+    out = {}
+    for line in open(os.path.join(HERE, 'voices.txt'), encoding='utf-8'):
+        line = line.strip()
+        if line and not line.startswith('#'):
+            voice, words = [s.strip() for s in line.split('|')]
+            out.update({w: voice for w in words.split()})
     return out
 
 
@@ -84,21 +111,34 @@ def main():
     kdir = os.path.expanduser(os.environ.get('KOKORO_DIR', '~/kokoro'))
     k = Kokoro(os.path.join(kdir, 'kokoro-v1.0.onnx'), os.path.join(kdir, 'voices-v1.0.bin'))
     os.makedirs(OUT_DIR, exist_ok=True)
+    def speak(phonemes, mp3, speed, lead):
+        samples, rate = k.create(phonemes, voice=VOICE, speed=speed, is_phonemes=True)
+        wav = os.path.join(tempfile.mkdtemp(), 'x.wav')
+        sf.write(wav, samples, rate)
+        # Trim silence at both ends only, level, house format.
+        subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', wav, '-af',
+                        f'silenceremove=start_periods=1:start_threshold=-50dB:start_silence={lead},areverse,'
+                        f'silenceremove=start_periods=1:start_threshold=-50dB:start_silence={lead + 0.02},areverse,'
+                        'loudnorm=I=-16:TP=-1.5:LRA=11',
+                        '-ar', '48000', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', mp3], check=True)
+
     needed = {sound_id(a): a for _, parts in part_sounds() for a in parts if a}
     for sid, arpa in sorted(needed.items()):
         mp3 = os.path.join(OUT_DIR, f'{sid}.mp3')
         if os.path.exists(mp3) and not force:
             continue
-        samples, rate = k.create(ipa(arpa), voice=VOICE, speed=0.8, is_phonemes=True)
-        wav = os.path.join(tempfile.mkdtemp(), 'x.wav')
-        sf.write(wav, samples, rate)
-        # Trim silence at both ends only, level, house format.
-        subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', wav, '-af',
-                        'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.01,areverse,'
-                        'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.02,areverse,'
-                        'loudnorm=I=-16:TP=-1.5:LRA=11',
-                        '-ar', '48000', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', mp3], check=True)
+        speak(ipa(arpa), mp3, 0.8, 0.01)
         print(f'  {sid:10} /{ipa(arpa)}/', flush=True)
+
+    # Whole words voices.txt gives to Kokoro.
+    cmu = pronunciations()
+    word_dir = os.path.join(REPO, 'packages', 'app', 'public', 'games', 'words', 'audio')
+    for word, voice in sorted(word_voices().items()):
+        mp3 = os.path.join(word_dir, f'{word}.mp3')
+        if voice != 'kokoro' or (os.path.exists(mp3) and not force):
+            continue
+        speak(ipa(cmu[word]), mp3, 0.85, 0.03)
+        print(f'  word "{word}" /{ipa(cmu[word])}/', flush=True)
     json.dump({sid: ipa(a) for sid, a in sorted(needed.items())}, open(os.path.join(OUT_DIR, 'index.json'), 'w'), indent=1)
     print(f'{len(needed)} sounds → {os.path.relpath(OUT_DIR, REPO)}')
 

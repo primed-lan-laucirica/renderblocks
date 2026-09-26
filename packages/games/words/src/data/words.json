@@ -9,14 +9,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.02,
-    "t1": 0.59
+    "sound": "ah"
    }
-  ],
-  "duration": 0.789,
-  "soundStart": 0.02,
-  "soundEnd": 0.59
+  ]
  },
  {
   "word": "and",
@@ -28,9 +23,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.04,
-    "t1": 0.34
+    "sound": "ae"
    },
    {
     "g": "n",
@@ -38,9 +31,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.34,
-    "t1": 0.378
+    "sound": "n"
    },
    {
     "g": "d",
@@ -48,14 +39,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.378,
-    "t1": 0.56
+    "sound": "d"
    }
-  ],
-  "duration": 1.022,
-  "soundStart": 0.04,
-  "soundEnd": 0.56
+  ]
  },
  {
   "word": "for",
@@ -67,9 +53,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "f",
-    "t0": 0.02,
-    "t1": 0.17
+    "sound": "f"
    },
    {
     "g": "or",
@@ -77,14 +61,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ao-r",
-    "t0": 0.17,
-    "t1": 0.83
+    "sound": "ao-r"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.02,
-  "soundEnd": 0.83
+  ]
  },
  {
   "word": "have",
@@ -96,9 +75,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "hh",
-    "t0": 0.07,
-    "t1": 0.15
+    "sound": "hh"
    },
    {
     "g": "a",
@@ -106,9 +83,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.15,
-    "t1": 0.43
+    "sound": "ae"
    },
    {
     "g": "v",
@@ -116,9 +91,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "v",
-    "t0": 0.43,
-    "t1": 0.61
+    "sound": "v"
    },
    {
     "g": "e",
@@ -126,14 +99,9 @@
     "heart": true,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 0.61,
-    "t1": 0.61
+    "sound": null
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.07,
-  "soundEnd": 0.61
+  ]
  },
  {
   "word": "he",
@@ -145,9 +113,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "hh",
-    "t0": 0.02,
-    "t1": 0.17
+    "sound": "hh"
    },
    {
     "g": "e",
@@ -155,14 +121,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "iy",
-    "t0": 0.17,
-    "t1": 0.67
+    "sound": "iy"
    }
-  ],
-  "duration": 0.882,
-  "soundStart": 0.02,
-  "soundEnd": 0.67
+  ]
  },
  {
   "word": "I",
@@ -174,14 +135,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ay",
-    "t0": 0.06,
-    "t1": 0.42
+    "sound": "ay"
    }
-  ],
-  "duration": 0.836,
-  "soundStart": 0.06,
-  "soundEnd": 0.42
+  ]
  },
  {
   "word": "in",
@@ -193,9 +149,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.01,
-    "t1": 0.16
+    "sound": "ih"
    },
    {
     "g": "n",
@@ -203,14 +157,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.16,
-    "t1": 1.07
+    "sound": "n"
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.01,
-  "soundEnd": 1.07
+  ]
  },
  {
   "word": "is",
@@ -222,9 +171,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.04,
-    "t1": 0.28
+    "sound": "ih"
    },
    {
     "g": "s",
@@ -232,14 +179,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "z",
-    "t0": 0.28,
-    "t1": 0.45
+    "sound": "z"
    }
-  ],
-  "duration": 0.789,
-  "soundStart": 0.04,
-  "soundEnd": 0.45
+  ]
  },
  {
   "word": "it",
@@ -251,9 +193,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.0,
-    "t1": 0.66
+    "sound": "ih"
    },
    {
     "g": "t",
@@ -261,14 +201,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.66,
-    "t1": 0.66
+    "sound": "t"
    }
-  ],
-  "duration": 0.65,
-  "soundStart": 0.0,
-  "soundEnd": 0.66
+  ]
  },
  {
   "word": "of",
@@ -280,9 +215,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.01,
-    "t1": 0.26
+    "sound": "ah"
    },
    {
     "g": "f",
@@ -290,14 +223,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "v",
-    "t0": 0.26,
-    "t1": 0.43
+    "sound": "v"
    }
-  ],
-  "duration": 0.789,
-  "soundStart": 0.01,
-  "soundEnd": 0.43
+  ]
  },
  {
   "word": "play",
@@ -309,9 +237,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "p",
-    "t0": 0.06,
-    "t1": 0.136
+    "sound": "p"
    },
    {
     "g": "l",
@@ -319,9 +245,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "l",
-    "t0": 0.136,
-    "t1": 0.2
+    "sound": "l"
    },
    {
     "g": "ay",
@@ -329,14 +253,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ey",
-    "t0": 0.2,
-    "t1": 0.68
+    "sound": "ey"
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.06,
-  "soundEnd": 0.68
+  ]
  },
  {
   "word": "said",
@@ -348,9 +267,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "s",
-    "t0": 0.0,
-    "t1": 0.16
+    "sound": "s"
    },
    {
     "g": "ai",
@@ -358,9 +275,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "eh",
-    "t0": 0.16,
-    "t1": 0.47
+    "sound": "eh"
    },
    {
     "g": "d",
@@ -368,14 +283,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.47,
-    "t1": 0.55
+    "sound": "d"
    }
-  ],
-  "duration": 1.022,
-  "soundStart": 0.0,
-  "soundEnd": 0.55
+  ]
  },
  {
   "word": "that",
@@ -387,9 +297,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.1,
-    "t1": 0.13
+    "sound": "dh"
    },
    {
     "g": "a",
@@ -397,9 +305,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.13,
-    "t1": 0.46
+    "sound": "ae"
    },
    {
     "g": "t",
@@ -407,14 +313,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.46,
-    "t1": 0.66
+    "sound": "t"
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.1,
-  "soundEnd": 0.66
+  ]
  },
  {
   "word": "the",
@@ -426,9 +327,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.24,
-    "t1": 0.27
+    "sound": "dh"
    },
    {
     "g": "e",
@@ -436,14 +335,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.27,
-    "t1": 0.96
+    "sound": "ah"
    }
-  ],
-  "duration": 1.533,
-  "soundStart": 0.24,
-  "soundEnd": 0.96
+  ]
  },
  {
   "word": "to",
@@ -455,9 +349,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.08,
-    "t1": 0.24
+    "sound": "t"
    },
    {
     "g": "o",
@@ -465,14 +357,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "uw",
-    "t0": 0.24,
-    "t1": 0.72
+    "sound": "uw"
    }
-  ],
-  "duration": 0.929,
-  "soundStart": 0.08,
-  "soundEnd": 0.72
+  ]
  },
  {
   "word": "you",
@@ -484,9 +371,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "y",
-    "t0": 0.07,
-    "t1": 0.15
+    "sound": "y"
    },
    {
     "g": "ou",
@@ -494,14 +379,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "uw",
-    "t0": 0.15,
-    "t1": 0.58
+    "sound": "uw"
    }
-  ],
-  "duration": 0.929,
-  "soundStart": 0.07,
-  "soundEnd": 0.58
+  ]
  },
  {
   "word": "are",
@@ -513,9 +393,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "aa-r",
-    "t0": 0.04,
-    "t1": 0.96
+    "sound": "aa-r"
    },
    {
     "g": "e",
@@ -523,14 +401,9 @@
     "heart": true,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 0.96,
-    "t1": 0.96
+    "sound": null
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.04,
-  "soundEnd": 0.96
+  ]
  },
  {
   "word": "as",
@@ -542,9 +415,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.02,
-    "t1": 0.24
+    "sound": "ae"
    },
    {
     "g": "s",
@@ -552,14 +423,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "z",
-    "t0": 0.24,
-    "t1": 0.35
+    "sound": "z"
    }
-  ],
-  "duration": 0.372,
-  "soundStart": 0.02,
-  "soundEnd": 0.35
+  ]
  },
  {
   "word": "but",
@@ -571,9 +437,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "b",
-    "t0": 0.1,
-    "t1": 0.12
+    "sound": "b"
    },
    {
     "g": "u",
@@ -581,9 +445,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.12,
-    "t1": 0.37
+    "sound": "ah"
    },
    {
     "g": "t",
@@ -591,14 +453,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.37,
-    "t1": 0.46
+    "sound": "t"
    }
-  ],
-  "duration": 0.882,
-  "soundStart": 0.1,
-  "soundEnd": 0.46
+  ]
  },
  {
   "word": "go",
@@ -610,9 +467,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "g",
-    "t0": 0.02,
-    "t1": 0.12
+    "sound": "g"
    },
    {
     "g": "o",
@@ -620,14 +475,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ow",
-    "t0": 0.12,
-    "t1": 0.64
+    "sound": "ow"
    }
-  ],
-  "duration": 0.882,
-  "soundStart": 0.02,
-  "soundEnd": 0.64
+  ]
  },
  {
   "word": "had",
@@ -639,9 +489,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "hh",
-    "t0": 0.0,
-    "t1": 0.05
+    "sound": "hh"
    },
    {
     "g": "a",
@@ -649,9 +497,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.05,
-    "t1": 0.39
+    "sound": "ae"
    },
    {
     "g": "d",
@@ -659,14 +505,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.39,
-    "t1": 0.47
+    "sound": "d"
    }
-  ],
-  "duration": 0.882,
-  "soundStart": 0.0,
-  "soundEnd": 0.47
+  ]
  },
  {
   "word": "here",
@@ -678,9 +519,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "hh",
-    "t0": 0.05,
-    "t1": 0.18
+    "sound": "hh"
    },
    {
     "g": "ere",
@@ -688,14 +527,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "iy-r",
-    "t0": 0.18,
-    "t1": 0.85
+    "sound": "iy-r"
    }
-  ],
-  "duration": 1.161,
-  "soundStart": 0.05,
-  "soundEnd": 0.85
+  ]
  },
  {
   "word": "his",
@@ -707,9 +541,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "hh",
-    "t0": 0.18,
-    "t1": 0.26
+    "sound": "hh"
    },
    {
     "g": "i",
@@ -717,9 +549,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.26,
-    "t1": 0.38
+    "sound": "ih"
    },
    {
     "g": "s",
@@ -727,14 +557,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "z",
-    "t0": 0.38,
-    "t1": 0.84
+    "sound": "z"
    }
-  ],
-  "duration": 1.347,
-  "soundStart": 0.18,
-  "soundEnd": 0.84
+  ]
  },
  {
   "word": "like",
@@ -746,9 +571,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "l",
-    "t0": 0.05,
-    "t1": 0.13
+    "sound": "l"
    },
    {
     "g": "i",
@@ -756,9 +579,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ay",
-    "t0": 0.13,
-    "t1": 0.29
+    "sound": "ay"
    },
    {
     "g": "k",
@@ -766,9 +587,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "k",
-    "t0": 0.29,
-    "t1": 0.44
+    "sound": "k"
    },
    {
     "g": "e",
@@ -776,14 +595,9 @@
     "heart": false,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 0.44,
-    "t1": 0.44
+    "sound": null
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.05,
-  "soundEnd": 0.44
+  ]
  },
  {
   "word": "my",
@@ -795,9 +609,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "m",
-    "t0": 0.0,
-    "t1": 0.0
+    "sound": "m"
    },
    {
     "g": "y",
@@ -805,14 +617,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ay",
-    "t0": 0.0,
-    "t1": 0.74
+    "sound": "ay"
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.0,
-  "soundEnd": 0.74
+  ]
  },
  {
   "word": "on",
@@ -824,9 +631,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "aa",
-    "t0": 0.1,
-    "t1": 0.24
+    "sound": "aa"
    },
    {
     "g": "n",
@@ -834,14 +639,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.24,
-    "t1": 0.35
+    "sound": "n"
    }
-  ],
-  "duration": 1.254,
-  "soundStart": 0.1,
-  "soundEnd": 0.35
+  ]
  },
  {
   "word": "see",
@@ -853,9 +653,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "s",
-    "t0": 0.0,
-    "t1": 0.17
+    "sound": "s"
    },
    {
     "g": "ee",
@@ -863,14 +661,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "iy",
-    "t0": 0.17,
-    "t1": 1.14
+    "sound": "iy"
    }
-  ],
-  "duration": 1.161,
-  "soundStart": 0.0,
-  "soundEnd": 1.14
+  ]
  },
  {
   "word": "she",
@@ -882,9 +675,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "sh",
-    "t0": 0.0,
-    "t1": 0.2
+    "sound": "sh"
    },
    {
     "g": "e",
@@ -892,14 +683,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "iy",
-    "t0": 0.2,
-    "t1": 0.7
+    "sound": "iy"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.0,
-  "soundEnd": 0.7
+  ]
  },
  {
   "word": "they",
@@ -911,9 +697,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.1,
-    "t1": 0.14
+    "sound": "dh"
    },
    {
     "g": "ey",
@@ -921,14 +705,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ey",
-    "t0": 0.14,
-    "t1": 1.0
+    "sound": "ey"
    }
-  ],
-  "duration": 1.207,
-  "soundStart": 0.1,
-  "soundEnd": 1.0
+  ]
  },
  {
   "word": "was",
@@ -940,9 +719,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.08,
-    "t1": 0.11
+    "sound": "w"
    },
    {
     "g": "a",
@@ -950,9 +727,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "aa",
-    "t0": 0.11,
-    "t1": 0.37
+    "sound": "aa"
    },
    {
     "g": "s",
@@ -960,14 +735,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "z",
-    "t0": 0.37,
-    "t1": 0.73
+    "sound": "z"
    }
-  ],
-  "duration": 0.882,
-  "soundStart": 0.08,
-  "soundEnd": 0.73
+  ]
  },
  {
   "word": "we",
@@ -979,9 +749,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.14,
-    "t1": 0.16
+    "sound": "w"
    },
    {
     "g": "e",
@@ -989,14 +757,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "iy",
-    "t0": 0.16,
-    "t1": 0.94
+    "sound": "iy"
    }
-  ],
-  "duration": 1.347,
-  "soundStart": 0.14,
-  "soundEnd": 0.94
+  ]
  },
  {
   "word": "with",
@@ -1008,9 +771,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.06,
-    "t1": 0.07
+    "sound": "w"
    },
    {
     "g": "i",
@@ -1018,9 +779,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.07,
-    "t1": 0.31
+    "sound": "ih"
    },
    {
     "g": "th",
@@ -1028,14 +787,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.31,
-    "t1": 0.88
+    "sound": "dh"
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.06,
-  "soundEnd": 0.88
+  ]
  },
  {
   "word": "all",
@@ -1047,9 +801,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ao",
-    "t0": 0.05,
-    "t1": 0.34
+    "sound": "ao"
    },
    {
     "g": "ll",
@@ -1057,14 +809,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "l",
-    "t0": 0.34,
-    "t1": 0.52
+    "sound": "l"
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.05,
-  "soundEnd": 0.52
+  ]
  },
  {
   "word": "at",
@@ -1076,9 +823,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.05,
-    "t1": 0.19
+    "sound": "ae"
    },
    {
     "g": "t",
@@ -1086,14 +831,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.19,
-    "t1": 0.33
+    "sound": "t"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.05,
-  "soundEnd": 0.33
+  ]
  },
  {
   "word": "be",
@@ -1105,9 +845,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "b",
-    "t0": 0.1,
-    "t1": 0.13
+    "sound": "b"
    },
    {
     "g": "e",
@@ -1115,14 +853,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "iy",
-    "t0": 0.13,
-    "t1": 0.69
+    "sound": "iy"
    }
-  ],
-  "duration": 0.789,
-  "soundStart": 0.1,
-  "soundEnd": 0.69
+  ]
  },
  {
   "word": "by",
@@ -1134,9 +867,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "b",
-    "t0": 0.12,
-    "t1": 0.14
+    "sound": "b"
    },
    {
     "g": "y",
@@ -1144,14 +875,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ay",
-    "t0": 0.14,
-    "t1": 0.62
+    "sound": "ay"
    }
-  ],
-  "duration": 0.929,
-  "soundStart": 0.12,
-  "soundEnd": 0.62
+  ]
  },
  {
   "word": "from",
@@ -1163,9 +889,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "f",
-    "t0": 0.03,
-    "t1": 0.115
+    "sound": "f"
    },
    {
     "g": "r",
@@ -1173,9 +897,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "r",
-    "t0": 0.115,
-    "t1": 0.17
+    "sound": "r"
    },
    {
     "g": "o",
@@ -1183,9 +905,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.17,
-    "t1": 0.64
+    "sound": "ah"
    },
    {
     "g": "m",
@@ -1193,14 +913,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "m",
-    "t0": 0.64,
-    "t1": 0.76
+    "sound": "m"
    }
-  ],
-  "duration": 1.161,
-  "soundStart": 0.03,
-  "soundEnd": 0.76
+  ]
  },
  {
   "word": "her",
@@ -1212,9 +927,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "hh",
-    "t0": 0.02,
-    "t1": 0.18
+    "sound": "hh"
    },
    {
     "g": "er",
@@ -1222,14 +935,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "er",
-    "t0": 0.18,
-    "t1": 1.22
+    "sound": "er"
    }
-  ],
-  "duration": 1.3,
-  "soundStart": 0.02,
-  "soundEnd": 1.22
+  ]
  },
  {
   "word": "him",
@@ -1241,9 +949,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "hh",
-    "t0": 0.08,
-    "t1": 0.17
+    "sound": "hh"
    },
    {
     "g": "i",
@@ -1251,9 +957,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.17,
-    "t1": 0.47
+    "sound": "ih"
    },
    {
     "g": "m",
@@ -1261,14 +965,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "m",
-    "t0": 0.47,
-    "t1": 0.62
+    "sound": "m"
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.08,
-  "soundEnd": 0.62
+  ]
  },
  {
   "word": "look",
@@ -1280,9 +979,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "l",
-    "t0": 0.0,
-    "t1": 0.16
+    "sound": "l"
    },
    {
     "g": "oo",
@@ -1290,9 +987,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "uh",
-    "t0": 0.16,
-    "t1": 0.34
+    "sound": "uh"
    },
    {
     "g": "k",
@@ -1300,14 +995,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "k",
-    "t0": 0.34,
-    "t1": 0.94
+    "sound": "k"
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.0,
-  "soundEnd": 0.94
+  ]
  },
  {
   "word": "one",
@@ -1319,9 +1009,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "w-ah",
-    "t0": 0.07,
-    "t1": 0.25
+    "sound": "w-ah"
    },
    {
     "g": "n",
@@ -1329,9 +1017,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.25,
-    "t1": 0.38
+    "sound": "n"
    },
    {
     "g": "e",
@@ -1339,14 +1025,9 @@
     "heart": true,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 0.38,
-    "t1": 0.38
+    "sound": null
    }
-  ],
-  "duration": 1.3,
-  "soundStart": 0.07,
-  "soundEnd": 0.38
+  ]
  },
  {
   "word": "or",
@@ -1358,14 +1039,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ao-r",
-    "t0": 0.04,
-    "t1": 0.36
+    "sound": "ao-r"
    }
-  ],
-  "duration": 0.789,
-  "soundStart": 0.04,
-  "soundEnd": 0.36
+  ]
  },
  {
   "word": "some",
@@ -1377,9 +1053,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "s",
-    "t0": 0.0,
-    "t1": 0.17
+    "sound": "s"
    },
    {
     "g": "o",
@@ -1387,9 +1061,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.17,
-    "t1": 0.73
+    "sound": "ah"
    },
    {
     "g": "m",
@@ -1397,9 +1069,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "m",
-    "t0": 0.73,
-    "t1": 0.77
+    "sound": "m"
    },
    {
     "g": "e",
@@ -1407,14 +1077,9 @@
     "heart": true,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 0.77,
-    "t1": 0.77
+    "sound": null
    }
-  ],
-  "duration": 1.3,
-  "soundStart": 0.0,
-  "soundEnd": 0.77
+  ]
  },
  {
   "word": "there",
@@ -1426,9 +1091,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.03,
-    "t1": 0.13
+    "sound": "dh"
    },
    {
     "g": "ere",
@@ -1436,14 +1099,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "eh-r",
-    "t0": 0.13,
-    "t1": 1.2
+    "sound": "eh-r"
    }
-  ],
-  "duration": 1.207,
-  "soundStart": 0.03,
-  "soundEnd": 1.2
+  ]
  },
  {
   "word": "this",
@@ -1455,9 +1113,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.12,
-    "t1": 0.14
+    "sound": "dh"
    },
    {
     "g": "i",
@@ -1465,9 +1121,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.14,
-    "t1": 0.31
+    "sound": "ih"
    },
    {
     "g": "s",
@@ -1475,14 +1129,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "s",
-    "t0": 0.31,
-    "t1": 0.68
+    "sound": "s"
    }
-  ],
-  "duration": 0.929,
-  "soundStart": 0.12,
-  "soundEnd": 0.68
+  ]
  },
  {
   "word": "up",
@@ -1494,9 +1143,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.08,
-    "t1": 0.18
+    "sound": "ah"
    },
    {
     "g": "p",
@@ -1504,14 +1151,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "p",
-    "t0": 0.18,
-    "t1": 0.36
+    "sound": "p"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.08,
-  "soundEnd": 0.36
+  ]
  },
  {
   "word": "word",
@@ -1523,9 +1165,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.01,
-    "t1": 0.03
+    "sound": "w"
    },
    {
     "g": "or",
@@ -1533,9 +1173,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "er",
-    "t0": 0.03,
-    "t1": 0.42
+    "sound": "er"
    },
    {
     "g": "d",
@@ -1543,14 +1181,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.42,
-    "t1": 0.76
+    "sound": "d"
    }
-  ],
-  "duration": 1.161,
-  "soundStart": 0.01,
-  "soundEnd": 0.76
+  ]
  },
  {
   "word": "am",
@@ -1562,9 +1195,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.0,
-    "t1": 0.2
+    "sound": "ae"
    },
    {
     "g": "m",
@@ -1572,14 +1203,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "m",
-    "t0": 0.2,
-    "t1": 0.4
+    "sound": "m"
    }
-  ],
-  "duration": 0.789,
-  "soundStart": 0.0,
-  "soundEnd": 0.4
+  ]
  },
  {
   "word": "came",
@@ -1591,9 +1217,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "k",
-    "t0": 0.18,
-    "t1": 0.32
+    "sound": "k"
    },
    {
     "g": "a",
@@ -1601,9 +1225,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ey",
-    "t0": 0.32,
-    "t1": 0.74
+    "sound": "ey"
    },
    {
     "g": "m",
@@ -1611,9 +1233,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "m",
-    "t0": 0.74,
-    "t1": 0.85
+    "sound": "m"
    },
    {
     "g": "e",
@@ -1621,14 +1241,9 @@
     "heart": false,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 0.85,
-    "t1": 0.85
+    "sound": null
    }
-  ],
-  "duration": 1.254,
-  "soundStart": 0.18,
-  "soundEnd": 0.85
+  ]
  },
  {
   "word": "can",
@@ -1640,9 +1255,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "k",
-    "t0": 0.1,
-    "t1": 0.19
+    "sound": "k"
    },
    {
     "g": "a",
@@ -1650,9 +1263,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.19,
-    "t1": 0.33
+    "sound": "ae"
    },
    {
     "g": "n",
@@ -1660,14 +1271,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.33,
-    "t1": 0.5
+    "sound": "n"
    }
-  ],
-  "duration": 1.022,
-  "soundStart": 0.1,
-  "soundEnd": 0.5
+  ]
  },
  {
   "word": "could",
@@ -1679,9 +1285,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "k",
-    "t0": 0.11,
-    "t1": 0.18
+    "sound": "k"
    },
    {
     "g": "ou",
@@ -1689,9 +1293,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "uh",
-    "t0": 0.18,
-    "t1": 0.28
+    "sound": "uh"
    },
    {
     "g": "l",
@@ -1699,9 +1301,7 @@
     "heart": true,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 0.28,
-    "t1": 0.28
+    "sound": null
    },
    {
     "g": "d",
@@ -1709,14 +1309,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.28,
-    "t1": 0.37
+    "sound": "d"
    }
-  ],
-  "duration": 1.161,
-  "soundStart": 0.11,
-  "soundEnd": 0.37
+  ]
  },
  {
   "word": "do",
@@ -1728,9 +1323,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.02,
-    "t1": 0.13
+    "sound": "d"
    },
    {
     "g": "o",
@@ -1738,14 +1331,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "uw",
-    "t0": 0.13,
-    "t1": 0.62
+    "sound": "uw"
    }
-  ],
-  "duration": 0.836,
-  "soundStart": 0.02,
-  "soundEnd": 0.62
+  ]
  },
  {
   "word": "down",
@@ -1757,9 +1345,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.09,
-    "t1": 0.11
+    "sound": "d"
    },
    {
     "g": "ow",
@@ -1767,9 +1353,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "aw",
-    "t0": 0.11,
-    "t1": 0.79
+    "sound": "aw"
    },
    {
     "g": "n",
@@ -1777,14 +1361,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.79,
-    "t1": 1.08
+    "sound": "n"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.09,
-  "soundEnd": 1.08
+  ]
  },
  {
   "word": "little",
@@ -1796,9 +1375,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "l",
-    "t0": 0.0,
-    "t1": 0.16
+    "sound": "l"
    },
    {
     "g": "i",
@@ -1806,9 +1383,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.16,
-    "t1": 0.284
+    "sound": "ih"
    },
    {
     "g": "tt",
@@ -1816,9 +1391,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.284,
-    "t1": 0.592
+    "sound": "t"
    },
    {
     "g": "le",
@@ -1826,14 +1399,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ah-l",
-    "t0": 0.592,
-    "t1": 1.23
+    "sound": "ah-l"
    }
-  ],
-  "duration": 1.254,
-  "soundStart": 0.0,
-  "soundEnd": 1.23
+  ]
  },
  {
   "word": "not",
@@ -1845,9 +1413,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.06,
-    "t1": 0.76
+    "sound": "n"
    },
    {
     "g": "o",
@@ -1855,9 +1421,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "aa",
-    "t0": 0.76,
-    "t1": 0.8
+    "sound": "aa"
    },
    {
     "g": "t",
@@ -1865,14 +1429,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.8,
-    "t1": 0.82
+    "sound": "t"
    }
-  ],
-  "duration": 0.836,
-  "soundStart": 0.06,
-  "soundEnd": 0.82
+  ]
  },
  {
   "word": "out",
@@ -1884,9 +1443,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "aw",
-    "t0": 0.05,
-    "t1": 0.27
+    "sound": "aw"
    },
    {
     "g": "t",
@@ -1894,14 +1451,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.27,
-    "t1": 0.81
+    "sound": "t"
    }
-  ],
-  "duration": 0.929,
-  "soundStart": 0.05,
-  "soundEnd": 0.81
+  ]
  },
  {
   "word": "then",
@@ -1913,9 +1465,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.11,
-    "t1": 0.14
+    "sound": "dh"
    },
    {
     "g": "e",
@@ -1923,9 +1473,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "eh",
-    "t0": 0.14,
-    "t1": 0.46
+    "sound": "eh"
    },
    {
     "g": "n",
@@ -1933,14 +1481,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.46,
-    "t1": 0.71
+    "sound": "n"
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.11,
-  "soundEnd": 0.71
+  ]
  },
  {
   "word": "use",
@@ -1952,9 +1495,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "y-uw",
-    "t0": 0.0,
-    "t1": 0.33
+    "sound": "y-uw"
    },
    {
     "g": "s",
@@ -1962,9 +1503,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "s",
-    "t0": 0.33,
-    "t1": 0.88
+    "sound": "s"
    },
    {
     "g": "e",
@@ -1972,14 +1511,9 @@
     "heart": false,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 0.88,
-    "t1": 0.88
+    "sound": null
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.0,
-  "soundEnd": 0.88
+  ]
  },
  {
   "word": "were",
@@ -1991,9 +1525,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.0,
-    "t1": 0.1
+    "sound": "w"
    },
    {
     "g": "ere",
@@ -2001,14 +1533,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "er",
-    "t0": 0.1,
-    "t1": 0.84
+    "sound": "er"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.0,
-  "soundEnd": 0.84
+  ]
  },
  {
   "word": "what",
@@ -2020,9 +1547,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.01,
-    "t1": 0.1
+    "sound": "w"
    },
    {
     "g": "a",
@@ -2030,9 +1555,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.1,
-    "t1": 0.35
+    "sound": "ah"
    },
    {
     "g": "t",
@@ -2040,14 +1563,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.35,
-    "t1": 0.56
+    "sound": "t"
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.01,
-  "soundEnd": 0.56
+  ]
  },
  {
   "word": "when",
@@ -2059,9 +1577,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.04,
-    "t1": 0.11
+    "sound": "w"
    },
    {
     "g": "e",
@@ -2069,9 +1585,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "eh",
-    "t0": 0.11,
-    "t1": 0.48
+    "sound": "eh"
    },
    {
     "g": "n",
@@ -2079,14 +1593,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.48,
-    "t1": 0.65
+    "sound": "n"
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.04,
-  "soundEnd": 0.65
+  ]
  },
  {
   "word": "your",
@@ -2098,9 +1607,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "y",
-    "t0": 0.01,
-    "t1": 0.05
+    "sound": "y"
    },
    {
     "g": "our",
@@ -2108,14 +1615,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ao-r",
-    "t0": 0.05,
-    "t1": 0.52
+    "sound": "ao-r"
    }
-  ],
-  "duration": 1.207,
-  "soundStart": 0.01,
-  "soundEnd": 0.52
+  ]
  },
  {
   "word": "about",
@@ -2127,9 +1629,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.02,
-    "t1": 0.176
+    "sound": "ah"
    },
    {
     "g": "b",
@@ -2137,9 +1637,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "b",
-    "t0": 0.176,
-    "t1": 0.254
+    "sound": "b"
    },
    {
     "g": "ou",
@@ -2147,9 +1645,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "aw",
-    "t0": 0.254,
-    "t1": 0.54
+    "sound": "aw"
    },
    {
     "g": "t",
@@ -2157,14 +1653,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.54,
-    "t1": 0.99
+    "sound": "t"
    }
-  ],
-  "duration": 1.3,
-  "soundStart": 0.02,
-  "soundEnd": 0.99
+  ]
  },
  {
   "word": "an",
@@ -2176,9 +1667,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ae",
-    "t0": 0.09,
-    "t1": 0.25
+    "sound": "ae"
    },
    {
     "g": "n",
@@ -2186,14 +1675,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.25,
-    "t1": 1.2
+    "sound": "n"
    }
-  ],
-  "duration": 1.207,
-  "soundStart": 0.09,
-  "soundEnd": 1.2
+  ]
  },
  {
   "word": "did",
@@ -2205,9 +1689,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.01,
-    "t1": 0.18
+    "sound": "d"
    },
    {
     "g": "i",
@@ -2215,9 +1697,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.18,
-    "t1": 0.44
+    "sound": "ih"
    },
    {
     "g": "d",
@@ -2225,14 +1705,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 0.44,
-    "t1": 0.66
+    "sound": "d"
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.01,
-  "soundEnd": 0.66
+  ]
  },
  {
   "word": "each",
@@ -2244,9 +1719,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "iy",
-    "t0": 0.09,
-    "t1": 0.72
+    "sound": "iy"
    },
    {
     "g": "ch",
@@ -2254,14 +1727,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "ch",
-    "t0": 0.72,
-    "t1": 0.85
+    "sound": "ch"
    }
-  ],
-  "duration": 1.3,
-  "soundStart": 0.09,
-  "soundEnd": 0.85
+  ]
  },
  {
   "word": "get",
@@ -2273,9 +1741,7 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "g",
-    "t0": 0.1,
-    "t1": 0.14
+    "sound": "g"
    },
    {
     "g": "e",
@@ -2283,9 +1749,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "eh",
-    "t0": 0.14,
-    "t1": 0.41
+    "sound": "eh"
    },
    {
     "g": "t",
@@ -2293,14 +1757,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "t",
-    "t0": 0.41,
-    "t1": 0.49
+    "sound": "t"
    }
-  ],
-  "duration": 0.743,
-  "soundStart": 0.1,
-  "soundEnd": 0.49
+  ]
  },
  {
   "word": "how",
@@ -2312,9 +1771,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "hh",
-    "t0": 0.0,
-    "t1": 0.06
+    "sound": "hh"
    },
    {
     "g": "ow",
@@ -2322,14 +1779,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "aw",
-    "t0": 0.06,
-    "t1": 0.75
+    "sound": "aw"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.0,
-  "soundEnd": 0.75
+  ]
  },
  {
   "word": "if",
@@ -2341,9 +1793,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.04,
-    "t1": 0.24
+    "sound": "ih"
    },
    {
     "g": "f",
@@ -2351,14 +1801,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "f",
-    "t0": 0.24,
-    "t1": 0.32
+    "sound": "f"
    }
-  ],
-  "duration": 0.836,
-  "soundStart": 0.04,
-  "soundEnd": 0.32
+  ]
  },
  {
   "word": "many",
@@ -2370,9 +1815,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "m",
-    "t0": 0.05,
-    "t1": 0.115
+    "sound": "m"
    },
    {
     "g": "a",
@@ -2380,9 +1823,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "eh",
-    "t0": 0.115,
-    "t1": 0.155
+    "sound": "eh"
    },
    {
     "g": "n",
@@ -2390,9 +1831,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.155,
-    "t1": 0.195
+    "sound": "n"
    },
    {
     "g": "y",
@@ -2400,14 +1839,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "iy",
-    "t0": 0.195,
-    "t1": 0.45
+    "sound": "iy"
    }
-  ],
-  "duration": 0.929,
-  "soundStart": 0.05,
-  "soundEnd": 0.45
+  ]
  },
  {
   "word": "other",
@@ -2419,9 +1853,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "ah",
-    "t0": 0.04,
-    "t1": 0.22
+    "sound": "ah"
    },
    {
     "g": "th",
@@ -2429,9 +1861,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.22,
-    "t1": 0.355
+    "sound": "dh"
    },
    {
     "g": "er",
@@ -2439,14 +1869,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "er",
-    "t0": 0.355,
-    "t1": 1.21
+    "sound": "er"
    }
-  ],
-  "duration": 1.207,
-  "soundStart": 0.04,
-  "soundEnd": 1.21
+  ]
  },
  {
   "word": "so",
@@ -2458,9 +1883,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "s",
-    "t0": 0.02,
-    "t1": 0.14
+    "sound": "s"
    },
    {
     "g": "o",
@@ -2468,14 +1891,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ow",
-    "t0": 0.14,
-    "t1": 0.56
+    "sound": "ow"
    }
-  ],
-  "duration": 0.836,
-  "soundStart": 0.02,
-  "soundEnd": 0.56
+  ]
  },
  {
   "word": "their",
@@ -2487,9 +1905,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.03,
-    "t1": 0.13
+    "sound": "dh"
    },
    {
     "g": "eir",
@@ -2497,14 +1913,9 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "eh-r",
-    "t0": 0.13,
-    "t1": 1.17
+    "sound": "eh-r"
    }
-  ],
-  "duration": 1.393,
-  "soundStart": 0.03,
-  "soundEnd": 1.17
+  ]
  },
  {
   "word": "them",
@@ -2516,9 +1927,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "dh",
-    "t0": 0.01,
-    "t1": 0.15
+    "sound": "dh"
    },
    {
     "g": "e",
@@ -2526,9 +1935,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "eh",
-    "t0": 0.15,
-    "t1": 0.58
+    "sound": "eh"
    },
    {
     "g": "m",
@@ -2536,14 +1943,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "m",
-    "t0": 0.58,
-    "t1": 0.74
+    "sound": "m"
    }
-  ],
-  "duration": 1.254,
-  "soundStart": 0.01,
-  "soundEnd": 0.74
+  ]
  },
  {
   "word": "which",
@@ -2555,9 +1957,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.04,
-    "t1": 0.07
+    "sound": "w"
    },
    {
     "g": "i",
@@ -2565,9 +1965,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.07,
-    "t1": 0.28
+    "sound": "ih"
    },
    {
     "g": "ch",
@@ -2575,14 +1973,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "ch",
-    "t0": 0.28,
-    "t1": 0.56
+    "sound": "ch"
    }
-  ],
-  "duration": 0.975,
-  "soundStart": 0.04,
-  "soundEnd": 0.56
+  ]
  },
  {
   "word": "will",
@@ -2594,9 +1987,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.03,
-    "t1": 0.15
+    "sound": "w"
    },
    {
     "g": "i",
@@ -2604,9 +1995,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "ih",
-    "t0": 0.15,
-    "t1": 0.82
+    "sound": "ih"
    },
    {
     "g": "ll",
@@ -2614,14 +2003,9 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "l",
-    "t0": 0.82,
-    "t1": 1.1
+    "sound": "l"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.03,
-  "soundEnd": 1.1
+  ]
  },
  {
   "word": "would",
@@ -2633,9 +2017,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "w",
-    "t0": 0.0,
-    "t1": 0.5
+    "sound": "w"
    },
    {
     "g": "ou",
@@ -2643,9 +2025,7 @@
     "heart": true,
     "silent": false,
     "stretch": true,
-    "sound": "uh",
-    "t0": 0.5,
-    "t1": 1.08
+    "sound": "uh"
    },
    {
     "g": "l",
@@ -2653,9 +2033,7 @@
     "heart": true,
     "silent": true,
     "stretch": false,
-    "sound": null,
-    "t0": 1.08,
-    "t1": 1.08
+    "sound": null
    },
    {
     "g": "d",
@@ -2663,14 +2041,9 @@
     "heart": false,
     "silent": false,
     "stretch": false,
-    "sound": "d",
-    "t0": 1.08,
-    "t1": 1.1
+    "sound": "d"
    }
-  ],
-  "duration": 1.115,
-  "soundStart": 0.0,
-  "soundEnd": 1.1
+  ]
  },
  {
   "word": "now",
@@ -2682,9 +2055,7 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "n",
-    "t0": 0.0,
-    "t1": 0.01
+    "sound": "n"
    },
    {
     "g": "ow",
@@ -2692,13 +2063,4528 @@
     "heart": false,
     "silent": false,
     "stretch": true,
-    "sound": "aw",
-    "t0": 0.01,
-    "t1": 0.72
+    "sound": "aw"
    }
-  ],
-  "duration": 1.068,
-  "soundStart": 0.0,
-  "soundEnd": 0.72
+  ]
+ },
+ {
+  "word": "cat",
+  "level": 6,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "hat",
+  "level": 6,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "bat",
+  "level": 6,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "rat",
+  "level": 6,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "mat",
+  "level": 6,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "map",
+  "level": 6,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "cap",
+  "level": 6,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "nap",
+  "level": 6,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "bag",
+  "level": 6,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "tag",
+  "level": 6,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "jam",
+  "level": 6,
+  "parts": [
+   {
+    "g": "j",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "jh"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   }
+  ]
+ },
+ {
+  "word": "ham",
+  "level": 6,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   }
+  ]
+ },
+ {
+  "word": "van",
+  "level": 6,
+  "parts": [
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "v"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "fan",
+  "level": 6,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "pan",
+  "level": 6,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "man",
+  "level": 6,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "dad",
+  "level": 6,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "sad",
+  "level": 6,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "lap",
+  "level": 6,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "wag",
+  "level": 6,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "w"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "pig",
+  "level": 7,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "big",
+  "level": 7,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "dig",
+  "level": 7,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "wig",
+  "level": 7,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "w"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "sit",
+  "level": 7,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "fin",
+  "level": 7,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "pin",
+  "level": 7,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "lip",
+  "level": 7,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "zip",
+  "level": 7,
+  "parts": [
+   {
+    "g": "z",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "z"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "kid",
+  "level": 7,
+  "parts": [
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "dog",
+  "level": 7,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ao"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "log",
+  "level": 7,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ao"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "hop",
+  "level": 7,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "top",
+  "level": 7,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "pot",
+  "level": 7,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "hot",
+  "level": 7,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "fox",
+  "level": 7,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "x",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k-s"
+   }
+  ]
+ },
+ {
+  "word": "box",
+  "level": 7,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "x",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k-s"
+   }
+  ]
+ },
+ {
+  "word": "mop",
+  "level": 7,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "rod",
+  "level": 7,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "sun",
+  "level": 8,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "run",
+  "level": 8,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "bun",
+  "level": 8,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "bug",
+  "level": 8,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "hug",
+  "level": 8,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "mug",
+  "level": 8,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "cup",
+  "level": 8,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "pup",
+  "level": 8,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "bus",
+  "level": 8,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   }
+  ]
+ },
+ {
+  "word": "tub",
+  "level": 8,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   }
+  ]
+ },
+ {
+  "word": "nut",
+  "level": 8,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "bed",
+  "level": 8,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "red",
+  "level": 8,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "pen",
+  "level": 8,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "hen",
+  "level": 8,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "ten",
+  "level": 8,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "net",
+  "level": 8,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "wet",
+  "level": 8,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "w"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "web",
+  "level": 8,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "w"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   }
+  ]
+ },
+ {
+  "word": "leg",
+  "level": 8,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "ship",
+  "level": 9,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "sh"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "shop",
+  "level": 9,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "sh"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "fish",
+  "level": 9,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "sh"
+   }
+  ]
+ },
+ {
+  "word": "dish",
+  "level": 9,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "sh"
+   }
+  ]
+ },
+ {
+  "word": "wish",
+  "level": 9,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "w"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "sh"
+   }
+  ]
+ },
+ {
+  "word": "chin",
+  "level": 9,
+  "parts": [
+   {
+    "g": "ch",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "ch"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "chip",
+  "level": 9,
+  "parts": [
+   {
+    "g": "ch",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "ch"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "chop",
+  "level": 9,
+  "parts": [
+   {
+    "g": "ch",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "ch"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "rich",
+  "level": 9,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "ch",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "ch"
+   }
+  ]
+ },
+ {
+  "word": "thin",
+  "level": 9,
+  "parts": [
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "th"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "moth",
+  "level": 9,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ao"
+   },
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "th"
+   }
+  ]
+ },
+ {
+  "word": "bath",
+  "level": 9,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "th"
+   }
+  ]
+ },
+ {
+  "word": "duck",
+  "level": 9,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "ck",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   }
+  ]
+ },
+ {
+  "word": "sock",
+  "level": 9,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "ck",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   }
+  ]
+ },
+ {
+  "word": "rock",
+  "level": 9,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "ck",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   }
+  ]
+ },
+ {
+  "word": "kick",
+  "level": 9,
+  "parts": [
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "ck",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   }
+  ]
+ },
+ {
+  "word": "bell",
+  "level": 9,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   }
+  ]
+ },
+ {
+  "word": "doll",
+  "level": 9,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   }
+  ]
+ },
+ {
+  "word": "hill",
+  "level": 9,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   }
+  ]
+ },
+ {
+  "word": "kiss",
+  "level": 9,
+  "parts": [
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "ss",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   }
+  ]
+ },
+ {
+  "word": "frog",
+  "level": 10,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "stop",
+  "level": 10,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "flag",
+  "level": 10,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   }
+  ]
+ },
+ {
+  "word": "crab",
+  "level": 10,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   }
+  ]
+ },
+ {
+  "word": "drum",
+  "level": 10,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   }
+  ]
+ },
+ {
+  "word": "clap",
+  "level": 10,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "plum",
+  "level": 10,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   }
+  ]
+ },
+ {
+  "word": "swim",
+  "level": 10,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "w"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   }
+  ]
+ },
+ {
+  "word": "sled",
+  "level": 10,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "snap",
+  "level": 10,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "spot",
+  "level": 10,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "trip",
+  "level": 10,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "jump",
+  "level": 10,
+  "parts": [
+   {
+    "g": "j",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "jh"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ah"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "hand",
+  "level": 10,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "nest",
+  "level": 10,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "milk",
+  "level": 10,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   }
+  ]
+ },
+ {
+  "word": "tent",
+  "level": 10,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "lamp",
+  "level": 10,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ae"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "belt",
+  "level": 10,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "eh"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "gift",
+  "level": 10,
+  "parts": [
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ih"
+   },
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "cake",
+  "level": 11,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ey"
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "lake",
+  "level": 11,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ey"
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "game",
+  "level": 11,
+  "parts": [
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ey"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "gate",
+  "level": 11,
+  "parts": [
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ey"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "bike",
+  "level": 11,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ay"
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "kite",
+  "level": 11,
+  "parts": [
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ay"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "time",
+  "level": 11,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ay"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "ride",
+  "level": 11,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ay"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "five",
+  "level": 11,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ay"
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "v"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "home",
+  "level": 11,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "bone",
+  "level": 11,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "rope",
+  "level": 11,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "nose",
+  "level": 11,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "z"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "cube",
+  "level": 11,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "y-uw"
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "tube",
+  "level": 11,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "uw"
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "cute",
+  "level": 11,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "y-uw"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "mule",
+  "level": 11,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "y-uw"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "hope",
+  "level": 11,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "lime",
+  "level": 11,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ay"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "wave",
+  "level": 11,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "w"
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ey"
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "v"
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true,
+    "stretch": false,
+    "sound": null
+   }
+  ]
+ },
+ {
+  "word": "rain",
+  "level": 12,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "ai",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ey"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "tail",
+  "level": 12,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "ai",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ey"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   }
+  ]
+ },
+ {
+  "word": "snail",
+  "level": 12,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   },
+   {
+    "g": "ai",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ey"
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "l"
+   }
+  ]
+ },
+ {
+  "word": "feet",
+  "level": 12,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "ee",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "iy"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "bee",
+  "level": 12,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "ee",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "iy"
+   }
+  ]
+ },
+ {
+  "word": "tree",
+  "level": 12,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "ee",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "iy"
+   }
+  ]
+ },
+ {
+  "word": "seed",
+  "level": 12,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "ee",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "iy"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "sheep",
+  "level": 12,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "sh"
+   },
+   {
+    "g": "ee",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "iy"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "boat",
+  "level": 12,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "b"
+   },
+   {
+    "g": "oa",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "goat",
+  "level": 12,
+  "parts": [
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "g"
+   },
+   {
+    "g": "oa",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   }
+  ]
+ },
+ {
+  "word": "road",
+  "level": 12,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "r"
+   },
+   {
+    "g": "oa",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "d"
+   }
+  ]
+ },
+ {
+  "word": "soap",
+  "level": 12,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "oa",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ow"
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   }
+  ]
+ },
+ {
+  "word": "car",
+  "level": 12,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa-r"
+   }
+  ]
+ },
+ {
+  "word": "star",
+  "level": 12,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa-r"
+   }
+  ]
+ },
+ {
+  "word": "park",
+  "level": 12,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "p"
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa-r"
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   }
+  ]
+ },
+ {
+  "word": "farm",
+  "level": 12,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "aa-r"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   }
+  ]
+ },
+ {
+  "word": "fork",
+  "level": 12,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "f"
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ao-r"
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   }
+  ]
+ },
+ {
+  "word": "corn",
+  "level": 12,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "k"
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ao-r"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "horn",
+  "level": 12,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "hh"
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ao-r"
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "n"
+   }
+  ]
+ },
+ {
+  "word": "storm",
+  "level": 12,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "s"
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": false,
+    "sound": "t"
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "ao-r"
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false,
+    "stretch": true,
+    "sound": "m"
+   }
+  ]
  }
 ]

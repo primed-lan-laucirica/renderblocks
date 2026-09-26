@@ -1,0 +1,10 @@
+# Levels beyond the sight words: common, concrete words that follow the
+# sound rules, for sounding out (phonics order). One level per line:
+# level | name | words
+6 | short a | cat hat bat rat mat map cap nap bag tag jam ham van fan pan man dad sad lap wag
+7 | short i and o | pig big dig wig sit fin pin lip zip kid dog log hop top pot hot fox box mop rod
+8 | short u and e | sun run bun bug hug mug cup pup bus tub nut bed red pen hen ten net wet web leg
+9 | sh ch th ck ll ss | ship shop fish dish wish chin chip chop rich thin moth bath duck sock rock kick bell doll hill kiss
+10 | blends | frog stop flag crab drum clap plum swim sled snap spot trip jump hand nest milk tent lamp belt gift
+11 | silent e | cake lake game gate bike kite time ride five home bone rope nose cube tube cute mule hope lime wave
+12 | ai ee oa ar or | rain tail snail feet bee tree seed sheep boat goat road soap car star park farm fork corn horn storm

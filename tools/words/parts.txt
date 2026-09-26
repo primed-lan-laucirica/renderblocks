@@ -91,3 +91,159 @@
 5 | will | w i^ ll
 5 | would | w ou^! l_! d
 5 | now | n ow^
+
+# Levels beyond the sight words (tools/words/decodable.txt): regular words for
+# sounding out, split by rule — no heart parts.
+# Level 6: short a
+6 | cat | c a^ t
+6 | hat | h a^ t
+6 | bat | b a^ t
+6 | rat | r a^ t
+6 | mat | m a^ t
+6 | map | m a^ p
+6 | cap | c a^ p
+6 | nap | n a^ p
+6 | bag | b a^ g
+6 | tag | t a^ g
+6 | jam | j a^ m
+6 | ham | h a^ m
+6 | van | v a^ n
+6 | fan | f a^ n
+6 | pan | p a^ n
+6 | man | m a^ n
+6 | dad | d a^ d
+6 | sad | s a^ d
+6 | lap | l a^ p
+6 | wag | w a^ g
+
+# Level 7: short i and o
+7 | pig | p i^ g
+7 | big | b i^ g
+7 | dig | d i^ g
+7 | wig | w i^ g
+7 | sit | s i^ t
+7 | fin | f i^ n
+7 | pin | p i^ n
+7 | lip | l i^ p
+7 | zip | z i^ p
+7 | kid | k i^ d
+7 | dog | d o^ g
+7 | log | l o^ g
+7 | hop | h o^ p
+7 | top | t o^ p
+7 | pot | p o^ t
+7 | hot | h o^ t
+7 | fox | f o^ x
+7 | box | b o^ x
+7 | mop | m o^ p
+7 | rod | r o^ d
+
+# Level 8: short u and e
+8 | sun | s u^ n
+8 | run | r u^ n
+8 | bun | b u^ n
+8 | bug | b u^ g
+8 | hug | h u^ g
+8 | mug | m u^ g
+8 | cup | c u^ p
+8 | pup | p u^ p
+8 | bus | b u^ s
+8 | tub | t u^ b
+8 | nut | n u^ t
+8 | bed | b e^ d
+8 | red | r e^ d
+8 | pen | p e^ n
+8 | hen | h e^ n
+8 | ten | t e^ n
+8 | net | n e^ t
+8 | wet | w e^ t
+8 | web | w e^ b
+8 | leg | l e^ g
+
+# Level 9: sh ch th ck ll ss
+9 | ship | sh i^ p
+9 | shop | sh o^ p
+9 | fish | f i^ sh
+9 | dish | d i^ sh
+9 | wish | w i^ sh
+9 | chin | ch i^ n
+9 | chip | ch i^ p
+9 | chop | ch o^ p
+9 | rich | r i^ ch
+9 | thin | th i^ n
+9 | moth | m o^ th
+9 | bath | b a^ th
+9 | duck | d u^ ck
+9 | sock | s o^ ck
+9 | rock | r o^ ck
+9 | kick | k i^ ck
+9 | bell | b e^ ll
+9 | doll | d o^ ll
+9 | hill | h i^ ll
+9 | kiss | k i^ ss
+
+# Level 10: blends
+10 | frog | f r o^ g
+10 | stop | s t o^ p
+10 | flag | f l a^ g
+10 | crab | c r a^ b
+10 | drum | d r u^ m
+10 | clap | c l a^ p
+10 | plum | p l u^ m
+10 | swim | s w i^ m
+10 | sled | s l e^ d
+10 | snap | s n a^ p
+10 | spot | s p o^ t
+10 | trip | t r i^ p
+10 | jump | j u^ m p
+10 | hand | h a^ n d
+10 | nest | n e^ s t
+10 | milk | m i^ l k
+10 | tent | t e^ n t
+10 | lamp | l a^ m p
+10 | belt | b e^ l t
+10 | gift | g i^ f t
+
+# Level 11: silent e
+11 | cake | c a^ k e_
+11 | lake | l a^ k e_
+11 | game | g a^ m e_
+11 | gate | g a^ t e_
+11 | bike | b i^ k e_
+11 | kite | k i^ t e_
+11 | time | t i^ m e_
+11 | ride | r i^ d e_
+11 | five | f i^ v e_
+11 | home | h o^ m e_
+11 | bone | b o^ n e_
+11 | rope | r o^ p e_
+11 | nose | n o^ s e_
+11 | cube | c u^ b e_
+11 | tube | t u^ b e_
+11 | cute | c u^ t e_
+11 | mule | m u^ l e_
+11 | hope | h o^ p e_
+11 | lime | l i^ m e_
+11 | wave | w a^ v e_
+
+# Level 12: ai ee oa ar or
+12 | rain | r ai^ n
+12 | tail | t ai^ l
+12 | snail | s n ai^ l
+12 | feet | f ee^ t
+12 | bee | b ee^
+12 | tree | t r ee^
+12 | seed | s ee^ d
+12 | sheep | sh ee^ p
+12 | boat | b oa^ t
+12 | goat | g oa^ t
+12 | road | r oa^ d
+12 | soap | s oa^ p
+12 | car | c ar^
+12 | star | s t ar^
+12 | park | p ar^ k
+12 | farm | f ar^ m
+12 | fork | f or^ k
+12 | corn | c or^ n
+12 | horn | h or^ n
+12 | storm | s t or^ m
