@@ -49,6 +49,18 @@ export function loadProgress(raw: string | null): Progress {
       ? (p.unlocked.filter((g) => (SUBTESTS as readonly string[]).includes(g)) as SubtestId[])
       : []
     base.unlocked = unlocked.length ? [...new Set<SubtestId>(['figureClassify', ...unlocked])] : base.unlocked
+    // New subtests were woven into the unlock order: anything already
+    // established unlocks what now follows it, so saved progress picks them up.
+    for (let changed = true; changed; ) {
+      changed = false
+      SUBTESTS.forEach((g, i) => {
+        const following = SUBTESTS[i + 1]
+        if (following && base.unlocked.includes(g) && base.levels[g] >= UNLOCK_AT && !base.unlocked.includes(following)) {
+          base.unlocked.push(following)
+          changed = true
+        }
+      })
+    }
     if (typeof p.seen === 'number' && p.seen >= 0) base.seen = Math.floor(p.seen)
     if (typeof p.correct === 'number' && p.correct >= 0) base.correct = Math.floor(p.correct)
     return base

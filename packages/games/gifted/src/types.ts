@@ -32,6 +32,11 @@ export type Cell =
   | { kind: 'fold'; axis: 'v' | 'h'; size: number; punches: Array<[number, number]> }
   /** An unfolded sheet showing every hole. */
   | { kind: 'sheet'; size: number; holes: Array<[number, number]> }
+  /**
+   * Pictures (emoji): one, or several of the same for counting. `scale`
+   * shrinks it for size series; `rotation` turns it.
+   */
+  | { kind: 'pic'; emoji: string; count?: number; scale?: number; rotation?: number }
 
 export type SubtestId =
   | 'figureMatrix'
@@ -43,16 +48,32 @@ export type SubtestId =
   | 'numberAnalogy'
   | 'numberPuzzle'
   | 'followDirections'
+  | 'pictureClassify'
+  | 'pictureAnalogy'
+  | 'pictureSeries'
+  | 'oddOneOut'
+  | 'pictureMemory'
+  | 'auralReasoning'
 
-/** Ordered easiest -> hardest; also the unlock order. */
+/**
+ * Ordered easiest -> hardest; also the unlock order. Picture subtests are
+ * woven in beside their figural cousins, so the verbal/pictorial half of the
+ * batteries arrives alongside the figural half rather than after it.
+ */
 export const SUBTESTS: SubtestId[] = [
   'figureClassify',
+  'pictureClassify',
   'numberSeries',
+  'pictureAnalogy',
   'figureSeries',
+  'pictureSeries',
   'figureMatrix',
+  'oddOneOut',
   'numberAnalogy',
+  'pictureMemory',
   'patternCompletion',
   'numberPuzzle',
+  'auralReasoning',
   'paperFolding',
   'followDirections',
 ]
@@ -68,6 +89,12 @@ export const SUBTEST_NAME: Record<SubtestId, string> = {
   numberPuzzle: 'Number Puzzles',
   paperFolding: 'Paper Folding',
   followDirections: 'Following Directions',
+  pictureClassify: 'Picture Classification',
+  pictureAnalogy: 'Picture Analogies',
+  pictureSeries: 'Picture Series',
+  oddOneOut: 'Odd One Out',
+  pictureMemory: 'Picture Memory',
+  auralReasoning: 'Aural Reasoning',
 }
 
 /** Kid-facing instruction — short, sight-word level. */
@@ -81,6 +108,12 @@ export const SUBTEST_HINT: Record<SubtestId, string> = {
   numberPuzzle: 'What is missing?',
   paperFolding: 'Which one when it opens up?',
   followDirections: 'Listen, then touch.',
+  pictureClassify: 'Which one goes with these?',
+  pictureAnalogy: 'Finish the pair',
+  pictureSeries: 'What comes next?',
+  oddOneOut: 'Which one does not belong?',
+  pictureMemory: 'Look, then find them',
+  auralReasoning: 'Listen, then choose.',
 }
 
 export type Layout =
@@ -93,6 +126,8 @@ export type Layout =
   | 'fold'
   | 'equation'
   | 'touchGrid'
+  /** No stimulus: one slot, the answer comes from the choices (odd one out, spoken questions). */
+  | 'lone'
 
 export interface Item {
   sub: SubtestId
@@ -109,7 +144,14 @@ export interface Item {
    * Touch-mode items (Following Directions) have no choice row: the child
    * taps targets inside `stimulus` itself. `clip` names the spoken sentence.
    */
-  touch?: { targets: number[]; ordered: boolean; clip: string; text: string }
+  touch?: { targets: number[]; ordered: boolean; clip?: string; text: string }
+  /**
+   * Picture Memory: these are shown first for `ms`, then hidden — the touch
+   * grid (stimulus) is where he finds them again.
+   */
+  memory?: { study: Cell[]; ms: number }
+  /** A spoken question that IS the item (Aural Reasoning): played every time. */
+  speak?: { clip: string; text: string }
 }
 
 export const SHAPES: ShapeKind[] = [
@@ -169,6 +211,11 @@ export const glyph = (g: Partial<Glyph> = {}): Glyph => ({
 export const gcell = (...glyphs: Glyph[]): Cell => ({ kind: 'glyphs', glyphs })
 export const ncell = (value: number): Cell => ({ kind: 'number', value })
 export const tcell = (text: string): Cell => ({ kind: 'text', text })
+export const pcell = (emoji: string, extra: { count?: number; scale?: number; rotation?: number } = {}): Cell => ({
+  kind: 'pic',
+  emoji,
+  ...extra,
+})
 
 export function cloneCell(c: Cell): Cell {
   if (c.kind === 'glyphs') return { kind: 'glyphs', glyphs: c.glyphs.map((g) => ({ ...g })) }
@@ -205,6 +252,13 @@ export function sameCell(a: Cell, b: Cell): boolean {
     return a.size === b.size && key(a.holes) === key(b.holes)
   }
   if (a.kind === 'fold' && b.kind === 'fold') return JSON.stringify(a) === JSON.stringify(b)
+  if (a.kind === 'pic' && b.kind === 'pic')
+    return (
+      a.emoji === b.emoji &&
+      (a.count ?? 1) === (b.count ?? 1) &&
+      Math.abs((a.scale ?? 1) - (b.scale ?? 1)) < 0.01 &&
+      norm(a.rotation ?? 0) === norm(b.rotation ?? 0)
+    )
   return false
 }
 

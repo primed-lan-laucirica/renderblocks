@@ -72,6 +72,19 @@ export function playDirection(clip: string, volume = 1): void {
   void a.play().catch(() => {})
 }
 
+/** Aural Reasoning questions live in /games/gifted/aural/ — the sentence IS the item. */
+export function playAural(clip: string, volume = 1): void {
+  if (speaking) {
+    speaking.pause()
+    speaking.currentTime = 0
+  }
+  const a = get(`/games/gifted/aural/${clip}.mp3`)
+  a.volume = volume
+  a.currentTime = 0
+  speaking = a
+  void a.play().catch(() => {})
+}
+
 export function stopVoice(): void {
   if (speaking) {
     speaking.pause()

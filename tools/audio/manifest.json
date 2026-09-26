@@ -24,7 +24,13 @@
         "tryAgain": "Not quite. Try another one.",
         "nice": "Nice work!",
         "levelUp": "Level up!",
-        "newPuzzle": "Here is a new kind of puzzle."
+        "newPuzzle": "Here is a new kind of puzzle.",
+        "pictureClassify": "Which one goes with these?",
+        "pictureAnalogy": "Look at how these two go together. Which one goes with this one in the same way?",
+        "pictureSeries": "What comes next?",
+        "oddOneOut": "Which one does not belong?",
+        "pictureMemory": "Look carefully and remember the pictures. Then find them.",
+        "auralReasoning": "Listen, then choose the best answer."
       }
     },
     {
@@ -48,7 +54,49 @@
         "before-circle-triangle": "Before you touch the circle, touch the triangle.",
         "if-star-blue-else-green": "If there is a star, touch the blue shape. If there is no star, touch the green shape.",
         "count-squares-touch-circles": "Count the squares. Then touch that many circles.",
-        "biggest-top": "Touch the biggest shape in the top row."
+        "biggest-top": "Touch the biggest shape in the top row.",
+        "p-between-fruits": "Touch the animal between the two fruits.",
+        "p-second-bird": "Touch the second bird from the left.",
+        "p-below-sun": "Touch the picture directly below the sun.",
+        "p-every-fly": "Touch every picture of something that can fly.",
+        "p-not-animal-not-food": "Touch the picture that is not an animal and not something to eat.",
+        "p-before-fish-cow": "Before you touch the fish, touch the cow.",
+        "p-if-cat": "If there is a cat, touch the dog. If there is no cat, touch the bird."
+      }
+    },
+    {
+      "dir": "gifted/aural",
+      "items": {
+        "a-cut-paper": "Which one do we use to cut paper?",
+        "a-ocean": "Which one lives in the ocean?",
+        "a-rain": "It is raining outside. Which one will keep you dry?",
+        "a-breakfast": "Which one can you eat for breakfast?",
+        "a-apples-3": "Sam has two apples. Then he gets one more. Which picture shows how many apples Sam has now?",
+        "a-dark": "Which one would help you see in the dark?",
+        "a-wool": "Which animal gives us wool to make sweaters?",
+        "a-time": "Which one tells you what time it is?",
+        "a-birds-left": "There are four birds on a branch. One flies away. Which picture shows how many birds are left?",
+        "a-melt": "Which one would melt on a hot, sunny day?",
+        "a-fly-not-bird": "Which one can fly, but is not a bird?",
+        "a-seed": "Mia planted a seed and watered it every day. Which one shows what grew?",
+        "a-more-legs": "Which one has more legs than a dog?",
+        "a-cookies-left": "Ben had five cookies. He ate two of them. Which picture shows how many cookies Ben has left?",
+        "a-firefighter": "Which one would a firefighter need?",
+        "a-sea-not-fish": "Which animal lives in the ocean, but is not a fish?",
+        "a-yellow-tree": "Which one is a yellow fruit that grows on a tree?",
+        "a-wheels-12": "There are three cars. Each car has four wheels. How many wheels are there in all?",
+        "a-opposite-hot": "Which one is the opposite of hot?",
+        "a-snow-wear": "Lily is going out to play in the snow. Which one should she wear?",
+        "a-not-insect": "Which one is not an insect, even though it is small and has many legs?",
+        "a-shortest": "Tom is taller than Ann. Ann is taller than Max. Who is the shortest?",
+        "a-spider-legs": "A spider has eight legs. How many legs do two spiders have?",
+        "a-smaller": "Which one gets smaller the longer you use it?",
+        "a-eggs-left": "The farmer had six eggs. Three hatched into chicks. How many eggs did not hatch?",
+        "a-flying-mammal": "Which one is a mammal, even though it can fly?",
+        "a-yesterday": "If today is Monday, what day was it yesterday?",
+        "a-empty-seats": "A bus has twelve seats. Nine people are sitting down. How many seats are empty?",
+        "a-sink": "Which one would sink if you put it in water?",
+        "a-bags-apples": "Ann has three bags. Each bag has two apples. She eats one apple. How many apples are left?"
       }
     }
   ],

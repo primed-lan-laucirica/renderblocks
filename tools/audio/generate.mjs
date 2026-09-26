@@ -133,7 +133,10 @@ for (const group of manifest.speech ?? []) {
       { text, model_id: v.model, voice_settings: v.settings },
     )
     writeFileSync(path, buf)
-    console.log(`speech  ${group.dir}/${name}.mp3  ${(buf.length / 1024).toFixed(0)}kB  "${text}"`)
+    // Level and encode in the house format; trim only the silence at the
+    // ends, so pauses inside a sentence survive.
+    normalize(path, 0, { pad: false, endsOnly: true })
+    console.log(`speech  ${group.dir}/${name}.mp3  ${(readFileSync(path).length / 1024).toFixed(0)}kB  "${text}"`)
     made++
   }
 }

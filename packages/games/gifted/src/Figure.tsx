@@ -83,6 +83,26 @@ function GlyphNode({ g, at }: { g: Glyph; at: [number, number, number] }) {
   )
 }
 
+const EMOJI_FONT = '"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif'
+
+/** Centres and size for `n` pictures in a square: one big, or a tidy grid for counting. */
+function picPositions(n: number): Array<[number, number, number]> {
+  if (n <= 1) return [[50, 52, 1]]
+  const cols = n <= 2 ? 2 : n <= 4 ? 2 : n <= 9 ? 3 : 4
+  const rows = Math.ceil(n / cols)
+  const cell = 92 / Math.max(cols, rows)
+  const out: Array<[number, number, number]> = []
+  for (let i = 0; i < n; i++) {
+    const r = Math.floor(i / cols)
+    const c = i % cols
+    // Centre a short last row.
+    const inRow = r === rows - 1 ? n - r * cols : cols
+    const x0 = 50 - (inRow * cell) / 2
+    out.push([x0 + (c + 0.5) * cell, 50 - (rows * cell) / 2 + (r + 0.5) * cell, cell / 100])
+  }
+  return out
+}
+
 /** Renders any cell variant into a square viewport. */
 export function CellView({
   cell,
@@ -104,6 +124,28 @@ export function CellView({
         <text x={50} y={50} textAnchor="middle" dominantBaseline="central" fontSize={54} fontWeight={800} fill={muted}>
           ?
         </text>
+      </svg>
+    )
+  }
+
+  if (cell.kind === 'pic') {
+    const scale = cell.scale ?? 1
+    return (
+      <svg viewBox="0 0 100 100" className={className}>
+        {picPositions(cell.count ?? 1).map(([cx, cy, base], i) => (
+          <text
+            key={i}
+            x={cx}
+            y={cy}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={74 * base * scale}
+            fontFamily={EMOJI_FONT}
+            transform={cell.rotation ? `rotate(${cell.rotation} ${cx} ${cy})` : undefined}
+          >
+            {cell.emoji}
+          </text>
+        ))}
       </svg>
     )
   }

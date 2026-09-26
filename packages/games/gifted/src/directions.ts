@@ -1,4 +1,5 @@
-import { COLORS, SHAPES, gcell, glyph, pick, shuffle, type Cell, type Glyph, type ShapeKind } from './types'
+import { COLORS, SHAPES, gcell, glyph, pcell, pick, shuffle, type Cell, type Glyph, type ShapeKind } from './types'
+import { PIC, PICTURES, clearMembers, clearNonMembers, type Picture } from './pictures'
 
 /**
  * Following Directions, pitched at real gifted-screener difficulty
@@ -337,9 +338,133 @@ function rowExceptSpec(shape: ShapeKind, level: number): Spec {
   }
 }
 
+/* ---------- picture directions ---------- */
+
+const pc = (p: Picture): Cell => pcell(p.emoji)
+/** Pictures that are none of these kinds (and not arguable for them). */
+const noneOf = (...groups: string[]) =>
+  PICTURES.filter((p) => groups.every((g) => clearNonMembers(g).includes(p)) && !['person', 'worker'].some((t) => p.tags.includes(t)))
+
+/** "Touch the animal between the two fruits." */
+function picBetween(level: number): Spec {
+  return {
+    id: 'p-between-fruits',
+    text: 'Touch the animal between the two fruits.',
+    level,
+    build: (n) => {
+      const r = Math.floor(Math.random() * rows(n))
+      const fruits = shuffle(clearMembers('fruit'))
+      const grid: Cell[] = shuffle(noneOf('animal', 'fruit')).slice(0, n).map(pc)
+      grid[r * COLS] = pc(fruits[0])
+      grid[r * COLS + 2] = pc(fruits[1])
+      grid[r * COLS + 1] = pc(pick(clearMembers('animal')))
+      return { grid, targets: [r * COLS + 1], ordered: false }
+    },
+  }
+}
+
+/** "Touch the second bird." (reading order, as with the shapes) */
+function picSecondBird(level: number): Spec {
+  return {
+    id: 'p-second-bird',
+    text: 'Touch the second bird from the left.',
+    level,
+    build: (n) => {
+      const grid: Cell[] = shuffle(noneOf('bird')).slice(0, n).map(pc)
+      const spots = shuffle([...Array(n).keys()]).slice(0, 3).sort((a, b) => a - b)
+      const birds = shuffle(clearMembers('bird'))
+      spots.forEach((i, k) => (grid[i] = pc(birds[k])))
+      return { grid, targets: [spots[1]], ordered: false }
+    },
+  }
+}
+
+/** "Touch the picture directly below the sun." */
+function picBelowSun(level: number): Spec {
+  return {
+    id: 'p-below-sun',
+    text: 'Touch the picture directly below the sun.',
+    level,
+    build: (n) => {
+      const grid: Cell[] = shuffle(PICTURES.filter((p) => p.id !== 'sun')).slice(0, n).map(pc)
+      const at = Math.floor(Math.random() * (n - COLS))
+      grid[at] = pc(PIC.sun)
+      return { grid, targets: [at + COLS], ordered: false }
+    },
+  }
+}
+
+/** "Touch every picture of something that can fly." */
+function picEveryFly(level: number): Spec {
+  return {
+    id: 'p-every-fly',
+    text: 'Touch every picture of something that can fly.',
+    level,
+    build: (n) => {
+      const k = 3
+      const flyers = shuffle(clearMembers('flies')).slice(0, k)
+      const rest = shuffle(clearNonMembers('flies')).slice(0, n - k)
+      const grid = shuffle([...flyers, ...rest])
+      return { grid: grid.map(pc), targets: flyers.map((f) => grid.indexOf(f)), ordered: false }
+    },
+  }
+}
+
+/** "Touch the picture that is not an animal and not something to eat." */
+function picNeither(level: number): Spec {
+  return {
+    id: 'p-not-animal-not-food',
+    text: 'Touch the picture that is not an animal and not something to eat.',
+    level,
+    build: (n) => {
+      const odd = pick(noneOf('animal').filter((p) => !['food', 'drink', 'fruit', 'plant'].some((t) => p.tags.includes(t))))
+      const rest = shuffle([...clearMembers('animal'), ...PICTURES.filter((p) => p.tags.includes('food'))]).slice(0, n - 1)
+      const grid = shuffle([odd, ...rest])
+      return { grid: grid.map(pc), targets: [grid.indexOf(odd)], ordered: false }
+    },
+  }
+}
+
+/** "Before you touch the fish, touch the cow." — the order in the sentence is backwards. */
+function picBefore(level: number): Spec {
+  return {
+    id: 'p-before-fish-cow',
+    text: 'Before you touch the fish, touch the cow.',
+    level,
+    build: (n) => {
+      const others = shuffle(PICTURES.filter((p) => !['fish', 'cow', 'tropicalfish', 'blowfish', 'shark'].includes(p.id))).slice(0, n - 2)
+      const grid = shuffle([PIC.fish, PIC.cow, ...others])
+      return { grid: grid.map(pc), targets: [grid.indexOf(PIC.cow), grid.indexOf(PIC.fish)], ordered: true }
+    },
+  }
+}
+
+/** "If there is a cat, touch the dog. If there is no cat, touch the bird." */
+function picConditional(level: number): Spec {
+  return {
+    id: 'p-if-cat',
+    text: 'If there is a cat, touch the dog. If there is no cat, touch the bird.',
+    level,
+    build: (n) => {
+      const hasCat = Math.random() < 0.5
+      const others = shuffle(PICTURES.filter((p) => !['cat', 'dog', 'bird'].includes(p.id))).slice(0, n - (hasCat ? 3 : 2))
+      const grid = shuffle([PIC.dog, PIC.bird, ...(hasCat ? [PIC.cat] : []), ...others])
+      return { grid: grid.map(pc), targets: [grid.indexOf(hasCat ? PIC.dog : PIC.bird)], ordered: false }
+    },
+  }
+}
+
 /* ---------- the bank ---------- */
 
 export const DIRECTIONS: Spec[] = [
+  // Pictures alongside the shapes, at the same difficulty steps.
+  picBetween(2),
+  picSecondBird(2),
+  picBelowSun(3),
+  picEveryFly(3),
+  picNeither(4),
+  picBefore(5),
+  picConditional(6),
   // L1 — already beyond single-attribute: conjunction and spatial relation
   conjunctionSpec('blue', 1),
   conjunctionSpec('red', 1),

@@ -1,3 +1,4 @@
+import { generatePicture } from './picgen'
 import {
   COARSE_AXES,
   COLORS,
@@ -566,6 +567,8 @@ function followDirections(level: number): Item {
 
 export function generate(sub: SubtestId, level: number): Item {
   const lvl = Math.max(1, Math.min(MAX_LEVEL, level))
+  const pictorial = generatePicture(sub, lvl)
+  if (pictorial) return pictorial
   switch (sub) {
     case 'figureClassify':
       return figureClassify(lvl)
@@ -585,5 +588,7 @@ export function generate(sub: SubtestId, level: number): Item {
       return numberPuzzle(lvl)
     case 'followDirections':
       return followDirections(lvl)
+    default:
+      throw new Error(`no generator for ${sub}`)
   }
 }

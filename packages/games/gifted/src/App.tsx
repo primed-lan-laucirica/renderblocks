@@ -4,9 +4,48 @@ import type { GameProps } from '@renderblocks/kernel'
 import { CellView } from './Figure'
 import { MAX_LEVEL, generate } from './generators'
 import { chooseGen, loadProgress, record, type Progress } from './adaptive'
-import { playEffect, playFeedback, playVoice, playDirection, stopVoice } from './sounds'
+import { playAural, playEffect, playFeedback, playVoice, playDirection, stopVoice } from './sounds'
 import { useDarkMode } from './useDarkMode'
 import { SUBTESTS, SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from './types'
+
+/**
+ * Picture Memory's study phase: the pictures, big, for a few seconds — then
+ * they go and the grid appears. Its own component so the timer lives and
+ * dies with the item.
+ */
+function MemoryStudy({ cells, ms, dark, onDone }: { cells: Item['stimulus']; ms: number; dark: boolean; onDone: () => void }) {
+  useEffect(() => {
+    const t = window.setTimeout(onDone, ms)
+    return () => window.clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        {cells.map((c, i) => (
+          <div
+            key={i}
+            className={`rounded-2xl border-4 flex items-center justify-center p-1 ${
+              dark ? 'bg-slate-800 border-slate-700' : 'bg-white border-violet-200'
+            }`}
+            style={{ width: 104, height: 104 }}
+          >
+            <CellView cell={c} dark={dark} className="w-full h-full" />
+          </div>
+        ))}
+      </div>
+      {/* How long is left to look. */}
+      <div className={`h-2 w-48 rounded-full overflow-hidden ${dark ? 'bg-slate-700' : 'bg-violet-100'}`}>
+        <motion.div
+          className="h-full bg-violet-500"
+          initial={{ width: '100%' }}
+          animate={{ width: '0%' }}
+          transition={{ duration: ms / 1000, ease: 'linear' }}
+        />
+      </div>
+    </div>
+  )
+}
 
 const STORAGE_KEY = 'progress'
 const HEARD_KEY = 'heardInstructions'
@@ -37,6 +76,8 @@ function App({ services }: GameProps) {
   const [dragging, setDragging] = useState(false)
   const [rejecting, setRejecting] = useState(false)
   const [banner, setBanner] = useState<string | null>(null)
+  /** Picture Memory: has the study phase finished for this item? */
+  const [studied, setStudied] = useState(false)
   /** Subtests whose spoken instruction he has already heard. */
   const [heard, setHeard] = useState<SubtestId[]>(() => {
     try {
@@ -85,8 +126,16 @@ function App({ services }: GameProps) {
   useEffect(() => {
     // Following Directions: the spoken sentence IS the item, so it plays for
     // every puzzle. Everything else follows the minimal-voicing rule below.
-    if (item.touch) {
-      const t = window.setTimeout(() => playDirection(item.touch!.clip), 250)
+    // Aural Reasoning: likewise, the spoken question is the item.
+    if (item.speak) {
+      const t = window.setTimeout(() => playAural(item.speak!.clip), 250)
+      return () => {
+        window.clearTimeout(t)
+        stopVoice()
+      }
+    }
+    if (item.touch?.clip) {
+      const t = window.setTimeout(() => playDirection(item.touch!.clip!), 250)
       return () => {
         window.clearTimeout(t)
         stopVoice()
@@ -111,6 +160,7 @@ function App({ services }: GameProps) {
     setScored(false)
     setRevealed(false)
     setBanner(null)
+    setStudied(false)
   }
 
   /** Try a choice. The first attempt is what the adaptive ladder scores. */
@@ -164,6 +214,7 @@ function App({ services }: GameProps) {
     setScored(false)
     setRevealed(false)
     setBanner(null)
+    setStudied(false)
     setMode(m)
   }
 
@@ -273,6 +324,8 @@ function App({ services }: GameProps) {
         return cap(136, 2, 30)
       case 'touchGrid':
         return cap(84, 3)
+      case 'lone':
+        return cap(120, 3)
       case 'field': {
         const f = item.stimulus[0]
         if (f.kind === 'field' && f.hole) {
@@ -357,7 +410,7 @@ function App({ services }: GameProps) {
       case 'pairs':
         return (
           <div className="flex flex-col gap-2 items-center">
-            {[0, 2, 4].map((base, row) => (
+            {Array.from({ length: Math.floor(item.stimulus.length / 2) }, (_, r) => r * 2).map((base, row) => (
               <div key={row} className="flex items-center gap-2">
                 {box(base, `p${base}`)}
                 <span className={`text-2xl font-extrabold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
@@ -389,8 +442,14 @@ function App({ services }: GameProps) {
           </div>
         )
 
+      case 'lone':
+        return <Slot />
+
       case 'touchGrid': {
-        const cols = item.stimulus.length <= 6 ? 3 : 3
+        if (item.memory && !studied) {
+          return <MemoryStudy cells={item.memory.study} ms={item.memory.ms} dark={isDark} onDone={() => setStudied(true)} />
+        }
+        const cols = item.stimulus.length <= 6 ? 3 : item.stimulus.length <= 9 ? 3 : 4
         return (
           <div
             className="grid gap-3 justify-center"
@@ -483,7 +542,7 @@ function App({ services }: GameProps) {
         )
       }
     }
-  }, [item, isDark, solved, dragging, rejecting, answerCell, cellPx, hit])
+  }, [item, isDark, solved, dragging, rejecting, answerCell, cellPx, hit, studied])
 
   const level = progress.levels[item.sub]
   const accuracy = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : 0
@@ -634,7 +693,13 @@ function App({ services }: GameProps) {
           </span>
           <button
             type="button"
-            onPointerDown={() => (item.touch ? playDirection(item.touch.clip) : playVoice(item.sub))}
+            onPointerDown={() =>
+              item.speak
+                ? playAural(item.speak.clip)
+                : item.touch?.clip
+                  ? playDirection(item.touch.clip)
+                  : playVoice(item.sub)
+            }
             className={`p-2 rounded-full ${isDark ? 'bg-gray-700 text-violet-300' : 'bg-gray-200 text-violet-600'}`}
             aria-label="Say the instruction again"
           >
