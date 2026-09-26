@@ -8,6 +8,9 @@
  *   node tools/audio/generate.mjs            # only missing files
  *   node tools/audio/generate.mjs --force    # regenerate everything
  *   node tools/audio/generate.mjs --only gifted   # dirs matching a substring
+ *   node tools/audio/generate.mjs --only shared/number --items sixty,million --stretch 2
+ *       # redo just those clips, asking for 2x the length: a request too short
+ *       # for the word makes ElevenLabs start part-way through it
  *
  * The API key is read from ~/.config/elevenlabs/key (or $ELEVENLABS_API_KEY)
  * and is never written into the repo.
@@ -26,6 +29,10 @@ const args = process.argv.slice(2)
 const force = args.includes('--force')
 const onlyIdx = args.indexOf('--only')
 const only = onlyIdx >= 0 ? args[onlyIdx + 1] : null
+const itemsIdx = args.indexOf('--items')
+const items = itemsIdx >= 0 ? new Set(args[itemsIdx + 1].split(',')) : null
+const stretchIdx = args.indexOf('--stretch')
+const stretch = stretchIdx >= 0 ? Number(args[stretchIdx + 1]) : 1
 
 function apiKey() {
   if (process.env.ELEVENLABS_API_KEY) return process.env.ELEVENLABS_API_KEY.trim()
@@ -135,13 +142,15 @@ for (const group of manifest.chorus ?? []) {
   const seconds = group.seconds ?? 1.032
   // An item is either a bare word or { text, seconds } for a whole phrase.
   for (const [name, spec] of Object.entries(group.items)) {
+    if (items && !items.has(name)) continue
     const word = typeof spec === 'string' ? spec : spec.text
     const dur = typeof spec === 'string' ? seconds : spec.seconds
     const path = target(group.dir, name)
-    if (existsSync(path) && !force) { skipped++; continue }
+    // Named items are always redone.
+    if (existsSync(path) && !force && !items) { skipped++; continue }
     const buf = await post('https://api.elevenlabs.io/v1/sound-generation', {
       text: chorusPrompt(word),
-      duration_seconds: Math.min(30, Math.max(0.5, dur)),
+      duration_seconds: Math.min(30, Math.max(0.5, dur * stretch)),
       prompt_influence: group.influence ?? 0.9,
     })
     writeFileSync(path, buf)
