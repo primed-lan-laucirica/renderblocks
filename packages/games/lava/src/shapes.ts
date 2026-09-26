@@ -46,6 +46,21 @@ export interface BlockShape {
    * steps themselves, since its bounding-box centre sits on the stepped edge.
    */
   mark: { x: number; y: number; w: number; h: number }
+  /**
+   * Cube Club: the outline (a convex hexagon — front, top and side) used as
+   * the collider and silhouette instead of `rects`, and the three faces to draw.
+   */
+  hull?: Array<{ x: number; y: number }>
+  faces?: CubeFace[]
+}
+
+/** One face of a drawn cube: a parallelogram (corner + two edges) split into cells × cells. */
+export interface CubeFace {
+  origin: { x: number; y: number }
+  u: { x: number; y: number }
+  v: { x: number; y: number }
+  cells: number
+  fill: string
 }
 
 /** A staircase's steps fill the lower-right triangle: mark its centroid, in the room there. */
@@ -57,7 +72,7 @@ const boxMark = (w: number, h: number) => ({ x: 0, y: 0, w: w * 0.8, h: h * 0.5 
  * Square Club and Step Squad battles — a square (16 = 4×4) or a staircase
  * rising to the right (10 = 1+2+3+4), as those clubs look in Numberblocks.
  */
-export type ShapeStyle = 'blocks' | 'square' | 'steps'
+export type ShapeStyle = 'blocks' | 'square' | 'steps' | 'cube'
 
 /** Up to this magnitude a block is its true Blocks-game shape, one cube per unit. */
 export const TRUE_SCALE_MAX = 100
@@ -74,6 +89,64 @@ function darken(hex: string, amount = 0.5): string {
   const n = parseInt(hex.slice(1), 16)
   const ch = (shift: number) => Math.round(((n >> shift) & 255) * (1 - amount))
   return `rgb(${ch(16)}, ${ch(8)}, ${ch(0)})`
+}
+
+function lighten(hex: string, amount: number): string {
+  const n = parseInt(hex.slice(1), 16)
+  const ch = (shift: number) => Math.round(((n >> shift) & 255) + (255 - ((n >> shift) & 255)) * amount)
+  return `rgb(${ch(16)}, ${ch(8)}, ${ch(0)})`
+}
+
+/** Depth drawn for a cube, as a share of its side (an oblique, 45° view). */
+const DEPTH = 0.4
+
+/**
+ * A Cube Club block: drawn as a cube — an m × m front face with its top and
+ * right side receding at 45° — so it reads as m × m × m, the way he knows
+ * cubes from Numberblocks. Physics stays 2D; the collider is the outline.
+ * Front side = m units up to 10³ (every cube drawn), then log-scaled like
+ * the other big blocks, each face showing a 10 × 10 grid.
+ */
+function cubeShape(value: number, m: number): BlockShape {
+  const side = m <= 10 ? m : 10 + 3 * Math.log10(m / 10)
+  const cells = Math.min(m, 10)
+  const d = side * DEPTH * Math.SQRT1_2
+  const w = side + d
+  const h = side + d
+  const x0 = -w / 2
+  const y0 = -h / 2
+  const x1 = x0 + side
+  const y1 = y0 + side
+  const color = getNumberBlockColor(value < 10 ? value : value % 10 || Math.floor(value / 10 ** Math.floor(Math.log10(value))))
+  const base = color.toUpperCase() === '#FFFFFF' ? '#f1f5f9' : color
+  return {
+    value,
+    w,
+    h,
+    rects: [{ cx: x0 + side / 2, cy: y0 + side / 2, w: side, h: side }],
+    hull: [
+      { x: x0, y: y0 },
+      { x: x1, y: y0 },
+      { x: x1 + d, y: y0 + d },
+      { x: x1 + d, y: y1 + d },
+      { x: x0 + d, y: y1 + d },
+      { x: x0, y: y1 },
+    ],
+    faces: [
+      { origin: { x: x0, y: y1 }, u: { x: side, y: 0 }, v: { x: d, y: d }, cells, fill: lighten(base, 0.35) }, // top
+      { origin: { x: x1, y: y0 }, u: { x: d, y: d }, v: { x: 0, y: side }, cells, fill: darken(base, 0.3) }, // side
+      { origin: { x: x0, y: y0 }, u: { x: side, y: 0 }, v: { x: 0, y: side }, cells, fill: base }, // front
+    ],
+    cubes: [],
+    cubeSize: side / cells,
+    body: base,
+    // Real cubes (to 10³) get ordinary eyes; the log-scaled giants get the big-block ones.
+    kind: m <= 10 ? 'cubes' : 'grid',
+    L: Math.sqrt(w * h),
+    eyeX: x0 + side / 2,
+    eyeTop: y1,
+    mark: { x: x0 + side / 2, y: y0 + side / 2, w: side * 0.8, h: side * 0.5 },
+  }
 }
 
 /**
@@ -179,6 +252,11 @@ function buildShape(value: number, style: ShapeStyle): BlockShape {
       eyeTop: 0.5,
       mark: boxMark(1, 1),
     }
+  }
+
+  if (style === 'cube') {
+    const m = Math.round(Math.cbrt(abs))
+    if (m ** 3 === abs) return cubeShape(abs, m)
   }
 
   if (abs < 1000) {

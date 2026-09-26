@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { LIMIT, PRESETS, SETS, spawnNumbers, type NumberRange, type SetId } from './sets'
+import { LIMIT, MULTIPLE_SETS, PRESETS, SETS, spawnNumbers, type NumberRange, type SetId } from './sets'
 
 interface SelectorProps {
   set: SetId
@@ -45,6 +45,23 @@ export function Selector({ set, range, cap, onChange, onBattle, onHome }: Select
             >
               <div className="text-lg font-extrabold">{s.name}</div>
               <div className="text-xl font-black tabular-nums opacity-90">{s.sample} …</div>
+            </button>
+          ))}
+        </div>
+
+        {/* Skip counting: a button per multiple, 1s to 12s. */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          {MULTIPLE_SETS.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => onChange(s.id, range)}
+              className={`rounded-2xl px-3 py-2 text-left border-4 ${
+                set === s.id ? 'bg-orange-500 border-orange-300' : 'bg-white/10 border-transparent active:bg-white/20'
+              }`}
+            >
+              <div className="text-sm font-extrabold opacity-80">{s.name}</div>
+              <div className="text-lg sm:text-xl font-black tabular-nums whitespace-nowrap">{s.sample} …</div>
             </button>
           ))}
         </div>

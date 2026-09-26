@@ -322,7 +322,8 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
 
     void initPhysics().then(() => {
       if (disposed) return
-      const style: ShapeStyle = set === 'squares' ? 'square' : set === 'triangular' ? 'steps' : 'blocks'
+      const style: ShapeStyle =
+        set === 'squares' ? 'square' : set === 'triangular' ? 'steps' : set === 'cubes' ? 'cube' : 'blocks'
       sim = new Sim(values, configRef.current, style)
       for (const b of sim.blocks) b.notation = notation(set, b.value)
       simRef.current = sim

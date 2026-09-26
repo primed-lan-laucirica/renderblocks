@@ -35,6 +35,14 @@ describe('set membership', () => {
     expect([1, 3, 6, 7, 10, 500_000_500_000].map((n) => isMember('triangular', n))).toEqual([true, true, true, false, true, true])
   })
 
+  it('classifies cubes and multiples', () => {
+    expect([1, 8, 27, 1000, 1_000_000_000_000, 0, 9, 26].map((n) => isMember('cubes', n))).toEqual([
+      true, true, true, true, true, false, false, false,
+    ])
+    expect([0, 7, -14, 700, 8].map((n) => isMember('mult7', n))).toEqual([true, true, true, true, false])
+    expect(isMember('mult1', 13)).toBe(true)
+  })
+
   it('classifies powers of 10 and 2 exactly', () => {
     expect([1, 10, 100, 1_000_000_000_000, 0, 20, 110, 999].map((n) => isMember('pow10', n))).toEqual([
       true, true, true, true, false, false, false, false,
@@ -51,6 +59,9 @@ describe('set membership', () => {
     expect(notation('pow10', 1000)).toEqual({ base: '10', sup: '3' })
     expect(notation('pow10', 1)).toEqual({ base: '10', sup: '0' })
     expect(notation('pow2', 32)).toEqual({ base: '2', sup: '5' })
+    expect(notation('cubes', 27)).toEqual({ base: '3', sup: '3' })
+    expect(notation('cubes', 1_000_000_000_000)).toEqual({ base: '10,000', sup: '3' })
+    expect(notation('mult7', 28)).toBeNull()
     expect(notation('squares', 50)).toBeNull()
     expect(notation('integers', 49)).toBeNull()
   })
@@ -98,6 +109,20 @@ describe('spawnNumbers', () => {
     expect(out).toContain(0)
   })
 
+  it('spawns cubes and multiples', () => {
+    expect(check('cubes', 1, 1000)).toEqual([1, 8, 27, 64, 125, 216, 343, 512, 729, 1000])
+    expect(check('mult7', 1, 100)).toEqual(Array.from({ length: 14 }, (_, i) => 7 * (i + 1)))
+    expect(check('mult12', -30, 30)).toEqual([-24, -12, 0, 12, 24])
+    const big = check('mult7', -3, 1_000_000)
+    expect(big).toContain(1001) // round values move to the next multiple
+    expect(big).toContain(0)
+    for (let n = 1; n <= 12; n++) {
+      const out = check(`mult${n}`, 1, 1_000_000_000_000)
+      expect(out.length).toBeGreaterThan(10)
+      expect(out.every((v) => v % n === 0)).toBe(true)
+    }
+  })
+
   it('spawns every power of 10 and of 2 in range', () => {
     expect(check('pow10', 1, 1_000_000_000_000)).toEqual(Array.from({ length: 13 }, (_, k) => 10 ** k))
     expect(check('pow2', 1, 1_000_000_000_000)).toEqual(Array.from({ length: 40 }, (_, k) => 2 ** k))
@@ -106,7 +131,7 @@ describe('spawnNumbers', () => {
   })
 
   it('handles every set and preset', () => {
-    for (const set of ['integers', 'odds', 'evens', 'primes', 'squares', 'triangular', 'pow10', 'pow2'] as SetId[]) {
+    for (const set of ['integers', 'odds', 'evens', 'primes', 'squares', 'triangular', 'cubes', 'pow10', 'pow2', 'mult7', 'mult12'] as SetId[]) {
       for (const [from, to] of [
         [1, 10],
         [1, 25],
@@ -117,7 +142,9 @@ describe('spawnNumbers', () => {
         [1, 1_000_000_000_000],
       ]) {
         const out = check(set, from, to)
-        expect(out.length).toBeGreaterThan(0)
+        // The one empty pairing: there are no multiples of 12 from 1 to 10.
+        if (set === 'mult12' && to === 10) expect(out).toEqual([])
+        else expect(out.length).toBeGreaterThan(0)
       }
     }
     expect(check('primes', 1, 1_000_000_000_000)).toContain(999_999_999_989)
@@ -190,6 +217,20 @@ describe('block shapes', () => {
     }
   })
 
+  it('draws Cube Club members as cubes: front, top and side', () => {
+    const c = blockShape(27, 'cube')
+    expect(c.faces).toHaveLength(3)
+    expect(c.hull).toHaveLength(6)
+    expect(c.faces!.every((f) => f.cells === 3)).toBe(true)
+    expect(blockShape(1_000_000, 'cube').faces![0].cells).toBe(10) // 100³: a 10×10 grid per face
+    let last = 0
+    for (const n of [1, 8, 27, 1000, 1e6, 1e12]) {
+      expect(blockShape(n, 'cube').w).toBeGreaterThan(last) // bigger cubes are bigger
+      last = blockShape(n, 'cube').w
+    }
+    expect(blockShape(26, 'cube').faces).toBeUndefined() // non-cubes keep the Blocks layout
+  })
+
   it('gives negatives the shape of their magnitude, and zero a 1×1 frame', () => {
     expect(blockShape(-25)).toMatchObject({ w: 2, h: 13 })
     expect(blockShape(0)).toMatchObject({ w: 1, h: 1, kind: 'zero' })
@@ -223,6 +264,15 @@ describe('physics', () => {
       }
       sim.free()
     }
+  })
+
+  it('a Cube Club battle stands still too', () => {
+    const values = spawnNumbers('cubes', { from: 1, to: 1e12 })
+    const sim = new Sim(values, DEFAULTS, 'cube')
+    for (let i = 0; i < 60 * 8; i++) sim.step()
+    expect(sim.alive()).toHaveLength(values.length)
+    for (const b of sim.blocks) expect(Math.abs(b.cur.a)).toBeLessThan(0.05)
+    sim.free()
   })
 
   it('dragging a block into the lava puts it out, and it is removed', () => {

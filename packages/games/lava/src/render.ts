@@ -7,6 +7,16 @@ interface Paths {
   fills: Array<[string, Path2D]>
   outlines: Array<[string, Path2D]>
   silhouette: Path2D
+  /** Cube Club: each face's fill, and the grid of cubes on all three faces. */
+  faces: Array<[string, Path2D]>
+  faceGrid: Path2D | null
+}
+
+function polygon(pts: Array<{ x: number; y: number }>): Path2D {
+  const p = new Path2D()
+  pts.forEach((q, i) => (i ? p.lineTo(q.x, q.y) : p.moveTo(q.x, q.y)))
+  p.closePath()
+  return p
 }
 
 const pathCache = new WeakMap<BlockShape, Paths>()
@@ -29,9 +39,27 @@ function paths(shape: BlockShape): Paths {
       outlines.get(c.outline)!.rect(x, y, w, h)
     }
   }
-  const silhouette = new Path2D()
-  for (const r of shape.rects) silhouette.rect(r.cx - r.w / 2, r.cy - r.h / 2, r.w, r.h)
-  p = { fills: [...fills], outlines: [...outlines], silhouette }
+  let silhouette = new Path2D()
+  if (shape.hull) silhouette = polygon(shape.hull)
+  else for (const r of shape.rects) silhouette.rect(r.cx - r.w / 2, r.cy - r.h / 2, r.w, r.h)
+
+  const faces: Array<[string, Path2D]> = []
+  let faceGrid: Path2D | null = null
+  if (shape.faces) {
+    faceGrid = new Path2D()
+    for (const f of shape.faces) {
+      const { origin: o, u, v, cells } = f
+      faces.push([f.fill, polygon([o, { x: o.x + u.x, y: o.y + u.y }, { x: o.x + u.x + v.x, y: o.y + u.y + v.y }, { x: o.x + v.x, y: o.y + v.y }])])
+      for (let i = 0; i <= cells; i++) {
+        const t = i / cells
+        faceGrid.moveTo(o.x + u.x * t, o.y + u.y * t)
+        faceGrid.lineTo(o.x + u.x * t + v.x, o.y + u.y * t + v.y)
+        faceGrid.moveTo(o.x + v.x * t, o.y + v.y * t)
+        faceGrid.lineTo(o.x + v.x * t + u.x, o.y + v.y * t + u.y)
+      }
+    }
+  }
+  p = { fills: [...fills], outlines: [...outlines], silhouette, faces, faceGrid }
   pathCache.set(shape, p)
   return p
 }
@@ -109,6 +137,20 @@ function drawBlock(ctx: CanvasRenderingContext2D, b: Block, p: Pose, zoom: numbe
     ctx.lineWidth = 0.12
     ctx.strokeStyle = s.body
     ctx.strokeRect(-0.44, -0.44, 0.88, 0.88)
+  } else if (s.faces) {
+    // Cube Club: top, side and front faces; the cubes' grid once it is big enough to see.
+    for (const [color, path] of pa.faces) {
+      ctx.fillStyle = color
+      ctx.fill(path)
+    }
+    if (pa.faceGrid && s.cubeSize * zoom >= 4) {
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.35)'
+      ctx.lineWidth = s.cubeSize * 0.06
+      ctx.stroke(pa.faceGrid)
+    }
+    ctx.strokeStyle = 'rgba(15, 23, 42, 0.6)'
+    ctx.lineWidth = Math.max(s.cubeSize * 0.08, 1.5 / zoom)
+    ctx.stroke(pa.silhouette)
   } else if (s.cubeSize * zoom >= 4) {
     for (const [color, path] of pa.fills) {
       ctx.fillStyle = color
@@ -244,7 +286,8 @@ export function draw(ctx: CanvasRenderingContext2D, sim: Sim, cam: Camera, st: D
       ctx.rotate(p.a)
       ctx.strokeStyle = '#22d3ee'
       ctx.lineWidth = 2 / zoom
-      for (const r of b.shape.rects) ctx.strokeRect(r.cx - r.w / 2, r.cy - r.h / 2, r.w, r.h)
+      if (b.shape.hull) ctx.stroke(paths(b.shape).silhouette)
+      else for (const r of b.shape.rects) ctx.strokeRect(r.cx - r.w / 2, r.cy - r.h / 2, r.w, r.h)
       ctx.restore()
     }
   }

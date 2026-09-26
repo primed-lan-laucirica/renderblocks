@@ -117,10 +117,13 @@ export class Sim {
           .setAngularDamping(cfg.angularDamping),
       )
       const block: Block = { id, value, shape, body, prev: { ...pose }, cur: { ...pose }, outAt: null, removed: false, lastThud: -1, notation: null }
-      for (const r of shape.rects) {
+      // Cube Club blocks collide as their drawn outline; everything else as its rectangles.
+      const descs = shape.hull
+        ? [RAPIER.ColliderDesc.convexHull(new Float32Array(shape.hull.flatMap((p) => [p.x, p.y])))!]
+        : shape.rects.map((r) => RAPIER.ColliderDesc.cuboid(r.w / 2, r.h / 2).setTranslation(r.cx, r.cy))
+      for (const desc of descs) {
         const collider = this.world.createCollider(
-          RAPIER.ColliderDesc.cuboid(r.w / 2, r.h / 2)
-            .setTranslation(r.cx, r.cy)
+          desc
             .setDensity(cfg.density)
             .setFriction(cfg.friction)
             .setRestitution(cfg.restitution)

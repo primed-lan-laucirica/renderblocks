@@ -3,7 +3,35 @@
  * Pure functions — no DOM, no physics — so they are unit tested directly.
  */
 
-export type SetId = 'integers' | 'odds' | 'evens' | 'primes' | 'squares' | 'triangular' | 'pow10' | 'pow2'
+export type SetId =
+  | 'integers'
+  | 'odds'
+  | 'evens'
+  | 'primes'
+  | 'squares'
+  | 'triangular'
+  | 'cubes'
+  | 'pow10'
+  | 'pow2'
+  /** Multiples of N, 1–12 ("mult7" = 7, 14, 21 …) — skip counting. */
+  | `mult${number}`
+
+export const MULTIPLES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+export const multiplesSet = (n: number): SetId => `mult${n}`
+
+/** One set button per multiple, labelled by its numbers — he picks by what he reads, not from a menu. */
+export const MULTIPLE_SETS: Array<{ id: SetId; name: string; sample: string }> = MULTIPLES.map((n) => ({
+  id: multiplesSet(n),
+  name: `${n} times tables`,
+  sample: `${n} ${2 * n} ${3 * n}`,
+}))
+
+/** N for a multiples set, else null. */
+export function multipleOf(set: SetId): number | null {
+  const m = /^mult(\d+)$/.exec(set)
+  return m ? Number(m[1]) : null
+}
 
 /** Set buttons carry sample numbers, because he reads numbers far better than words. */
 export const SETS: Array<{ id: SetId; name: string; sample: string }> = [
@@ -13,6 +41,7 @@ export const SETS: Array<{ id: SetId; name: string; sample: string }> = [
   { id: 'primes', name: 'Primes', sample: '2 3 5 7 11' },
   { id: 'squares', name: 'Square Club', sample: '1 4 9 16 25' },
   { id: 'triangular', name: 'Step Squad', sample: '1 3 6 10 15' },
+  { id: 'cubes', name: 'Cube Club', sample: '1 8 27 64' },
   { id: 'pow10', name: 'Powers of 10', sample: '1 10 100' },
   { id: 'pow2', name: 'Powers of 2', sample: '1 2 4 8 16' },
 ]
@@ -109,6 +138,14 @@ function isqrt(n: number): number {
 
 const tri = (m: number) => (m * (m + 1)) / 2
 
+/** Integer cube root: largest m with m³ ≤ n. */
+export function icbrt(n: number): number {
+  let r = Math.round(Math.cbrt(n))
+  while (r > 0 && r ** 3 > n) r--
+  while ((r + 1) ** 3 <= n) r++
+  return r
+}
+
 /** Largest m with tri(m) ≤ x. */
 function triIndex(x: number): number {
   let m = Math.floor((Math.sqrt(8 * x + 1) - 1) / 2)
@@ -138,6 +175,8 @@ function powIndex(base: number, v: number): number {
 
 export function isMember(set: SetId, n: number): boolean {
   if (!Number.isInteger(n)) return false
+  const k = multipleOf(set)
+  if (k) return n % k === 0
   switch (set) {
     case 'integers':
       return true
@@ -151,18 +190,24 @@ export function isMember(set: SetId, n: number): boolean {
       return n >= 1 && isqrt(n) ** 2 === n
     case 'triangular':
       return n >= 1 && tri(triIndex(n)) === n
+    case 'cubes':
+      return n >= 1 && icbrt(n) ** 3 === n
     case 'pow10':
     case 'pow2':
       return n >= 1 && powAtMost(POWER_BASE[set]!, n) === n
+    default:
+      return false
   }
 }
 
 /** Sets that have negative members (primes, the figurate sets and powers are positive only). */
-const SYMMETRIC: ReadonlySet<SetId> = new Set(['integers', 'odds', 'evens'])
+const isSymmetric = (set: SetId) => set === 'integers' || set === 'odds' || set === 'evens' || multipleOf(set) !== null
 
 /** Smallest member ≥ x. */
 function firstAtOrAbove(set: SetId, x: number): number {
   x = Math.ceil(x)
+  const k = multipleOf(set)
+  if (k) return Math.ceil(x / k) * k || 0 // never -0
   switch (set) {
     case 'integers':
       return x
@@ -176,18 +221,24 @@ function firstAtOrAbove(set: SetId, x: number): number {
       return (isqrt(Math.max(x, 1) - 1) + 1) ** 2
     case 'triangular':
       return tri(triIndex(Math.max(x, 1) - 1) + 1)
+    case 'cubes':
+      return (icbrt(Math.max(x, 1) - 1) + 1) ** 3
     case 'pow10':
     case 'pow2': {
       if (x <= 1) return 1
       const p = powAtMost(POWER_BASE[set]!, x)
       return p === x ? p : p * POWER_BASE[set]!
     }
+    default:
+      return x
   }
 }
 
 /** Largest member ≤ x, or null if there is none. */
 function lastAtOrBelow(set: SetId, x: number): number | null {
   x = Math.floor(x)
+  const k = multipleOf(set)
+  if (k) return Math.floor(x / k) * k || 0
   switch (set) {
     case 'integers':
       return x
@@ -201,9 +252,13 @@ function lastAtOrBelow(set: SetId, x: number): number | null {
       return x < 1 ? null : isqrt(x) ** 2
     case 'triangular':
       return x < 1 ? null : tri(triIndex(x))
+    case 'cubes':
+      return x < 1 ? null : icbrt(x) ** 3
     case 'pow10':
     case 'pow2':
       return x < 1 ? null : powAtMost(POWER_BASE[set]!, x)
+    default:
+      return x
   }
 }
 
@@ -226,6 +281,8 @@ export function notation(set: SetId, n: number): Notation | null {
       return { base: isqrt(n).toLocaleString('en-US'), sup: '2' }
     case 'triangular':
       return { base: 'T', sub: triIndex(n).toLocaleString('en-US') }
+    case 'cubes':
+      return { base: icbrt(n).toLocaleString('en-US'), sup: '3' }
     case 'pow10':
     case 'pow2':
       return { base: String(POWER_BASE[set]), sup: String(powIndex(POWER_BASE[set]!, n)) }
@@ -256,10 +313,11 @@ function bandPicks(set: SetId, a: number, b: number, k: number): { anchor: numbe
   const picks: number[] = []
   let anchor: number | null = null
 
-  if (SYMMETRIC.has(set)) {
-    // Round values: 1000, 2000 ... 9000 (odds: 1001, 2001 ...), then the band's top.
+  if (isSymmetric(set)) {
+    // Round values: 1000, 2000 ... 9000, or the next member up (odds 1001,
+    // multiples of 7 1001, 2002 ...), then the band's top.
     for (let d = 1; d <= 9; d++) {
-      const v = set === 'odds' ? d * base + 1 : d * base
+      const v = firstAtOrAbove(set, d * base)
       if (v >= a && v <= b) {
         picks.push(v)
         anchor ??= v
@@ -283,10 +341,22 @@ function bandPicks(set: SetId, a: number, b: number, k: number): { anchor: numbe
     const top = prevPrime(b)
     if (top !== null && top >= a) picks.push(top)
   } else {
-    // Squares, triangular numbers and powers: evenly spaced by index.
+    // Squares, cubes, triangular numbers and powers: evenly spaced by index.
     const base = POWER_BASE[set]
-    const index = base ? (v: number) => powIndex(base, v) : set === 'squares' ? isqrt : triIndex
-    const value = base ? (m: number) => base ** m : set === 'squares' ? (m: number) => m * m : tri
+    const index = base
+      ? (v: number) => powIndex(base, v)
+      : set === 'squares'
+        ? isqrt
+        : set === 'cubes'
+          ? icbrt
+          : triIndex
+    const value = base
+      ? (m: number) => base ** m
+      : set === 'squares'
+        ? (m: number) => m * m
+        : set === 'cubes'
+          ? (m: number) => m ** 3
+          : tri
     const lo = firstAtOrAbove(set, a)
     const hi = lastAtOrBelow(set, b)
     if (hi === null || lo > hi) return null
@@ -343,7 +413,7 @@ export function spawnNumbers(set: SetId, range: NumberRange, cap = 60): number[]
   const bands: number[][] = []
   const anchors: number[] = []
   for (let k = 1; k <= 12; k++) {
-    for (const sign of SYMMETRIC.has(set) ? [1, -1] : [1]) {
+    for (const sign of isSymmetric(set) ? [1, -1] : [1]) {
       const aAbs = Math.max(10 ** k, DENSE + 1)
       const bAbs = 10 ** (k + 1) - 1
       const a = sign > 0 ? Math.max(aAbs, lo) : Math.max(aAbs, -hi)
