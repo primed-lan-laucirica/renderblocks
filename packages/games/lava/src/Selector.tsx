@@ -33,7 +33,7 @@ export function Selector({ set, range, cap, onChange, onBattle, onHome }: Select
           <h1 className="text-3xl font-black tracking-tight">🌋 LavaBlocks</h1>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {SETS.map((s) => (
             <button
               key={s.id}

@@ -35,6 +35,15 @@ describe('set membership', () => {
     expect([1, 3, 6, 7, 10, 500_000_500_000].map((n) => isMember('triangular', n))).toEqual([true, true, true, false, true, true])
   })
 
+  it('classifies powers of 10 and 2 exactly', () => {
+    expect([1, 10, 100, 1_000_000_000_000, 0, 20, 110, 999].map((n) => isMember('pow10', n))).toEqual([
+      true, true, true, true, false, false, false, false,
+    ])
+    expect([1, 2, 1024, 549_755_813_888, 0, 6, 1000].map((n) => isMember('pow2', n))).toEqual([
+      true, true, true, true, false, false, false,
+    ])
+  })
+
   it('enumerates small ranges and gives up past the limit', () => {
     expect(enumerate('primes', 1, 30, 30)).toEqual([2, 3, 5, 7, 11, 13, 17, 19, 23, 29])
     expect(enumerate('squares', -10, 50, 30)).toEqual([1, 4, 9, 16, 25, 36, 49])
@@ -78,8 +87,15 @@ describe('spawnNumbers', () => {
     expect(out).toContain(0)
   })
 
+  it('spawns every power of 10 and of 2 in range', () => {
+    expect(check('pow10', 1, 1_000_000_000_000)).toEqual(Array.from({ length: 13 }, (_, k) => 10 ** k))
+    expect(check('pow2', 1, 1_000_000_000_000)).toEqual(Array.from({ length: 40 }, (_, k) => 2 ** k))
+    expect(check('pow2', -3, 1000)).toEqual([1, 2, 4, 8, 16, 32, 64, 128, 256, 512])
+    expect(check('pow10', 5, 5000)).toEqual([10, 100, 1000])
+  })
+
   it('handles every set and preset', () => {
-    for (const set of ['integers', 'odds', 'evens', 'primes', 'squares', 'triangular'] as SetId[]) {
+    for (const set of ['integers', 'odds', 'evens', 'primes', 'squares', 'triangular', 'pow10', 'pow2'] as SetId[]) {
       for (const [from, to] of [
         [1, 10],
         [1, 25],

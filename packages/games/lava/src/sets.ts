@@ -3,7 +3,7 @@
  * Pure functions — no DOM, no physics — so they are unit tested directly.
  */
 
-export type SetId = 'integers' | 'odds' | 'evens' | 'primes' | 'squares' | 'triangular'
+export type SetId = 'integers' | 'odds' | 'evens' | 'primes' | 'squares' | 'triangular' | 'pow10' | 'pow2'
 
 /** Set buttons carry sample numbers, because he reads numbers far better than words. */
 export const SETS: Array<{ id: SetId; name: string; sample: string }> = [
@@ -13,6 +13,8 @@ export const SETS: Array<{ id: SetId; name: string; sample: string }> = [
   { id: 'primes', name: 'Primes', sample: '2 3 5 7 11' },
   { id: 'squares', name: 'Square Club', sample: '1 4 9 16 25' },
   { id: 'triangular', name: 'Step Squad', sample: '1 3 6 10 15' },
+  { id: 'pow10', name: 'Powers of 10', sample: '1 10 100' },
+  { id: 'pow2', name: 'Powers of 2', sample: '1 2 4 8 16' },
 ]
 
 export interface NumberRange {
@@ -117,6 +119,23 @@ function triIndex(x: number): number {
 
 const isOdd = (n: number) => Math.abs(n % 2) === 1
 
+/** Base of each powers set. */
+const POWER_BASE: Partial<Record<SetId, number>> = { pow10: 10, pow2: 2 }
+
+/** Largest power of `base` ≤ x (x ≥ 1) — built by multiplying, so exact (no float logs). */
+function powAtMost(base: number, x: number): number {
+  let v = 1
+  while (v * base <= x) v *= base
+  return v
+}
+
+/** Exponent of an exact power: powIndex(2, 1024) = 10. */
+function powIndex(base: number, v: number): number {
+  let m = 0
+  for (let p = 1; p < v; p *= base) m++
+  return m
+}
+
 export function isMember(set: SetId, n: number): boolean {
   if (!Number.isInteger(n)) return false
   switch (set) {
@@ -132,10 +151,13 @@ export function isMember(set: SetId, n: number): boolean {
       return n >= 1 && isqrt(n) ** 2 === n
     case 'triangular':
       return n >= 1 && tri(triIndex(n)) === n
+    case 'pow10':
+    case 'pow2':
+      return n >= 1 && powAtMost(POWER_BASE[set]!, n) === n
   }
 }
 
-/** Sets that have negative members (primes and the figurate sets are positive only). */
+/** Sets that have negative members (primes, the figurate sets and powers are positive only). */
 const SYMMETRIC: ReadonlySet<SetId> = new Set(['integers', 'odds', 'evens'])
 
 /** Smallest member ≥ x. */
@@ -154,6 +176,12 @@ function firstAtOrAbove(set: SetId, x: number): number {
       return (isqrt(Math.max(x, 1) - 1) + 1) ** 2
     case 'triangular':
       return tri(triIndex(Math.max(x, 1) - 1) + 1)
+    case 'pow10':
+    case 'pow2': {
+      if (x <= 1) return 1
+      const p = powAtMost(POWER_BASE[set]!, x)
+      return p === x ? p : p * POWER_BASE[set]!
+    }
   }
 }
 
@@ -173,6 +201,9 @@ function lastAtOrBelow(set: SetId, x: number): number | null {
       return x < 1 ? null : isqrt(x) ** 2
     case 'triangular':
       return x < 1 ? null : tri(triIndex(x))
+    case 'pow10':
+    case 'pow2':
+      return x < 1 ? null : powAtMost(POWER_BASE[set]!, x)
   }
 }
 
@@ -225,9 +256,10 @@ function bandPicks(set: SetId, a: number, b: number, k: number): { anchor: numbe
     const top = prevPrime(b)
     if (top !== null && top >= a) picks.push(top)
   } else {
-    // Squares and triangular numbers: evenly spaced by index.
-    const index = set === 'squares' ? isqrt : triIndex
-    const value = set === 'squares' ? (m: number) => m * m : tri
+    // Squares, triangular numbers and powers: evenly spaced by index.
+    const base = POWER_BASE[set]
+    const index = base ? (v: number) => powIndex(base, v) : set === 'squares' ? isqrt : triIndex
+    const value = base ? (m: number) => base ** m : set === 'squares' ? (m: number) => m * m : tri
     const lo = firstAtOrAbove(set, a)
     const hi = lastAtOrBelow(set, b)
     if (hi === null || lo > hi) return null
