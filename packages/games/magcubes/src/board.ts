@@ -12,6 +12,8 @@ export const TUNING = {
   pull: 0.3,
   /** Snap and fall animation, ms. */
   snapMs: 110,
+  /** Tap-turn animation, ms. */
+  turnMs: 200,
   minZoom: 18,
   maxZoom: 140,
 }
@@ -42,9 +44,12 @@ type Grip =
   | { kind: 'pan'; x: number; y: number }
 
 interface Anim {
+  /** Straight-line start offset, world-screen. */
   dx: number
   dy: number
   t0: number
+  /** A tap-turn: also swing the last quarter turn about this column. */
+  turn?: { px: number; py: number }
 }
 
 export interface BoardHooks {
@@ -278,6 +283,11 @@ export class Board {
     const g = this.grips.get(e.pointerId)
     if (!g) return
     this.grips.delete(e.pointerId)
+    // A press that never became a drag is a tap: turn the group (spec: turning).
+    if (g.kind === 'press') {
+      this.turn(g.cube)
+      return
+    }
     if (g.kind !== 'held') return
     const { x, y } = this.local(e)
     if (this.overTrayAt(x, y)) {
@@ -302,6 +312,28 @@ export class Board {
     this.dirty = true
   }
 
+  /**
+   * Tap to turn: a quarter turn clockwise about the tapped cube. Tap is the
+   * gesture young children manage most reliably, and turning by tapping is
+   * the usual convention; four taps bring a group back.
+   */
+  private turn(pivot: Cube): void {
+    if (!this.world.at(pivot.x, pivot.y, pivot.z)) return // picked up by another finger meanwhile
+    const now = performance.now()
+    for (const { cube, from } of this.world.turn(pivot)) {
+      // Swing about the pivot column; any lift onto something in the way eases in straight.
+      this.anims.set(cube, {
+        dx: (from.z - cube.z) * -SHEAR,
+        dy: (from.z - cube.z) * -LAYER,
+        t0: now,
+        turn: { px: pivot.x, py: pivot.y },
+      })
+    }
+    play('click', 0.7)
+    this.hooks.onChange(this.world)
+    this.dirty = true
+  }
+
   private animateFalls(fell: Array<{ cube: Cube; fell: number }>): void {
     const now = performance.now()
     for (const { cube, fell: d } of fell) this.anims.set(cube, { dx: -d * SHEAR, dy: -d * LAYER, t0: now })
@@ -322,19 +354,29 @@ export class Board {
 
     const now = performance.now()
     for (const c of this.world.all().sort(drawOrder)) {
+      let gx = c.x
+      let gy = c.y
       let dx = 0
       let dy = 0
       const a = this.anims.get(c)
       if (a) {
-        const t = (now - a.t0) / TUNING.snapMs
+        const t = (now - a.t0) / (a.turn ? TUNING.turnMs : TUNING.snapMs)
         if (t >= 1) this.anims.delete(c)
         else {
           const k = 1 - ease(t)
           dx = a.dx * k
           dy = a.dy * k
+          if (a.turn) {
+            // Back along the quarter turn: at k = 1 it sits where it was.
+            const th = (-k * Math.PI) / 2
+            const rx = c.x - a.turn.px
+            const ry = c.y - a.turn.py
+            gx = a.turn.px + rx * Math.cos(th) - ry * Math.sin(th)
+            gy = a.turn.py + rx * Math.sin(th) + ry * Math.cos(th)
+          }
         }
       }
-      drawCube(ctx, v, topX(c.x, c.z) + dx, topY(c.y, c.z) + dy, c.c)
+      drawCube(ctx, v, topX(gx, c.z) + dx, topY(gy, c.z) + dy, c.c)
     }
 
     for (const g of this.grips.values()) {

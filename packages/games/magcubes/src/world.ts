@@ -136,6 +136,24 @@ export class World {
   }
 
   /**
+   * Tap to turn: the pivot's whole group turns a quarter turn clockwise
+   * (seen from above) about the pivot's column, and rests on whatever is
+   * beneath its new footprint. Returns each cube with where it came from.
+   */
+  turn(pivot: Cube): Array<{ cube: Cube; from: { x: number; y: number; z: number } }> {
+    const group = this.group(pivot)
+    const minZ = Math.min(...group.map((c) => c.z))
+    const { x, y } = pivot
+    const piece = this.pickUp(group, pivot)
+    // Screen y points toward the viewer, so clockwise takes right to front: (dx, dy) → (−dy, dx).
+    const placed = this.place({ cells: piece.cells.map((p) => ({ dx: -p.dy, dy: p.dx, dz: p.dz, c: p.c })) }, x, y)
+    return placed.map((cube, i) => {
+      const p = piece.cells[i]
+      return { cube, from: { x: x + p.dx, y: y + p.dy, z: minZ + p.dz } }
+    })
+  }
+
+  /**
    * Drop anything left hanging in the air (a cube that sat only on a torn-off
    * one) until it rests on something. Groups touching the table, or touching
    * anything at all, are held by their magnets. Returns each moved cube with

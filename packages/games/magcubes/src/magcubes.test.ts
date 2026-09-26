@@ -76,6 +76,37 @@ describe('magnets', () => {
     expect(w.at(2, 0, 1)).toBeTruthy()
   })
 
+  it('turns a group a quarter turn about the tapped cube', () => {
+    const w = new World()
+    // An L on the table: (0,0) (1,0) (2,0) and (2,1), with a cube stacked on (1,0).
+    for (const [x, y] of [[0, 0], [1, 0], [2, 0], [2, 1]]) w.add({ x, y, z: 0, c: 1 })
+    w.add({ x: 1, y: 0, z: 1, c: 5 })
+    const before = w.toJSON().map(String).sort()
+    const moved = w.turn(w.at(0, 0, 0)!)
+    // Right becomes toward the viewer: the row now runs down from the pivot.
+    expect(w.at(0, 1, 0)).toBeTruthy()
+    expect(w.at(0, 2, 0)).toBeTruthy()
+    expect(w.at(-1, 2, 0)).toBeTruthy()
+    expect(w.at(0, 1, 1)?.c).toBe(5) // the stacked cube turns with it
+    expect(moved.find((m) => m.cube.c === 5)?.from).toEqual({ x: 1, y: 0, z: 1 })
+    // Four turns bring it back.
+    for (let i = 0; i < 3; i++) w.turn(w.at(0, 0, 0)!)
+    expect(w.toJSON().map(String).sort()).toEqual(before)
+  })
+
+  it('rests a turned group on top of anything in its way', () => {
+    const w = new World()
+    row(w, 3) // a bar (0,0) (1,0) (2,0)
+    w.add({ x: 0, y: 2, z: 0, c: 4 }) // apart from it, but where its end swings to
+    const moved = w.turn(w.at(0, 0, 0)!)
+    // The bar would lie at (0,0) (0,1) (0,2): the cube at (0,2) is in the way, so it rests on top.
+    expect(moved.map((m) => [m.cube.x, m.cube.y, m.cube.z])).toEqual([
+      [0, 0, 1],
+      [0, 1, 1],
+      [0, 2, 1],
+    ])
+  })
+
   it('round-trips a save and ignores junk', () => {
     const w = new World()
     row(w, 2)
