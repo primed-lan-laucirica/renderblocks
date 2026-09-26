@@ -81,7 +81,6 @@
     {
       "dir": "lava/voice",
       "normalize": true,
-      "channels": 1,
       "items": {
         "aah_1": {
           "prompt": "a child's voice screaming \"Aaaaaaaaah!\" as one long unbroken scream while falling from a great height, cartoon, lasting the whole clip",

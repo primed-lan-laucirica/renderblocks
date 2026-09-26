@@ -70,11 +70,12 @@ function target(dir, name) {
 }
 
 /**
- * Match the existing hand-made assets: 192kbps / 48kHz / stereo, leading
- * silence trimmed, loudness levelled, padded to a fixed length so clips
- * stitch together evenly.
+ * House format for every clip: MP3, 64 kbps, 48 kHz, mono — plenty for a
+ * voice or a chime and a third the size of the 192 kbps stereo the assets
+ * started at. Leading silence trimmed, loudness levelled, and optionally
+ * padded to a fixed length so clips stitch together evenly.
  */
-function normalize(path, seconds, { pad = true, endsOnly = false, channels = 2 } = {}) {
+function normalize(path, seconds, { pad = true, endsOnly = false } = {}) {
   const tmp = `${path}.tmp.mp3`
   // Clips that get STITCHED into phrases must not be padded to a fixed
   // length — the trailing silence stacks up into robotic gaps. Trim both
@@ -96,7 +97,7 @@ function normalize(path, seconds, { pad = true, endsOnly = false, channels = 2 }
           'loudnorm=I=-16:TP=-1.5:LRA=11,apad'
         : `${endsOnly ? trimEnds : trimBoth},loudnorm=I=-16:TP=-1.5:LRA=11`,
       ...(pad ? ['-t', String(seconds)] : []),
-      '-ar', '48000', '-ac', String(channels), '-b:a', channels === 1 ? '128k' : '192k',
+      '-ar', '48000', '-ac', '1', '-b:a', '64k',
       tmp,
     ])
     writeFileSync(path, readFileSync(tmp))
@@ -173,7 +174,7 @@ for (const group of manifest.sfx ?? []) {
     })
     writeFileSync(path, buf)
     // Voice-like effects (e.g. LavaBlocks' falling screams) are levelled like the chorus clips.
-    if (group.normalize) normalize(path, spec.seconds, { pad: false, endsOnly: true, channels: group.channels ?? 2 })
+    if (group.normalize) normalize(path, spec.seconds, { pad: false, endsOnly: true })
     console.log(`sfx     ${group.dir}/${name}.mp3  ${(readFileSync(path).length / 1024).toFixed(0)}kB`)
     made++
   }
