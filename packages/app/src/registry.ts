@@ -11,6 +11,7 @@ import { numlineModule } from '@renderblocks/numline/module'
 import { giftedModule } from '@renderblocks/gifted/module'
 import { lavaModule } from '@renderblocks/lava/module'
 import { wordsModule } from '@renderblocks/words/module'
+import { magcubesModule } from '@renderblocks/magcubes/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
 
 export const games: GameModule[] = [
@@ -27,6 +28,7 @@ export const games: GameModule[] = [
   giftedModule,
   lavaModule,
   wordsModule,
+  magcubesModule,
 ]
 
 export const upcoming: UpcomingGame[] = []

@@ -26,6 +26,7 @@
     "@renderblocks/graph": "workspace:*",
     "@renderblocks/kernel": "workspace:*",
     "@renderblocks/lava": "workspace:*",
+    "@renderblocks/magcubes": "workspace:*",
     "@renderblocks/numline": "workspace:*",
     "@renderblocks/shapes": "workspace:*",
     "@renderblocks/subtract": "workspace:*",

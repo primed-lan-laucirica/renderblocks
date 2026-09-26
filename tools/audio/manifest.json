@@ -515,6 +515,32 @@
           "expect": "lava"
         }
       }
+    },
+    {
+      "dir": "magcubes/sfx",
+      "normalize": true,
+      "items": {
+        "click1": {
+          "prompt": "single sharp click of two small plastic magnetic cubes snapping together, close up, dry, no reverb",
+          "seconds": 0.5
+        },
+        "click2": {
+          "prompt": "one crisp magnetic snap, small plastic toy cube clicking onto another cube, close up, dry, no reverb",
+          "seconds": 0.5
+        },
+        "click3": {
+          "prompt": "light clack of a small magnetic building cube snapping onto a row of cubes, tabletop, dry, no reverb",
+          "seconds": 0.5
+        },
+        "tear1": {
+          "prompt": "quick snap of pulling one small magnetic plastic cube off a group of cubes, short dry click and tiny slide, no reverb",
+          "seconds": 0.6
+        },
+        "tear2": {
+          "prompt": "short sharp pull-apart snap, magnetic toy cubes separating, plastic, dry, no reverb",
+          "seconds": 0.6
+        }
+      }
     }
   ],
   "chorus": [
