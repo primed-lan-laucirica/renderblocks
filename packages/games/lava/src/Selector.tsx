@@ -66,6 +66,9 @@ export function Selector({ set, range, cap, onChange, onBattle, onHome }: Select
           ))}
         </div>
 
+        {/* Sets above, ranges below. */}
+        <div className="h-1.5 rounded-full bg-white/30 my-2" aria-hidden />
+
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {PRESETS.map((p) => (
             <button
