@@ -60,6 +60,10 @@ describe('set membership', () => {
     expect(notation('pow10', 1000)).toEqual({ base: '10', sup: '3' })
     expect(notation('pow10', 1)).toEqual({ base: '10', sup: '0' })
     expect(notation('pow2', 32)).toEqual({ base: '2', sup: '5' })
+    expect(notation('pow3', 81)).toEqual({ base: '3', sup: '4' })
+    expect(notation('pow7', 1)).toEqual({ base: '7', sup: '0' })
+    expect(notation('pow3', 27)).toEqual({ base: '3', sup: '3' })
+    expect(notation('pow3', 28)).toBeNull()
     expect(notation('cubes', 27)).toEqual({ base: '3', sup: '3' })
     expect(notation('cubes', 1_000_000_000_000)).toEqual({ base: '10,000', sup: '3' })
     // Times tables show the multiplication, so skipped steps can't mislead.
@@ -135,10 +139,17 @@ describe('spawnNumbers', () => {
     expect(check('pow2', 1, 1_000_000_000_000)).toEqual(Array.from({ length: 40 }, (_, k) => 2 ** k))
     expect(check('pow2', -3, 1000)).toEqual([1, 2, 4, 8, 16, 32, 64, 128, 256, 512])
     expect(check('pow10', 5, 5000)).toEqual([10, 100, 1000])
+    expect(check('pow3', 1, 1000)).toEqual([1, 3, 9, 27, 81, 243, 729])
+    expect(check('pow5', 2, 1_000_000)).toEqual([5, 25, 125, 625, 3125, 15625, 78125, 390625])
+    for (const b of [2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+      const out = check(`pow${b}`, 1, 1_000_000_000_000)
+      expect(out.every((v) => isMember(`pow${b}`, v))).toBe(true)
+      expect(out[out.length - 1] * b).toBeGreaterThan(1_000_000_000_000) // reaches the top of the range
+    }
   })
 
   it('handles every set and preset', () => {
-    for (const set of ['integers', 'odds', 'evens', 'primes', 'squares', 'triangular', 'cubes', 'pow10', 'pow2', 'mult7', 'mult12'] as SetId[]) {
+    for (const set of ['integers', 'odds', 'evens', 'primes', 'squares', 'triangular', 'cubes', 'pow10', 'pow2', 'pow3', 'pow7', 'mult7', 'mult12'] as SetId[]) {
       for (const [from, to] of [
         [1, 10],
         [1, 25],

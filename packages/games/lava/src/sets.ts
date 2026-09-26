@@ -11,8 +11,8 @@ export type SetId =
   | 'squares'
   | 'triangular'
   | 'cubes'
-  | 'pow10'
-  | 'pow2'
+  /** Powers of N, 2–10 ("pow3" = 1, 3, 9, 27 …) — the logarithmic sets. */
+  | `pow${number}`
   /** Multiples of N, 1–12 ("mult7" = 7, 14, 21 …) — skip counting. */
   | `mult${number}`
 
@@ -33,6 +33,23 @@ export function multipleOf(set: SetId): number | null {
   return m ? Number(m[1]) : null
 }
 
+export const POWER_BASES = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+export const powersSet = (n: number): SetId => `pow${n}`
+
+/** One set button per base, labelled by its first powers — as many as fit a phone-width button. */
+export const POWER_SETS: Array<{ id: SetId; name: string; sample: string }> = POWER_BASES.map((n) => {
+  const shown = ['1']
+  for (let v = n; shown.length < 4 && [...shown, v].join(' ').length <= 9; v *= n) shown.push(String(v))
+  return { id: powersSet(n), name: `Powers of ${n}`, sample: shown.join(' ') }
+})
+
+/** N for a powers set, else null. */
+export function powerOf(set: SetId): number | null {
+  const m = /^pow(\d+)$/.exec(set)
+  return m ? Number(m[1]) : null
+}
+
 /** Set buttons carry sample numbers, because he reads numbers far better than words. */
 export const SETS: Array<{ id: SetId; name: string; sample: string }> = [
   { id: 'integers', name: 'Integers', sample: '1 2 3 4 5' },
@@ -42,8 +59,6 @@ export const SETS: Array<{ id: SetId; name: string; sample: string }> = [
   { id: 'squares', name: 'Square Club', sample: '1 4 9 16 25' },
   { id: 'triangular', name: 'Step Squad', sample: '1 3 6 10 15' },
   { id: 'cubes', name: 'Cube Club', sample: '1 8 27 64' },
-  { id: 'pow10', name: 'Powers of 10', sample: '1 10 100' },
-  { id: 'pow2', name: 'Powers of 2', sample: '1 2 4 8 16' },
 ]
 
 export interface NumberRange {
@@ -156,9 +171,6 @@ function triIndex(x: number): number {
 
 const isOdd = (n: number) => Math.abs(n % 2) === 1
 
-/** Base of each powers set. */
-const POWER_BASE: Partial<Record<SetId, number>> = { pow10: 10, pow2: 2 }
-
 /** Largest power of `base` ≤ x (x ≥ 1) — built by multiplying, so exact (no float logs). */
 function powAtMost(base: number, x: number): number {
   let v = 1
@@ -177,6 +189,8 @@ export function isMember(set: SetId, n: number): boolean {
   if (!Number.isInteger(n)) return false
   const k = multipleOf(set)
   if (k) return n % k === 0
+  const base = powerOf(set)
+  if (base) return n >= 1 && powAtMost(base, n) === n
   switch (set) {
     case 'integers':
       return true
@@ -192,9 +206,6 @@ export function isMember(set: SetId, n: number): boolean {
       return n >= 1 && tri(triIndex(n)) === n
     case 'cubes':
       return n >= 1 && icbrt(n) ** 3 === n
-    case 'pow10':
-    case 'pow2':
-      return n >= 1 && powAtMost(POWER_BASE[set]!, n) === n
     default:
       return false
   }
@@ -208,6 +219,12 @@ function firstAtOrAbove(set: SetId, x: number): number {
   x = Math.ceil(x)
   const k = multipleOf(set)
   if (k) return Math.ceil(x / k) * k || 0 // never -0
+  const base = powerOf(set)
+  if (base) {
+    if (x <= 1) return 1
+    const p = powAtMost(base, x)
+    return p === x ? p : p * base
+  }
   switch (set) {
     case 'integers':
       return x
@@ -223,12 +240,6 @@ function firstAtOrAbove(set: SetId, x: number): number {
       return tri(triIndex(Math.max(x, 1) - 1) + 1)
     case 'cubes':
       return (icbrt(Math.max(x, 1) - 1) + 1) ** 3
-    case 'pow10':
-    case 'pow2': {
-      if (x <= 1) return 1
-      const p = powAtMost(POWER_BASE[set]!, x)
-      return p === x ? p : p * POWER_BASE[set]!
-    }
     default:
       return x
   }
@@ -239,6 +250,8 @@ function lastAtOrBelow(set: SetId, x: number): number | null {
   x = Math.floor(x)
   const k = multipleOf(set)
   if (k) return Math.floor(x / k) * k || 0
+  const base = powerOf(set)
+  if (base) return x < 1 ? null : powAtMost(base, x)
   switch (set) {
     case 'integers':
       return x
@@ -254,9 +267,6 @@ function lastAtOrBelow(set: SetId, x: number): number | null {
       return x < 1 ? null : tri(triIndex(x))
     case 'cubes':
       return x < 1 ? null : icbrt(x) ** 3
-    case 'pow10':
-    case 'pow2':
-      return x < 1 ? null : powAtMost(POWER_BASE[set]!, x)
     default:
       return x
   }
@@ -272,7 +282,7 @@ export interface Notation {
 /**
  * The notation a set's block wears (the educational point of those sets):
  * Square Club 49 → 7², Step Squad 10 → T₄, Powers of 10 1000 → 10³,
- * Powers of 2 32 → 2⁵. Other sets, and non-members, have none.
+ * Powers of 3 81 → 3⁴. Other sets, and non-members, have none.
  *
  * Times tables show the multiplication itself. Big ranges skip most of the
  * table (700, then 1,001), so without "7 × 143" the numbers read as
@@ -282,6 +292,8 @@ export function notation(set: SetId, n: number): Notation | null {
   if (!isMember(set, n)) return null
   const k = multipleOf(set)
   if (k) return { base: `${k} × ${(n / k || 0).toLocaleString('en-US')}` }
+  const base = powerOf(set)
+  if (base) return { base: String(base), sup: String(powIndex(base, n)) }
   switch (set) {
     case 'squares':
       return { base: isqrt(n).toLocaleString('en-US'), sup: '2' }
@@ -289,9 +301,6 @@ export function notation(set: SetId, n: number): Notation | null {
       return { base: 'T', sub: triIndex(n).toLocaleString('en-US') }
     case 'cubes':
       return { base: icbrt(n).toLocaleString('en-US'), sup: '3' }
-    case 'pow10':
-    case 'pow2':
-      return { base: String(POWER_BASE[set]), sup: String(powIndex(POWER_BASE[set]!, n)) }
     default:
       return null
   }
@@ -348,7 +357,7 @@ function bandPicks(set: SetId, a: number, b: number, k: number): { anchor: numbe
     if (top !== null && top >= a) picks.push(top)
   } else {
     // Squares, cubes, triangular numbers and powers: evenly spaced by index.
-    const base = POWER_BASE[set]
+    const base = powerOf(set)
     const index = base
       ? (v: number) => powIndex(base, v)
       : set === 'squares'
