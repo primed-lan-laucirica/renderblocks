@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { DEFAULTS } from './config'
-import { enumerate, isMember, isPrime, notation, spawnNumbers, type SetId } from './sets'
+import { defaultRange, enumerate, isMember, isPrime, keepsSequence, notation, spawnNumbers, type SetId } from './sets'
 import { fallSeconds, pickScream, type ScreamClip } from './screams'
 import { getCubeColor, getCubeOutlineColor } from '@renderblocks/blocks/cubeLayout'
 import { bigSide, blockShape } from './shapes'
@@ -145,6 +145,18 @@ describe('spawnNumbers', () => {
       expect(out.length).toBeGreaterThan(10)
       expect(out.every((v) => v % n === 0)).toBe(true)
     }
+  })
+
+  it('starts progressions on a range that keeps them whole', () => {
+    expect(defaultRange('mult7')).toEqual({ from: 1, to: 84 })
+    expect(defaultRange('logs')).toEqual({ from: -3, to: 1_000_000 })
+    for (const set of [...Array.from({ length: 12 }, (_, i) => `mult${i + 1}` as SetId), 'logs' as SetId]) {
+      const r = defaultRange(set)!
+      expect(keepsSequence(set, r), set).toBe(true)
+      expect(spawnNumbers(set, r).length, set).toBe(set === 'logs' ? 55 : 12)
+    }
+    expect(keepsSequence('mult7', { from: 1, to: 1000 })).toBe(false) // 142 multiples: sampled
+    expect(defaultRange('squares')).toBeNull()
   })
 
   it('spawns every power of 10 and of 2 in range', () => {

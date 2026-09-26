@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { LIMIT, MULTIPLE_SETS, POWER_SETS, PRESETS, SETS, spawnNumbers, type NumberRange, type SetId } from './sets'
+import { defaultRange, LIMIT, MULTIPLE_SETS, POWER_SETS, PRESETS, SETS, spawnNumbers, type NumberRange, type SetId } from './sets'
 
 interface SelectorProps {
   set: SetId
@@ -17,6 +17,8 @@ export function Selector({ set, range, cap, onChange, onBattle, onHome }: Select
   const [editing, setEditing] = useState<'from' | 'to' | null>(null)
   const values = useMemo(() => spawnNumbers(set, range, cap), [set, range, cap])
   const isPreset = PRESETS.some((p) => sameRange(p, range))
+  // A times table (or the log table) starts on a range that keeps it whole.
+  const choose = (id: SetId) => onChange(id, defaultRange(id, cap) ?? range)
 
   return (
     <div className="h-dvh overflow-y-auto bg-linear-to-b from-indigo-950 via-orange-950 to-orange-800 text-white select-none">
@@ -38,7 +40,7 @@ export function Selector({ set, range, cap, onChange, onBattle, onHome }: Select
             <button
               key={s.id}
               type="button"
-              onClick={() => onChange(s.id, range)}
+              onClick={() => choose(s.id)}
               className={`rounded-2xl px-3 py-3 text-left border-4 ${
                 set === s.id ? 'bg-orange-500 border-orange-300' : 'bg-white/10 border-transparent active:bg-white/20'
               }`}
@@ -55,7 +57,7 @@ export function Selector({ set, range, cap, onChange, onBattle, onHome }: Select
             <button
               key={s.id}
               type="button"
-              onClick={() => onChange(s.id, range)}
+              onClick={() => choose(s.id)}
               className={`rounded-2xl px-3 py-2 text-left border-4 ${
                 set === s.id ? 'bg-orange-500 border-orange-300' : 'bg-white/10 border-transparent active:bg-white/20'
               }`}
@@ -72,7 +74,7 @@ export function Selector({ set, range, cap, onChange, onBattle, onHome }: Select
             <button
               key={s.id}
               type="button"
-              onClick={() => onChange(s.id, range)}
+              onClick={() => choose(s.id)}
               className={`rounded-2xl px-3 py-2 text-left border-4 ${
                 set === s.id ? 'bg-orange-500 border-orange-300' : 'bg-white/10 border-transparent active:bg-white/20'
               }`}

@@ -433,6 +433,31 @@ function spreadOrder<T>(list: T[]): T[] {
 }
 
 /**
+ * Sets whose meaning is the progression itself: skip steps and the 7 times
+ * table is just numbers with a factor of 7, and the log table loses its
+ * repeating decades. (Squares, cubes and the rest are fine to sample.)
+ */
+export const isProgression = (set: SetId) => multipleOf(set) !== null || set === 'logs'
+
+/** Every member of the range gets a block — nothing is skipped. */
+export function keepsSequence(set: SetId, range: NumberRange, cap = 60): boolean {
+  const all = enumerate(set, Math.min(range.from, range.to), Math.max(range.from, range.to), cap)
+  return all !== null && all.length > 0 && spawnNumbers(set, range, cap).length === all.length
+}
+
+/**
+ * The range a progression starts on when chosen: the whole table for a times
+ * table (7 × 1 … 7 × 12), and the largest preset that keeps every decade of
+ * the log table. A bigger range can still be picked after.
+ */
+export function defaultRange(set: SetId, cap = 60): NumberRange | null {
+  const k = multipleOf(set)
+  if (k) return { from: 1, to: 12 * k }
+  if (set === 'logs') return [...PRESETS].reverse().find((p) => keepsSequence(set, p, cap)) ?? null
+  return null
+}
+
+/**
  * The numbers that get a block, ascending. Priority when over the cap:
  * the extremes, one anchor per power-of-ten band, the small numbers (nearest
  * zero first), then band fills round-robin.
