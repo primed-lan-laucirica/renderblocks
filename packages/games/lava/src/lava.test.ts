@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { DEFAULTS } from './config'
-import { enumerate, isMember, isPrime, spawnNumbers, type SetId } from './sets'
+import { enumerate, isMember, isPrime, notation, spawnNumbers, type SetId } from './sets'
 import { fallSeconds, pickScream, type ScreamClip } from './screams'
 import { bigSide, blockShape } from './shapes'
 import { initPhysics, Sim } from './sim'
@@ -42,6 +42,17 @@ describe('set membership', () => {
     expect([1, 2, 1024, 549_755_813_888, 0, 6, 1000].map((n) => isMember('pow2', n))).toEqual([
       true, true, true, true, false, false, false,
     ])
+  })
+
+  it('gives club and power blocks their notation', () => {
+    expect(notation('squares', 49)).toEqual({ base: '7', sup: '2' })
+    expect(notation('squares', 1_000_000_000_000)).toEqual({ base: '1,000,000', sup: '2' })
+    expect(notation('triangular', 10)).toEqual({ base: 'T', sub: '4' })
+    expect(notation('pow10', 1000)).toEqual({ base: '10', sup: '3' })
+    expect(notation('pow10', 1)).toEqual({ base: '10', sup: '0' })
+    expect(notation('pow2', 32)).toEqual({ base: '2', sup: '5' })
+    expect(notation('squares', 50)).toBeNull()
+    expect(notation('integers', 49)).toBeNull()
   })
 
   it('enumerates small ranges and gives up past the limit', () => {
@@ -160,8 +171,23 @@ describe('block shapes', () => {
       expect(blockShape(n, 'square').w).toBeCloseTo(blockShape(n, 'square').h)
     }
     for (const n of [5050, 500_000_500_000]) expect(area(blockShape(n, 'steps'))).toBeCloseTo(bigSide(n) ** 2, 5)
+    // A staircase's notation sits on its steps, not on the stepped edge.
+    for (const n of [10, 91, 5050, 500_500]) {
+      const s = blockShape(n, 'steps')
+      expect(s.cubes.some((c) => Math.abs(c.cx - s.mark.x) <= c.w / 2 && Math.abs(c.cy - s.mark.y) <= c.h / 2)).toBe(true)
+    }
     // The style only changes club members; 16 in an Integers battle keeps its Blocks shape.
     expect(blockShape(16)).toMatchObject({ w: 2, h: 8 })
+  })
+
+  it('stands every part of a block over 100 on the same floor', () => {
+    for (const n of [128, 150, 199, 256, 512, 999]) {
+      const s = blockShape(n)
+      const bottom = Math.min(...s.rects.map((r) => r.cy - r.h / 2))
+      // The hundred-squares and the leftover both reach the floor.
+      const onFloor = s.rects.filter((r) => Math.abs(r.cy - r.h / 2 - bottom) < 1e-9)
+      expect(onFloor.reduce((sum, r) => sum + r.w, 0)).toBeCloseTo(s.w)
+    }
   })
 
   it('gives negatives the shape of their magnitude, and zero a 1×1 frame', () => {
@@ -182,7 +208,12 @@ describe('physics', () => {
   })
 
   it('a fresh battle stands still on the platform', () => {
-    for (const values of [spawnNumbers('integers', { from: 1, to: 25 }), spawnNumbers('integers', { from: -3, to: 1e9 })]) {
+    for (const values of [
+      spawnNumbers('integers', { from: 1, to: 25 }),
+      spawnNumbers('integers', { from: -3, to: 1e9 }),
+      spawnNumbers('pow2', { from: 1, to: 1e12 }),
+      spawnNumbers('integers', { from: 1, to: 1000 }),
+    ]) {
       const sim = new Sim(values, DEFAULTS)
       for (let i = 0; i < 60 * 5; i++) sim.step()
       expect(sim.alive()).toHaveLength(values.length)

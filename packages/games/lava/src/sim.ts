@@ -1,5 +1,6 @@
 import RAPIER from '@dimforge/rapier2d-compat'
 import type { LavaConfig } from './config'
+import type { Notation } from './sets'
 import { blockShape, type BlockShape, type ShapeStyle } from './shapes'
 
 let ready: Promise<void> | null = null
@@ -35,6 +36,8 @@ export interface Block {
   outAt: number | null
   removed: boolean
   lastThud: number
+  /** Symbolic form drawn in its centre (Square Club, Step Squad, Powers), if any. */
+  notation: Notation | null
 }
 
 export interface Thud {
@@ -113,7 +116,7 @@ export class Sim {
           .setLinearDamping(cfg.linearDamping)
           .setAngularDamping(cfg.angularDamping),
       )
-      const block: Block = { id, value, shape, body, prev: { ...pose }, cur: { ...pose }, outAt: null, removed: false, lastThud: -1 }
+      const block: Block = { id, value, shape, body, prev: { ...pose }, cur: { ...pose }, outAt: null, removed: false, lastThud: -1, notation: null }
       for (const r of shape.rects) {
         const collider = this.world.createCollider(
           RAPIER.ColliderDesc.cuboid(r.w / 2, r.h / 2)

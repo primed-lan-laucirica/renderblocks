@@ -4,14 +4,15 @@ import { announceWinner, celebrate, cutScream, scream, sizzle, stopAudio, thud, 
 import { Camera } from './camera'
 import type { LavaConfig } from './config'
 import { draw } from './render'
+import { notation, type SetId } from './sets'
 import type { ShapeStyle } from './shapes'
 import { fallSeconds } from './screams'
 import { initPhysics, Sim, STEP, type Block } from './sim'
 
 interface BattleProps {
   values: number[]
-  /** Square Club battles are squares, Step Squad battles staircases. */
-  style: ShapeStyle
+  /** Which set: Square Club blocks are squares, Step Squad staircases; club and power blocks wear their notation. */
+  set: SetId
   config: LavaConfig
   onAgain: () => void
   onNewBattle: () => void
@@ -23,7 +24,7 @@ const GRAB_SLOP_PX = 24
 
 type End = { winner: number | null } | null
 
-export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPanel }: BattleProps) {
+export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel }: BattleProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const simRef = useRef<Sim | null>(null)
   const configRef = useRef(config)
@@ -321,7 +322,9 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
 
     void initPhysics().then(() => {
       if (disposed) return
+      const style: ShapeStyle = set === 'squares' ? 'square' : set === 'triangular' ? 'steps' : 'blocks'
       sim = new Sim(values, configRef.current, style)
+      for (const b of sim.blocks) b.notation = notation(set, b.value)
       simRef.current = sim
       // Debug builds of a battle expose their state for inspection from devtools.
       if (configRef.current.debug) Object.assign(window, { __lava: { sim, cam } })
@@ -347,7 +350,7 @@ export function Battle({ values, style, config, onAgain, onNewBattle, onOpenPane
       simRef.current = null
       sim?.free()
     }
-  }, [values, style])
+  }, [values, set])
 
   // Hidden parent panel: a 2-second press on the top-left corner (spec 9).
   const holdTimer = useRef<number | null>(null)

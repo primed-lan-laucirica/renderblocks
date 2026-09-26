@@ -36,9 +36,21 @@ export interface BlockShape {
   kind: 'cubes' | 'grid' | 'zero'
   /** Characteristic size √(w·h): the yardstick for size-relative fling and drag limits. */
   L: number
-  /** Local x of the eyes: centred, except a staircase looks out from its tallest step. */
+  /** Where the eyes sit: over the highest cubes (a staircase's tallest step, a 128's tall column). */
   eyeX: number
+  /** Local y of the top of those cubes. */
+  eyeTop: number
+  /**
+   * Where a notation (7², T₄ …) goes: centre and the box it must fit in, in
+   * local units. The block's centre — for a staircase, the centre of the
+   * steps themselves, since its bounding-box centre sits on the stepped edge.
+   */
+  mark: { x: number; y: number; w: number; h: number }
 }
+
+/** A staircase's steps fill the lower-right triangle: mark its centroid, in the room there. */
+const stairMark = (w: number, h: number) => ({ x: w / 6, y: -h / 6, w: w * 0.45, h: h * 0.28 })
+const boxMark = (w: number, h: number) => ({ x: 0, y: 0, w: w * 0.8, h: h * 0.5 })
 
 /**
  * How a block arranges its cubes: the Blocks-game layout, or — in the
@@ -129,7 +141,23 @@ function arrangement(abs: number, style: ShapeStyle): Array<{ x: number; y: numb
       return cells
     }
   }
-  return getCubePositions(abs, 1, 0).map((p) => ({ x: Math.round(p.x), y: Math.round(p.y) }))
+  const cells = getCubePositions(abs, 1, 0).map((p) => ({ x: Math.round(p.x), y: Math.round(p.y) }))
+  if (abs >= 100) {
+    // The Blocks-game layout lines the leftover tens and units up with the
+    // TOP of the hundred-squares (its comment says bottom). Floating in the
+    // Blocks playground that's harmless; standing on a platform, a 128 would
+    // rest on its 2-cube-wide 28 with the whole square overhanging, and tip.
+    // Stand both parts on the same floor.
+    const hundreds = Math.floor(abs / 100) * 100
+    const floor = (from: number, to: number) => Math.max(...cells.slice(from, to).map((c) => c.y))
+    if (cells.length > hundreds) {
+      const dy = floor(0, hundreds) - floor(hundreds, cells.length)
+      for (let i = hundreds; i < cells.length; i++) cells[i].y += dy
+    }
+    const top = Math.min(...cells.map((c) => c.y))
+    for (const c of cells) c.y -= top
+  }
+  return cells
 }
 
 function buildShape(value: number, style: ShapeStyle): BlockShape {
@@ -148,6 +176,8 @@ function buildShape(value: number, style: ShapeStyle): BlockShape {
       kind: 'zero',
       L: 1,
       eyeX: 0,
+      eyeTop: 0.5,
+      mark: boxMark(1, 1),
     }
   }
 
@@ -179,6 +209,8 @@ function buildShape(value: number, style: ShapeStyle): BlockShape {
     }))
     const w = gridW * k
     const h = gridH * k
+    const topY = Math.max(...cubes.map((c) => c.cy))
+    const topRow = cubes.filter((c) => Math.abs(c.cy - topY) < 1e-9)
     return {
       value,
       w,
@@ -189,7 +221,9 @@ function buildShape(value: number, style: ShapeStyle): BlockShape {
       body: tint(getNumberBlockColor(abs % 10 || Math.floor(abs / 10 ** Math.floor(Math.log10(abs))))),
       kind: 'cubes',
       L: Math.sqrt(w * h),
-      eyeX: style === 'steps' ? w / 2 - k / 2 : 0,
+      eyeX: topRow.reduce((sum, c) => sum + c.cx, 0) / topRow.length,
+      eyeTop: topY + k / 2,
+      mark: style === 'steps' ? stairMark(w, h) : boxMark(w, h),
     }
   }
 
@@ -242,5 +276,7 @@ function buildShape(value: number, style: ShapeStyle): BlockShape {
     kind: 'grid',
     L: s,
     eyeX: steps ? side / 2 - c / 2 : 0,
+    eyeTop: side / 2,
+    mark: steps ? stairMark(side, side) : boxMark(side, side),
   }
 }

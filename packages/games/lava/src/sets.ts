@@ -207,6 +207,33 @@ function lastAtOrBelow(set: SetId, x: number): number | null {
   }
 }
 
+/** A block's symbolic form, drawn in its centre: a base with a raised or lowered index. */
+export interface Notation {
+  base: string
+  sup?: string
+  sub?: string
+}
+
+/**
+ * The notation a set's block wears (the educational point of those sets):
+ * Square Club 49 → 7², Step Squad 10 → T₄, Powers of 10 1000 → 10³,
+ * Powers of 2 32 → 2⁵. Other sets, and non-members, have none.
+ */
+export function notation(set: SetId, n: number): Notation | null {
+  if (!isMember(set, n)) return null
+  switch (set) {
+    case 'squares':
+      return { base: isqrt(n).toLocaleString('en-US'), sup: '2' }
+    case 'triangular':
+      return { base: 'T', sub: triIndex(n).toLocaleString('en-US') }
+    case 'pow10':
+    case 'pow2':
+      return { base: String(POWER_BASE[set]), sup: String(powIndex(POWER_BASE[set]!, n)) }
+    default:
+      return null
+  }
+}
+
 /** Every member in [lo, hi], or null once there are more than `max`. */
 export function enumerate(set: SetId, lo: number, hi: number, max: number): number[] | null {
   if (set === 'integers' && hi - lo + 1 > max) return null

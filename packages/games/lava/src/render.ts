@@ -38,6 +38,58 @@ function paths(shape: BlockShape): Paths {
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
+/** Index (² ₄ …) size relative to the base. */
+const INDEX_SCALE = 0.6
+/** Below this the notation is unreadable, so it is not drawn. */
+const MARK_MIN_PX = 10
+const MARK_MAX_PX = 110
+/** Text widths per px of font size: base, and index (at INDEX_SCALE). */
+const markWidths = new WeakMap<Block, { base: number; index: number }>()
+
+/**
+ * The block's notation (7², T₄, 10³, 2⁵) in its centre, turning with it:
+ * as large as fits the block's mark box, white with a dark outline so it
+ * reads over any cube colour, hidden when too small to read.
+ */
+function drawNotation(ctx: CanvasRenderingContext2D, b: Block, zoom: number): void {
+  const n = b.notation!
+  const index = n.sup ?? n.sub ?? ''
+  let m = markWidths.get(b)
+  if (!m) {
+    ctx.font = '800 100px system-ui, sans-serif'
+    const base = ctx.measureText(n.base).width / 100
+    ctx.font = `800 ${100 * INDEX_SCALE}px system-ui, sans-serif`
+    m = { base, index: ctx.measureText(index).width / 100 }
+    markWidths.set(b, m)
+  }
+  const gap = 0.04
+  const { mark } = b.shape
+  const px = Math.min((mark.w * zoom) / (m.base + gap + m.index + 0.16), (mark.h * zoom) / 1.3, MARK_MAX_PX)
+  if (px < MARK_MIN_PX) return
+
+  ctx.save()
+  ctx.translate(mark.x, mark.y)
+  ctx.scale(1 / zoom, -1 / zoom) // to screen pixels, y down
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'middle'
+  ctx.lineJoin = 'round'
+  ctx.strokeStyle = 'rgba(15, 23, 42, 0.85)'
+  ctx.fillStyle = '#fff'
+  const x0 = (-(m.base + gap + m.index) * px) / 2
+  ctx.font = `800 ${px}px system-ui, sans-serif`
+  ctx.lineWidth = px * 0.16
+  ctx.strokeText(n.base, x0, 0)
+  ctx.fillText(n.base, x0, 0)
+  const ipx = px * INDEX_SCALE
+  const ix = x0 + (m.base + gap) * px
+  const iy = n.sup ? -px * 0.36 : px * 0.3
+  ctx.font = `800 ${ipx}px system-ui, sans-serif`
+  ctx.lineWidth = ipx * 0.16
+  ctx.strokeText(index, ix, iy)
+  ctx.fillText(index, ix, iy)
+  ctx.restore()
+}
+
 function pose(b: Block, alpha: number): Pose {
   // Blend the angle along the short way round.
   let da = b.cur.a - b.prev.a
@@ -76,7 +128,7 @@ function drawBlock(ctx: CanvasRenderingContext2D, b: Block, p: Pose, zoom: numbe
   // Eyes near the top, like the Blocks game (1 has one).
   const eye = 0.16 * Math.max(1, s.cubeSize * (s.kind === 'grid' ? 2.5 : 1))
   if (eye * zoom >= 2 && s.kind !== 'zero') {
-    const ey = s.h / 2 - eye * 1.7
+    const ey = s.eyeTop - eye * 1.7
     const xs = Math.abs(b.value) === 1 ? [s.eyeX] : [s.eyeX - eye * 1.25, s.eyeX + eye * 1.25]
     for (const ex of xs) {
       ctx.fillStyle = '#fff'
@@ -89,6 +141,8 @@ function drawBlock(ctx: CanvasRenderingContext2D, b: Block, p: Pose, zoom: numbe
       ctx.fill()
     }
   }
+
+  if (b.notation) drawNotation(ctx, b, zoom)
 
   // Into the lava: darken toward red over 0.6 s (spec 6).
   if (b.outAt !== null) {
