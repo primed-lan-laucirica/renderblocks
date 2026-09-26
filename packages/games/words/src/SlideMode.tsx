@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { playSound, playWord, type Voice } from './audio'
+import { playWord, type Voice } from './audio'
 import { PartLetters, WORD_FONT } from './WordParts'
 import type { Word } from './words'
 
 const THUMB = 64
 
 /**
- * Slide a thumb along under the word: each part lights up and says its sound
- * as the thumb reaches it, a holdable sound keeps going while the thumb
- * rests on it, and sliding off the end says the whole word.
+ * Slide a thumb along under the word and each part lights up as the thumb
+ * reaches it — silently. Saying the sounds is his job (as Reading.com does);
+ * an app voice here did the reading for him. Tapping the word says it.
  */
 export function SlideMode({ word }: { word: Word }) {
   const partRefs = useRef<Array<HTMLSpanElement | null>>([])
@@ -27,11 +27,7 @@ export function SlideMode({ word }: { word: Word }) {
   const enter = (i: number | null) => {
     if (i === current.current) return
     current.current = i
-    voice.current?.stop(0.04)
-    voice.current = null
     setLit(i)
-    const part = i === null ? null : word.parts[i]
-    if (part && !part.silent) voice.current = playSound(part.sound, part.stretch)
   }
 
   const move = (clientX: number) => {
@@ -51,10 +47,10 @@ export function SlideMode({ word }: { word: Word }) {
     const last = partRefs.current[word.parts.length - 1]?.getBoundingClientRect()
     if (last && cx >= last.right) {
       enter(null)
+      // Off the end: the whole word lights up — still no voice.
       if (!finished.current) {
         finished.current = true
         setDone(true)
-        voice.current = playWord(word.word)
       }
       return
     }
@@ -70,7 +66,6 @@ export function SlideMode({ word }: { word: Word }) {
   }
   const up = () => {
     setDragging(false)
-    if (!finished.current) voice.current?.stop()
     current.current = null
     setLit(null)
     // Back to the start for another go.
@@ -79,11 +74,19 @@ export function SlideMode({ word }: { word: Word }) {
 
   return (
     <div className="flex flex-col items-center gap-6 w-full">
-      <div className={`flex items-end ${WORD_FONT} ${done ? 'animate-pulse' : ''}`}>
+      <button
+        type="button"
+        onClick={() => {
+          voice.current?.stop(0.03)
+          voice.current = playWord(word.word)
+        }}
+        aria-label={`Say ${word.word}`}
+        className={`flex items-end ${WORD_FONT} ${done ? 'animate-pulse' : ''}`}
+      >
         {word.parts.map((p, i) => (
           <PartLetters key={i} part={p} lit={lit === i || done} ref={(el) => void (partRefs.current[i] = el)} />
         ))}
-      </div>
+      </button>
       <div
         ref={trackRef}
         className="relative h-6 rounded-full bg-sky-200"
