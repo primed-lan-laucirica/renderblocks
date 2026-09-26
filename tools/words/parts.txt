@@ -1,0 +1,93 @@
+# Sound-parts for each word, hand-written (auto-splitting is least reliable
+# on exactly the words children learn first).
+#
+# Format: level | word | parts
+#   parts are separated by spaces and join back into the word.
+#   ^  vowel sound         (coloured as a vowel)
+#   !  heart part          (doesn't say what the letters usually say)
+#   _  silent letter(s)    (no sound of their own)
+#
+# Levels 1-5 = Preschool Prep "Meet the Sight Words" 1-5 (tools/words/sight_words.csv).
+
+1 | a | a^!
+1 | and | a^ n d
+1 | for | f or^
+1 | have | h a^ v e_!
+1 | he | h e^
+1 | I | I^
+1 | in | i^ n
+1 | is | i^ s
+1 | it | i^ t
+1 | of | o^! f!
+1 | play | p l ay^
+1 | said | s ai^! d
+1 | that | th a^ t
+1 | the | th e^!
+1 | to | t o^!
+1 | you | y ou^!
+
+2 | are | ar^ e_!
+2 | as | a^ s
+2 | but | b u^ t
+2 | go | g o^
+2 | had | h a^ d
+2 | here | h ere^
+2 | his | h i^ s
+2 | like | l i^ k e_
+2 | my | m y^
+2 | on | o^ n
+2 | see | s ee^
+2 | she | sh e^
+2 | they | th ey^!
+2 | was | w a^! s
+2 | we | w e^
+2 | with | w i^ th
+
+3 | all | a^ ll
+3 | at | a^ t
+3 | be | b e^
+3 | by | b y^
+3 | from | f r o^! m
+3 | her | h er^
+3 | him | h i^ m
+3 | look | l oo^ k
+3 | one | o^! n e_!
+3 | or | or^
+3 | some | s o^! m e_!
+3 | there | th ere^!
+3 | this | th i^ s
+3 | up | u^ p
+3 | word | w or^! d
+
+4 | am | a^ m
+4 | came | c a^ m e_
+4 | can | c a^ n
+4 | could | c ou^! l_! d
+4 | do | d o^!
+4 | down | d ow^ n
+4 | little | l i^ tt le^
+4 | not | n o^ t
+4 | out | ou^ t
+4 | then | th e^ n
+4 | use | u^ s e_
+4 | were | w ere^!
+4 | what | wh a^! t
+4 | when | wh e^ n
+4 | your | y our^!
+
+5 | about | a^ b ou^ t
+5 | an | a^ n
+5 | did | d i^ d
+5 | each | ea^ ch
+5 | get | g e^ t
+5 | how | h ow^
+5 | if | i^ f
+5 | many | m a^! n y^
+5 | other | o^! th er^
+5 | so | s o^
+5 | their | th eir^!
+5 | them | th e^ m
+5 | which | wh i^ ch
+5 | will | w i^ ll
+5 | would | w ou^! l_! d
+5 | now | n ow^

@@ -41,3 +41,6 @@ keystore.properties
 secrets/
 .elevenlabs*
 elevenlabs-key*
+
+# Python build tools
+__pycache__/

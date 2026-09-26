@@ -1,0 +1,1065 @@
+word,letter_count,syllable_count,phoneme_count,phonemes_arpabet,preschool_prep_level,dolch_level,fry_rank,fry_hundred,other_lists,source_count,suggested_order,syllable_split,syllable_split_status,digraphs,blends,vowel_patterns,decodable_guess
+the,3,1,2,DH AH,Level 1,Pre-Primer,1,1st 100,,3,1,,,th,,,yes
+and,3,1,3,AE N D,Level 1,Pre-Primer,3,1st 100,,3,2,,,,-nd,,yes
+a,1,1,1,AH,Level 1,Pre-Primer,4,1st 100,,3,3,,,,,,yes
+to,2,1,2,T UW,Level 1,Pre-Primer,5,1st 100,,3,4,,,,,,no
+in,2,1,2,IH N,Level 1,Pre-Primer,6,1st 100,,3,5,,,,,,yes
+is,2,1,2,IH Z,Level 1,Pre-Primer,7,1st 100,,3,6,,,,,,yes
+you,3,1,2,Y UW,Level 1,Pre-Primer,8,1st 100,,3,7,,,,,team:ou,no
+it,2,1,2,IH T,Level 1,Pre-Primer,10,1st 100,,3,8,,,,,,yes
+for,3,1,3,F AO R,Level 1,Pre-Primer,13,1st 100,,3,9,,,,,r-controlled:or,yes
+I,1,1,1,AY,Level 1,Pre-Primer,20,1st 100,,3,10,,,,,,yes
+said,4,1,3,S EH D,Level 1,Pre-Primer,40,1st 100,,3,11,,,,,team:ai,no
+play,4,1,3,P L EY,Level 1,Pre-Primer,183,2nd 100,,3,12,,,,pl-,team:ay,yes
+that,4,1,3,DH AE T,Level 1,Primer,9,1st 100,,3,13,,,th,,,yes
+he,2,1,2,HH IY,Level 1,Primer,11,1st 100,,3,14,,,,,,yes
+have,4,1,3,HH AE V,Level 1,Primer,24,1st 100,,3,15,,,,,VCe-exception,no
+of,2,1,2,AH V,Level 1,1st Grade,2,1st 100,,3,16,,,,,,no
+we,2,1,2,W IY,Level 2,Pre-Primer,36,1st 100,,3,17,,,,,,yes
+go,2,1,2,G OW,Level 2,Pre-Primer,74,1st 100,,3,18,,,,,,yes
+see,3,1,2,S IY,Level 2,Pre-Primer,75,1st 100,,3,19,,,,,team:ee,yes
+my,2,1,2,M AY,Level 2,Pre-Primer,81,1st 100,,3,20,,,,,,yes
+here,4,1,3,HH IY R,Level 2,Pre-Primer,164,2nd 100,,3,21,,,,,r-controlled:er,no
+was,3,1,3,W AA Z,Level 2,Primer,12,1st 100,,3,22,,,,,,no
+on,2,1,2,AA N,Level 2,Primer,14,1st 100,,3,23,,,,,,yes
+are,3,1,2,AA R,Level 2,Primer,15,1st 100,,3,24,,,,,r-controlled:ar,no
+with,4,1,3,W IH DH,Level 2,Primer,17,1st 100,,3,25,,,th,,,yes
+they,4,1,2,DH EY,Level 2,Primer,19,1st 100,,3,26,,,th,,team:ey,yes
+but,3,1,3,B AH T,Level 2,Primer,31,1st 100,,3,27,,,,,,yes
+she,3,1,2,SH IY,Level 2,Primer,46,1st 100,,3,28,,,sh,,,yes
+like,4,1,3,L AY K,Level 2,Primer,65,1st 100,,3,29,,,,,VCe,yes
+as,2,1,2,AE Z,Level 2,1st Grade,16,1st 100,,3,30,,,,,,yes
+his,3,1,3,HH IH Z,Level 2,1st Grade,18,1st 100,,3,31,,,,,,yes
+had,3,1,3,HH AE D,Level 2,1st Grade,28,1st 100,,3,32,,,,,,yes
+one,3,1,3,W AH N,Level 3,Pre-Primer,27,1st 100,,3,33,,,,,VCe-exception,no
+up,2,1,2,AH P,Level 3,Pre-Primer,52,1st 100,,3,34,,,,,,yes
+look,4,1,3,L UH K,Level 3,Pre-Primer,70,1st 100,,3,35,,,,,team:oo,yes
+at,2,1,2,AE T,Level 3,Primer,21,1st 100,,3,36,,,,,,yes
+be,2,1,2,B IY,Level 3,Primer,22,1st 100,,3,37,,,,,,yes
+this,4,1,3,DH IH S,Level 3,Primer,23,1st 100,,3,38,,,th,,,yes
+all,3,1,2,AO L,Level 3,Primer,34,1st 100,,3,39,,,,,,yes
+there,5,1,3,DH EH R,Level 3,Primer,41,1st 100,,3,40,,,th,,r-controlled:er,no
+from,4,1,4,F R AH M,Level 3,1st Grade,25,1st 100,,3,41,,,,fr-,,no
+by,2,1,2,B AY,Level 3,1st Grade,29,1st 100,,3,42,,,,,,yes
+some,4,1,3,S AH M,Level 3,1st Grade,61,1st 100,,3,43,,,,,VCe-exception,no
+her,3,1,2,HH ER,Level 3,1st Grade,62,1st 100,,3,44,,,,,r-controlled:er,yes
+him,3,1,3,HH IH M,Level 3,1st Grade,66,1st 100,,3,45,,,,,,yes
+or,2,1,2,AO R,Level 3,2nd Grade,26,1st 100,,3,46,,,,,r-controlled:or,yes
+word,4,1,3,W ER D,Level 3,,,,,1,47,,,,,r-controlled:or,no
+not,3,1,3,N AA T,Level 4,Pre-Primer,32,1st 100,,3,48,,,,,,yes
+can,3,1,3,K AE N,Level 4,Pre-Primer,39,1st 100,,3,49,,,,,,yes
+down,4,1,3,D AW N,Level 4,Pre-Primer,93,1st 100,,3,50,,,,,team:ow,yes
+little,6,2,5,L IH T AH L,Level 4,Pre-Primer,106,2nd 100,,3,51,lit-tle,ok,,,,yes
+what,4,1,3,W AH T,Level 4,Primer,33,1st 100,,3,52,,,wh,,,no
+do,2,1,2,D UW,Level 4,Primer,47,1st 100,,3,53,,,,,,no
+out,3,1,2,AW T,Level 4,Primer,55,1st 100,,3,54,,,,,team:ou,yes
+am,2,1,2,AE M,Level 4,Primer,88,1st 100,Fry pre-update sightwords.com #482,3,55,,,,,,yes
+came,4,1,3,K EY M,Level 4,Primer,143,2nd 100,,3,56,,,,,VCe,yes
+were,4,1,2,W ER,Level 4,1st Grade,35,1st 100,,3,57,,,,,r-controlled:er,no
+when,4,1,3,W EH N,Level 4,1st Grade,37,1st 100,,3,58,,,wh,,,yes
+then,4,1,3,DH EH N,Level 4,1st Grade,57,1st 100,,3,59,,,th,,,yes
+could,5,1,3,K UH D,Level 4,1st Grade,79,1st 100,,3,60,,,,,team:ou,no
+your,4,1,3,Y AO R,Level 4,2nd Grade,38,1st 100,,3,61,,,,,team:ou,no
+use,3,1,3,Y UW S,Level 4,2nd Grade,42,1st 100,,3,62,,,,,VCe,yes
+will,4,1,3,W IH L,Level 5,Primer,51,1st 100,,3,63,,,,,,yes
+so,2,1,2,S OW,Level 5,Primer,60,1st 100,,3,64,,,,,,yes
+did,3,1,3,D IH D,Level 5,Primer,95,1st 100,,3,65,,,,,,yes
+get,3,1,3,G EH T,Level 5,Primer,96,1st 100,,3,66,,,,,,yes
+an,2,1,2,AE N,Level 5,1st Grade,43,1st 100,,3,67,,,,,,yes
+how,3,1,2,HH AW,Level 5,1st Grade,48,1st 100,,3,68,,,,,team:ow,yes
+them,4,1,3,DH EH M,Level 5,1st Grade,58,1st 100,,3,69,,,th,,,yes
+which,5,1,3,W IH CH,Level 5,2nd Grade,45,1st 100,,3,70,,,ch;wh,,,yes
+their,5,1,3,DH EH R,Level 5,2nd Grade,49,1st 100,,3,71,,,th,,team:ei,no
+many,4,2,4,M EH N IY,Level 5,2nd Grade,56,1st 100,,3,72,,pyphen_mismatch(many),,,,no
+would,5,1,3,W UH D,Level 5,2nd Grade,63,1st 100,,3,73,,,,,team:ou,no
+if,2,1,2,IH F,Level 5,3rd Grade,50,1st 100,,3,74,,,,,,yes
+about,5,2,4,AH B AW T,Level 5,3rd Grade,54,1st 100,,3,75,,pyphen_mismatch(about),,,team:ou,yes
+each,4,1,2,IY CH,Level 5,,44,1st 100,,2,76,,,ch,,team:ea,yes
+other,5,2,3,AH DH ER,Level 5,,53,1st 100,,2,77,oth-er,ok,th,,r-controlled:er,no
+now,3,1,2,N AW,Level 6 (partial),Primer,90,1st 100,,3,78,,,,,team:ow,yes
+make,4,1,3,M EY K,,Pre-Primer,64,1st 100,,2,79,,,,,VCe,yes
+two,3,1,2,T UW,,Pre-Primer,71,1st 100,,2,80,,,,,,no
+find,4,1,4,F AY N D,,Pre-Primer,91,1st 100,,2,81,,,,-nd,,no
+come,4,1,3,K AH M,,Pre-Primer,97,1st 100,,2,82,,,,,VCe-exception,no
+me,2,1,2,M IY,,Pre-Primer,112,2nd 100,,2,83,,,,,,yes
+where,5,1,3,W EH R,,Pre-Primer,128,2nd 100,,2,84,,,wh,,r-controlled:er,no
+help,4,1,4,HH EH L P,,Pre-Primer,129,2nd 100,,2,85,,,,-lp,,yes
+three,5,1,3,TH R IY,,Pre-Primer,149,2nd 100,,2,86,,,th,thr-,team:ee,yes
+big,3,1,3,B IH G,,Pre-Primer,159,2nd 100,,2,87,,,,,,yes
+away,4,2,3,AH W EY,,Pre-Primer,186,2nd 100,,2,88,,pyphen_mismatch(away),,,team:ay;team:aw,yes
+run,3,1,3,R AH N,,Pre-Primer,250,3rd 100,,2,89,,,,,,yes
+red,3,1,3,R EH D,,Pre-Primer,327,4th 100,,2,90,,,,,,yes
+blue,4,1,3,B L UW,,Pre-Primer,537,6th 100,,2,91,,,,bl-,team:ue,yes
+yellow,6,2,4,Y EH L OW,,Pre-Primer,908,10th 100,,2,92,yel-low,ok,,,team:ow,yes
+jump,4,1,4,JH AH M P,,Pre-Primer,,,,1,93,,,,-mp,,yes
+funny,5,2,4,F AH N IY,,Pre-Primer,,,,1,94,fun-ny,ok,,,,yes
+into,4,2,4,IH N T UW,,Primer,67,1st 100,,2,95,in-to,ok,,,,yes
+no,2,1,2,N OW,,Primer,77,1st 100,,2,96,,,,,,yes
+who,3,1,2,HH UW,,Primer,87,1st 100,,2,97,,,wh,,,no
+new,3,1,2,N UW,,Primer,102,2nd 100,,2,98,,,,,team:ew,yes
+our,3,2,2,AW ER,,Primer,119,2nd 100,,2,99,,pyphen_mismatch(our),,,team:ou,yes
+good,4,1,3,G UH D,,Primer,122,2nd 100,,2,100,,,,,team:oo,yes
+say,3,1,2,S EY,,Primer,126,2nd 100,,2,101,,,,,team:ay,yes
+too,3,1,2,T UW,,Primer,135,2nd 100,,2,102,,,,,team:oo,yes
+want,4,1,4,W AA N T,,Primer,144,2nd 100,,2,103,,,,-nt,,no
+well,4,1,3,W EH L,,Primer,156,2nd 100,,2,104,,,,,,yes
+must,4,1,4,M AH S T,,Primer,158,2nd 100,,2,105,,,,-st,,yes
+went,4,1,4,W EH N T,,Primer,167,2nd 100,,2,106,,,,-nt,,yes
+under,5,2,4,AH N D ER,,Primer,224,3rd 100,,2,107,un-der,ok,,,r-controlled:er,yes
+saw,3,1,2,S AO,,Primer,226,3rd 100,,2,108,,,,,team:aw,yes
+white,5,1,3,W AY T,,Primer,260,3rd 100,,2,109,,,wh,,VCe,yes
+four,4,1,3,F AO R,,Primer,266,3rd 100,,2,110,,,,,team:ou,no
+eat,3,1,2,IY T,,Primer,279,3rd 100,,2,111,,,,,team:ea,yes
+soon,4,1,3,S UW N,,Primer,294,3rd 100,,2,112,,,,,team:oo,yes
+black,5,1,4,B L AE K,,Primer,342,4th 100,,2,113,,,ck,bl-,,yes
+ran,3,1,3,R AE N,,Primer,454,5th 100,,2,114,,,,,,yes
+yes,3,1,3,Y EH S,,Primer,471,5th 100,,2,115,,,,,,yes
+ride,4,1,3,R AY D,,Primer,615,7th 100,,2,116,,,,,VCe,yes
+brown,5,1,4,B R AW N,,Primer,727,8th 100,,2,117,,,,br-,team:ow,yes
+please,6,1,4,P L IY Z,,Primer,774,8th 100,,2,118,,,,pl-,team:ea,yes
+pretty,6,2,5,P R IH T IY,,Primer,935,10th 100,,2,119,pret-ty,ok,,pr-,,no
+ate,3,1,2,EY T,,Primer,,,,1,120,,,,,VCe,yes
+has,3,1,3,HH AE Z,,1st Grade,69,1st 100,,2,121,,,,,,yes
+may,3,1,2,M EY,,1st Grade,99,1st 100,,2,122,,,,,team:ay,yes
+over,4,2,3,OW V ER,,1st Grade,101,2nd 100,,2,123,,pyphen_mismatch(over),,,r-controlled:er,yes
+take,4,1,3,T EY K,,1st Grade,104,2nd 100,,2,124,,,,,VCe,yes
+know,4,1,2,N OW,,1st Grade,108,2nd 100,,2,125,,,kn,,team:ow,yes
+live,4,1,3,L AY V,,1st Grade,111,2nd 100,,2,126,,,,,VCe,yes
+give,4,1,3,G IH V,,1st Grade,114,2nd 100,,2,127,,,,,VCe-exception,no
+after,5,2,4,AE F T ER,,1st Grade,117,2nd 100,,2,128,af-ter,ok,,,r-controlled:er,yes
+just,4,1,4,JH AH S T,,1st Grade,120,2nd 100,,2,129,,,,-st,,yes
+think,5,1,4,TH IH NG K,,1st Grade,125,2nd 100,,2,130,,,th,-nk,,yes
+old,3,1,3,OW L D,,1st Grade,137,2nd 100,,2,131,,,,-ld,,no
+any,3,2,3,EH N IY,,1st Grade,138,2nd 100,,2,132,,pyphen_mismatch(any),,,,no
+put,3,1,3,P UH T,,1st Grade,152,2nd 100,,2,133,,,,,,no
+ask,3,1,3,AE S K,,1st Grade,166,2nd 100,,2,134,,,,-sk,,yes
+again,5,2,4,AH G EH N,,1st Grade,180,2nd 100,,2,135,a-gain,ok,,,team:ai,yes
+every,5,3,4,EH V ER IY,,1st Grade,202,3rd 100,,2,136,,pyphen_mismatch(ev-ery),,,,yes
+open,4,2,4,OW P AH N,,1st Grade,238,3rd 100,,2,137,,pyphen_mismatch(open),,,,yes
+walk,4,1,3,W AO K,,1st Grade,259,3rd 100,,2,138,,,,,,no
+once,4,1,4,W AH N S,,1st Grade,269,3rd 100,,2,139,,,,,,no
+stop,4,1,4,S T AA P,,1st Grade,272,3rd 100,,2,140,,,,st-,,yes
+let,3,1,3,L EH T,,1st Grade,286,3rd 100,,2,141,,,,,,yes
+fly,3,1,3,F L AY,,1st Grade,406,5th 100,,2,142,,,,fl-,,yes
+round,5,1,4,R AW N D,,1st Grade,455,5th 100,,2,143,,,,-nd,team:ou,yes
+going,5,2,4,G OW IH NG,,1st Grade,,,,1,144,go-ing,ok,ng,,team:oi,yes
+thank,5,1,4,TH AE NG K,,1st Grade,,,,1,145,,,th,-nk,,yes
+these,5,1,3,DH IY Z,,2nd Grade,59,1st 100,,2,146,,,th,,VCe,yes
+write,5,1,3,R AY T,,2nd Grade,73,1st 100,,2,147,,,wr,,VCe,yes
+first,5,1,4,F ER S T,,2nd Grade,83,1st 100,,2,148,,,,-st,r-controlled:ir,yes
+been,4,1,3,B IH N,,2nd Grade,85,1st 100,,2,149,,,,,team:ee,no
+its,3,1,3,IH T S,,2nd Grade,89,1st 100,,2,150,,,,,,yes
+made,4,1,3,M EY D,,2nd Grade,98,1st 100,,2,151,,,,,VCe,yes
+work,4,1,3,W ER K,,2nd Grade,107,2nd 100,,2,152,,,,,r-controlled:or,no
+very,4,2,4,V EH R IY,,2nd Grade,116,2nd 100,,2,153,,pyphen_mismatch(very),,,,yes
+before,6,2,5,B IH F AO R,,2nd Grade,132,2nd 100,,2,154,be-fore,ok,,,r-controlled:or,yes
+right,5,1,3,R AY T,,2nd Grade,134,2nd 100,,2,155,,,,,team:igh,yes
+tell,4,1,3,T EH L,,2nd Grade,140,2nd 100,,2,156,,,,,,yes
+around,6,2,4,ER AW N D,,2nd Grade,147,2nd 100,,2,157,,pyphen_mismatch(around),,-nd,team:ou,no
+does,4,1,3,D AH Z,,2nd Grade,154,2nd 100,,2,158,,,,,team:oe,no
+because,7,2,5,B IH K AO Z,,2nd Grade,162,2nd 100,,2,159,be-cause,ok,,,team:au,yes
+why,3,1,2,W AY,,2nd Grade,165,2nd 100,,2,160,,,wh,,,yes
+read,4,1,3,R EH D,,2nd Grade,169,2nd 100,,2,161,,,,,team:ea,yes
+us,2,1,2,AH S,,2nd Grade,174,2nd 100,,2,162,,,,,,yes
+off,3,1,2,AO F,,2nd Grade,182,2nd 100,,2,163,,,,,,yes
+found,5,1,4,F AW N D,,2nd Grade,194,2nd 100,,2,164,,,,-nd,team:ou,yes
+don't,4,1,4,D OW N T,,2nd Grade,228,3rd 100,,2,165,,,,,,
+always,6,2,5,AO L W EY Z,,2nd Grade,242,3rd 100,,2,166,al-ways,ok,,,team:ay,no
+those,5,1,3,DH OW Z,,2nd Grade,243,3rd 100,,2,167,,,th,,VCe,yes
+both,4,1,3,B OW TH,,2nd Grade,244,3rd 100,,2,168,,,th,,,no
+best,4,1,4,B EH S T,,2nd Grade,338,4th 100,,2,169,,,,-st,,yes
+fast,4,1,4,F AE S T,,2nd Grade,356,4th 100,,2,170,,,,-st,,yes
+five,4,1,3,F AY V,,2nd Grade,361,4th 100,,2,171,,,,,VCe,yes
+cold,4,1,4,K OW L D,,2nd Grade,381,4th 100,,2,172,,,,-ld,,no
+sing,4,1,3,S IH NG,,2nd Grade,386,4th 100,,2,173,,,ng,,,yes
+upon,4,2,4,AH P AA N,,2nd Grade,400,4th 100,,2,174,up-on,ok,,,,yes
+gave,4,1,3,G EY V,,2nd Grade,407,5th 100,,2,175,,,,,VCe,yes
+green,5,1,4,G R IY N,,2nd Grade,442,5th 100,,2,176,,,,gr-,team:ee,yes
+wish,4,1,3,W IH SH,,2nd Grade,538,6th 100,,2,177,,,sh,,,yes
+sleep,5,1,4,S L IY P,,2nd Grade,609,7th 100,,2,178,,,,sl-,team:ee,yes
+buy,3,1,2,B AY,,2nd Grade,621,7th 100,,2,179,,,,,,no
+wash,4,1,3,W AA SH,,2nd Grade,895,9th 100,,2,180,,,sh,,,no
+sit,3,1,3,S IH T,,2nd Grade,,,Fry alt edition (uniqueteachingresources #545); Fry pre-update sightwords.com #89,1,181,,,,,,yes
+call,4,1,3,K AO L,,2nd Grade,,,,1,182,,,,,,yes
+goes,4,1,3,G OW Z,,2nd Grade,,,,1,183,,,,,team:oe,yes
+pull,4,1,3,P UH L,,2nd Grade,,,,1,184,,,,,,no
+long,4,1,3,L AO NG,,3rd Grade,92,1st 100,,2,185,,,ng,,,yes
+only,4,2,4,OW N L IY,,3rd Grade,105,2nd 100,,2,186,on-ly,ok,,,,no
+much,4,1,3,M AH CH,,3rd Grade,131,2nd 100,,2,187,,,ch,,,yes
+show,4,1,2,SH OW,,3rd Grade,145,2nd 100,,2,188,,,sh,,team:ow,yes
+small,5,1,4,S M AO L,,3rd Grade,150,2nd 100,,2,189,,,,sm-,,yes
+try,3,1,3,T R AY,,3rd Grade,176,2nd 100,,2,190,,,,tr-,,yes
+kind,4,1,4,K AY N D,,3rd Grade,177,2nd 100,,2,191,,,,-nd,,no
+own,3,1,2,OW N,,3rd Grade,207,3rd 100,,2,192,,,,,team:ow,yes
+keep,4,1,3,K IY P,,3rd Grade,214,3rd 100,,2,193,,,,,team:ee,yes
+never,5,2,4,N EH V ER,,3rd Grade,216,3rd 100,,2,194,nev-er,ok,,,r-controlled:er,yes
+start,5,1,5,S T AA R T,,3rd Grade,217,3rd 100,,2,195,,,,st-,r-controlled:ar,yes
+light,5,1,3,L AY T,,3rd Grade,221,3rd 100,,2,196,,,,,team:igh,yes
+together,8,3,6,T AH G EH DH ER,,3rd Grade,246,3rd 100,,2,197,to-geth-er,ok,th,,r-controlled:er,yes
+got,3,1,3,G AA T,,3rd Grade,247,3rd 100,,2,198,,,,,,yes
+grow,4,1,3,G R OW,,3rd Grade,263,3rd 100,,2,199,,,,gr-,team:ow,yes
+carry,5,2,4,K AE R IY,,3rd Grade,267,3rd 100,,2,200,car-ry,ok,,,r-controlled:ar,yes
+far,3,1,3,F AA R,,3rd Grade,282,3rd 100,,2,201,,,,,r-controlled:ar,yes
+cut,3,1,3,K AH T,,3rd Grade,291,3rd 100,,2,202,,,,,,yes
+today,5,2,4,T AH D EY,,3rd Grade,334,4th 100,,2,203,to-day,ok,,,team:ay,yes
+better,6,2,4,B EH T ER,,3rd Grade,337,4th 100,,2,204,bet-ter,ok,,,r-controlled:er,yes
+hold,4,1,4,HH OW L D,,3rd Grade,358,4th 100,,2,205,,,,-ld,,no
+draw,4,1,3,D R AO,,3rd Grade,378,4th 100,,2,206,,,,dr-,team:aw,yes
+fall,4,1,3,F AO L,,3rd Grade,389,4th 100,,2,207,,,,,,yes
+done,4,1,3,D AH N,,3rd Grade,401,5th 100,,2,208,,,,,VCe-exception,no
+ten,3,1,3,T EH N,,3rd Grade,405,5th 100,,2,209,,,,,,yes
+warm,4,1,4,W AO R M,,3rd Grade,461,5th 100,,2,210,,,,,r-controlled:ar,no
+bring,5,1,4,B R IH NG,,3rd Grade,463,5th 100,,2,211,,,ng,br-,,yes
+full,4,1,3,F UH L,,3rd Grade,478,5th 100,,2,212,,,,,,no
+hot,3,1,3,HH AA T,,3rd Grade,479,5th 100,,2,213,,,,,,yes
+six,3,1,4,S IH K S,,3rd Grade,489,5th 100,,2,214,,,,,,yes
+shall,5,1,3,SH AE L,,3rd Grade,596,6th 100,,2,215,,,sh,,,yes
+clean,5,1,4,K L IY N,,3rd Grade,768,8th 100,,2,216,,,,cl-,team:ea,yes
+seven,5,2,5,S EH V AH N,,3rd Grade,839,9th 100,,2,217,sev-en,ok,,,,yes
+eight,5,1,2,EY T,,3rd Grade,874,9th 100,,2,218,,,,,team:eigh,no
+hurt,4,1,3,HH ER T,,3rd Grade,,,,1,219,,,,,r-controlled:ur,yes
+pick,4,1,3,P IH K,,3rd Grade,,,,1,220,,,ck,,,yes
+drink,5,1,5,D R IH NG K,,3rd Grade,,,,1,221,,,,dr-;-nk,,yes
+laugh,5,1,3,L AE F,,3rd Grade,,,,1,222,,,,,team:augh,no
+myself,6,2,6,M AY S EH L F,,3rd Grade,,,,1,223,my-self,ok,,-lf,,yes
+time,4,1,3,T AY M,,Nouns,68,1st 100,,2,224,,,,,VCe,yes
+way,3,1,2,W EY,,Nouns,78,1st 100,,2,225,,,,,team:ay,yes
+water,5,2,4,W AO T ER,,Nouns,84,1st 100,,2,226,wa-ter,ok,,,r-controlled:er,no
+day,3,1,2,D EY,,Nouns,94,1st 100,,2,227,,,,,team:ay,yes
+back,4,1,3,B AE K,,Nouns,113,2nd 100,,2,228,,,ck,,,yes
+name,4,1,3,N EY M,,Nouns,121,2nd 100,,2,229,,,,,VCe,yes
+man,3,1,3,M AE N,,Nouns,124,2nd 100,,2,230,,,,,,yes
+boy,3,1,2,B OY,,Nouns,141,2nd 100,,2,231,,,,,team:oy,yes
+men,3,1,3,M EH N,,Nouns,168,2nd 100,,2,232,,,,,,yes
+home,4,1,3,HH OW M,,Nouns,173,2nd 100,,2,233,,,,,VCe,yes
+hand,4,1,4,HH AE N D,,Nouns,178,2nd 100,,2,234,,,,-nd,,yes
+picture,7,2,5,P IH K CH ER,,Nouns,179,2nd 100,,2,235,pic-ture,ok,,,r-controlled:ur,no
+house,5,1,3,HH AW S,,Nouns,188,2nd 100,,2,236,,,,,team:ou,yes
+letter,6,2,4,L EH T ER,,Nouns,191,2nd 100,,2,237,let-ter,ok,,,r-controlled:er,yes
+mother,6,2,4,M AH DH ER,,Nouns,192,2nd 100,,2,238,moth-er,ok,th,,r-controlled:er,no
+school,6,1,4,S K UW L,,Nouns,212,3rd 100,,2,239,,,ch,sc-,team:oo,no
+father,6,2,4,F AA DH ER,,Nouns,213,3rd 100,,2,240,fa-ther,ok,th,,r-controlled:er,no
+tree,4,1,3,T R IY,,Nouns,215,3rd 100,,2,241,,,,tr-,team:ee,yes
+head,4,1,3,HH EH D,,Nouns,223,3rd 100,,2,242,,,,,team:ea,yes
+paper,5,2,4,P EY P ER,,Nouns,245,3rd 100,,2,243,pa-per,ok,,,r-controlled:er,yes
+children,8,2,7,CH IH L D R AH N,,Nouns,253,3rd 100,,2,244,chil-dren,ok,ch,,,yes
+feet,4,1,3,F IY T,,Nouns,255,3rd 100,,2,245,,,,,team:ee,yes
+car,3,1,3,K AA R,,Nouns,256,3rd 100,,2,246,,,,,r-controlled:ar,yes
+night,5,1,3,N AY T,,Nouns,258,3rd 100,,2,247,,,,,team:igh,yes
+watch,5,1,3,W AA CH,,Nouns,281,3rd 100,,2,248,,,tch,,,no
+girl,4,1,3,G ER L,,Nouns,288,3rd 100,,2,249,,,,,r-controlled:ir,yes
+song,4,1,3,S AO NG,,Nouns,296,3rd 100,,2,250,,,ng,,,yes
+sun,3,1,3,S AH N,,Nouns,305,4th 100,,2,251,,,,,,yes
+fish,4,1,3,F IH SH,,Nouns,307,4th 100,,2,252,,,sh,,,yes
+dog,3,1,3,D AO G,,Nouns,310,4th 100,,2,253,,,,,,yes
+horse,5,1,4,HH AO R S,,Nouns,311,4th 100,,2,254,,,,,r-controlled:or,yes
+door,4,1,3,D AO R,,Nouns,328,4th 100,,2,255,,,,,team:oo,no
+top,3,1,3,T AA P,,Nouns,331,4th 100,,2,256,,,,,,yes
+wind,4,1,4,W AY N D,,Nouns,352,4th 100,,2,257,,,,-nd,,yes
+morning,7,2,6,M AO R N IH NG,,Nouns,363,4th 100,,2,258,morn-ing,ok,ng,,r-controlled:or,yes
+table,5,2,5,T EY B AH L,,Nouns,371,4th 100,,2,259,ta-ble,ok,,,,yes
+money,5,2,4,M AH N IY,,Nouns,374,4th 100,,2,260,mon-ey,ok,,,team:ey,no
+farm,4,1,4,F AA R M,,Nouns,376,4th 100,Fry alt edition (uniqueteachingresources #148),2,261,,,,,r-controlled:ar,yes
+ground,6,1,5,G R AW N D,,Nouns,388,4th 100,,2,262,,,,gr-;-nd,team:ou,yes
+wood,4,1,3,W UH D,,Nouns,398,4th 100,,2,263,,,,,team:oo,yes
+fire,4,2,3,F AY ER,,Nouns,399,4th 100,,2,264,,pyphen_mismatch(fire),,,r-controlled:ir,no
+box,3,1,4,B AA K S,,Nouns,408,5th 100,,2,265,,,,,,yes
+street,6,1,5,S T R IY T,,Nouns,425,5th 100,,2,266,,,,str-,team:ee,yes
+boat,4,1,3,B OW T,,Nouns,456,5th 100,,2,267,,,,,team:oa,yes
+game,4,1,3,G EY M,,Nouns,457,5th 100,,2,268,,,,,VCe,yes
+bread,5,1,4,B R EH D,,Nouns,482,5th 100,,2,269,,,,br-,team:ea,yes
+ball,4,1,3,B AO L,,Nouns,492,5th 100,,2,270,,,,,,yes
+rain,4,1,3,R EY N,,Nouns,533,6th 100,,2,271,,,,,team:ai,yes
+window,6,2,5,W IH N D OW,,Nouns,541,6th 100,,2,272,win-dow,ok,,,team:ow,yes
+brother,7,2,5,B R AH DH ER,,Nouns,562,6th 100,,2,273,broth-er,ok,th,br-,r-controlled:er,no
+grass,5,1,4,G R AE S,,Nouns,579,6th 100,Fry alt edition (uniqueteachingresources #719),2,274,,,,gr-,,yes
+snow,4,1,3,S N OW,,Nouns,614,7th 100,,2,275,,,,sn-,team:ow,yes
+floor,5,1,4,F L AO R,,Nouns,617,7th 100,,2,276,,,,fl-,team:oo,no
+hill,4,1,3,HH IH L,,Nouns,618,7th 100,,2,277,,,,,,yes
+baby,4,2,4,B EY B IY,,Nouns,620,7th 100,,2,278,ba-by,ok,,,,yes
+bed,3,1,3,B EH D,,Nouns,630,7th 100,,2,279,,,,,,yes
+milk,4,1,4,M IH L K,,Nouns,663,7th 100,,2,280,,,,-lk,,yes
+bear,4,1,3,B EH R,,Nouns,677,7th 100,,2,281,,,,,team:ea,yes
+cat,3,1,3,K AE T,,Nouns,698,7th 100,Fry alt edition (uniqueteachingresources #673),2,282,,,,,,yes
+stick,5,1,4,S T IH K,,Nouns,758,8th 100,,2,283,,,ck,st-,,yes
+party,5,2,5,P AA R T IY,,Nouns,759,8th 100,,2,284,par-ty,ok,,,r-controlled:ar,yes
+garden,6,2,6,G AA R D AH N,,Nouns,773,8th 100,,2,285,gar-den,ok,,,r-controlled:ar,yes
+ring,4,1,3,R IH NG,,Nouns,782,8th 100,,2,286,,,ng,,,yes
+bell,4,1,3,B EH L,,Nouns,855,9th 100,,2,287,,,,,,yes
+sister,6,2,5,S IH S T ER,,Nouns,926,10th 100,,2,288,sis-ter,ok,,,r-controlled:er,yes
+apple,5,2,4,AE P AH L,,Nouns,983,10th 100,,2,289,ap-ple,ok,,,,yes
+corn,4,1,4,K AO R N,,Nouns,986,10th 100,,2,290,,,,,r-controlled:or,yes
+cow,3,1,2,K AW,,Nouns,,,,1,291,,,,,team:ow,yes
+egg,3,1,2,EH G,,Nouns,,,,1,292,,,,,,yes
+eye,3,1,1,AY,,Nouns,,,,1,293,,,,,team:ey,no
+leg,3,1,3,L EH G,,Nouns,,,,1,294,,,,,,yes
+pig,3,1,3,P IH G,,Nouns,,,,1,295,,,,,,yes
+toy,3,1,2,T OY,,Nouns,,,,1,296,,,,,team:oy,yes
+bird,4,1,3,B ER D,,Nouns,,,,1,297,,,,,r-controlled:ir,yes
+cake,4,1,3,K EY K,,Nouns,,,,1,298,,,,,VCe,yes
+coat,4,1,3,K OW T,,Nouns,,,,1,299,,,,,team:oa,yes
+doll,4,1,3,D AA L,,Nouns,,,,1,300,,,,,,yes
+duck,4,1,3,D AH K,,Nouns,,,,1,301,,,ck,,,yes
+nest,4,1,4,N EH S T,,Nouns,,,,1,302,,,,-st,,yes
+seed,4,1,3,S IY D,,Nouns,,,,1,303,,,,,team:ee,yes
+shoe,4,1,2,SH UW,,Nouns,,,,1,304,,,sh,,team:oe,no
+chair,5,1,3,CH EH R,,Nouns,,,,1,305,,,ch,,team:ai,yes
+kitty,5,2,4,K IH T IY,,Nouns,,,,1,306,kit-ty,ok,,,,yes
+robin,5,2,5,R AA B AH N,,Nouns,,,,1,307,,pyphen_mismatch(robin),,,,yes
+sheep,5,1,3,SH IY P,,Nouns,,,,1,308,,,sh,,team:ee,yes
+thing,5,1,3,TH IH NG,,Nouns,,,Fry alt edition (uniqueteachingresources #118),1,309,,,th;ng,,,yes
+farmer,6,2,5,F AA R M ER,,Nouns,,,,1,310,,pyphen_mismatch(farmer),,,r-controlled:ar;r-controlled:er,yes
+flower,6,2,4,F L AW ER,,Nouns,,,,1,311,flow-er,ok,,fl-,team:ow;r-controlled:er,yes
+rabbit,6,2,5,R AE B AH T,,Nouns,,,,1,312,rab-bit,ok,,,,yes
+chicken,7,2,5,CH IH K AH N,,Nouns,,,,1,313,chick-en,ok,ch;ck,,,yes
+goodbye,7,2,5,G UH D B AY,,Nouns,,,,1,314,good-bye,ok,,,team:oo,no
+birthday,8,2,5,B ER TH D EY,,Nouns,,,,1,315,birth-day,ok,th,,team:ay;r-controlled:ir,yes
+squirrel,8,2,6,S K W ER AH L,,Nouns,,,,1,316,squir-rel,ok,,squ-,r-controlled:ir,no
+Christmas,9,2,7,K R IH S M AH S,,Nouns,,,,1,317,Christ-mas,ok,ch,,,no
+Santa Claus,10,3,9,S AE N T AH K L AO Z,,Nouns,,,,1,318,,,,,,
+words,5,1,4,W ER D Z,,,30,1st 100,,1,319,,,,,r-controlled:or,no
+more,4,1,3,M AO R,,,72,1st 100,,1,320,,,,,r-controlled:or,yes
+number,6,2,5,N AH M B ER,,,76,1st 100,,1,321,num-ber,ok,,,r-controlled:er,yes
+people,6,2,5,P IY P AH L,,,80,1st 100,,1,322,peo-ple,ok,,,,no
+than,4,1,3,DH AE N,,,82,1st 100,,1,323,,,th,,,yes
+called,6,1,4,K AO L D,,,86,1st 100,,1,324,,,,,,yes
+part,4,1,4,P AA R T,,,100,1st 100,,1,325,,,,,r-controlled:ar,yes
+sound,5,1,4,S AW N D,,,103,2nd 100,,1,326,,,,-nd,team:ou,yes
+place,5,1,4,P L EY S,,,109,2nd 100,,1,327,,,,pl-,VCe,yes
+years,5,1,4,Y IH R Z,,,110,2nd 100,,1,328,,,,,team:ea,yes
+most,4,1,4,M OW S T,,,115,2nd 100,,1,329,,,,-st,,no
+things,6,1,4,TH IH NG Z,,,118,2nd 100,,1,330,,,th;ng,,,yes
+sentence,8,2,7,S EH N T AH N S,,,123,2nd 100,,1,331,sen-tence,ok,,,,yes
+great,5,1,4,G R EY T,,,127,2nd 100,,1,332,,,,gr-,team:ea,no
+through,7,1,3,TH R UW,,,130,2nd 100,,1,333,,,th,thr-,team:ough,no
+line,4,1,3,L AY N,,,133,2nd 100,,1,334,,,,,VCe,yes
+means,5,1,4,M IY N Z,,,136,2nd 100,,1,335,,,,,team:ea,yes
+same,4,1,3,S EY M,,,139,2nd 100,,1,336,,,,,VCe,yes
+follow,6,2,4,F AA L OW,,,142,2nd 100,,1,337,fol-low,ok,,,team:ow,yes
+also,4,2,4,AO L S OW,,,146,2nd 100,,1,338,al-so,ok,,,,no
+form,4,1,4,F AO R M,,,148,2nd 100,,1,339,,,,,r-controlled:or,yes
+set,3,1,3,S EH T,,,151,2nd 100,,1,340,,,,,,yes
+end,3,1,3,EH N D,,,153,2nd 100,,1,341,,,,-nd,,yes
+another,7,3,5,AH N AH DH ER,,,155,2nd 100,,1,342,an-oth-er,ok,th,,r-controlled:er,no
+large,5,1,4,L AA R JH,,,157,2nd 100,,1,343,,,,,r-controlled:ar,yes
+even,4,2,4,IY V IH N,,,160,2nd 100,,1,344,,pyphen_mismatch(even),,,,yes
+such,4,1,3,S AH CH,,,161,2nd 100,,1,345,,,ch,,,yes
+turn,4,1,3,T ER N,,,163,2nd 100,,1,346,,,,,r-controlled:ur,yes
+need,4,1,3,N IY D,,,170,2nd 100,,1,347,,,,,team:ee,yes
+land,4,1,4,L AE N D,,,171,2nd 100,,1,348,,,,-nd,,yes
+different,9,3,7,D IH F ER AH N T,,,172,2nd 100,,1,349,dif-fer-ent,ok,,-nt,,yes
+move,4,1,3,M UW V,,,175,2nd 100,,1,350,,,,,VCe-exception,no
+change,6,1,4,CH EY N JH,,,181,2nd 100,,1,351,,,ch,,,no
+spell,5,1,4,S P EH L,,,184,2nd 100,,1,352,,,,sp-,,yes
+air,3,1,2,EH R,,,185,2nd 100,,1,353,,,,,team:ai,yes
+animal,6,3,6,AE N AH M AH L,,,187,2nd 100,,1,354,an-i-mal,ok,,,,yes
+point,5,1,4,P OY N T,,,189,2nd 100,,1,355,,,,-nt,team:oi,yes
+page,4,1,3,P EY JH,,,190,2nd 100,,1,356,,,,,VCe,yes
+answer,6,2,4,AE N S ER,,,193,2nd 100,,1,357,an-swer,ok,,,r-controlled:er,no
+study,5,2,5,S T AH D IY,,,195,2nd 100,,1,358,,pyphen_mismatch(study),,st-,,yes
+still,5,1,4,S T IH L,,,196,2nd 100,,1,359,,,,st-,,yes
+learn,5,1,3,L ER N,,,197,2nd 100,,1,360,,,,,team:ea,yes
+should,6,1,3,SH UH D,,,198,2nd 100,,1,361,,,sh,,team:ou,no
+America,7,4,7,AH M EH R AH K AH,,,199,2nd 100,,1,362,,pyphen_mismatch(amer-i-ca),,,,yes
+world,5,1,4,W ER L D,,,200,2nd 100,,1,363,,,,-ld,r-controlled:or,no
+high,4,1,2,HH AY,,,201,3rd 100,,1,364,,,,,team:igh,yes
+near,4,1,3,N IH R,,,203,3rd 100,,1,365,,,,,team:ea,yes
+add,3,1,2,AE D,,,204,3rd 100,,1,366,,,,,,yes
+food,4,1,3,F UW D,,,205,3rd 100,,1,367,,,,,team:oo,yes
+between,7,2,6,B IH T W IY N,,,206,3rd 100,,1,368,be-tween,ok,,,team:ee,yes
+below,5,2,4,B IH L OW,,,208,3rd 100,,1,369,be-low,ok,,,team:ow,yes
+country,7,2,6,K AH N T R IY,,,209,3rd 100,,1,370,coun-try,ok,,,team:ou,no
+plant,5,1,5,P L AE N T,,,210,3rd 100,,1,371,,,,pl-;-nt,,yes
+last,4,1,4,L AE S T,,,211,3rd 100,,1,372,,,,-st,,yes
+city,4,2,4,S IH T IY,,,218,3rd 100,,1,373,,pyphen_mismatch(city),,,,yes
+earth,5,1,2,ER TH,,,219,3rd 100,,1,374,,,th,,team:ea,yes
+eyes,4,1,2,AY Z,,,220,3rd 100,,1,375,,,,,team:ey,no
+thought,7,1,3,TH AO T,,,222,3rd 100,,1,376,,,th,,team:ough,no
+story,5,2,5,S T AO R IY,,,225,3rd 100,,1,377,sto-ry,ok,,st-,,yes
+left,4,1,4,L EH F T,,,227,3rd 100,,1,378,,,,-ft,,yes
+few,3,1,3,F Y UW,,,229,3rd 100,,1,379,,,,,team:ew,yes
+while,5,1,3,W AY L,,,230,3rd 100,,1,380,,,wh,,VCe,yes
+along,5,2,4,AH L AO NG,,,231,3rd 100,,1,381,a-long,ok,ng,,,yes
+might,5,1,3,M AY T,,,232,3rd 100,,1,382,,,,,team:igh,yes
+close,5,1,4,K L OW S,,,233,3rd 100,,1,383,,,,cl-,VCe,yes
+something,9,2,6,S AH M TH IH NG,,,234,3rd 100,,1,384,some-thing,ok,th;ng,,,no
+seem,4,1,3,S IY M,,,235,3rd 100,,1,385,,,,,team:ee,yes
+next,4,1,5,N EH K S T,,,236,3rd 100,,1,386,,,,-xt,,yes
+hard,4,1,4,HH AA R D,,,237,3rd 100,,1,387,,,,,r-controlled:ar,yes
+example,7,3,8,IH G Z AE M P AH L,,,239,3rd 100,,1,388,ex-am-ple,ok,,,,yes
+begin,5,2,5,B IH G IH N,,,240,3rd 100,,1,389,be-gin,ok,,,,yes
+life,4,1,3,L AY F,,,241,3rd 100,,1,390,,,,,VCe,yes
+group,5,1,4,G R UW P,,,248,3rd 100,,1,391,,,,gr-,team:ou,no
+often,5,2,4,AO F AH N,,,249,3rd 100,,1,392,of-ten,ok,,,,yes
+important,9,3,9,IH M P AO R T AH N T,,,251,3rd 100,,1,393,im-por-tant,ok,,-nt,r-controlled:or,yes
+until,5,2,5,AH N T IH L,,,252,3rd 100,,1,394,un-til,ok,,,,yes
+side,4,1,3,S AY D,,,254,3rd 100,,1,395,,,,,VCe,yes
+mile,4,1,3,M AY L,,,257,3rd 100,,1,396,,,,,VCe,yes
+sea,3,1,2,S IY,,,261,3rd 100,,1,397,,,,,team:ea,yes
+began,5,2,5,B IH G AE N,,,262,3rd 100,,1,398,be-gan,ok,,,,yes
+took,4,1,3,T UH K,,,264,3rd 100,,1,399,,,,,team:oo,yes
+river,5,2,4,R IH V ER,,,265,3rd 100,,1,400,riv-er,ok,,,r-controlled:er,yes
+state,5,1,4,S T EY T,,,268,3rd 100,,1,401,,,,st-,VCe,yes
+book,4,1,3,B UH K,,,270,3rd 100,,1,402,,,,,team:oo,yes
+hear,4,1,3,HH IY R,,,271,3rd 100,,1,403,,,,,team:ea,yes
+without,7,2,5,W IH TH AW T,,,273,3rd 100,,1,404,with-out,ok,th,,team:ou,yes
+second,6,2,6,S EH K AH N D,,,274,3rd 100,,1,405,sec-ond,ok,,-nd,,yes
+late,4,1,3,L EY T,,,275,3rd 100,,1,406,,,,,VCe,yes
+miss,4,1,3,M IH S,,,276,3rd 100,,1,407,,,,,,yes
+idea,4,3,4,AY D IY AH,,,277,3rd 100,,1,408,,pyphen_mismatch(idea),,,team:ea,yes
+enough,6,2,4,IH N AH F,,,278,3rd 100,,1,409,e-nough,ok,,,team:ough,no
+face,4,1,3,F EY S,,,280,3rd 100,,1,410,,,,,VCe,yes
+Indian,6,3,6,IH N D IY AH N,,,283,3rd 100,,1,411,In-di-an,ok,,,,no
+real,4,1,3,R IY L,,,284,3rd 100,,1,412,,,,,team:ea,yes
+almost,6,2,6,AO L M OW S T,,,285,3rd 100,,1,413,al-most,ok,,-st,,no
+above,5,2,4,AH B AH V,,,287,3rd 100,,1,414,,pyphen_mismatch(above),,,VCe-exception,no
+sometimes,9,2,7,S AH M T AY M Z,,,289,3rd 100,,1,415,some-times,ok,,,VCe,no
+mountains,9,2,7,M AW N T AH N Z,,,290,3rd 100,,1,416,moun-tains,ok,,,team:ai;team:ou,no
+young,5,1,3,Y AH NG,,,292,3rd 100,,1,417,,,ng,,team:ou,no
+talk,4,1,3,T AO K,,,293,3rd 100,,1,418,,,,,,no
+list,4,1,4,L IH S T,,,295,3rd 100,,1,419,,,,-st,,yes
+being,5,2,4,B IY IH NG,,,297,3rd 100,,1,420,be-ing,ok,ng,,team:ei,yes
+leave,5,1,3,L IY V,,,298,3rd 100,,1,421,,,,,team:ea,no
+family,6,3,6,F AE M AH L IY,,,299,3rd 100,,1,422,fam-i-ly,ok,,,,yes
+it's,3,1,3,IH T S,,,300,3rd 100,,1,423,,,,,,
+body,4,2,4,B AA D IY,,,301,4th 100,,1,424,,pyphen_mismatch(body),,,,yes
+music,5,2,6,M Y UW Z IH K,,,302,4th 100,,1,425,mu-sic,ok,,,,yes
+color,5,2,4,K AH L ER,,,303,4th 100,,1,426,col-or,ok,,,r-controlled:or,no
+stand,5,1,5,S T AE N D,,,304,4th 100,,1,427,,,,st-;-nd,,yes
+questions,9,2,8,K W EH S CH AH N Z,,,306,4th 100,,1,428,ques-tions,ok,,,,no
+area,4,3,4,EH R IY AH,,,308,4th 100,,1,429,,pyphen_mismatch(area),,,team:ea,no
+mark,4,1,4,M AA R K,,,309,4th 100,,1,430,,,,,r-controlled:ar,yes
+birds,5,1,4,B ER D Z,,,312,4th 100,,1,431,,,,,r-controlled:ir,yes
+problem,7,2,7,P R AA B L AH M,,,313,4th 100,,1,432,prob-lem,ok,,pr-,,yes
+complete,8,2,7,K AH M P L IY T,,,314,4th 100,,1,433,com-plete,ok,,,VCe,yes
+room,4,1,3,R UW M,,,315,4th 100,,1,434,,,,,team:oo,yes
+knew,4,1,2,N UW,,,316,4th 100,,1,435,,,kn,,team:ew,yes
+since,5,1,4,S IH N S,,,317,4th 100,,1,436,,,,,,yes
+ever,4,2,3,EH V ER,,,318,4th 100,,1,437,ev-er,ok,,,r-controlled:er,yes
+piece,5,1,3,P IY S,,,319,4th 100,,1,438,,,,,team:ie,yes
+told,4,1,4,T OW L D,,,320,4th 100,,1,439,,,,-ld,,no
+usually,7,4,8,Y UW ZH AH W AH L IY,,,321,4th 100,,1,440,,pyphen_mismatch(usu-al-ly),,,,no
+didn't,5,2,6,D IH D AH N T,,,322,4th 100,,1,441,,pyphen_mismatch(did-n't),,,,
+friends,7,1,6,F R EH N D Z,,,323,4th 100,,1,442,,,,fr-,team:ie,no
+easy,4,2,3,IY Z IY,,,324,4th 100,,1,443,,pyphen_mismatch(easy),,,team:ea,yes
+heard,5,1,3,HH ER D,,,325,4th 100,,1,444,,,,,team:ea,yes
+order,5,2,4,AO R D ER,,,326,4th 100,,1,445,or-der,ok,,,r-controlled:or;r-controlled:er,yes
+sure,4,1,3,SH UH R,,,329,4th 100,,1,446,,,,,r-controlled:ur,no
+become,6,2,5,B IH K AH M,,,330,4th 100,,1,447,be-come,ok,,,VCe-exception,no
+ship,4,1,3,SH IH P,,,332,4th 100,,1,448,,,sh,,,yes
+across,6,2,5,AH K R AO S,,,333,4th 100,,1,449,,pyphen_mismatch(across),,,,yes
+during,6,2,5,D UH R IH NG,,,335,4th 100,,1,450,dur-ing,ok,ng,,,yes
+short,5,1,4,SH AO R T,,,336,4th 100,,1,451,,,sh,,r-controlled:or,yes
+however,7,3,5,HH AW EH V ER,,,339,4th 100,,1,452,how-ev-er,ok,,,team:ow;r-controlled:er,yes
+low,3,1,2,L OW,,,340,4th 100,,1,453,,,,,team:ow,yes
+hours,5,2,3,AW ER Z,,,341,4th 100,,1,454,,pyphen_mismatch(hours),,,team:ou,no
+products,8,2,8,P R AA D AH K T S,,,343,4th 100,,1,455,prod-ucts,ok,,pr-,,yes
+happened,8,2,6,HH AE P AH N D,,,344,4th 100,,1,456,hap-pened,ok,,,VCe-exception,yes
+whole,5,1,3,HH OW L,,,345,4th 100,,1,457,,,wh,,VCe,no
+measure,7,2,4,M EH ZH ER,,,346,4th 100,,1,458,mea-sure,ok,,,team:ea;r-controlled:ur,no
+remember,8,3,7,R IH M EH M B ER,,,347,4th 100,,1,459,re-mem-ber,ok,,,r-controlled:er,yes
+early,5,2,3,ER L IY,,,348,4th 100,,1,460,ear-ly,ok,,,team:ea,yes
+waves,5,1,4,W EY V Z,,,349,4th 100,,1,461,,,,,VCe,yes
+reached,7,1,4,R IY CH T,,,350,4th 100,,1,462,,,ch,,team:ea,yes
+listen,6,2,5,L IH S AH N,,,351,4th 100,,1,463,lis-ten,ok,,,,no
+rock,4,1,3,R AA K,,,353,4th 100,,1,464,,,ck,,,yes
+space,5,1,4,S P EY S,,,354,4th 100,,1,465,,,,sp-,VCe,yes
+covered,7,2,5,K AH V ER D,,,355,4th 100,,1,466,cov-ered,ok,,,,no
+several,7,2,6,S EH V R AH L,,,357,4th 100,,1,467,,pyphen_mismatch(sev-er-al),,,,yes
+himself,7,2,7,HH IH M S EH L F,,,359,4th 100,,1,468,him-self,ok,,-lf,,yes
+toward,6,2,6,T AH W AO R D,,,360,4th 100,,1,469,to-ward,ok,,,team:ow;r-controlled:ar,no
+step,4,1,4,S T EH P,,,362,4th 100,,1,470,,,,st-,,yes
+passed,6,1,4,P AE S T,,,364,4th 100,,1,471,,,,,,yes
+vowel,5,2,4,V AW AH L,,,365,4th 100,,1,472,vow-el,ok,,,team:ow,yes
+true,4,1,3,T R UW,,,366,4th 100,,1,473,,,,tr-,team:ue,yes
+hundred,7,2,7,HH AH N D R AH D,,,367,4th 100,,1,474,hun-dred,ok,,,,yes
+against,7,2,6,AH G EH N S T,,,368,4th 100,,1,475,a-gainst,ok,,-st,team:ai,yes
+pattern,7,2,5,P AE T ER N,,,369,4th 100,,1,476,pat-tern,ok,,,r-controlled:er,yes
+numeral,7,3,6,N UW M ER AH L,,,370,4th 100,,1,477,nu-mer-al,ok,,,,yes
+north,5,1,4,N AO R TH,,,372,4th 100,,1,478,,,th,,r-controlled:or,yes
+slowly,6,2,5,S L OW L IY,,,373,4th 100,,1,479,slow-ly,ok,,sl-,team:ow,yes
+map,3,1,3,M AE P,,,375,4th 100,,1,480,,,,,,yes
+pulled,6,1,4,P UH L D,,,377,4th 100,,1,481,,,,,,no
+voice,5,1,3,V OY S,,,379,4th 100,,1,482,,,,,team:oi,yes
+seen,4,1,3,S IY N,,,380,4th 100,,1,483,,,,,team:ee,yes
+cried,5,1,4,K R AY D,,,382,4th 100,,1,484,,,,cr-,team:ie,yes
+plan,4,1,4,P L AE N,,,383,4th 100,,1,485,,,,pl-,,yes
+notice,6,2,5,N OW T AH S,,,384,4th 100,,1,486,no-tice,ok,,,VCe-exception,yes
+south,5,1,3,S AW TH,,,385,4th 100,,1,487,,,th,,team:ou,yes
+war,3,1,3,W AO R,,,387,4th 100,,1,488,,,,,r-controlled:ar,no
+king,4,1,3,K IH NG,,,390,4th 100,,1,489,,,ng,,,yes
+town,4,1,3,T AW N,,,391,4th 100,,1,490,,,,,team:ow,yes
+I'll,3,1,2,AY L,,,392,4th 100,,1,491,,,,,,
+unit,4,2,5,Y UW N AH T,,,393,4th 100,,1,492,u-nit,ok,,,,yes
+figure,6,2,5,F IH G Y ER,,,394,4th 100,,1,493,fig-ure,ok,,,r-controlled:ur,no
+certain,7,2,5,S ER T AH N,,,395,4th 100,,1,494,cer-tain,ok,,,team:ai;r-controlled:er,no
+field,5,1,4,F IY L D,,,396,4th 100,,1,495,,,,-ld,team:ie,yes
+travel,6,2,6,T R AE V AH L,,,397,4th 100,,1,496,trav-el,ok,,tr-,,yes
+English,7,2,6,IH NG G L IH SH,,,402,5th 100,,1,497,Eng-lish,ok,sh;ng,,,no
+road,4,1,3,R OW D,,,403,5th 100,,1,498,,,,,team:oa,yes
+half,4,1,3,HH AE F,,,404,5th 100,,1,499,,,,,,no
+finally,7,3,6,F AY N AH L IY,,,409,5th 100,,1,500,fi-nal-ly,ok,,,,yes
+wait,4,1,3,W EY T,,,410,5th 100,,1,501,,,,,team:ai,yes
+correct,7,2,5,K ER EH K T,,,411,5th 100,,1,502,cor-rect,ok,,-ct,r-controlled:or,no
+oh,2,1,1,OW,,,412,5th 100,,1,503,,,,,,no
+quickly,7,2,6,K W IH K L IY,,,413,5th 100,,1,504,quick-ly,ok,ck,,,yes
+person,6,2,5,P ER S AH N,,,414,5th 100,,1,505,per-son,ok,,,r-controlled:er,yes
+became,6,2,5,B IH K EY M,,,415,5th 100,,1,506,be-came,ok,,,VCe,yes
+shown,5,1,3,SH OW N,,,416,5th 100,,1,507,,,sh,,team:ow,yes
+minutes,7,2,6,M IH N AH T S,,,417,5th 100,,1,508,min-utes,ok,,,VCe-exception,no
+strong,6,1,5,S T R AO NG,,,418,5th 100,,1,509,,,ng,str-,,yes
+verb,4,1,3,V ER B,,,419,5th 100,,1,510,,,,,r-controlled:er,yes
+stars,5,1,5,S T AA R Z,,,420,5th 100,,1,511,,,,st-,r-controlled:ar,yes
+front,5,1,5,F R AH N T,,,421,5th 100,,1,512,,,,fr-;-nt,,no
+feel,4,1,3,F IY L,,,422,5th 100,,1,513,,,,,team:ee,yes
+fact,4,1,4,F AE K T,,,423,5th 100,,1,514,,,,-ct,,yes
+inches,6,2,5,IH N CH AH Z,,,424,5th 100,,1,515,inch-es,ok,ch,,,yes
+decided,7,3,7,D IH S AY D IH D,,,426,5th 100,,1,516,de-cid-ed,ok,,,VCe,no
+contain,7,2,6,K AH N T EY N,,,427,5th 100,,1,517,con-tain,ok,,,team:ai,yes
+course,6,1,4,K AO R S,,,428,5th 100,,1,518,,,,,team:ou,no
+surface,7,2,5,S ER F AH S,,,429,5th 100,,1,519,sur-face,ok,,,r-controlled:ur;VCe-exception,yes
+produce,7,2,6,P R AH D UW S,,,430,5th 100,,1,520,pro-duce,ok,,pr-,VCe,yes
+building,8,2,6,B IH L D IH NG,,,431,5th 100,,1,521,build-ing,ok,ng,,team:ui,no
+ocean,5,2,4,OW SH AH N,,,432,5th 100,,1,522,o-cean,ok,,,team:ea,no
+class,5,1,4,K L AE S,,,433,5th 100,,1,523,,,,cl-,,yes
+note,4,1,3,N OW T,,,434,5th 100,,1,524,,,,,VCe,yes
+nothing,7,2,5,N AH TH IH NG,,,435,5th 100,,1,525,noth-ing,ok,th;ng,,,no
+rest,4,1,4,R EH S T,,,436,5th 100,,1,526,,,,-st,,yes
+carefully,9,3,7,K EH R F AH L IY,,,437,5th 100,,1,527,care-ful-ly,ok,,,,no
+scientists,10,3,9,S AY AH N T IH S T S,,,438,5th 100,,1,528,sci-en-tists,ok,,,team:ie,no
+inside,6,2,5,IH N S AY D,,,439,5th 100,,1,529,in-side,ok,,,VCe,yes
+wheels,6,1,4,W IY L Z,,,440,5th 100,,1,530,,,wh,,team:ee,yes
+stay,4,1,3,S T EY,,,441,5th 100,,1,531,,,,st-,team:ay,yes
+known,5,1,3,N OW N,,,443,5th 100,,1,532,,,kn,,team:ow,yes
+island,6,2,5,AY L AH N D,,,444,5th 100,,1,533,is-land,ok,,-nd,,no
+week,4,1,3,W IY K,,,445,5th 100,,1,534,,,,,team:ee,yes
+less,4,1,3,L EH S,,,446,5th 100,,1,535,,,,,,yes
+machine,7,2,5,M AH SH IY N,,,447,5th 100,,1,536,ma-chine,ok,ch,,VCe-exception,no
+base,4,1,3,B EY S,,,448,5th 100,,1,537,,,,,VCe,yes
+ago,3,2,3,AH G OW,,,449,5th 100,,1,538,a-go,ok,,,,yes
+stood,5,1,4,S T UH D,,,450,5th 100,,1,539,,,,st-,team:oo,yes
+plane,5,1,4,P L EY N,,,451,5th 100,,1,540,,,,pl-,VCe,yes
+system,6,2,6,S IH S T AH M,,,452,5th 100,,1,541,sys-tem,ok,,,,yes
+behind,6,2,6,B IH HH AY N D,,,453,5th 100,,1,542,be-hind,ok,,-nd,,no
+force,5,1,4,F AO R S,,,458,5th 100,,1,543,,,,,r-controlled:or,yes
+brought,7,1,4,B R AO T,,,459,5th 100,,1,544,,,,br-,team:ough,no
+understand,10,3,9,AH N D ER S T AE N D,,,460,5th 100,,1,545,un-der-stand,ok,,-nd,r-controlled:er,yes
+common,6,2,5,K AA M AH N,,,462,5th 100,,1,546,com-mon,ok,,,,yes
+explain,7,2,7,IH K S P L EY N,,,464,5th 100,,1,547,ex-plain,ok,,,team:ai,yes
+dry,3,1,3,D R AY,,,465,5th 100,,1,548,,,,dr-,,yes
+though,6,1,2,DH OW,,,466,5th 100,,1,549,,,th,,team:ough,no
+language,8,2,7,L AE NG G W AH JH,,,467,5th 100,,1,550,lan-guage,ok,ng,,,no
+shape,5,1,3,SH EY P,,,468,5th 100,,1,551,,,sh,,VCe,yes
+deep,4,1,3,D IY P,,,469,5th 100,,1,552,,,,,team:ee,yes
+thousands,9,2,7,TH AW Z AH N D Z,,,470,5th 100,,1,553,thou-sands,ok,th,,team:ou,yes
+clear,5,1,4,K L IH R,,,472,5th 100,,1,554,,,,cl-,team:ea,yes
+equation,8,3,7,IH K W EY ZH AH N,,,473,5th 100,,1,555,e-qua-tion,ok,,,,no
+yet,3,1,3,Y EH T,,,474,5th 100,,1,556,,,,,,yes
+government,10,3,8,G AH V ER M AH N T,,,475,5th 100,,1,557,gov-ern-ment,ok,,-nt,r-controlled:er,no
+filled,6,1,4,F IH L D,,,476,5th 100,,1,558,,,,,,yes
+heat,4,1,3,HH IY T,,,477,5th 100,,1,559,,,,,team:ea,yes
+check,5,1,3,CH EH K,,,480,5th 100,,1,560,,,ch;ck,,,yes
+object,6,2,6,AA B JH EH K T,,,481,5th 100,,1,561,ob-ject,ok,,-ct,,yes
+rule,4,1,3,R UW L,,,483,5th 100,,1,562,,,,,VCe,yes
+among,5,2,4,AH M AH NG,,,484,5th 100,,1,563,a-mong,ok,ng,,,no
+noun,4,1,3,N AW N,,,485,5th 100,,1,564,,,,,team:ou,yes
+power,5,2,3,P AW ER,,,486,5th 100,,1,565,pow-er,ok,,,team:ow;r-controlled:er,yes
+cannot,6,2,5,K AE N AA T,,,487,5th 100,,1,566,can-not,ok,,,,yes
+able,4,2,4,EY B AH L,,,488,5th 100,,1,567,,pyphen_mismatch(able),,,,yes
+size,4,1,3,S AY Z,,,490,5th 100,,1,568,,,,,VCe,yes
+dark,4,1,4,D AA R K,,,491,5th 100,,1,569,,,,,r-controlled:ar,yes
+material,8,4,8,M AH T IH R IY AH L,,,493,5th 100,,1,570,ma-te-ri-al,ok,,,,no
+special,7,2,6,S P EH SH AH L,,,494,5th 100,,1,571,spe-cial,ok,,sp-,,no
+heavy,5,2,4,HH EH V IY,,,495,5th 100,,1,572,,pyphen_mismatch(heavy),,,team:ea,yes
+fine,4,1,3,F AY N,,,496,5th 100,,1,573,,,,,VCe,yes
+pair,4,1,3,P EH R,,,497,5th 100,,1,574,,,,,team:ai,yes
+circle,6,2,5,S ER K AH L,,,498,5th 100,,1,575,cir-cle,ok,,,r-controlled:ir,yes
+include,7,2,6,IH N K L UW D,,,499,5th 100,,1,576,in-clude,ok,,,VCe,yes
+built,5,1,4,B IH L T,,,500,5th 100,,1,577,,,,-lt,team:ui,no
+can't,4,1,4,K AE N T,,,501,6th 100,,1,578,,,,,,
+matter,6,2,4,M AE T ER,,,502,6th 100,,1,579,mat-ter,ok,,,r-controlled:er,yes
+square,6,1,5,S K W EH R,,,503,6th 100,,1,580,,,,squ-,r-controlled:ar,yes
+syllables,9,3,8,S IH L AH B AH L Z,,,504,6th 100,,1,581,syl-la-bles,ok,,,,no
+perhaps,7,2,6,P ER HH AE P S,,,505,6th 100,,1,582,per-haps,ok,,,r-controlled:er,yes
+bill,4,1,3,B IH L,,,506,6th 100,,1,583,,,,,,yes
+felt,4,1,4,F EH L T,,,507,6th 100,,1,584,,,,-lt,,yes
+suddenly,8,3,7,S AH D AH N L IY,,,508,6th 100,,1,585,sud-den-ly,ok,,,,yes
+test,4,1,4,T EH S T,,,509,6th 100,,1,586,,,,-st,,yes
+direction,9,3,7,D ER EH K SH AH N,,,510,6th 100,,1,587,di-rec-tion,ok,,,,yes
+center,6,2,5,S EH N T ER,,,511,6th 100,,1,588,cen-ter,ok,,,r-controlled:er,yes
+farmers,7,2,6,F AA R M ER Z,,,512,6th 100,,1,589,farm-ers,ok,,,r-controlled:ar;r-controlled:er,yes
+ready,5,2,4,R EH D IY,,,513,6th 100,,1,590,,pyphen_mismatch(ready),,,team:ea,yes
+anything,8,3,6,EH N IY TH IH NG,,,514,6th 100,,1,591,,pyphen_mismatch(any-thing),th;ng,,,no
+divided,7,3,7,D IH V AY D IH D,,,515,6th 100,,1,592,di-vid-ed,ok,,,VCe,yes
+general,7,3,6,JH EH N ER AH L,,,516,6th 100,,1,593,gen-er-al,ok,,,,yes
+energy,6,3,5,EH N ER JH IY,,,517,6th 100,,1,594,en-er-gy,ok,,,r-controlled:er,yes
+subject,7,2,7,S AH B JH EH K T,,,518,6th 100,,1,595,sub-ject,ok,,-ct,,yes
+Europe,6,2,5,Y UH R AH P,,,519,6th 100,,1,596,Eu-rope,ok,,,VCe-exception,no
+moon,4,1,3,M UW N,,,520,6th 100,,1,597,,,,,team:oo,yes
+region,6,2,5,R IY JH AH N,,,521,6th 100,,1,598,re-gion,ok,,,,no
+return,6,2,5,R IH T ER N,,,522,6th 100,,1,599,re-turn,ok,,,r-controlled:ur,yes
+believe,7,2,5,B IH L IY V,,,523,6th 100,,1,600,be-lieve,ok,,,team:ie,no
+dance,5,1,4,D AE N S,,,524,6th 100,,1,601,,,,,,yes
+members,7,2,6,M EH M B ER Z,,,525,6th 100,,1,602,mem-bers,ok,,,r-controlled:er,yes
+picked,6,1,4,P IH K T,,,526,6th 100,,1,603,,,ck,,,yes
+simple,6,2,6,S IH M P AH L,,,527,6th 100,,1,604,sim-ple,ok,,,,yes
+cells,5,1,4,S EH L Z,,,528,6th 100,,1,605,,,,,,yes
+paint,5,1,4,P EY N T,,,529,6th 100,,1,606,,,,-nt,team:ai,yes
+mind,4,1,4,M AY N D,,,530,6th 100,,1,607,,,,-nd,,no
+love,4,1,3,L AH V,,,531,6th 100,,1,608,,,,,VCe-exception,no
+cause,5,1,3,K AA Z,,,532,6th 100,,1,609,,,,,team:au,yes
+exercise,8,3,7,EH K S ER S AY Z,,,534,6th 100,,1,610,ex-er-cise,ok,,,r-controlled:er;VCe,yes
+eggs,4,1,3,EH G Z,,,535,6th 100,,1,611,,,,,,yes
+train,5,1,4,T R EY N,,,536,6th 100,,1,612,,,,tr-,team:ai,yes
+drop,4,1,4,D R AA P,,,539,6th 100,,1,613,,,,dr-,,yes
+developed,9,3,8,D IH V EH L AH P T,,,540,6th 100,,1,614,de-vel-oped,ok,,,VCe-exception,yes
+difference,10,3,7,D IH F ER AH N S,,,542,6th 100,,1,615,dif-fer-ence,ok,,,,yes
+distance,8,2,7,D IH S T AH N S,,,543,6th 100,,1,616,dis-tance,ok,,,,yes
+heart,5,1,4,HH AA R T,,,544,6th 100,,1,617,,,,,team:ea,no
+site,4,1,3,S AY T,,,545,6th 100,,1,618,,,,,VCe,yes
+sum,3,1,3,S AH M,,,546,6th 100,,1,619,,,,,,yes
+summer,6,2,4,S AH M ER,,,547,6th 100,,1,620,sum-mer,ok,,,r-controlled:er,yes
+wall,4,1,3,W AO L,,,548,6th 100,,1,621,,,,,,yes
+forest,6,2,6,F AO R AH S T,,,549,6th 100,,1,622,for-est,ok,,-st,,yes
+probably,8,3,8,P R AA B AH B L IY,,,550,6th 100,,1,623,prob-a-bly,ok,,pr-,,yes
+legs,4,1,4,L EH G Z,,,551,6th 100,,1,624,,,,,,yes
+sat,3,1,3,S AE T,,,552,6th 100,,1,625,,,,,,yes
+main,4,1,3,M EY N,,,553,6th 100,,1,626,,,,,team:ai,yes
+winter,6,2,5,W IH N T ER,,,554,6th 100,,1,627,win-ter,ok,,,r-controlled:er,yes
+wide,4,1,3,W AY D,,,555,6th 100,,1,628,,,,,VCe,yes
+written,7,2,5,R IH T AH N,,,556,6th 100,,1,629,writ-ten,ok,wr,,,yes
+length,6,1,5,L EH NG K TH,,,557,6th 100,,1,630,,,th;ng,,,yes
+reason,6,2,5,R IY Z AH N,,,558,6th 100,,1,631,rea-son,ok,,,team:ea,yes
+kept,4,1,4,K EH P T,,,559,6th 100,,1,632,,,,-pt,,yes
+interest,8,2,7,IH N T R AH S T,,,560,6th 100,,1,633,,pyphen_mismatch(in-ter-est),,-st,,yes
+arms,4,1,4,AA R M Z,,,561,6th 100,,1,634,,,,,r-controlled:ar,yes
+race,4,1,3,R EY S,,,563,6th 100,,1,635,,,,,VCe,yes
+present,7,2,7,P R EH Z AH N T,,,564,6th 100,,1,636,,pyphen_mismatch(present),,pr-;-nt,,yes
+beautiful,9,3,8,B Y UW T AH F AH L,,,565,6th 100,,1,637,beau-ti-ful,ok,,,team:ea,no
+store,5,1,4,S T AO R,,,566,6th 100,,1,638,,,,st-,r-controlled:or,yes
+job,3,1,3,JH AA B,,,567,6th 100,,1,639,,,,,,yes
+edge,4,1,2,EH JH,,,568,6th 100,,1,640,,,dge,,,yes
+past,4,1,4,P AE S T,,,569,6th 100,,1,641,,,,-st,,yes
+sign,4,1,3,S AY N,,,570,6th 100,,1,642,,,gn,,,no
+record,6,2,6,R AH K AO R D,,,571,6th 100,,1,643,,pyphen_mismatch(record),,,r-controlled:or,yes
+finished,8,2,6,F IH N IH SH T,,,572,6th 100,,1,644,fin-ished,ok,sh,,VCe-exception,yes
+discovered,10,3,8,D IH S K AH V ER D,,,573,6th 100,,1,645,dis-cov-ered,ok,,,,no
+wild,4,1,4,W AY L D,,,574,6th 100,,1,646,,,,-ld,,no
+happy,5,2,4,HH AE P IY,,,575,6th 100,,1,647,hap-py,ok,,,,yes
+beside,6,2,5,B IH S AY D,,,576,6th 100,,1,648,be-side,ok,,,VCe,yes
+gone,4,1,3,G AO N,,,577,6th 100,,1,649,,,,,VCe-exception,no
+sky,3,1,3,S K AY,,,578,6th 100,,1,650,,,,sk-,,yes
+million,7,2,6,M IH L Y AH N,,,580,6th 100,,1,651,mil-lion,ok,,,,no
+west,4,1,4,W EH S T,,,581,6th 100,,1,652,,,,-st,,yes
+lay,3,1,2,L EY,,,582,6th 100,,1,653,,,,,team:ay,yes
+weather,7,2,4,W EH DH ER,,,583,6th 100,,1,654,weath-er,ok,th,,team:ea;r-controlled:er,yes
+root,4,1,3,R UW T,,,584,6th 100,,1,655,,,,,team:oo,yes
+instruments,11,3,11,IH N S T R AH M AH N T S,,,585,6th 100,,1,656,in-stru-ments,ok,,,,yes
+meet,4,1,3,M IY T,,,586,6th 100,,1,657,,,,,team:ee,yes
+third,5,1,3,TH ER D,,,587,6th 100,,1,658,,,th,,r-controlled:ir,yes
+months,6,1,5,M AH N TH S,,,588,6th 100,,1,659,,,th,,,no
+paragraph,9,3,8,P AE R AH G R AE F,,,589,6th 100,,1,660,,pyphen_mismatch(para-graph),ph,,,yes
+raised,6,1,4,R EY Z D,,,590,6th 100,,1,661,,,,,team:ai,yes
+represent,9,3,9,R EH P R IH Z EH N T,,,591,6th 100,,1,662,rep-re-sent,ok,,-nt,,yes
+soft,4,1,4,S AA F T,,,592,6th 100,,1,663,,,,-ft,,yes
+whether,7,2,4,W EH DH ER,,,593,6th 100,,1,664,,pyphen_mismatch(whether),th;wh,,r-controlled:er,yes
+clothes,7,1,5,K L OW DH Z,,,594,6th 100,,1,665,,,th,cl-,VCe,yes
+flowers,7,2,5,F L AW ER Z,,,595,6th 100,,1,666,flow-ers,ok,,fl-,team:ow;r-controlled:er,yes
+teacher,7,2,4,T IY CH ER,,,597,6th 100,,1,667,teach-er,ok,ch,,team:ea;r-controlled:er,yes
+held,4,1,4,HH EH L D,,,598,6th 100,,1,668,,,,-ld,,yes
+describe,8,2,7,D IH S K R AY B,,,599,6th 100,,1,669,de-scribe,ok,,,VCe,yes
+drive,5,1,4,D R AY V,,,600,6th 100,,1,670,,,,dr-,VCe,yes
+cross,5,1,4,K R AO S,,,601,7th 100,,1,671,,,,cr-,,yes
+speak,5,1,4,S P IY K,,,602,7th 100,,1,672,,,,sp-,team:ea,yes
+solve,5,1,4,S AA L V,,,603,7th 100,,1,673,,,,,,no
+appear,6,2,4,AH P IH R,,,604,7th 100,,1,674,ap-pear,ok,,,team:ea,yes
+metal,5,2,5,M EH T AH L,,,605,7th 100,,1,675,met-al,ok,,,,yes
+son,3,1,3,S AH N,,,606,7th 100,,1,676,,,,,,no
+either,6,2,3,IY DH ER,,,607,7th 100,,1,677,ei-ther,ok,th,,team:ei;r-controlled:er,yes
+ice,3,1,2,AY S,,,608,7th 100,,1,678,,,,,VCe,yes
+village,7,2,5,V IH L AH JH,,,610,7th 100,,1,679,vil-lage,ok,,,VCe-exception,yes
+factors,7,2,6,F AE K T ER Z,,,611,7th 100,,1,680,fac-tors,ok,,,r-controlled:or,no
+result,6,2,6,R IH Z AH L T,,,612,7th 100,,1,681,re-sult,ok,,-lt,,yes
+jumped,6,1,5,JH AH M P T,,,613,7th 100,,1,682,,,,,,yes
+care,4,1,3,K EH R,,,616,7th 100,,1,683,,,,,r-controlled:ar,yes
+pushed,6,1,4,P UH SH T,,,619,7th 100,,1,684,,,sh,,VCe-exception,no
+century,7,3,6,S EH N CH ER IY,,,622,7th 100,,1,685,cen-tu-ry,ok,,,,no
+outside,7,2,5,AW T S AY D,,,623,7th 100,,1,686,out-side,ok,,,team:ou;VCe,yes
+everything,10,3,7,EH V R IY TH IH NG,,,624,7th 100,,1,687,ev-ery-thing,ok,th;ng,,,no
+tall,4,1,3,T AO L,,,625,7th 100,,1,688,,,,,,yes
+already,7,3,6,AO L R EH D IY,,,626,7th 100,,1,689,,pyphen_mismatch(al-ready),,,team:ea,no
+instead,7,2,6,IH N S T EH D,,,627,7th 100,,1,690,in-stead,ok,,,team:ea,yes
+phrase,6,1,4,F R EY Z,,,628,7th 100,,1,691,,,ph,,VCe,yes
+soil,4,1,3,S OY L,,,629,7th 100,,1,692,,,,,team:oi,yes
+copy,4,2,4,K AA P IY,,,631,7th 100,,1,693,,pyphen_mismatch(copy),,,,yes
+free,4,1,3,F R IY,,,632,7th 100,,1,694,,,,fr-,team:ee,yes
+hope,4,1,3,HH OW P,,,633,7th 100,,1,695,,,,,VCe,yes
+spring,6,1,5,S P R IH NG,,,634,7th 100,,1,696,,,ng,spr-,,yes
+case,4,1,3,K EY S,,,635,7th 100,,1,697,,,,,VCe,yes
+laughed,7,1,4,L AE F T,,,636,7th 100,,1,698,,,,,team:augh,no
+nation,6,2,5,N EY SH AH N,,,637,7th 100,,1,699,na-tion,ok,,,,yes
+quite,5,1,4,K W AY T,,,638,7th 100,,1,700,,,,,,no
+type,4,1,3,T AY P,,,639,7th 100,,1,701,,,,,,no
+themselves,10,2,8,DH EH M S EH L V Z,,,640,7th 100,,1,702,them-selves,ok,th,,,yes
+temperature,11,3,8,T EH M P R AH CH ER,,,641,7th 100,,1,703,,pyphen_mismatch(tem-per-a-ture),,,r-controlled:ur,no
+bright,6,1,4,B R AY T,,,642,7th 100,,1,704,,,,br-,team:igh,yes
+lead,4,1,3,L EH D,,,643,7th 100,,1,705,,,,,team:ea,yes
+everyone,8,3,7,EH V R IY W AH N,,,644,7th 100,,1,706,ev-ery-one,ok,,,VCe-exception,no
+method,6,2,5,M EH TH AH D,,,645,7th 100,,1,707,,pyphen_mismatch(method),th,,,yes
+section,7,2,6,S EH K SH AH N,,,646,7th 100,,1,708,sec-tion,ok,,,,yes
+lake,4,1,3,L EY K,,,647,7th 100,,1,709,,,,,VCe,yes
+iron,4,2,3,AY ER N,,,648,7th 100,Fry alt edition (uniqueteachingresources #698),1,710,,pyphen_mismatch(iron),,,,no
+within,6,2,5,W IH DH IH N,,,649,7th 100,,1,711,with-in,ok,th,,,yes
+dictionary,10,4,9,D IH K SH AH N EH R IY,,,650,7th 100,,1,712,,pyphen_mismatch(dic-tio-nary),,,,no
+hair,4,1,3,HH EH R,,,651,7th 100,,1,713,,,,,team:ai,yes
+age,3,1,2,EY JH,,,652,7th 100,,1,714,,,,,VCe,yes
+amount,6,2,5,AH M AW N T,,,653,7th 100,,1,715,,pyphen_mismatch(amount),,-nt,team:ou,yes
+scale,5,1,4,S K EY L,,,654,7th 100,,1,716,,,,sc-,VCe,yes
+pounds,6,1,5,P AW N D Z,,,655,7th 100,,1,717,,,,,team:ou,yes
+although,8,2,4,AO L DH OW,,,656,7th 100,,1,718,al-though,ok,th,,team:ough,no
+per,3,1,2,P ER,,,657,7th 100,,1,719,,,,,r-controlled:er,yes
+broken,6,2,6,B R OW K AH N,,,658,7th 100,,1,720,bro-ken,ok,,br-,,yes
+moment,6,2,6,M OW M AH N T,,,659,7th 100,,1,721,mo-ment,ok,,-nt,,yes
+tiny,4,2,4,T AY N IY,,,660,7th 100,,1,722,,pyphen_mismatch(tiny),,,,yes
+possible,8,3,7,P AA S AH B AH L,,,661,7th 100,,1,723,pos-si-ble,ok,,,,yes
+gold,4,1,4,G OW L D,,,662,7th 100,,1,724,,,,-ld,,no
+quiet,5,2,5,K W AY AH T,,,664,7th 100,,1,725,qui-et,ok,,,team:ie,yes
+natural,7,3,6,N AE CH ER AH L,,,665,7th 100,,1,726,nat-u-ral,ok,,,,no
+lot,3,1,3,L AA T,,,666,7th 100,,1,727,,,,,,yes
+stone,5,1,4,S T OW N,,,667,7th 100,,1,728,,,,st-,VCe,yes
+act,3,1,3,AE K T,,,668,7th 100,,1,729,,,,-ct,,yes
+build,5,1,4,B IH L D,,,669,7th 100,,1,730,,,,-ld,team:ui,no
+middle,6,2,5,M IH D AH L,,,670,7th 100,,1,731,mid-dle,ok,,,,yes
+speed,5,1,4,S P IY D,,,671,7th 100,,1,732,,,,sp-,team:ee,yes
+count,5,1,4,K AW N T,,,672,7th 100,,1,733,,,,-nt,team:ou,yes
+consonant,9,3,9,K AA N S AH N AH N T,,,673,7th 100,Fry alt edition (uniqueteachingresources #648),1,734,con-so-nant,ok,,-nt,,yes
+someone,7,2,6,S AH M W AH N,,,674,7th 100,,1,735,some-one,ok,,,,no
+sail,4,1,3,S EY L,,,675,7th 100,,1,736,,,,,team:ai,yes
+rolled,6,1,4,R OW L D,,,676,7th 100,,1,737,,,,,,no
+wonder,6,2,5,W AH N D ER,,,678,7th 100,,1,738,won-der,ok,,,r-controlled:er,no
+smiled,6,1,5,S M AY L D,,,679,7th 100,,1,739,,,,sm-,VCe,yes
+angle,5,2,5,AE NG G AH L,,,680,7th 100,,1,740,an-gle,ok,ng,,,no
+fraction,8,2,7,F R AE K SH AH N,,,681,7th 100,,1,741,frac-tion,ok,,fr-,,yes
+Africa,6,3,6,AE F R AH K AA,,,682,7th 100,,1,742,,pyphen_mismatch(africa),,,,yes
+killed,6,1,4,K IH L D,,,683,7th 100,,1,743,,,,,,yes
+melody,6,3,6,M EH L AH D IY,,,684,7th 100,,1,744,,pyphen_mismatch(melody),,,,yes
+bottom,6,2,5,B AA T AH M,,,685,7th 100,,1,745,bot-tom,ok,,,,yes
+trip,4,1,4,T R IH P,,,686,7th 100,,1,746,,,,tr-,,yes
+hole,4,1,3,HH OW L,,,687,7th 100,,1,747,,,,,VCe,yes
+poor,4,1,3,P UW R,,,688,7th 100,,1,748,,,,,team:oo,yes
+let's,4,1,4,L EH T S,,,689,7th 100,,1,749,,,,,,
+fight,5,1,3,F AY T,,,690,7th 100,,1,750,,,,,team:igh,yes
+surprise,8,2,6,S ER P R AY Z,,,691,7th 100,,1,751,sur-prise,ok,,,r-controlled:ur;VCe,yes
+French,6,1,5,F R EH N CH,,,692,7th 100,,1,752,,,ch,fr-,,yes
+died,4,1,3,D AY D,,,693,7th 100,,1,753,,,,,team:ie,yes
+beat,4,1,3,B IY T,,,694,7th 100,,1,754,,,,,team:ea,yes
+exactly,7,3,8,IH G Z AE K T L IY,,,695,7th 100,,1,755,ex-act-ly,ok,,,,yes
+remain,6,2,5,R IH M EY N,,,696,7th 100,,1,756,re-main,ok,,,team:ai,yes
+dress,5,1,4,D R EH S,,,697,7th 100,,1,757,,,,dr-,,yes
+couldn't,7,2,6,K UH D AH N T,,,699,7th 100,,1,758,,pyphen_mismatch(could-n't),,,team:ou,
+fingers,7,2,6,F IH NG G ER Z,,,700,7th 100,,1,759,fin-gers,ok,,,r-controlled:er,no
+row,3,1,2,R OW,,,701,8th 100,,1,760,,,,,team:ow,yes
+least,5,1,4,L IY S T,,,702,8th 100,,1,761,,,,-st,team:ea,yes
+catch,5,1,3,K AE CH,,,703,8th 100,,1,762,,,tch,,,yes
+climbed,7,1,5,K L AY M D,,,704,8th 100,,1,763,,,,cl-,,no
+wrote,5,1,3,R OW T,,,705,8th 100,,1,764,,,wr,,VCe,yes
+shouted,7,2,5,SH AW T IH D,,,706,8th 100,,1,765,shout-ed,ok,sh,,team:ou,yes
+continued,9,3,9,K AH N T IH N Y UW D,,,707,8th 100,,1,766,con-tin-ued,ok,,,team:ue,yes
+itself,6,2,6,IH T S EH L F,,,708,8th 100,,1,767,it-self,ok,,-lf,,yes
+else,4,1,3,EH L S,,,709,8th 100,,1,768,,,,,,yes
+plains,6,1,5,P L EY N Z,,,710,8th 100,,1,769,,,,pl-,team:ai,yes
+gas,3,1,3,G AE S,,,711,8th 100,,1,770,,,,,,yes
+England,7,2,7,IH NG G L AH N D,,,712,8th 100,,1,771,Eng-land,ok,ng,-nd,,no
+burning,7,2,5,B ER N IH NG,,,713,8th 100,,1,772,burn-ing,ok,ng,,r-controlled:ur,yes
+design,6,2,5,D IH Z AY N,,,714,8th 100,,1,773,de-sign,ok,gn,,,no
+joined,6,1,4,JH OY N D,,,715,8th 100,,1,774,,,,,team:oi,yes
+foot,4,1,3,F UH T,,,716,8th 100,,1,775,,,,,team:oo,yes
+law,3,1,2,L AO,,,717,8th 100,,1,776,,,,,team:aw,yes
+ears,4,1,3,IH R Z,,,718,8th 100,,1,777,,,,,team:ea,yes
+glass,5,1,4,G L AE S,,,719,8th 100,Fry alt edition (uniqueteachingresources #579),1,778,,,,gl-,,yes
+you're,5,1,3,Y UH R,,,720,8th 100,,1,779,,,,,team:ou,
+grew,4,1,3,G R UW,,,721,8th 100,,1,780,,,,gr-,team:ew,yes
+skin,4,1,4,S K IH N,,,722,8th 100,,1,781,,,,sk-,,yes
+valley,6,2,4,V AE L IY,,,723,8th 100,,1,782,val-ley,ok,,,team:ey,yes
+cents,5,1,5,S EH N T S,,,724,8th 100,,1,783,,,,,,yes
+key,3,1,2,K IY,,,725,8th 100,,1,784,,,,,team:ey,yes
+president,9,3,9,P R EH Z AH D EH N T,,,726,8th 100,,1,785,pres-i-dent,ok,,pr-;-nt,,yes
+trouble,7,2,6,T R AH B AH L,,,728,8th 100,,1,786,trou-ble,ok,,tr-,team:ou,no
+cool,4,1,3,K UW L,,,729,8th 100,,1,787,,,,,team:oo,yes
+cloud,5,1,4,K L AW D,,,730,8th 100,,1,788,,,,cl-,team:ou,yes
+lost,4,1,4,L AO S T,,,731,8th 100,,1,789,,,,-st,,yes
+sent,4,1,4,S EH N T,,,732,8th 100,,1,790,,,,-nt,,yes
+symbols,7,2,7,S IH M B AH L Z,,,733,8th 100,,1,791,sym-bols,ok,,,,yes
+wear,4,1,3,W EH R,,,734,8th 100,,1,792,,,,,team:ea,yes
+bad,3,1,3,B AE D,,,735,8th 100,,1,793,,,,,,yes
+save,4,1,3,S EY V,,,736,8th 100,,1,794,,,,,VCe,yes
+experiment,10,4,11,IH K S P EH R AH M AH N T,,,737,8th 100,,1,795,ex-per-i-ment,ok,,-nt,,yes
+engine,6,2,5,EH N JH AH N,,,738,8th 100,,1,796,en-gine,ok,,,VCe-exception,no
+alone,5,2,4,AH L OW N,,,739,8th 100,,1,797,,pyphen_mismatch(alone),,,VCe,yes
+drawing,7,2,5,D R AO IH NG,,,740,8th 100,,1,798,draw-ing,ok,ng,dr-,team:aw,yes
+east,4,1,3,IY S T,,,741,8th 100,,1,799,,,,-st,team:ea,yes
+choose,6,1,3,CH UW Z,,,742,8th 100,Fry alt edition (uniqueteachingresources #767),1,800,,,ch,,team:oo,yes
+single,6,2,6,S IH NG G AH L,,,743,8th 100,,1,801,sin-gle,ok,ng,,,no
+touch,5,1,3,T AH CH,,,744,8th 100,,1,802,,,ch,,team:ou,no
+information,11,4,9,IH N F ER M EY SH AH N,,,745,8th 100,,1,803,in-for-ma-tion,ok,,,r-controlled:or,yes
+express,7,2,7,IH K S P R EH S,,,746,8th 100,,1,804,ex-press,ok,,,,yes
+mouth,5,1,3,M AW TH,,,747,8th 100,,1,805,,,th,,team:ou,yes
+yard,4,1,4,Y AA R D,,,748,8th 100,,1,806,,,,,r-controlled:ar,yes
+equal,5,2,5,IY K W AH L,,,749,8th 100,,1,807,e-qual,ok,,,,yes
+decimal,7,3,7,D EH S AH M AH L,,,750,8th 100,,1,808,dec-i-mal,ok,,,,yes
+yourself,8,2,6,Y ER S EH L F,,,751,8th 100,,1,809,your-self,ok,,-lf,team:ou,no
+control,7,2,7,K AH N T R OW L,,,752,8th 100,,1,810,con-trol,ok,,,,no
+practice,8,2,7,P R AE K T AH S,,,753,8th 100,,1,811,prac-tice,ok,,pr-,VCe-exception,yes
+report,6,2,6,R IY P AO R T,,,754,8th 100,,1,812,re-port,ok,,,r-controlled:or,yes
+straight,8,1,5,S T R EY T,,,755,8th 100,,1,813,,,,str-,team:igh,no
+rise,4,1,3,R AY Z,,,756,8th 100,,1,814,,,,,VCe,yes
+statement,9,2,8,S T EY T M AH N T,,,757,8th 100,,1,815,state-ment,ok,,st-;-nt,,no
+seeds,5,1,4,S IY D Z,,,760,8th 100,,1,816,,,,,team:ee,yes
+suppose,7,2,5,S AH P OW Z,,,761,8th 100,,1,817,sup-pose,ok,,,VCe,yes
+woman,5,2,5,W UH M AH N,,,762,8th 100,,1,818,wom-an,ok,,,,no
+coast,5,1,4,K OW S T,,,763,8th 100,,1,819,,,,-st,team:oa,yes
+bank,4,1,4,B AE NG K,,,764,8th 100,,1,820,,,,-nk,,yes
+period,6,3,6,P IH R IY AH D,,,765,8th 100,,1,821,pe-ri-od,ok,,,,no
+wire,4,2,3,W AY ER,,,766,8th 100,,1,822,,pyphen_mismatch(wire),,,r-controlled:ir,no
+pay,3,1,2,P EY,,,767,8th 100,Fry alt edition (uniqueteachingresources #742),1,823,,,,,team:ay,yes
+visit,5,2,5,V IH Z IH T,,,769,8th 100,,1,824,vis-it,ok,,,,yes
+bit,3,1,3,B IH T,,,770,8th 100,,1,825,,,,,,yes
+whose,5,1,3,HH UW Z,,,771,8th 100,,1,826,,,wh,,VCe-exception,no
+received,8,2,6,R AH S IY V D,,,772,8th 100,,1,827,re-ceived,ok,,,team:ei,yes
+strange,7,1,6,S T R EY N JH,,,775,8th 100,,1,828,,,,str-,,no
+caught,6,1,3,K AA T,,,776,8th 100,,1,829,,,,,team:augh,no
+fell,4,1,3,F EH L,,,777,8th 100,,1,830,,,,,,yes
+team,4,1,3,T IY M,,,778,8th 100,,1,831,,,,,team:ea,yes
+God,3,1,3,G AA D,,,779,8th 100,,1,832,,,,,,yes
+captain,7,2,6,K AE P T AH N,,,780,8th 100,,1,833,cap-tain,ok,,,team:ai,no
+direct,6,2,5,D ER EH K T,,,781,8th 100,,1,834,di-rect,ok,,-ct,,yes
+serve,5,1,3,S ER V,,,783,8th 100,,1,835,,,,,r-controlled:er,no
+child,5,1,4,CH AY L D,,,784,8th 100,,1,836,,,ch,-ld,,no
+desert,6,2,5,D EH Z ER T,,,785,8th 100,,1,837,,pyphen_mismatch(desert),,,r-controlled:er,yes
+increase,8,2,6,IH N K R IY S,,,786,8th 100,,1,838,in-crease,ok,,,team:ea,yes
+history,7,3,6,HH IH S T ER IY,,,787,8th 100,,1,839,his-to-ry,ok,,,,no
+cost,4,1,4,K AA S T,,,788,8th 100,,1,840,,,,-st,,yes
+maybe,5,2,4,M EY B IY,,,789,8th 100,,1,841,,pyphen_mismatch(maybe),,,team:ay,yes
+business,8,2,6,B IH Z N AH S,,,790,8th 100,,1,842,busi-ness,ok,,,,no
+separate,8,3,6,S EH P ER EY T,,,791,8th 100,,1,843,sep-a-rate,ok,,,VCe,no
+break,5,1,4,B R EY K,,,792,8th 100,,1,844,,,,br-,team:ea,no
+uncle,5,2,5,AH NG K AH L,,,793,8th 100,,1,845,un-cle,ok,,,,no
+hunting,7,2,6,HH AH N T IH NG,,,794,8th 100,,1,846,hunt-ing,ok,ng,,,yes
+flow,4,1,3,F L OW,,,795,8th 100,,1,847,,,,fl-,team:ow,yes
+lady,4,2,4,L EY D IY,,,796,8th 100,,1,848,la-dy,ok,,,,yes
+students,8,2,8,S T UW D AH N T S,,,797,8th 100,,1,849,stu-dents,ok,,st-,,yes
+human,5,2,6,HH Y UW M AH N,,,798,8th 100,,1,850,hu-man,ok,,,,yes
+art,3,1,3,AA R T,,,799,8th 100,,1,851,,,,,r-controlled:ar,yes
+feeling,7,2,5,F IY L IH NG,,,800,8th 100,,1,852,feel-ing,ok,ng,,team:ee,yes
+supply,6,2,5,S AH P L AY,,,801,9th 100,,1,853,sup-ply,ok,,,,yes
+corner,6,2,5,K AO R N ER,,,802,9th 100,,1,854,cor-ner,ok,,,r-controlled:or;r-controlled:er,yes
+electric,8,3,8,IH L EH K T R IH K,,,803,9th 100,,1,855,,pyphen_mismatch(elec-tric),,,,yes
+insects,7,2,7,IH N S EH K T S,,,804,9th 100,,1,856,in-sects,ok,,,,yes
+crops,5,1,5,K R AA P S,,,805,9th 100,,1,857,,,,cr-,,yes
+tone,4,1,3,T OW N,,,806,9th 100,,1,858,,,,,VCe,yes
+hit,3,1,3,HH IH T,,,807,9th 100,,1,859,,,,,,yes
+sand,4,1,4,S AE N D,,,808,9th 100,,1,860,,,,-nd,,yes
+doctor,6,2,5,D AA K T ER,,,809,9th 100,,1,861,doc-tor,ok,,,r-controlled:or,no
+provide,7,2,6,P R AH V AY D,,,810,9th 100,,1,862,pro-vide,ok,,pr-,VCe,yes
+thus,4,1,3,DH AH S,,,811,9th 100,,1,863,,,th,,,yes
+won't,4,1,4,W OW N T,,,812,9th 100,,1,864,,,,,,
+cook,4,1,3,K UH K,,,813,9th 100,,1,865,,,,,team:oo,yes
+bones,5,1,4,B OW N Z,,,814,9th 100,,1,866,,,,,VCe,yes
+mall,4,1,3,M AO L,,,815,9th 100,,1,867,,,,,,yes
+board,5,1,4,B AO R D,,,816,9th 100,,1,868,,,,,team:oa,no
+modern,6,2,5,M AA D ER N,,,817,9th 100,,1,869,mod-ern,ok,,,r-controlled:er,yes
+compound,8,2,7,K AA M P AW N D,,,818,9th 100,,1,870,com-pound,ok,,-nd,team:ou,yes
+mine,4,1,3,M AY N,,,819,9th 100,,1,871,,,,,VCe,yes
+wasn't,5,2,6,W AA Z AH N T,,,820,9th 100,,1,872,,pyphen_mismatch(was-n't),,,,
+fit,3,1,3,F IH T,,,821,9th 100,,1,873,,,,,,yes
+addition,8,3,6,AH D IH SH AH N,,,822,9th 100,,1,874,ad-di-tion,ok,,,,yes
+belong,6,2,5,B IH L AO NG,,,823,9th 100,,1,875,be-long,ok,ng,,,yes
+safe,4,1,3,S EY F,,,824,9th 100,,1,876,,,,,VCe,yes
+soldiers,8,2,6,S OW L JH ER Z,,,825,9th 100,,1,877,sol-diers,ok,,,team:ie,no
+guess,5,1,3,G EH S,,,826,9th 100,,1,878,,,,,team:ue,no
+silent,6,2,6,S AY L AH N T,,,827,9th 100,,1,879,,pyphen_mismatch(silent),,-nt,,yes
+trade,5,1,4,T R EY D,,,828,9th 100,,1,880,,,,tr-,VCe,yes
+rather,6,2,4,R AE DH ER,,,829,9th 100,,1,881,,pyphen_mismatch(rather),th,,r-controlled:er,yes
+compare,7,2,6,K AH M P EH R,,,830,9th 100,,1,882,com-pare,ok,,,r-controlled:ar,yes
+crowd,5,1,4,K R AW D,,,831,9th 100,,1,883,,,,cr-,team:ow,yes
+poem,4,2,4,P OW AH M,,,832,9th 100,,1,884,po-em,ok,,,team:oe,yes
+enjoy,5,2,4,EH N JH OY,,,833,9th 100,,1,885,en-joy,ok,,,team:oy,yes
+elements,8,3,8,EH L AH M AH N T S,,,834,9th 100,,1,886,el-e-ments,ok,,,,yes
+indicate,8,3,7,IH N D AH K EY T,,,835,9th 100,,1,887,in-di-cate,ok,,,VCe,yes
+except,6,2,6,IH K S EH P T,,,836,9th 100,,1,888,ex-cept,ok,,-pt,,no
+expect,6,2,7,IH K S P EH K T,,,837,9th 100,,1,889,ex-pect,ok,,-ct,,yes
+flat,4,1,4,F L AE T,,,838,9th 100,,1,890,,,,fl-,,yes
+interesting,11,3,9,IH N T R AH S T IH NG,,,840,9th 100,,1,891,,pyphen_mismatch(in-ter-est-ing),ng,,,yes
+sense,5,1,4,S EH N S,,,841,9th 100,,1,892,,,,,,yes
+string,6,1,5,S T R IH NG,,,842,9th 100,,1,893,,,ng,str-,,yes
+blow,4,1,3,B L OW,,,843,9th 100,,1,894,,,,bl-,team:ow,yes
+famous,6,2,5,F EY M AH S,,,844,9th 100,,1,895,fa-mous,ok,,,team:ou,no
+value,5,2,5,V AE L Y UW,,,845,9th 100,,1,896,val-ue,ok,,,team:ue,yes
+wings,5,1,4,W IH NG Z,,,846,9th 100,,1,897,,,ng,,,yes
+movement,8,2,7,M UW V M AH N T,,,847,9th 100,,1,898,move-ment,ok,,-nt,,no
+pole,4,1,3,P OW L,,,848,9th 100,,1,899,,,,,VCe,yes
+exciting,8,3,7,IH K S AY T IH NG,,,849,9th 100,,1,900,ex-cit-ing,ok,ng,,,no
+branches,8,2,7,B R AE N CH AH Z,,,850,9th 100,,1,901,branch-es,ok,ch,br-,,yes
+thick,5,1,3,TH IH K,,,851,9th 100,,1,902,,,th;ck,,,yes
+blood,5,1,4,B L AH D,,,852,9th 100,,1,903,,,,bl-,team:oo,no
+lie,3,1,2,L AY,,,853,9th 100,,1,904,,,,,team:ie,yes
+spot,4,1,4,S P AA T,,,854,9th 100,,1,905,,,,sp-,,yes
+fun,3,1,3,F AH N,,,856,9th 100,,1,906,,,,,,yes
+loud,4,1,3,L AW D,,,857,9th 100,,1,907,,,,,team:ou,yes
+consider,8,3,7,K AH N S IH D ER,,,858,9th 100,,1,908,con-sid-er,ok,,,r-controlled:er,yes
+suggested,9,3,8,S AH JH EH S T IH D,,,859,9th 100,,1,909,sug-gest-ed,ok,,,,no
+thin,4,1,3,TH IH N,,,860,9th 100,,1,910,,,th,,,yes
+position,8,3,7,P AH Z IH SH AH N,,,861,9th 100,,1,911,po-si-tion,ok,,,,yes
+entered,7,2,5,EH N T ER D,,,862,9th 100,,1,912,en-tered,ok,,,,yes
+fruit,5,1,4,F R UW T,,,863,9th 100,,1,913,,,,fr-,team:ui,no
+tied,4,1,3,T AY D,,,864,9th 100,,1,914,,,,,team:ie,yes
+rich,4,1,3,R IH CH,,,865,9th 100,,1,915,,,ch,,,yes
+dollars,7,2,5,D AA L ER Z,,,866,9th 100,,1,916,dol-lars,ok,,,r-controlled:ar,no
+send,4,1,4,S EH N D,,,867,9th 100,,1,917,,,,-nd,,yes
+sight,5,1,3,S AY T,,,868,9th 100,,1,918,,,,,team:igh,yes
+chief,5,1,3,CH IY F,,,869,9th 100,,1,919,,,ch,,team:ie,yes
+Japanese,8,3,7,JH AE P AH N IY Z,,,870,9th 100,,1,920,Ja-pa-nese,ok,,,VCe,yes
+stream,6,1,5,S T R IY M,,,871,9th 100,,1,921,,,,str-,team:ea,yes
+planets,7,2,7,P L AE N AH T S,,,872,9th 100,,1,922,plan-ets,ok,,pl-,,yes
+rhythm,6,2,5,R IH DH AH M,,,873,9th 100,,1,923,,pyphen_mismatch(rhythm),th,,,no
+science,7,2,5,S AY AH N S,,,875,9th 100,,1,924,sci-ence,ok,,,team:ie,no
+major,5,2,4,M EY JH ER,,,876,9th 100,,1,925,ma-jor,ok,,,r-controlled:or,no
+observe,7,2,5,AH B Z ER V,,,877,9th 100,,1,926,ob-serve,ok,,,r-controlled:er,no
+tube,4,1,3,T UW B,,,878,9th 100,,1,927,,,,,VCe,yes
+necessary,9,4,8,N EH S AH S EH R IY,,,879,9th 100,,1,928,,pyphen_mismatch(nec-es-sary),,,,no
+weight,6,1,3,W EY T,,,880,9th 100,,1,929,,,,,team:eigh,no
+meat,4,1,3,M IY T,,,881,9th 100,,1,930,,,,,team:ea,yes
+lifted,6,2,6,L IH F T AH D,,,882,9th 100,,1,931,lift-ed,ok,,,,yes
+process,7,2,6,P R AA S EH S,,,883,9th 100,,1,932,,pyphen_mismatch(process),,pr-,,yes
+army,4,2,4,AA R M IY,,,884,9th 100,,1,933,,pyphen_mismatch(army),,,r-controlled:ar,yes
+hat,3,1,3,HH AE T,,,885,9th 100,,1,934,,,,,,yes
+property,8,3,7,P R AA P ER T IY,,,886,9th 100,,1,935,prop-er-ty,ok,,pr-,r-controlled:er,yes
+particular,10,4,9,P ER T IH K Y AH L ER,,,887,9th 100,,1,936,par-tic-u-lar,ok,,,r-controlled:ar;r-controlled:ar,no
+swim,4,1,4,S W IH M,,,888,9th 100,,1,937,,,,sw-,,yes
+terms,5,1,4,T ER M Z,,,889,9th 100,,1,938,,,,,r-controlled:er,yes
+current,7,2,5,K ER AH N T,,,890,9th 100,,1,939,cur-rent,ok,,-nt,r-controlled:ur,no
+park,4,1,4,P AA R K,,,891,9th 100,,1,940,,,,,r-controlled:ar,yes
+sell,4,1,3,S EH L,,,892,9th 100,,1,941,,,,,,yes
+shoulder,8,2,5,SH OW L D ER,,,893,9th 100,,1,942,shoul-der,ok,sh,,team:ou;r-controlled:er,no
+industry,8,3,8,IH N D AH S T R IY,,,894,9th 100,,1,943,in-dus-try,ok,,,,yes
+block,5,1,4,B L AA K,,,896,9th 100,,1,944,,,ck,bl-,,yes
+spread,6,1,5,S P R EH D,,,897,9th 100,,1,945,,,,spr-,team:ea,yes
+cattle,6,2,5,K AE T AH L,,,898,9th 100,,1,946,cat-tle,ok,,,,yes
+wife,4,1,3,W AY F,,,899,9th 100,,1,947,,,,,VCe,yes
+sharp,5,1,4,SH AA R P,,,900,9th 100,,1,948,,,sh,,r-controlled:ar,yes
+company,7,3,7,K AH M P AH N IY,,,901,10th 100,,1,949,com-pa-ny,ok,,,,no
+radio,5,3,5,R EY D IY OW,,,902,10th 100,,1,950,,pyphen_mismatch(ra-dio),,,,no
+we'll,4,1,3,W IY L,,,903,10th 100,,1,951,,,,,,
+action,6,2,5,AE K SH AH N,,,904,10th 100,,1,952,ac-tion,ok,,,,yes
+capital,7,3,7,K AE P AH T AH L,,,905,10th 100,,1,953,cap-i-tal,ok,,,,yes
+factories,9,3,7,F AE K T ER IY Z,,,906,10th 100,,1,954,fac-to-ries,ok,,,team:ie,no
+settled,7,2,6,S EH T AH L D,,,907,10th 100,,1,955,set-tled,ok,,,,no
+isn't,4,2,5,IH Z AH N T,,,909,10th 100,,1,956,,pyphen_mismatch(is-n't),,,,
+southern,8,2,5,S AH DH ER N,,,910,10th 100,,1,957,south-ern,ok,th,,team:ou;r-controlled:er,no
+truck,5,1,4,T R AH K,,,911,10th 100,,1,958,,,ck,tr-,,yes
+fair,4,1,3,F EH R,,,912,10th 100,,1,959,,,,,team:ai,yes
+printed,7,2,7,P R IH N T IH D,,,913,10th 100,,1,960,print-ed,ok,,pr-,,yes
+wouldn't,7,2,6,W UH D AH N T,,,914,10th 100,,1,961,,pyphen_mismatch(would-n't),,,team:ou,
+ahead,5,2,4,AH HH EH D,,,915,10th 100,,1,962,a-head,ok,,,team:ea,yes
+chance,6,1,4,CH AE N S,,,916,10th 100,,1,963,,,ch,,,yes
+born,4,1,4,B AO R N,,,917,10th 100,,1,964,,,,,r-controlled:or,yes
+level,5,2,5,L EH V AH L,,,918,10th 100,,1,965,lev-el,ok,,,,yes
+triangle,8,3,8,T R AY AE NG G AH L,,,919,10th 100,,1,966,tri-an-gle,ok,ng,tr-,,no
+molecules,9,3,9,M AA L AH K Y UW L Z,,,920,10th 100,,1,967,mol-e-cules,ok,,,VCe,yes
+France,6,1,5,F R AE N S,,,921,10th 100,,1,968,,,,fr-,,yes
+repeated,8,3,7,R IH P IY T IH D,,,922,10th 100,,1,969,re-peat-ed,ok,,,team:ea,yes
+column,6,2,5,K AA L AH M,,,923,10th 100,,1,970,col-umn,ok,,,,no
+western,7,2,6,W EH S T ER N,,,924,10th 100,,1,971,west-ern,ok,,,r-controlled:er,yes
+church,6,1,3,CH ER CH,,,925,10th 100,,1,972,,,ch;ch,,r-controlled:ur,yes
+oxygen,6,3,7,AA K S AH JH AH N,,,927,10th 100,,1,973,,pyphen_mismatch(oxy-gen),,,,yes
+plural,6,2,6,P L UH R AH L,,,928,10th 100,,1,974,plu-ral,ok,,pl-,,no
+various,7,3,6,V EH R IY AH S,,,929,10th 100,,1,975,var-i-ous,ok,,,team:ou,no
+agreed,6,2,5,AH G R IY D,,,930,10th 100,,1,976,a-greed,ok,,,team:ee,yes
+opposite,8,3,6,AA P AH Z AH T,,,931,10th 100,,1,977,op-po-site,ok,,,VCe-exception,no
+wrong,5,1,3,R AO NG,,,932,10th 100,,1,978,,,ng;wr,,,yes
+chart,5,1,4,CH AA R T,,,933,10th 100,,1,979,,,ch,,r-controlled:ar,yes
+prepared,8,2,7,P R IY P EH R D,,,934,10th 100,,1,980,pre-pared,ok,,pr-,,no
+solution,8,3,7,S AH L UW SH AH N,,,936,10th 100,,1,981,so-lu-tion,ok,,,,yes
+fresh,5,1,4,F R EH SH,,,937,10th 100,,1,982,,,sh,fr-,,yes
+shop,4,1,3,SH AA P,,,938,10th 100,,1,983,,,sh,,,yes
+suffix,6,2,6,S AH F IH K S,,,939,10th 100,,1,984,suf-fix,ok,,,,yes
+especially,10,3,7,AH S P EH SH L IY,,,940,10th 100,,1,985,,pyphen_mismatch(es-pe-cial-ly),,,,no
+shoes,5,1,3,SH UW Z,,,941,10th 100,,1,986,,,sh,,team:oe,no
+actually,8,4,7,AE K CH UW AH L IY,,,942,10th 100,,1,987,ac-tu-al-ly,ok,,,,no
+nose,4,1,3,N OW Z,,,943,10th 100,,1,988,,,,,VCe,yes
+afraid,6,2,5,AH F R EY D,,,944,10th 100,,1,989,,pyphen_mismatch(afraid),,,team:ai,yes
+dead,4,1,3,D EH D,,,945,10th 100,,1,990,,,,,team:ea,yes
+sugar,5,2,4,SH UH G ER,,,946,10th 100,,1,991,sug-ar,ok,,,r-controlled:ar,no
+adjective,9,3,7,AE JH IH K T IH V,,,947,10th 100,,1,992,ad-jec-tive,ok,,,VCe-exception,no
+fig,3,1,3,F IH G,,,948,10th 100,,1,993,,,,,,yes
+office,6,2,4,AO F IH S,,,949,10th 100,,1,994,of-fice,ok,,,VCe-exception,yes
+huge,4,1,4,HH Y UW JH,,,950,10th 100,,1,995,,,,,VCe,yes
+gun,3,1,3,G AH N,,,951,10th 100,,1,996,,,,,,yes
+similar,7,3,6,S IH M AH L ER,,,952,10th 100,,1,997,sim-i-lar,ok,,,r-controlled:ar,no
+death,5,1,3,D EH TH,,,953,10th 100,,1,998,,,th,,team:ea,yes
+score,5,1,4,S K AO R,,,954,10th 100,,1,999,,,,sc-,r-controlled:or,yes
+forward,7,2,6,F AO R W ER D,,,955,10th 100,,1,1000,for-ward,ok,,,r-controlled:or;r-controlled:ar,no
+stretched,9,1,6,S T R EH CH T,,,956,10th 100,,1,1001,,,tch,str-,,yes
+experience,10,4,10,IH K S P IH R IY AH N S,,,957,10th 100,,1,1002,ex-pe-ri-ence,ok,,,team:ie,no
+rose,4,1,3,R OW Z,,,958,10th 100,,1,1003,,,,,VCe,yes
+allow,5,2,3,AH L AW,,,959,10th 100,,1,1004,al-low,ok,,,team:ow,yes
+fear,4,1,3,F IH R,,,960,10th 100,,1,1005,,,,,team:ea,yes
+workers,7,2,5,W ER K ER Z,,,961,10th 100,,1,1006,work-ers,ok,,,r-controlled:or;r-controlled:er,no
+Washington,10,3,8,W AA SH IH NG T AH N,,,962,10th 100,,1,1007,Wash-ing-ton,ok,sh;ng,,,no
+Greek,5,1,4,G R IY K,,,963,10th 100,,1,1008,,,,gr-,team:ee,yes
+women,5,2,5,W IH M AH N,,,964,10th 100,,1,1009,wom-en,ok,,,,no
+bought,6,1,3,B AA T,,,965,10th 100,,1,1010,,,,,team:ough,no
+led,3,1,3,L EH D,,,966,10th 100,,1,1011,,,,,,yes
+march,5,1,4,M AA R CH,,,967,10th 100,,1,1012,,,ch,,r-controlled:ar,yes
+northern,8,2,6,N AO R DH ER N,,,968,10th 100,,1,1013,north-ern,ok,th,,r-controlled:or;r-controlled:er,yes
+create,6,2,5,K R IY EY T,,,969,10th 100,,1,1014,cre-ate,ok,,cr-,team:ea,no
+British,7,2,6,B R IH T IH SH,,,970,10th 100,,1,1015,,pyphen_mismatch(british),sh,br-,,yes
+difficult,9,3,8,D IH F AH K AH L T,,,971,10th 100,,1,1016,dif-fi-cult,ok,,-lt,,yes
+match,5,1,3,M AE CH,,,972,10th 100,,1,1017,,,tch,,,yes
+win,3,1,3,W IH N,,,973,10th 100,,1,1018,,,,,,yes
+doesn't,6,2,6,D AH Z AH N T,,,974,10th 100,,1,1019,,pyphen_mismatch(does-n't),,,team:oe,
+steel,5,1,4,S T IY L,,,975,10th 100,,1,1020,,,,st-,team:ee,yes
+total,5,2,5,T OW T AH L,,,976,10th 100,,1,1021,to-tal,ok,,,,yes
+deal,4,1,3,D IY L,,,977,10th 100,,1,1022,,,,,team:ea,yes
+determine,9,3,7,D AH T ER M AH N,,,978,10th 100,,1,1023,de-ter-mine,ok,,,r-controlled:er;VCe-exception,no
+evening,7,2,5,IY V N IH NG,,,979,10th 100,,1,1024,,pyphen_mismatch(evening),ng,,,no
+hoe,3,1,2,HH OW,,,980,10th 100,,1,1025,,,,,team:oe,yes
+rope,4,1,3,R OW P,,,981,10th 100,,1,1026,,,,,VCe,yes
+cotton,6,2,5,K AA T AH N,,,982,10th 100,,1,1027,cot-ton,ok,,,,yes
+details,7,2,6,D IH T EY L Z,,,984,10th 100,,1,1028,de-tails,ok,,,team:ai,yes
+entire,6,3,5,IH N T AY ER,,,985,10th 100,,1,1029,,pyphen_mismatch(en-tire),,,r-controlled:ir,no
+substances,10,3,10,S AH B S T AH N S AH Z,,,987,10th 100,,1,1030,,pyphen_mismatch(sub-stances),,,,yes
+smell,5,1,4,S M EH L,,,988,10th 100,,1,1031,,,,sm-,,yes
+tools,5,1,4,T UW L Z,,,989,10th 100,,1,1032,,,,,team:oo,yes
+conditions,10,3,9,K AH N D IH SH AH N Z,,,990,10th 100,,1,1033,con-di-tions,ok,,,,yes
+cows,4,1,3,K AW Z,,,991,10th 100,,1,1034,,,,,team:ow,yes
+track,5,1,4,T R AE K,,,992,10th 100,,1,1035,,,ck,tr-,,yes
+arrived,7,2,4,ER AY V D,,,993,10th 100,,1,1036,ar-rived,ok,,,r-controlled:ar;VCe,no
+located,7,3,7,L OW K EY T AH D,,,994,10th 100,,1,1037,lo-cat-ed,ok,,,VCe,yes
+sir,3,1,2,S ER,,,995,10th 100,,1,1038,,,,,r-controlled:ir,yes
+seat,4,1,3,S IY T,,,996,10th 100,,1,1039,,,,,team:ea,yes
+division,8,3,7,D IH V IH ZH AH N,,,997,10th 100,,1,1040,di-vi-sion,ok,,,,no
+effect,6,2,5,IH F EH K T,,,998,10th 100,,1,1041,ef-fect,ok,,-ct,,yes
+underline,9,3,7,AH N D ER L AY N,,,999,10th 100,,1,1042,un-der-line,ok,,,r-controlled:er;VCe,yes
+view,4,1,3,V Y UW,,,1000,10th 100,,1,1043,,,,,team:ie,no
+nor,3,1,3,N AO R,,,,,Fry alt edition (uniqueteachingresources #980),1,1044,,,,,r-controlled:or,yes
+oil,3,1,2,OY L,,,,,Fry pre-update sightwords.com #88,1,1045,,,,,team:oi,yes
+busy,4,2,4,B IH Z IY,,,,,Fry alt edition (uniqueteachingresources #376),1,1046,,pyphen_mismatch(busy),,,,no
+tail,4,1,3,T EY L,,,,,Fry alt edition (uniqueteachingresources #815),1,1047,,,,,team:ai,yes
+asked,5,1,4,AE S K T,,,,,Fry alt edition (uniqueteachingresources #166),1,1048,,,,,,yes
+later,5,2,4,L EY T ER,,,,,Fry alt edition (uniqueteachingresources #275),1,1049,lat-er,ok,,,r-controlled:er,yes
+miles,5,1,4,M AY L Z,,,,,Fry alt edition (uniqueteachingresources #257),1,1050,,,,,VCe,yes
+stock,5,1,4,S T AA K,,,,,Dolch variant (NLTK/HF dolch nouns),1,1051,,,ck,st-,,yes
+trees,5,1,4,T R IY Z,,,,,Fry alt edition (uniqueteachingresources #215),1,1052,,,,tr-,team:ee,yes
+giving,6,2,5,G IH V IH NG,,,,,"Dolch variant (qdapDictionaries Leveled_Dolch, 1st Grade)",1,1053,giv-ing,ok,ng,,,yes
+plants,6,1,6,P L AE N T S,,,,,Fry alt edition (uniqueteachingresources #210),1,1054,,,,pl-,,yes
+really,6,2,4,R IH L IY,,,,,Fry alt edition (uniqueteachingresources #284),1,1055,,pyphen_mismatch(re-al-ly),,,team:ea,yes
+seemed,6,1,4,S IY M D,,,,,Fry alt edition (uniqueteachingresources #235),1,1056,,,,,team:ee,yes
+walked,6,1,4,W AO K T,,,,,Fry alt edition (uniqueteachingresources #259),1,1057,,,,,,no
+animals,7,3,7,AE N AH M AH L Z,,,,,Fry alt edition (uniqueteachingresources #187),1,1058,an-i-mals,ok,,,,yes
+distant,7,2,7,D IH S T AH N T,,,,,Fry alt edition (uniqueteachingresources #543),1,1059,dis-tant,ok,,-nt,,yes
+Indians,7,3,7,IH N D IY AH N Z,,,,,Fry alt edition (uniqueteachingresources #283),1,1060,In-di-ans,ok,,,,no
+letters,7,2,5,L EH T ER Z,,,,,Fry alt edition (uniqueteachingresources #191),1,1061,let-ters,ok,,,r-controlled:er,yes
+started,7,2,7,S T AA R T IH D,,,,,Fry alt edition (uniqueteachingresources #217),1,1062,start-ed,ok,,st-,r-controlled:ar,yes
+beginning,9,3,7,B IH G IH N IH NG,,,,,Fry alt edition (uniqueteachingresources #240),1,1063,be-gin-ning,ok,ng,,,yes
+following,9,3,6,F AA L OW IH NG,,,,,Fry alt edition (uniqueteachingresources #142),1,1064,fol-low-ing,ok,ng,,team:ow,yes

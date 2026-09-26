@@ -10,6 +10,7 @@ import { graphModule } from '@renderblocks/graph/module'
 import { numlineModule } from '@renderblocks/numline/module'
 import { giftedModule } from '@renderblocks/gifted/module'
 import { lavaModule } from '@renderblocks/lava/module'
+import { wordsModule } from '@renderblocks/words/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
 
 export const games: GameModule[] = [
@@ -25,6 +26,7 @@ export const games: GameModule[] = [
   numlineModule,
   giftedModule,
   lavaModule,
+  wordsModule,
 ]
 
 export const upcoming: UpcomingGame[] = []

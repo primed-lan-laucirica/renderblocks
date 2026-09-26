@@ -31,6 +31,7 @@
     "@renderblocks/subtract": "workspace:*",
     "@renderblocks/tasks": "workspace:*",
     "@renderblocks/times": "workspace:*",
+    "@renderblocks/words": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
