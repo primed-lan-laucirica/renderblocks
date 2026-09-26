@@ -20,25 +20,13 @@ describe('word data', () => {
     for (const w of WORDS) expect(w.parts.map((p) => p.g).join('')).toBe(w.word)
   })
 
-  it('gives every sounding part a sound clip, and silent parts none', () => {
-    for (const w of WORDS) {
-      for (const p of w.parts) {
-        if (p.silent) expect(p.sound).toBeNull()
-        else {
-          expect(p.sound, `${w.word}: ${p.g}`).toBeTruthy()
-          expect(existsSync(join(PUBLIC, 'sounds', `${p.sound}.mp3`)), `${p.sound}.mp3`).toBe(true)
-        }
-      }
-      expect(existsSync(join(PUBLIC, 'audio', `${w.word}.mp3`)), `${w.word}.mp3`).toBe(true)
-    }
+  it('has a recording for every word', () => {
+    for (const w of WORDS) expect(existsSync(join(PUBLIC, 'audio', `${w.word}.mp3`)), `${w.word}.mp3`).toBe(true)
   })
 
-  it('says stops once and lets vowels and other sounds be held', () => {
+  it('marks tricky and silent parts', () => {
     const part = (word: string, g: string) => WORDS.find((w) => w.word === word)!.parts.find((p) => p.g === g)!
-    expect(part('at', 't').stretch).toBe(false)
-    expect(part('said', 'd').stretch).toBe(false)
-    expect(part('see', 's').stretch).toBe(true)
-    expect(part('see', 'ee').stretch).toBe(true)
     expect(part('said', 'ai').heart).toBe(true)
+    expect(part('like', 'e').silent).toBe(true)
   })
 })

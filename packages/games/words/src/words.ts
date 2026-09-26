@@ -9,10 +9,6 @@ export interface Part {
   heart: boolean
   /** No sound of its own (the e in like). */
   silent: boolean
-  /** A sound that can be held ("mmm", "aaa"); stops like t and p are said once. */
-  stretch: boolean
-  /** Its sound clip in /games/words/sounds (made locally with Kokoro), or null if silent. */
-  sound: string | null
 }
 
 export interface Word {

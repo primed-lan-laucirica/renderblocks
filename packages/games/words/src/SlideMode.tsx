@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { playWord, type Voice } from './audio'
+import { useRef, useState } from 'react'
+import { playWord } from './audio'
 import { PartLetters, WORD_FONT } from './WordParts'
 import type { Word } from './words'
 
@@ -17,12 +17,9 @@ export function SlideMode({ word }: { word: Word }) {
   const [dragging, setDragging] = useState(false)
   const [lit, setLit] = useState<number | null>(null)
   const [done, setDone] = useState(false)
-  const voice = useRef<Voice | null>(null)
   const current = useRef<number | null>(null)
   const finished = useRef(false)
 
-  // (Remounted for each word, so it always starts fresh.)
-  useEffect(() => () => voice.current?.stop(), [])
 
   const enter = (i: number | null) => {
     if (i === current.current) return
@@ -76,10 +73,7 @@ export function SlideMode({ word }: { word: Word }) {
     <div className="flex flex-col items-center gap-6 w-full">
       <button
         type="button"
-        onClick={() => {
-          voice.current?.stop(0.03)
-          voice.current = playWord(word.word)
-        }}
+        onClick={() => playWord(word.word)}
         aria-label={`Say ${word.word}`}
         className={`flex items-end ${WORD_FONT} ${done ? 'animate-pulse' : ''}`}
       >

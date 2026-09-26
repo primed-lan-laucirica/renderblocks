@@ -7,9 +7,7 @@
     "g": "a",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    }
   ]
  },
@@ -21,25 +19,19 @@
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -51,17 +43,13 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "or",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao-r"
+    "silent": false
    }
   ]
  },
@@ -73,33 +61,25 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "v",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "v"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": true,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -111,17 +91,13 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    }
   ]
  },
@@ -133,9 +109,7 @@
     "g": "I",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    }
   ]
  },
@@ -147,17 +121,13 @@
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -169,17 +139,13 @@
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "z"
+    "silent": false
    }
   ]
  },
@@ -191,17 +157,13 @@
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -213,17 +175,13 @@
     "g": "o",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "f",
     "vowel": false,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "v"
+    "silent": false
    }
   ]
  },
@@ -235,25 +193,19 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "ay",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    }
   ]
  },
@@ -265,25 +217,19 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "ai",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -295,25 +241,19 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -325,17 +265,13 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    }
   ]
  },
@@ -347,17 +283,13 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "uw"
+    "silent": false
    }
   ]
  },
@@ -369,17 +301,13 @@
     "g": "y",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "y"
+    "silent": false
    },
    {
     "g": "ou",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "uw"
+    "silent": false
    }
   ]
  },
@@ -391,17 +319,13 @@
     "g": "ar",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa-r"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": true,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -413,17 +337,13 @@
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "z"
+    "silent": false
    }
   ]
  },
@@ -435,25 +355,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -465,17 +379,13 @@
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    }
   ]
  },
@@ -487,25 +397,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -517,17 +421,13 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "ere",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy-r"
+    "silent": false
    }
   ]
  },
@@ -539,25 +439,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "z"
+    "silent": false
    }
   ]
  },
@@ -569,33 +463,25 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    },
    {
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -607,17 +493,13 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "y",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    }
   ]
  },
@@ -629,17 +511,13 @@
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -651,17 +529,13 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "ee",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    }
   ]
  },
@@ -673,17 +547,13 @@
     "g": "sh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "sh"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    }
   ]
  },
@@ -695,17 +565,13 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "ey",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    }
   ]
  },
@@ -717,25 +583,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "z"
+    "silent": false
    }
   ]
  },
@@ -747,17 +607,13 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    }
   ]
  },
@@ -769,25 +625,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    }
   ]
  },
@@ -799,17 +649,13 @@
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao"
+    "silent": false
    },
    {
     "g": "ll",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    }
   ]
  },
@@ -821,17 +667,13 @@
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -843,17 +685,13 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    }
   ]
  },
@@ -865,17 +703,13 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "y",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    }
   ]
  },
@@ -887,33 +721,25 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -925,17 +751,13 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "er",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "er"
+    "silent": false
    }
   ]
  },
@@ -947,25 +769,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -977,25 +793,19 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "oo",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "uh"
+    "silent": false
    },
    {
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    }
   ]
  },
@@ -1007,25 +817,19 @@
     "g": "o",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "w-ah"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": true,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -1037,9 +841,7 @@
     "g": "or",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao-r"
+    "silent": false
    }
   ]
  },
@@ -1051,33 +853,25 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": true,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -1089,17 +883,13 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "ere",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh-r"
+    "silent": false
    }
   ]
  },
@@ -1111,25 +901,19 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    }
   ]
  },
@@ -1141,17 +925,13 @@
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -1163,25 +943,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "or",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "er"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -1193,17 +967,13 @@
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -1215,33 +985,25 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -1253,25 +1015,19 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -1283,33 +1039,25 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "ou",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "uh"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": true,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -1321,17 +1069,13 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "uw"
+    "silent": false
    }
   ]
  },
@@ -1343,25 +1087,19 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "ow",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aw"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -1373,33 +1111,25 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "tt",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "le",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah-l"
+    "silent": false
    }
   ]
  },
@@ -1411,25 +1141,19 @@
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -1441,17 +1165,13 @@
     "g": "ou",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aw"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -1463,25 +1183,19 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -1493,25 +1207,19 @@
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "y-uw"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -1523,17 +1231,13 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "ere",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "er"
+    "silent": false
    }
   ]
  },
@@ -1545,25 +1249,19 @@
     "g": "wh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -1575,25 +1273,19 @@
     "g": "wh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -1605,17 +1297,13 @@
     "g": "y",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "y"
+    "silent": false
    },
    {
     "g": "our",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao-r"
+    "silent": false
    }
   ]
  },
@@ -1627,33 +1315,25 @@
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "ou",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aw"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -1665,17 +1345,13 @@
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -1687,25 +1363,19 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -1717,17 +1387,13 @@
     "g": "ea",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    },
    {
     "g": "ch",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "ch"
+    "silent": false
    }
   ]
  },
@@ -1739,25 +1405,19 @@
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -1769,17 +1429,13 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "ow",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aw"
+    "silent": false
    }
   ]
  },
@@ -1791,17 +1447,13 @@
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    }
   ]
  },
@@ -1813,33 +1465,25 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "y",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    }
   ]
  },
@@ -1851,25 +1495,19 @@
     "g": "o",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "er",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "er"
+    "silent": false
    }
   ]
  },
@@ -1881,17 +1519,13 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    }
   ]
  },
@@ -1903,17 +1537,13 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "eir",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh-r"
+    "silent": false
    }
   ]
  },
@@ -1925,25 +1555,19 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "dh"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -1955,25 +1579,19 @@
     "g": "wh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "ch",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "ch"
+    "silent": false
    }
   ]
  },
@@ -1985,25 +1603,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "ll",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    }
   ]
  },
@@ -2015,33 +1627,25 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "ou",
     "vowel": true,
     "heart": true,
-    "silent": false,
-    "stretch": true,
-    "sound": "uh"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": true,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -2053,17 +1657,13 @@
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "ow",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aw"
+    "silent": false
    }
   ]
  },
@@ -2075,25 +1675,19 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -2105,25 +1699,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -2135,25 +1723,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -2165,25 +1747,19 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -2195,25 +1771,19 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -2225,25 +1795,19 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -2255,25 +1819,19 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -2285,25 +1843,19 @@
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -2315,25 +1867,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -2345,25 +1891,19 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -2375,25 +1915,19 @@
     "g": "j",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "jh"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -2405,25 +1939,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -2435,25 +1963,19 @@
     "g": "v",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "v"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -2465,25 +1987,19 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -2495,25 +2011,19 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -2525,25 +2035,19 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -2555,25 +2059,19 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -2585,25 +2083,19 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -2615,25 +2107,19 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -2645,25 +2131,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -2675,25 +2155,19 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -2705,25 +2179,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -2735,25 +2203,19 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -2765,25 +2227,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -2795,25 +2251,19 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -2825,25 +2275,19 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -2855,25 +2299,19 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -2885,25 +2323,19 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -2915,25 +2347,19 @@
     "g": "z",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "z"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -2945,25 +2371,19 @@
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -2975,25 +2395,19 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -3005,25 +2419,19 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -3035,25 +2443,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -3065,25 +2467,19 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -3095,25 +2491,19 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -3125,25 +2515,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -3155,25 +2539,19 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "x",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k-s"
+    "silent": false
    }
   ]
  },
@@ -3185,25 +2563,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "x",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k-s"
+    "silent": false
    }
   ]
  },
@@ -3215,25 +2587,19 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -3245,25 +2611,19 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -3275,25 +2635,19 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -3305,25 +2659,19 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -3335,25 +2683,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -3365,25 +2707,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -3395,25 +2731,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -3425,25 +2755,19 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -3455,25 +2779,19 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -3485,25 +2803,19 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -3515,25 +2827,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    }
   ]
  },
@@ -3545,25 +2851,19 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    }
   ]
  },
@@ -3575,25 +2875,19 @@
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -3605,25 +2899,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -3635,25 +2923,19 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -3665,25 +2947,19 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -3695,25 +2971,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -3725,25 +2995,19 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -3755,25 +3019,19 @@
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -3785,25 +3043,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -3815,25 +3067,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    }
   ]
  },
@@ -3845,25 +3091,19 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -3875,25 +3115,19 @@
     "g": "sh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "sh"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -3905,25 +3139,19 @@
     "g": "sh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "sh"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -3935,25 +3163,19 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "sh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "sh"
+    "silent": false
    }
   ]
  },
@@ -3965,25 +3187,19 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "sh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "sh"
+    "silent": false
    }
   ]
  },
@@ -3995,25 +3211,19 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "sh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "sh"
+    "silent": false
    }
   ]
  },
@@ -4025,25 +3235,19 @@
     "g": "ch",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "ch"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -4055,25 +3259,19 @@
     "g": "ch",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "ch"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -4085,25 +3283,19 @@
     "g": "ch",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "ch"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -4115,25 +3307,19 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "ch",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "ch"
+    "silent": false
    }
   ]
  },
@@ -4145,25 +3331,19 @@
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "th"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -4175,25 +3355,19 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao"
+    "silent": false
    },
    {
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "th"
+    "silent": false
    }
   ]
  },
@@ -4205,25 +3379,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "th",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "th"
+    "silent": false
    }
   ]
  },
@@ -4235,25 +3403,19 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "ck",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    }
   ]
  },
@@ -4265,25 +3427,19 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "ck",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    }
   ]
  },
@@ -4295,25 +3451,19 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "ck",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    }
   ]
  },
@@ -4325,25 +3475,19 @@
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "ck",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    }
   ]
  },
@@ -4355,25 +3499,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "ll",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    }
   ]
  },
@@ -4385,25 +3523,19 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "ll",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    }
   ]
  },
@@ -4415,25 +3547,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "ll",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    }
   ]
  },
@@ -4445,25 +3571,19 @@
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "ss",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    }
   ]
  },
@@ -4475,33 +3595,25 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -4513,33 +3625,25 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -4551,33 +3655,25 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    }
   ]
  },
@@ -4589,33 +3685,25 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    }
   ]
  },
@@ -4627,33 +3715,25 @@
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -4665,33 +3745,25 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -4703,33 +3775,25 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -4741,33 +3805,25 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -4779,33 +3835,25 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -4817,33 +3865,25 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -4855,33 +3895,25 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -4893,33 +3925,25 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -4931,33 +3955,25 @@
     "g": "j",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "jh"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ah"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -4969,33 +3985,25 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -5007,33 +4015,25 @@
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -5045,33 +4045,25 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    }
   ]
  },
@@ -5083,33 +4075,25 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -5121,33 +4105,25 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ae"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -5159,33 +4135,25 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "eh"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -5197,33 +4165,25 @@
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ih"
+    "silent": false
    },
    {
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -5235,33 +4195,25 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5273,33 +4225,25 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5311,33 +4255,25 @@
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5349,33 +4285,25 @@
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5387,33 +4315,25 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    },
    {
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5425,33 +4345,25 @@
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5463,33 +4375,25 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5501,33 +4405,25 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5539,33 +4435,25 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    },
    {
     "g": "v",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "v"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5577,33 +4465,25 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5615,33 +4495,25 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5653,33 +4525,25 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5691,33 +4555,25 @@
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "z"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5729,33 +4585,25 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "y-uw"
+    "silent": false
    },
    {
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5767,33 +4615,25 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "uw"
+    "silent": false
    },
    {
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5805,33 +4645,25 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "y-uw"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5843,33 +4675,25 @@
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "u",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "y-uw"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5881,33 +4705,25 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "o",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5919,33 +4735,25 @@
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    },
    {
     "g": "i",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ay"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5957,33 +4765,25 @@
     "g": "w",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "w"
+    "silent": false
    },
    {
     "g": "a",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "v",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "v"
+    "silent": false
    },
    {
     "g": "e",
     "vowel": false,
     "heart": false,
-    "silent": true,
-    "stretch": false,
-    "sound": null
+    "silent": true
    }
   ]
  },
@@ -5995,25 +4795,19 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "ai",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -6025,25 +4819,19 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "ai",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    }
   ]
  },
@@ -6055,33 +4843,25 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    },
    {
     "g": "ai",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ey"
+    "silent": false
    },
    {
     "g": "l",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "l"
+    "silent": false
    }
   ]
  },
@@ -6093,25 +4873,19 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "ee",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -6123,17 +4897,13 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "ee",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    }
   ]
  },
@@ -6145,25 +4915,19 @@
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "ee",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    }
   ]
  },
@@ -6175,25 +4939,19 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "ee",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -6205,25 +4963,19 @@
     "g": "sh",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "sh"
+    "silent": false
    },
    {
     "g": "ee",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "iy"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -6235,25 +4987,19 @@
     "g": "b",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "b"
+    "silent": false
    },
    {
     "g": "oa",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -6265,25 +5011,19 @@
     "g": "g",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "g"
+    "silent": false
    },
    {
     "g": "oa",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    }
   ]
  },
@@ -6295,25 +5035,19 @@
     "g": "r",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "r"
+    "silent": false
    },
    {
     "g": "oa",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "d",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "d"
+    "silent": false
    }
   ]
  },
@@ -6325,25 +5059,19 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "oa",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ow"
+    "silent": false
    },
    {
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    }
   ]
  },
@@ -6355,17 +5083,13 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "ar",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa-r"
+    "silent": false
    }
   ]
  },
@@ -6377,25 +5101,19 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "ar",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa-r"
+    "silent": false
    }
   ]
  },
@@ -6407,25 +5125,19 @@
     "g": "p",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "p"
+    "silent": false
    },
    {
     "g": "ar",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa-r"
+    "silent": false
    },
    {
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    }
   ]
  },
@@ -6437,25 +5149,19 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "ar",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "aa-r"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  },
@@ -6467,25 +5173,19 @@
     "g": "f",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "f"
+    "silent": false
    },
    {
     "g": "or",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao-r"
+    "silent": false
    },
    {
     "g": "k",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    }
   ]
  },
@@ -6497,25 +5197,19 @@
     "g": "c",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "k"
+    "silent": false
    },
    {
     "g": "or",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao-r"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -6527,25 +5221,19 @@
     "g": "h",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "hh"
+    "silent": false
    },
    {
     "g": "or",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao-r"
+    "silent": false
    },
    {
     "g": "n",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "n"
+    "silent": false
    }
   ]
  },
@@ -6557,33 +5245,25 @@
     "g": "s",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "s"
+    "silent": false
    },
    {
     "g": "t",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": false,
-    "sound": "t"
+    "silent": false
    },
    {
     "g": "or",
     "vowel": true,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "ao-r"
+    "silent": false
    },
    {
     "g": "m",
     "vowel": false,
     "heart": false,
-    "silent": false,
-    "stretch": true,
-    "sound": "m"
+    "silent": false
    }
   ]
  }

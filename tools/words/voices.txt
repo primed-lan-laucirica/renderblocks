@@ -1,8 +1,6 @@
-# Which voice says each WHOLE word. Default: ElevenLabs Alexandra at 0.75 speed.
-# Words listed here failed the recognizer check that way (usually a blurred
-# vowel — fatal for sounding out) and use what passed instead:
-#   elevenlabs-normal  ElevenLabs at normal speed (slowing blurred the vowel)
-#   kokoro             Kokoro from the exact dictionary pronunciation (made by sounds.py)
-# fin, lime and mule failed every voice's check; Kokoro is right by construction — check by ear.
-elevenlabs-normal | cup lip pot pup tub tube
-kokoro | rat nap bag tag jam ham van pan wag sun bun hug nut ten ship chin rock hill swim trip belt gate bike rope soap car fin lime mule
+# Which voice says each WHOLE word — the only audio the Words app plays.
+# Default: ElevenLabs Alexandra at normal speed (clearest). Words listed
+# here kept failing the recognizer check with ElevenLabs (3 takes) and use
+# Kokoro, spoken from the exact dictionary pronunciation (made by sounds.py).
+# a, an and mule failed every voice's check; they keep ElevenLabs — check by ear.
+kokoro | rat van pan wag bun ten

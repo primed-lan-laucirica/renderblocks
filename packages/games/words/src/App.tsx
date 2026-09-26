@@ -1,27 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
-import { playWord, preload, stopAll, unlockAudio } from './audio'
-import { BlendMode } from './BlendMode'
+import { preload, stopAll, unlockAudio } from './audio'
 import { SlideMode } from './SlideMode'
-import { TapMode } from './TapMode'
 import { LEVELS, levelOf, type Level } from './words'
-
-type Mode = 'slide' | 'tap' | 'blend'
-
-/** Ways to sound a word out, side by side — which one he takes to is the experiment. */
-const MODES: Array<{ id: Mode; icon: string; name: string }> = [
-  { id: 'slide', icon: '👉', name: 'Slide' },
-  { id: 'tap', icon: '👆', name: 'Tap' },
-  { id: 'blend', icon: '🧲', name: 'Blend' },
-]
 
 function App({ services }: GameProps) {
   const { storage } = services
   const [level, setLevel] = useState<number | null>(null)
-  const [mode, setMode] = useState<Mode>(() => (storage.get('mode') as Mode) || 'slide')
   const [index, setIndex] = useState(0)
-
-  useEffect(() => storage.set('mode', mode), [storage, mode])
 
   // Back: word screen -> levels -> home.
   useEffect(
@@ -39,8 +25,8 @@ function App({ services }: GameProps) {
   const word = words[index]
   useEffect(() => {
     // Have this word and the next ready to play.
-    if (word) preload(word)
-    if (words[index + 1]) preload(words[index + 1])
+    if (word) preload(word.word)
+    if (words[index + 1]) preload(words[index + 1].word)
   }, [word, words, index])
 
   const open = (lvl: number) => {
@@ -103,20 +89,6 @@ function App({ services }: GameProps) {
           ←
         </button>
         <div className="text-lg font-extrabold text-sky-700">Level {level}</div>
-        <div className="ml-auto flex gap-2">
-          {MODES.map((m) => (
-            <button
-              key={m.id}
-              type="button"
-              onClick={() => (stopAll(), setMode(m.id))}
-              className={`px-4 py-2 rounded-2xl text-lg font-extrabold border-4 ${
-                mode === m.id ? 'bg-sky-500 text-white border-sky-300' : 'bg-white text-sky-700 border-transparent shadow'
-              }`}
-            >
-              {m.icon} {m.name}
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="flex-1 min-h-0 flex items-center justify-center gap-2 px-2">
@@ -124,24 +96,14 @@ function App({ services }: GameProps) {
           ‹
         </button>
         <div className="flex-1 min-w-0 flex justify-center">
-          {mode === 'slide' && <SlideMode key={word.word} word={word} />}
-          {mode === 'tap' && <TapMode key={word.word} word={word} />}
-          {mode === 'blend' && <BlendMode key={word.word} word={word} />}
+          <SlideMode key={word.word} word={word} />
         </div>
         <button type="button" onClick={() => go(1)} className={arrow} aria-label="Next word">
           ›
         </button>
       </div>
 
-      <div className="flex items-center justify-center gap-4 pb-6">
-        <button
-          type="button"
-          onClick={() => playWord(word.word)}
-          className="px-6 py-3 rounded-2xl bg-white shadow-md text-3xl active:bg-sky-50"
-          aria-label="Hear the word"
-        >
-          🔊
-        </button>
+      <div className="flex items-center justify-center pb-6">
         <div className="text-lg font-bold text-slate-400 tabular-nums">
           {index + 1} / {words.length}
         </div>

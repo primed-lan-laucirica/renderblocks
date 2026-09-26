@@ -1,15 +1,9 @@
 #!/usr/bin/env python3
 """
-Individual sounds for the Words app, generated locally with Kokoro (no API).
-
-Also speaks the WHOLE words voices.txt assigns to Kokoro (from their exact
-pronunciation), into public/games/words/audio/.
-
-Each word part in parts.txt gets its sound from the word's dictionary
-pronunciation (CMU, in sight_words.csv): one sound per part, except letter
-groups that make two (or = aw+r, le = u+l, the o in "one" = w+u …). Every
-distinct sound is spoken once by Kokoro from its exact phonetic spelling
-and shared by all words that use it.
+Whole-word recordings made locally with Kokoro (no API), for the words
+voices.txt assigns to it — the few ElevenLabs keeps saying wrong. Each is
+spoken from the word's exact dictionary pronunciation (CMU), so the vowel
+is right by construction.
 
 Needs `pip install kokoro-onnx soundfile` and the model files
 (kokoro-v1.0.onnx, voices-v1.0.bin from
@@ -18,7 +12,6 @@ https://github.com/thewh1teagle/kokoro-onnx/releases) in $KOKORO_DIR.
     KOKORO_DIR=~/kokoro python3 tools/words/sounds.py [--force]
 """
 import csv
-import json
 import os
 import subprocess
 import sys
@@ -26,7 +19,7 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.join(HERE, '..', '..')
-OUT_DIR = os.path.join(REPO, 'packages', 'app', 'public', 'games', 'words', 'sounds')
+WORD_DIR = os.path.join(REPO, 'packages', 'app', 'public', 'games', 'words', 'audio')
 VOICE = 'af_heart'
 
 ARPA_IPA = {
@@ -37,46 +30,10 @@ ARPA_IPA = {
     'W': 'w', 'Y': 'j', 'Z': 'z', 'ZH': 'ʒ',
 }
 VOWELS = {'AA', 'AE', 'AH', 'AO', 'AW', 'AY', 'EH', 'ER', 'EY', 'IH', 'IY', 'OW', 'OY', 'UH', 'UW'}
-# Parts that make two sounds.
-TWO_SOUNDS = {'or', 'ar', 'ere', 'eir', 'our', 'le'}
-TWO_SOUNDS_IN = {('one', 'o'), ('use', 'u')}
-
-
-def part_sounds():
-    """[(word, [arpabet list per sounding part])] for every word in parts.txt."""
-    # Sight words, then the sound-it-out words (phonemes_extra.csv, from CMU too).
-    cmu = pronunciations()
-    out = []
-    for line in open(os.path.join(HERE, 'parts.txt'), encoding='utf-8'):
-        line = line.strip()
-        if not line or line.startswith('#'):
-            continue
-        _, word, spec = [s.strip() for s in line.split('|')]
-        ph = list(cmu[word])
-        per_part = []
-        for tok in spec.split():
-            g = tok.rstrip('^!_')
-            if '_' in tok:
-                per_part.append([])
-                continue
-            # A letter group makes two sounds only if the second really is its r / l
-            # ("for" = f + aw-r, but in "word" the "or" is the single sound "er").
-            two = (
-                (g in TWO_SOUNDS and len(ph) > 1 and ph[1] == ('L' if g == 'le' else 'R'))
-                or (word, g) in TWO_SOUNDS_IN
-                or g == 'x'  # k + s
-                or (g == 'u' and ph[:2] == ['Y', 'UW'])  # the "yoo" in cube, cute, use
-            )
-            n = 2 if two else 1
-            per_part.append(ph[:n])
-            ph = ph[n:]
-            assert per_part[-1], f'{word}: part "{g}" has no sound'
-        assert not ph, f'{word}: sounds left over {ph}'
-        out.append((word, per_part))
-    return out
 
 
 def pronunciations():
+    """{word: [ARPAbet]}: sight words, then the sound-it-out words (both from CMU)."""
     cmu = {}
     for name in ('sight_words.csv', 'phonemes_extra.csv'):
         for r in csv.DictReader(open(os.path.join(HERE, name), encoding='utf-8-sig')):
@@ -85,7 +42,7 @@ def pronunciations():
 
 
 def word_voices():
-    """{word: 'elevenlabs-normal' | 'kokoro'} from voices.txt (everything else: ElevenLabs, slowed)."""
+    """{word: 'kokoro'} from voices.txt (every other word: ElevenLabs)."""
     out = {}
     for line in open(os.path.join(HERE, 'voices.txt'), encoding='utf-8'):
         line = line.strip()
@@ -96,12 +53,8 @@ def word_voices():
 
 
 def ipa(arpa):
-    """Phonetic spelling for Kokoro; a vowel gets stress so it is said fully."""
+    """Phonetic spelling for Kokoro; each vowel gets stress so it is said fully."""
     return ''.join(('ˈ' if a in VOWELS else '') + ARPA_IPA[a] for a in arpa)
-
-
-def sound_id(arpa):
-    return '-'.join(a.lower() for a in arpa)
 
 
 def main():
@@ -110,37 +63,24 @@ def main():
     force = '--force' in sys.argv
     kdir = os.path.expanduser(os.environ.get('KOKORO_DIR', '~/kokoro'))
     k = Kokoro(os.path.join(kdir, 'kokoro-v1.0.onnx'), os.path.join(kdir, 'voices-v1.0.bin'))
-    os.makedirs(OUT_DIR, exist_ok=True)
-    def speak(phonemes, mp3, speed, lead):
-        samples, rate = k.create(phonemes, voice=VOICE, speed=speed, is_phonemes=True)
+    cmu = pronunciations()
+    made = 0
+    for word, voice in sorted(word_voices().items()):
+        mp3 = os.path.join(WORD_DIR, f'{word}.mp3')
+        if voice != 'kokoro' or (os.path.exists(mp3) and not force):
+            continue
+        samples, rate = k.create(ipa(cmu[word]), voice=VOICE, speed=0.85, is_phonemes=True)
         wav = os.path.join(tempfile.mkdtemp(), 'x.wav')
         sf.write(wav, samples, rate)
         # Trim silence at both ends only, level, house format.
         subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', wav, '-af',
-                        f'silenceremove=start_periods=1:start_threshold=-50dB:start_silence={lead},areverse,'
-                        f'silenceremove=start_periods=1:start_threshold=-50dB:start_silence={lead + 0.02},areverse,'
+                        'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03,areverse,'
+                        'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05,areverse,'
                         'loudnorm=I=-16:TP=-1.5:LRA=11',
                         '-ar', '48000', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', mp3], check=True)
-
-    needed = {sound_id(a): a for _, parts in part_sounds() for a in parts if a}
-    for sid, arpa in sorted(needed.items()):
-        mp3 = os.path.join(OUT_DIR, f'{sid}.mp3')
-        if os.path.exists(mp3) and not force:
-            continue
-        speak(ipa(arpa), mp3, 0.8, 0.01)
-        print(f'  {sid:10} /{ipa(arpa)}/', flush=True)
-
-    # Whole words voices.txt gives to Kokoro.
-    cmu = pronunciations()
-    word_dir = os.path.join(REPO, 'packages', 'app', 'public', 'games', 'words', 'audio')
-    for word, voice in sorted(word_voices().items()):
-        mp3 = os.path.join(word_dir, f'{word}.mp3')
-        if voice != 'kokoro' or (os.path.exists(mp3) and not force):
-            continue
-        speak(ipa(cmu[word]), mp3, 0.85, 0.03)
-        print(f'  word "{word}" /{ipa(cmu[word])}/', flush=True)
-    json.dump({sid: ipa(a) for sid, a in sorted(needed.items())}, open(os.path.join(OUT_DIR, 'index.json'), 'w'), indent=1)
-    print(f'{len(needed)} sounds → {os.path.relpath(OUT_DIR, REPO)}')
+        print(f'  "{word}" /{ipa(cmu[word])}/', flush=True)
+        made += 1
+    print(f'{made} Kokoro word recordings made')
 
 
 if __name__ == '__main__':
