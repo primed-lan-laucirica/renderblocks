@@ -11,6 +11,8 @@ export type SetId =
   | 'squares'
   | 'triangular'
   | 'cubes'
+  /** The common log table: 1–9, 10–90, 100–900 … — every step of each decade. */
+  | 'logs'
   /** Powers of N, 2–10 ("pow3" = 1, 3, 9, 27 …) — the logarithmic sets. */
   | `pow${number}`
   /** Multiples of N, 1–12 ("mult7" = 7, 14, 21 …) — skip counting. */
@@ -59,6 +61,7 @@ export const SETS: Array<{ id: SetId; name: string; sample: string }> = [
   { id: 'squares', name: 'Square Club', sample: '1 4 9 16 25' },
   { id: 'triangular', name: 'Step Squad', sample: '1 3 6 10 15' },
   { id: 'cubes', name: 'Cube Club', sample: '1 8 27 64' },
+  { id: 'logs', name: 'Common logs', sample: '1 2 … 10 20' },
 ]
 
 export interface NumberRange {
@@ -206,6 +209,8 @@ export function isMember(set: SetId, n: number): boolean {
       return n >= 1 && tri(triIndex(n)) === n
     case 'cubes':
       return n >= 1 && icbrt(n) ** 3 === n
+    case 'logs':
+      return n >= 1 && n % powAtMost(10, n) === 0
     default:
       return false
   }
@@ -240,6 +245,11 @@ function firstAtOrAbove(set: SetId, x: number): number {
       return tri(triIndex(Math.max(x, 1) - 1) + 1)
     case 'cubes':
       return (icbrt(Math.max(x, 1) - 1) + 1) ** 3
+    case 'logs': {
+      if (x <= 1) return 1
+      const p = powAtMost(10, x)
+      return Math.ceil(x / p) * p // 10p when x is past 9p
+    }
     default:
       return x
   }
@@ -267,6 +277,11 @@ function lastAtOrBelow(set: SetId, x: number): number | null {
       return x < 1 ? null : tri(triIndex(x))
     case 'cubes':
       return x < 1 ? null : icbrt(x) ** 3
+    case 'logs': {
+      if (x < 1) return null
+      const p = powAtMost(10, x)
+      return Math.floor(x / p) * p
+    }
     default:
       return x
   }
@@ -282,7 +297,7 @@ export interface Notation {
 /**
  * The notation a set's block wears (the educational point of those sets):
  * Square Club 49 → 7², Step Squad 10 → T₄, Powers of 10 1000 → 10³,
- * Powers of 3 81 → 3⁴. Other sets, and non-members, have none.
+ * Powers of 3 81 → 3⁴, Common logs 300 → 10²·⁴⁸. Other sets, and non-members, have none.
  *
  * Times tables show the multiplication itself. Big ranges skip most of the
  * table (700, then 1,001), so without "7 × 143" the numbers read as
@@ -301,6 +316,13 @@ export function notation(set: SetId, n: number): Notation | null {
       return { base: 'T', sub: triIndex(n).toLocaleString('en-US') }
     case 'cubes':
       return { base: icbrt(n).toLocaleString('en-US'), sup: '3' }
+    case 'logs': {
+      // A logarithm is the exponent: 300 = 10^2.48. The whole part counts the
+      // decade and the decimal repeats in each one (2 → .30, 20 → 1.30), the
+      // pattern a log table shows. Exact powers stay whole (10³, never 10^2.99…).
+      const k = powIndex(10, powAtMost(10, n))
+      return { base: '10', sup: powAtMost(10, n) === n ? String(k) : (k + Math.log10(n / 10 ** k)).toFixed(2) }
+    }
     default:
       return null
   }
@@ -348,6 +370,10 @@ function bandPicks(set: SetId, a: number, b: number, k: number): { anchor: numbe
         if (v <= b) picks.push(v)
       }
     }
+  } else if (set === 'logs') {
+    // The band's whole row of the table: 1000, 2000 … 9000.
+    for (let d = 1; d <= 9; d++) if (d * base >= a && d * base <= b) picks.push(d * base)
+    anchor = picks[0] ?? null
   } else if (set === 'primes') {
     for (let i = 0; i < PER_BAND; i++) {
       const v = nextPrime(a + ((b - a) * i) / (PER_BAND - 1))

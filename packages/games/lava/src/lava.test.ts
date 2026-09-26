@@ -64,6 +64,19 @@ describe('set membership', () => {
     expect(notation('pow7', 1)).toEqual({ base: '7', sup: '0' })
     expect(notation('pow3', 27)).toEqual({ base: '3', sup: '3' })
     expect(notation('pow3', 28)).toBeNull()
+    // Common logs: the number as a power of 10; the decimal repeats each decade.
+    expect([1, 2, 3, 9, 10, 20, 300, 1000, 1_000_000_000_000].map((n) => notation('logs', n)?.sup)).toEqual([
+      '0',
+      '0.30',
+      '0.48',
+      '0.95',
+      '1',
+      '1.30',
+      '2.48',
+      '3',
+      '12',
+    ])
+    expect(notation('logs', 11)).toBeNull()
     expect(notation('cubes', 27)).toEqual({ base: '3', sup: '3' })
     expect(notation('cubes', 1_000_000_000_000)).toEqual({ base: '10,000', sup: '3' })
     // Times tables show the multiplication, so skipped steps can't mislead.
@@ -140,6 +153,11 @@ describe('spawnNumbers', () => {
     expect(check('pow2', -3, 1000)).toEqual([1, 2, 4, 8, 16, 32, 64, 128, 256, 512])
     expect(check('pow10', 5, 5000)).toEqual([10, 100, 1000])
     expect(check('pow3', 1, 1000)).toEqual([1, 3, 9, 27, 81, 243, 729])
+    expect(check('logs', 1, 100)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+    expect(check('logs', 15, 250)).toEqual([20, 30, 40, 50, 60, 70, 80, 90, 100, 200])
+    const logs = check('logs', 1, 1_000_000_000_000)
+    expect(logs.every((v) => isMember('logs', v))).toBe(true)
+    for (let k = 0; k <= 12; k++) expect(logs).toContain(10 ** k) // every decade starts
     expect(check('pow5', 2, 1_000_000)).toEqual([5, 25, 125, 625, 3125, 15625, 78125, 390625])
     for (const b of [2, 3, 4, 5, 6, 7, 8, 9, 10]) {
       const out = check(`pow${b}`, 1, 1_000_000_000_000)
@@ -149,7 +167,7 @@ describe('spawnNumbers', () => {
   })
 
   it('handles every set and preset', () => {
-    for (const set of ['integers', 'odds', 'evens', 'primes', 'squares', 'triangular', 'cubes', 'pow10', 'pow2', 'pow3', 'pow7', 'mult7', 'mult12'] as SetId[]) {
+    for (const set of ['integers', 'odds', 'evens', 'primes', 'squares', 'triangular', 'cubes', 'pow10', 'pow2', 'pow3', 'pow7', 'logs', 'mult7', 'mult12'] as SetId[]) {
       for (const [from, to] of [
         [1, 10],
         [1, 25],
