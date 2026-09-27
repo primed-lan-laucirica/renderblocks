@@ -1,6 +1,8 @@
 # Which voice says each WHOLE word — the only audio the Words app plays.
-# Default: ElevenLabs Alexandra at normal speed (clearest). Words listed
-# here kept failing the recognizer check with ElevenLabs (3 takes) and use
-# Kokoro, spoken from the exact dictionary pronunciation (made by sounds.py).
-# a, an and mule failed every voice's check; they keep ElevenLabs — check by ear.
-kokoro | rat van pan wag bun ten
+# Default: ElevenLabs Alexandra at normal speed (clearest), spoken from the
+# word's exact dictionary pronunciation (build.py). List a word here to have
+# Kokoro say it instead (made by sounds.py), e.g. if it still sounds wrong
+# after review:
+#   kokoro | rat van
+# Sep 27, 2026: rat van pan wag bun ten moved back to ElevenLabs, now that it
+# is given the pronunciation, so every word is in one voice.

@@ -60,6 +60,7 @@ def ipa(arpa):
 def main():
     from kokoro_onnx import Kokoro
     import soundfile as sf
+    from level import level
     force = '--force' in sys.argv
     kdir = os.path.expanduser(os.environ.get('KOKORO_DIR', '~/kokoro'))
     k = Kokoro(os.path.join(kdir, 'kokoro-v1.0.onnx'), os.path.join(kdir, 'voices-v1.0.bin'))
@@ -72,12 +73,13 @@ def main():
         samples, rate = k.create(ipa(cmu[word]), voice=VOICE, speed=0.85, is_phonemes=True)
         wav = os.path.join(tempfile.mkdtemp(), 'x.wav')
         sf.write(wav, samples, rate)
-        # Trim silence at both ends only, level, house format.
+        # Trim silence at both ends only, then level (house format).
+        trimmed = wav[:-4] + '.trim.wav'
         subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', wav, '-af',
                         'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03,areverse,'
-                        'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05,areverse,'
-                        'loudnorm=I=-16:TP=-1.5:LRA=11',
-                        '-ar', '48000', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', mp3], check=True)
+                        'silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05,areverse',
+                        trimmed], check=True)
+        level(mp3, src=trimmed)
         print(f'  "{word}" /{ipa(cmu[word])}/', flush=True)
         made += 1
     print(f'{made} Kokoro word recordings made')

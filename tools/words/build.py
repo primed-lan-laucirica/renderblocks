@@ -5,9 +5,10 @@ Build the Words app's data and whole-word audio (build time only — the app nev
 For each word in parts.txt:
   1. Its whole-word recording — the only audio the app plays: ElevenLabs
      (Alexandra, normal speed, for clarity), or Kokoro where voices.txt says
-     so (made by sounds.py; used only for words ElevenLabs keeps getting
-     wrong). Levelled, house format (MP3 64 kbps mono). ElevenLabs'
-     per-letter timestamps are cached in alignment/ for later experiments.
+     so (made by sounds.py). Spoken on an English-only model from the word's
+     exact dictionary pronunciation, every vowel stressed so it is said
+     fully: a multilingual model guesses the language of a lone word ("fin"
+     came out French). Levelled by level.py, house format (MP3 64 kbps mono).
   2. packages/games/words/src/data/words.json written: each word's parts,
      for the silent slider to light up.
 
@@ -17,7 +18,6 @@ For each word in parts.txt:
 The key is read from ~/.config/elevenlabs/key (or $ELEVENLABS_API_KEY) and
 never written anywhere.
 """
-import base64
 import json
 import os
 import re
@@ -25,12 +25,12 @@ import subprocess
 import sys
 import urllib.request
 
-from sounds import word_voices
+from level import level, loudness
+from sounds import VOWELS, pronunciations, word_voices
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.join(HERE, '..', '..')
 AUDIO = os.path.join(REPO, 'packages', 'app', 'public', 'games', 'words', 'audio')
-ALIGN = os.path.join(HERE, 'alignment')
 OUT = os.path.join(REPO, 'packages', 'games', 'words', 'src', 'data', 'words.json')
 
 # The voice already used for spoken instructions (Gifted). Normal speed:
@@ -38,6 +38,8 @@ OUT = os.path.join(REPO, 'packages', 'games', 'words', 'src', 'data', 'words.jso
 MANIFEST = json.load(open(os.path.join(REPO, 'tools', 'audio', 'manifest.json')))
 VOICE = MANIFEST['voice']
 SPEED = 1.0
+# English-only, and it follows a phoneme tag (the multilingual model does not).
+MODEL = 'eleven_turbo_v2'
 
 
 def api_key() -> str:
@@ -72,36 +74,47 @@ def parse_parts():
     return words
 
 
-def speak(word: str, key: str, force: bool, speed: float = SPEED) -> None:
+def phoneme_text(word: str, arpa: list) -> str:
+    """The word with its exact pronunciation attached, every vowel stressed so it is said fully."""
+    ph = ' '.join(a + '1' if a in VOWELS else a for a in arpa)
+    return f'<phoneme alphabet="cmu-arpabet" ph="{ph}">{word}</phoneme>'
+
+
+def speak(word: str, arpa: list, key: str, force: bool, speed: float = SPEED) -> None:
     mp3 = os.path.join(AUDIO, f'{word}.mp3')
-    align_path = os.path.join(ALIGN, f'{word}.json')
-    if os.path.exists(mp3) and os.path.exists(align_path) and not force:
+    if os.path.exists(mp3) and not force:
         return
-    body = json.dumps({
-        'text': word,
-        'model_id': VOICE['model'],
-        'voice_settings': {**VOICE['settings'], 'speed': speed},
-    }).encode()
-    req = urllib.request.Request(
-        f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE['id']}/with-timestamps",
-        data=body, headers={'xi-api-key': key, 'Content-Type': 'application/json'})
-    res = json.load(urllib.request.urlopen(req))
+    def say(text):
+        body = json.dumps({'text': text, 'model_id': MODEL, 'voice_settings': {**VOICE['settings'], 'speed': speed}}).encode()
+        req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE['id']}", data=body,
+                                     headers={'xi-api-key': key, 'Content-Type': 'application/json'})
+        return urllib.request.urlopen(req).read()
+
     raw = mp3 + '.raw.mp3'
-    open(raw, 'wb').write(base64.b64decode(res['audio_base64']))
-    # Level loudness and encode; no trimming, so the timestamps stay valid.
-    subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-i', raw, '-af', 'loudnorm=I=-16:TP=-1.5:LRA=11',
-                    '-ar', '48000', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '64k', mp3], check=True)
+    # Now and then a very short word comes back as near-silence: ask again. A
+    # few ("the") never speak with the phoneme tag; the English-only model
+    # then gets the plain word — with no other language to guess from.
+    for text in [phoneme_text(word, arpa)] * 3 + [word] * 3:
+        open(raw, 'wb').write(say(text))
+        if loudness(raw)[0] > -45:
+            break
+        print(f'  "{word}" came back silent, retrying', flush=True)
+    else:
+        os.remove(raw)
+        raise SystemExit(f'"{word}": silent every time')
+    if text == word:
+        print(f'  "{word}": spoken from the plain word (the phoneme tag gave silence)', flush=True)
+    level(mp3, src=raw)
     os.remove(raw)
-    json.dump(res['alignment'], open(align_path, 'w'))
-    print(f'  spoke "{word}"', flush=True)
+    print(f'  spoke "{word}" /{" ".join(arpa)}/', flush=True)
 
 
 def main():
     force = '--force' in sys.argv
     os.makedirs(AUDIO, exist_ok=True)
-    os.makedirs(ALIGN, exist_ok=True)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     key = api_key()
+    cmu = pronunciations()
     words = parse_parts()
     # Each part's own sound (a shared Kokoro clip in public/games/words/sounds/).
     voices = word_voices()
@@ -111,7 +124,7 @@ def main():
             if not os.path.exists(os.path.join(AUDIO, f"{entry['word']}.mp3")):
                 print(f"  missing Kokoro recording for \"{entry['word']}\" — run sounds.py")
             continue
-        speak(entry['word'], key, force)
+        speak(entry['word'], cmu[entry['word']], key, force)
     json.dump(words, open(OUT, 'w'), indent=1)
     print(f'{len(words)} words → {os.path.relpath(OUT, REPO)}')
 
