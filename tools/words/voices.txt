@@ -1,8 +1,7 @@
-# Which voice says each WHOLE word — the only audio the Words app plays.
-# Default: ElevenLabs Alexandra at normal speed (clearest), spoken from the
-# word's exact dictionary pronunciation (build.py). List a word here to have
-# Kokoro say it instead (made by sounds.py), e.g. if it still sounds wrong
-# after review:
-#   kokoro | rat van
-# Sep 27, 2026: rat van pan wag bun ten moved back to ElevenLabs, now that it
-# is given the pronunciation, so every word is in one voice.
+# Which take says each WHOLE word — the only audio the Words app plays.
+# Default: 'plain' — ElevenLabs Alexandra on the English-only model, given
+# just the word. Other takes (see TAKES in build.py): tag (exact dictionary
+# phonemes), en, multi (the original multilingual model), or kokoro (made by
+# sounds.py). One line per take, words chosen by ear, e.g.:
+#   tag | fin wig
+#   kokoro | rat

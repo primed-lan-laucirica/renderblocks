@@ -10,6 +10,7 @@ Needs `pip install kokoro-onnx soundfile` and the model files
 https://github.com/thewh1teagle/kokoro-onnx/releases) in $KOKORO_DIR.
 
     KOKORO_DIR=~/kokoro python3 tools/words/sounds.py [--force]
+    KOKORO_DIR=~/kokoro python3 tools/words/sounds.py --out DIR   # every word, for review.py
 """
 import csv
 import os
@@ -42,7 +43,7 @@ def pronunciations():
 
 
 def word_voices():
-    """{word: 'kokoro'} from voices.txt (every other word: ElevenLabs)."""
+    """{word: take} from voices.txt: a build.py TAKES name, or 'kokoro' (made here)."""
     out = {}
     for line in open(os.path.join(HERE, 'voices.txt'), encoding='utf-8'):
         line = line.strip()
@@ -66,9 +67,14 @@ def main():
     k = Kokoro(os.path.join(kdir, 'kokoro-v1.0.onnx'), os.path.join(kdir, 'voices-v1.0.bin'))
     cmu = pronunciations()
     made = 0
-    for word, voice in sorted(word_voices().items()):
-        mp3 = os.path.join(WORD_DIR, f'{word}.mp3')
-        if voice != 'kokoro' or (os.path.exists(mp3) and not force):
+    if '--out' in sys.argv:
+        folder = sys.argv[sys.argv.index('--out') + 1]
+        os.makedirs(folder, exist_ok=True)
+        jobs = [(w[:-4], os.path.join(folder, w)) for w in sorted(os.listdir(WORD_DIR)) if w.endswith('.mp3')]
+    else:
+        jobs = [(w, os.path.join(WORD_DIR, f'{w}.mp3')) for w, v in sorted(word_voices().items()) if v == 'kokoro']
+    for word, mp3 in jobs:
+        if os.path.exists(mp3) and not force:
             continue
         samples, rate = k.create(ipa(cmu[word]), voice=VOICE, speed=0.85, is_phonemes=True)
         wav = os.path.join(tempfile.mkdtemp(), 'x.wav')
