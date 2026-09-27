@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { landing, World, type Cube } from './world'
 
-const LAYER = 0.35
-const SHEAR = 0.2
+const VIEW = { depth: 0.85, layer: 0.5, shear: 0.2 }
 const one = (c = 1) => ({ cells: [{ dx: 0, dy: 0, dz: 0, c }] })
 const row = (w: World, n: number, y = 0, z = 0) => {
   for (let x = 0; x < n; x++) w.add({ x, y, z, c: 1 })
@@ -122,7 +121,7 @@ describe('magnets', () => {
 
 describe('landing', () => {
   // The drawn top-face corner of a cube at (x, y, z).
-  const drawn = (x: number, y: number, z: number) => [x - (z + 1) * SHEAR, y - (z + 1) * LAYER] as const
+  const drawn = (x: number, y: number, z: number) => [x - (z + 1) * VIEW.shear, y * VIEW.depth - (z + 1) * VIEW.layer] as const
 
   it('lands on the surface the finger shows', () => {
     const w = new World()
@@ -130,11 +129,11 @@ describe('landing', () => {
     w.add({ x: 0, y: 5, z: 0, c: 1 })
     w.add({ x: 0, y: 5, z: 1, c: 1 })
     // Drawn where a cube resting on the stack would be.
-    expect(landing(w, one(), ...drawn(0, 5, 2), LAYER, SHEAR)).toEqual({ x: 0, y: 5, base: 2 })
+    expect(landing(w, one(), ...drawn(0, 5, 2), VIEW)).toEqual({ x: 0, y: 5, base: 2 })
     // Drawn where a cube on the table in front of it would be.
-    expect(landing(w, one(), ...drawn(0, 6, 0), LAYER, SHEAR)).toEqual({ x: 0, y: 6, base: 0 })
+    expect(landing(w, one(), ...drawn(0, 6, 0), VIEW)).toEqual({ x: 0, y: 6, base: 0 })
     // Open table, a little off the grid: the magnets line it up.
     const [gx, gy] = drawn(3, 7, 0)
-    expect(landing(w, one(), gx + 0.4, gy + 0.2, LAYER, SHEAR)).toEqual({ x: 3, y: 7, base: 0 })
+    expect(landing(w, one(), gx + 0.4, gy + 0.2, VIEW)).toEqual({ x: 3, y: 7, base: 0 })
   })
 })

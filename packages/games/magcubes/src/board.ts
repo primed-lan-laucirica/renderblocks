@@ -1,5 +1,5 @@
 import { play } from './audio'
-import { drawCube, drawOrder, drawTable, fromScreen, LAYER, onCube, SHEAR, topX, topY, type View } from './render'
+import { DEPTH, drawCube, drawOrder, drawTable, fromScreen, LAYER, onCube, SHEAR, topX, topY, type View } from './render'
 import { landing, World, type Colour, type Cube, type Piece } from './world'
 
 /** Tunables (spec: Tuning) — to be adjusted from play testing. */
@@ -125,7 +125,7 @@ export class Board {
       x0 = Math.min(...cubes.map((c) => topX(c.x, c.z)))
       x1 = Math.max(...cubes.map((c) => c.x + 1 - c.z * SHEAR))
       y0 = Math.min(...cubes.map((c) => topY(c.y, c.z)))
-      y1 = Math.max(...cubes.map((c) => c.y + 1 - c.z * LAYER))
+      y1 = Math.max(...cubes.map((c) => (c.y + 1) * DEPTH - c.z * LAYER))
     }
     // An empty table starts at a friendly thumb-sized cube.
     v.zoom = cubes.length
@@ -174,7 +174,7 @@ export class Board {
     const f = fromScreen(this.view, sx, sy)
     const rx = f.x - g.offX
     const ry = f.y - g.offY
-    const l = landing(this.world, g.piece, rx, ry, LAYER, SHEAR)
+    const l = landing(this.world, g.piece, rx, ry, { depth: DEPTH, layer: LAYER, shear: SHEAR })
     g.land = { ...l, touch: this.world.touches(g.piece, l.x, l.y, l.base) }
     // The magnets' pull: lean toward the spot it will snap to.
     const k = g.land.touch ? TUNING.pull : 0
@@ -301,7 +301,7 @@ export class Board {
         const cell = g.piece.cells[i]
         this.anims.set(c, {
           dx: g.hx + cell.dx - (cell.dz - g.anchorDz) * SHEAR - topX(c.x, c.z),
-          dy: g.hy + cell.dy - (cell.dz - g.anchorDz) * LAYER - topY(c.y, c.z),
+          dy: g.hy + cell.dy * DEPTH - (cell.dz - g.anchorDz) * LAYER - topY(c.y, c.z),
           t0: now,
         })
       })
@@ -391,7 +391,9 @@ export class Board {
       ctx.shadowColor = 'rgba(0, 0, 0, 0.35)'
       ctx.shadowBlur = v.zoom * 0.35
       ctx.shadowOffsetY = v.zoom * 0.2
-      for (const p of cells) drawCube(ctx, v, g.hx + p.dx - (p.dz - g.anchorDz) * SHEAR, g.hy + p.dy - (p.dz - g.anchorDz) * LAYER, p.c)
+      for (const p of cells) {
+        drawCube(ctx, v, g.hx + p.dx - (p.dz - g.anchorDz) * SHEAR, g.hy + p.dy * DEPTH - (p.dz - g.anchorDz) * LAYER, p.c)
+      }
       ctx.restore()
     }
   }

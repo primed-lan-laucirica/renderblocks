@@ -217,8 +217,8 @@ export class World {
 
 /**
  * Where a held piece lands, from where it is drawn. The view looks down from
- * slightly in front and to the right, so a cube at height z is drawn
- * `layer` × z higher and `shear` × z further left: the same screen spot
+ * in front and to the right: the table is drawn `depth` deep per row, and
+ * a cube at height z is drawn `layer` × z higher and `shear` × z further left: the same screen spot
  * could be a cube on the table or one on top of a stack further back. The
  * piece lands on the highest surface that matches what the finger shows —
  * the one you see.
@@ -231,13 +231,12 @@ export function landing(
   piece: Piece,
   gx: number,
   gy: number,
-  layer: number,
-  shear: number,
+  view: { depth: number; layer: number; shear: number },
 ): { x: number; y: number; base: number } {
   const anchorDz = piece.cells.find((p) => p.dx === 0 && p.dy === 0)?.dz ?? 0
   const at = (base: number) => ({
-    x: Math.round(gx + (base + anchorDz + 1) * shear),
-    y: Math.round(gy + (base + anchorDz + 1) * layer),
+    x: Math.round(gx + (base + anchorDz + 1) * view.shear),
+    y: Math.round((gy + (base + anchorDz + 1) * view.layer) / view.depth),
   })
   for (let base = world.maxTop() + 1; base >= 0; base--) {
     const { x, y } = at(base)

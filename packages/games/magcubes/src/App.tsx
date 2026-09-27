@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
 import { closeAudio, unlockAudio } from './audio'
 import { Board } from './board'
-import { LAYER, PAINT } from './render'
+import { DEPTH, LAYER, PAINT } from './render'
 import { World } from './world'
 
 const BUILD_KEY = 'build'
 const COLOURS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-const TOP_SHARE = Math.round(100 / (1 + LAYER))
+const TOP_SHARE = Math.round((100 * DEPTH) / (DEPTH + LAYER))
 
 function loadBuild(raw: string | null): World {
   try {
