@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
 import { closeAudio, unlockAudio } from './audio'
 import { Board } from './board'
-import { DEPTH, LAYER, PAINT } from './render'
+import { FACES, PAINT } from './render'
 import { World } from './world'
 
 const BUILD_KEY = 'build'
 const COLOURS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-const TOP_SHARE = Math.round((100 * DEPTH) / (DEPTH + LAYER))
+/** Tray cubes are drawn as seen from home: top about 0.87 deep over a front 0.5 tall. */
+const TOP_SHARE = 63
+const FRONT = FACES.findIndex((f) => f.n[1] === 1)
 
 function loadBuild(raw: string | null): World {
   try {
@@ -26,7 +28,7 @@ function TrayCube({ colour, onGrab }: { colour: number; onGrab: (e: React.Pointe
       className="size-[min(3.5rem,calc((100dvh-6rem)/10))] portrait:size-14 rounded-md touch-none cursor-grab"
       style={{
         // Top face over a front-face strip, in the table's proportions.
-        background: `linear-gradient(to bottom, ${p.top} ${TOP_SHARE}%, ${p.front} ${TOP_SHARE}%)`,
+        background: `linear-gradient(to bottom, ${p.faces[0]} ${TOP_SHARE}%, ${p.faces[FRONT]} ${TOP_SHARE}%)`,
         border: `2px solid ${p.edge}`,
         boxShadow: '0 3px 6px rgba(0,0,0,0.35)',
       }}
@@ -36,13 +38,14 @@ function TrayCube({ colour, onGrab }: { colour: number; onGrab: (e: React.Pointe
 
 function App({ services }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const orbRef = useRef<HTMLCanvasElement>(null)
   const trayRef = useRef<HTMLDivElement>(null)
   const boardRef = useRef<Board | null>(null)
   const [overTray, setOverTray] = useState(false)
 
   useEffect(() => {
     const canvas = canvasRef.current!
-    const board = new Board(canvas, loadBuild(services.storage.get(BUILD_KEY)), {
+    const board = new Board(canvas, orbRef.current!, loadBuild(services.storage.get(BUILD_KEY)), {
       trayRect: () => trayRef.current?.getBoundingClientRect() ?? null,
       onTrayHover: setOverTray,
       onChange: (world) => services.storage.set(BUILD_KEY, JSON.stringify(world)),
@@ -87,7 +90,18 @@ function App({ services }: GameProps) {
         }}
       />
 
-      <div className="absolute top-3 left-3 flex flex-col gap-3">
+      {/* The view orb (spec: the view orb): spin it and the world spins with it; tap it to go home. */}
+      <canvas
+        ref={orbRef}
+        className="absolute top-1 left-1 size-32 touch-none"
+        aria-label="Turn the view"
+        onPointerDown={(e) => {
+          unlockAudio()
+          boardRef.current?.orbDown(e.nativeEvent)
+        }}
+      />
+
+      <div className="absolute top-36 left-3 flex flex-col gap-3">
         <button
           type="button"
           onClick={services.exitToHome}

@@ -17,7 +17,7 @@ export interface Cube {
   c: Colour
 }
 
-/** A picked-up group: cells relative to the grabbed cube (dx = dy = 0), lowest dz = 0. */
+/** A picked-up group: cells relative to the grabbed cube, which is (0, 0, 0). */
 export interface Piece {
   cells: Array<{ dx: number; dy: number; dz: number; c: Colour }>
 }
@@ -99,38 +99,42 @@ export class World {
   /** Lift cubes out of the world as a piece, relative to `anchor`. */
   pickUp(cubes: Cube[], anchor: Cube): Piece {
     for (const c of cubes) this.remove(c)
-    const minZ = Math.min(...cubes.map((c) => c.z))
-    return {
-      cells: cubes.map((c) => ({ dx: c.x - anchor.x, dy: c.y - anchor.y, dz: c.z - minZ, c: c.c })),
-    }
+    return { cells: cubes.map((c) => ({ dx: c.x - anchor.x, dy: c.y - anchor.y, dz: c.z - anchor.z, c: c.c })) }
   }
 
-  /**
-   * The height a piece rests at with its grabbed cube over (x, y): on the
-   * highest cube beneath any of its cells, else on the table.
-   */
-  restingBase(piece: Piece, x: number, y: number): number {
-    let base = 0
-    for (const p of piece.cells) base = Math.max(base, this.top(x + p.dx, y + p.dy) + 1 - p.dz)
-    return base
+  /** The piece fits with its grabbed cube at (x, y, z): nothing in the way, nothing under the table. */
+  fits(piece: Piece, x: number, y: number, z: number): boolean {
+    return piece.cells.every((p) => z + p.dz >= 0 && !this.cubes.has(key(x + p.dx, y + p.dy, z + p.dz)))
   }
 
-  /** Whether a piece resting at (x, y, base) touches any cube — i.e. the magnets catch. */
-  touches(piece: Piece, x: number, y: number, base: number): boolean {
-    if (base > 0) return true // resting on something
-    const own = new Set(piece.cells.map((p) => key(x + p.dx, y + p.dy, base + p.dz)))
+  /** Whether a piece at (x, y, z) touches any cube face to face — i.e. the magnets catch. */
+  touches(piece: Piece, x: number, y: number, z: number): boolean {
+    const own = new Set(piece.cells.map((p) => key(x + p.dx, y + p.dy, z + p.dz)))
     return piece.cells.some((p) =>
       NEIGHBOURS.some(([dx, dy, dz]) => {
-        const k = key(x + p.dx + dx, y + p.dy + dy, base + p.dz + dz)
+        const k = key(x + p.dx + dx, y + p.dy + dy, z + p.dz + dz)
         return !own.has(k) && this.cubes.has(k)
       }),
     )
   }
 
-  /** Put a piece down with its grabbed cube over (x, y), resting on whatever is beneath. */
-  place(piece: Piece, x: number, y: number): Cube[] {
-    const base = this.restingBase(piece, x, y)
-    const placed = piece.cells.map((p) => ({ x: x + p.dx, y: y + p.dy, z: base + p.dz, c: p.c }))
+  /**
+   * Where a piece aimed at (x, y, z) comes to rest: lifted up out of
+   * anything solid, then, if no magnet holds it, down until it rests on
+   * something or the table.
+   */
+  spot(piece: Piece, x: number, y: number, z: number): { x: number; y: number; z: number } {
+    const lowest = Math.min(...piece.cells.map((p) => p.dz))
+    z = Math.max(z, -lowest)
+    const ceiling = this.maxTop() + 2 + Math.max(...piece.cells.map((p) => p.dz)) - lowest
+    while (!this.fits(piece, x, y, z) && z < ceiling) z++
+    while (!this.touches(piece, x, y, z) && z + lowest > 0 && this.fits(piece, x, y, z - 1)) z--
+    return { x, y, z }
+  }
+
+  /** Put a piece down with its grabbed cube at (x, y, z) — a spot from `spot`. */
+  place(piece: Piece, x: number, y: number, z: number): Cube[] {
+    const placed = piece.cells.map((p) => ({ x: x + p.dx, y: y + p.dy, z: z + p.dz, c: p.c }))
     for (const c of placed) this.add(c)
     return placed
   }
@@ -141,15 +145,14 @@ export class World {
    * beneath its new footprint. Returns each cube with where it came from.
    */
   turn(pivot: Cube): Array<{ cube: Cube; from: { x: number; y: number; z: number } }> {
-    const group = this.group(pivot)
-    const minZ = Math.min(...group.map((c) => c.z))
-    const { x, y } = pivot
-    const piece = this.pickUp(group, pivot)
-    // Screen y points toward the viewer, so clockwise takes right to front: (dx, dy) → (−dy, dx).
-    const placed = this.place({ cells: piece.cells.map((p) => ({ dx: -p.dy, dy: p.dx, dz: p.dz, c: p.c })) }, x, y)
-    return placed.map((cube, i) => {
+    const { x, y, z } = pivot
+    const piece = this.pickUp(this.group(pivot), pivot)
+    // Seen from above with y toward the viewer, clockwise takes right to front: (dx, dy) → (−dy, dx).
+    const turned: Piece = { cells: piece.cells.map((p) => ({ dx: -p.dy, dy: p.dx, dz: p.dz, c: p.c })) }
+    const at = this.spot(turned, x, y, z)
+    return this.place(turned, at.x, at.y, at.z).map((cube, i) => {
       const p = piece.cells[i]
-      return { cube, from: { x: x + p.dx, y: y + p.dy, z: minZ + p.dz } }
+      return { cube, from: { x: x + p.dx, y: y + p.dy, z: z + p.dz } }
     })
   }
 
@@ -213,35 +216,4 @@ export class World {
     w.settle() // a hand-edited or partial save never leaves cubes floating
     return w
   }
-}
-
-/**
- * Where a held piece lands, from where it is drawn. The view looks down from
- * in front and to the right: the table is drawn `depth` deep per row, and
- * a cube at height z is drawn `layer` × z higher and `shear` × z further left: the same screen spot
- * could be a cube on the table or one on top of a stack further back. The
- * piece lands on the highest surface that matches what the finger shows —
- * the one you see.
- *
- * (gx, gy): the grabbed cube's top-face corner in world units as drawn
- * (the height shift already applied).
- */
-export function landing(
-  world: World,
-  piece: Piece,
-  gx: number,
-  gy: number,
-  view: { depth: number; layer: number; shear: number },
-): { x: number; y: number; base: number } {
-  const anchorDz = piece.cells.find((p) => p.dx === 0 && p.dy === 0)?.dz ?? 0
-  const at = (base: number) => ({
-    x: Math.round(gx + (base + anchorDz + 1) * view.shear),
-    y: Math.round((gy + (base + anchorDz + 1) * view.layer) / view.depth),
-  })
-  for (let base = world.maxTop() + 1; base >= 0; base--) {
-    const { x, y } = at(base)
-    if (world.restingBase(piece, x, y) === base) return { x, y, base }
-  }
-  const { x, y } = at(0)
-  return { x, y, base: world.restingBase(piece, x, y) }
 }
