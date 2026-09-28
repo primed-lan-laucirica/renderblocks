@@ -5,7 +5,7 @@ import { addModule } from '@renderblocks/add/module'
 import { subtractModule } from '@renderblocks/subtract/module'
 import { timesModule } from '@renderblocks/times/module'
 import { divideModule } from '@renderblocks/divide/module'
-import { tasksModule } from '@renderblocks/tasks/module'
+import { calendarModule } from '@renderblocks/calendar/module'
 import { graphModule } from '@renderblocks/graph/module'
 import { numlineModule } from '@renderblocks/numline/module'
 import { giftedModule } from '@renderblocks/gifted/module'
@@ -22,7 +22,7 @@ export const games: GameModule[] = [
   subtractModule,
   timesModule,
   divideModule,
-  tasksModule,
+  calendarModule,
   graphModule,
   numlineModule,
   giftedModule,

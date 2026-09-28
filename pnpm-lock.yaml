@@ -71,6 +71,12 @@ importers:
       '@capacitor/core':
         specifier: ^8.0.0
         version: 8.4.1
+      '@capacitor/filesystem':
+        specifier: ^8.0.0
+        version: 8.1.3(@capacitor/core@8.4.1)
+      '@capacitor/share':
+        specifier: ^8.0.0
+        version: 8.0.2(@capacitor/core@8.4.1)
       '@capacitor/status-bar':
         specifier: ^8.0.0
         version: 8.0.2(@capacitor/core@8.4.1)
@@ -80,6 +86,9 @@ importers:
       '@renderblocks/blocks':
         specifier: workspace:*
         version: link:../games/blocks
+      '@renderblocks/calendar':
+        specifier: workspace:*
+        version: link:../games/calendar
       '@renderblocks/combos':
         specifier: workspace:*
         version: link:../games/combos
@@ -183,6 +192,31 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.7(react@19.2.7)
+
+  packages/games/calendar:
+    dependencies:
+      '@capacitor/camera':
+        specifier: ^8.0.0
+        version: 8.2.1(@capacitor/core@8.4.1)
+      '@capacitor/filesystem':
+        specifier: ^8.0.0
+        version: 8.1.3(@capacitor/core@8.4.1)
+      '@capacitor/share':
+        specifier: ^8.0.0
+        version: 8.0.2(@capacitor/core@8.4.1)
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@types/node@24.13.2)(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0))
 
   packages/games/combos:
     dependencies:
@@ -951,10 +985,23 @@ packages:
   '@capacitor/core@8.4.1':
     resolution: {integrity: sha512-xqhOGLbTAYeOWK+IDUNSjQJAPapQjRHrIcgk9PYp52or9zFTaaMko31uNi16N6W+CRJ8VrRram6fOYILkBG2Hg==}
 
+  '@capacitor/filesystem@8.1.3':
+    resolution: {integrity: sha512-GNBlRkaXEEb+6WP/YsDXr2zygyOHoieuye6viyd2ZkEdBwfseG41jxfarVxLWH0r0owhyNUbwJ/Qi8fubqr6wA==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
+  '@capacitor/share@8.0.2':
+    resolution: {integrity: sha512-L2M4iBLTf/IaMmg+ruuriAoJyBzu1EgayWhgC5cX1HJGkA665g2ROz8c2Z5lfkT/XSLbAuG3bb7VlW3eGgUCNQ==}
+    peerDependencies:
+      '@capacitor/core': '>=8.0.0'
+
   '@capacitor/status-bar@8.0.2':
     resolution: {integrity: sha512-WXs8YB8B9eEaPZz+bcdY6t2nForF1FLoj/JU0Dl9RRgQnddnS98FEEyDooQhaY7wivr000j4+SC1FyeJkrFO7A==}
     peerDependencies:
       '@capacitor/core': '>=8.0.0'
+
+  '@capacitor/synapse@1.0.4':
+    resolution: {integrity: sha512-/C1FUo8/OkKuAT4nCIu/34ny9siNHr9qtFezu4kxm6GY1wNFxrCFWjfYx5C1tUhVGz3fxBABegupkpjXvjCHrw==}
 
   '@dimforge/rapier2d-compat@0.20.0':
     resolution: {integrity: sha512-FFYwGrfJov7d5kn4fxblG/ip5C+sYQL+Jl/hqLvDvu4BcMD/Mhrz7cTvnZTtuIRDXY8CLuraObqB/prip4wdWQ==}
@@ -4014,9 +4061,20 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@capacitor/filesystem@8.1.3(@capacitor/core@8.4.1)':
+    dependencies:
+      '@capacitor/core': 8.4.1
+      '@capacitor/synapse': 1.0.4
+
+  '@capacitor/share@8.0.2(@capacitor/core@8.4.1)':
+    dependencies:
+      '@capacitor/core': 8.4.1
+
   '@capacitor/status-bar@8.0.2(@capacitor/core@8.4.1)':
     dependencies:
       '@capacitor/core': 8.4.1
+
+  '@capacitor/synapse@1.0.4': {}
 
   '@dimforge/rapier2d-compat@0.20.0': {}
 
