@@ -139,8 +139,8 @@ function App({ services }: GameProps) {
 type Mode = 'slide' | 'find' | 'pop'
 const MODES: Array<[Mode, string]> = [
   ['find', '🎈 Find it'],
-  ['slide', 'Slide'],
   ['pop', '🎈 Pop'],
+  ['slide', 'Slide'],
 ]
 
 export default App
