@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { playWord } from './audio'
+import { SentenceCard } from './Sentence'
 import { PartLetters, WORD_FONT } from './WordParts'
 import type { Word } from './words'
 
@@ -97,6 +98,7 @@ export function SlideMode({ word }: { word: Word }) {
           style={{ width: THUMB, height: THUMB, left: x - THUMB / 2 }}
         />
       </div>
+      <SentenceCard word={word.word} />
     </div>
   )
 }

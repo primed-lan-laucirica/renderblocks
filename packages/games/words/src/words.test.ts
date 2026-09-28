@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { LEVELS, WORDS } from './words'
+import { LEVELS, SENTENCES, WORDS } from './words'
 
 const PUBLIC = join(__dirname, '..', '..', '..', 'app', 'public', 'games', 'words')
 
@@ -28,5 +28,29 @@ describe('word data', () => {
     const part = (word: string, g: string) => WORDS.find((w) => w.word === word)!.parts.find((p) => p.g === g)!
     expect(part('said', 'ai').heart).toBe(true)
     expect(part('like', 'e').silent).toBe(true)
+  })
+})
+
+describe('sentences', () => {
+  it('gives every sound-it-out word sentences that mark it, with a clip and word timings', () => {
+    const known = new Set(WORDS.map((w) => w.word))
+    for (const w of WORDS.filter((w) => w.level >= 6)) expect(SENTENCES[w.word]?.length, w.word).toBeGreaterThanOrEqual(1)
+    for (const [word, list] of Object.entries(SENTENCES)) {
+      expect(known.has(word), word).toBe(true)
+      for (const s of list) {
+        expect(s.marks.length, s.text).toBeGreaterThan(0)
+        // The marked span is the word, or a form of it (fins, bigger, zipper, dishes).
+        for (const [a, b] of s.marks) expect(s.text.slice(a, b).toLowerCase().startsWith(word.slice(0, -1)), s.text).toBe(true)
+        expect(existsSync(join(PUBLIC, 'sentences', `${s.audio}.mp3`)), s.audio).toBe(true)
+        // Timings follow the words in order and name real words of the text.
+        let last = -1
+        for (const [a, b, start, end] of s.words) {
+          expect(/^[\w'-]+$/.test(s.text.slice(a, b)), s.text).toBe(true)
+          expect(start, s.text).toBeGreaterThanOrEqual(last)
+          expect(end, s.text).toBeGreaterThanOrEqual(start)
+          last = start
+        }
+      }
+    }
   })
 })

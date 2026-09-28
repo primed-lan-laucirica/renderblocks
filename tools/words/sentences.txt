@@ -1,0 +1,303 @@
+# Sentences for the 💬 card: each uses the word and teaches something beyond
+# it — the concepts gifted programs test (categories, parts and functions,
+# opposites and comparison, families, where things go, numbers, cause and
+# effect, words with two meanings). Every fact must be true and unarguable
+# (see the Gifted fairness rules). Short: mostly words he can already read.
+#
+# word | concept | sentence — {braces} mark the word (or its form) to light up.
+# Any word with sentences gets the 💬 button, so new vocabulary levels just add lines.
+# build.py speaks them (sentences/ audio + word timings in sentences.json).
+
+# Level 6: short a
+cat | category | A {cat} is a mammal, like a dog or a cow.
+cat | family | A baby {cat} is called a kitten.
+hat | where | You wear a {hat} on your head.
+hat | function | A sun {hat} keeps the sun off your face.
+bat | category | A {bat} is a mammal that can fly.
+bat | two meanings | A {bat} can also be a stick for hitting a ball.
+rat | fact | A {rat} is a small animal with a long tail.
+rat | compare | A {rat} is bigger than a mouse.
+mat | where | Wipe your feet on the {mat} by the door.
+mat | fact | A {mat} is a flat rug that lies on the floor.
+map | function | A {map} shows you where places are.
+map | parts | A {map} of the world shows land and sea.
+cap | category | A {cap} is a hat with a brim in front.
+cap | two meanings | A pen {cap} covers the tip of a pen.
+nap | meaning | A {nap} is a short sleep in the day.
+nap | fact | Babies and cats take lots of {naps}.
+bag | function | You carry things in a {bag}.
+bag | made from | A {bag} can be made of paper, cloth, or plastic.
+tag | function | A {tag} on a shirt tells its size.
+tag | two meanings | In the game of {tag}, you run and try to touch someone.
+jam | made from | {Jam} is made from fruit and sugar.
+jam | function | You spread {jam} on toast.
+ham | made from | {Ham} is meat that comes from a pig.
+ham | function | You can put {ham} in a sandwich.
+van | category | A {van} is a vehicle, like a car or a bus.
+van | function | A {van} can carry lots of boxes.
+fan | function | A {fan} blows air to keep you cool.
+fan | two meanings | A {fan} is also someone who loves a team.
+pan | function | You cook food in a {pan} on the stove.
+pan | cause | A {pan} is made of metal, so it gets hot.
+man | family | A boy grows up to be a {man}.
+man | category | A {man} and a woman are both grown-ups.
+dad | family | Your {dad}'s mom is your grandma.
+dad | meaning | {Dad} is another word for father.
+sad | opposite | {Sad} is the opposite of happy.
+sad | cause | You might feel {sad} when you lose a toy.
+lap | body | Your {lap} is the top of your legs when you sit.
+lap | two meanings | A {lap} is also once around a track.
+wag | fact | A dog {wags} its tail when it is happy.
+wag | meaning | To {wag} means to move from side to side.
+
+# Level 7: short i and o
+pig | category | A {pig} is a farm animal, like a cow or a sheep.
+pig | family | A baby {pig} is called a piglet.
+big | opposite | {Big} is the opposite of small.
+big | compare | An elephant is {bigger} than a dog.
+dig | tool | You {dig} a hole with a shovel.
+dig | fact | Moles and rabbits {dig} holes under the ground.
+wig | meaning | A {wig} is hair you can put on and take off.
+wig | fact | Some clowns wear bright {wigs}.
+sit | where | You {sit} on a chair.
+sit | opposite | {Sit} is the opposite of stand.
+fin | parts | A fish uses its {fins} to swim.
+fin | parts | A shark has a {fin} on its back.
+pin | function | A {pin} holds cloth together.
+pin | cause | A {pin} is sharp, so be careful.
+lip | body | You have a top {lip} and a bottom {lip}.
+lip | function | Your {lips} help you talk and smile.
+zip | function | You {zip} your coat to close it.
+zip | parts | A {zipper} has two rows of little teeth.
+kid | meaning | A {kid} is a child.
+kid | two meanings | A baby goat is also called a {kid}.
+dog | category | A {dog} is a mammal, like a cat or a horse.
+dog | family | A baby {dog} is called a puppy.
+log | made from | A {log} is a big piece of a tree.
+log | function | You can burn {logs} in a fire.
+hop | fact | Frogs and rabbits {hop}.
+hop | meaning | To {hop}, you jump on one foot.
+top | opposite | {Top} is the opposite of bottom.
+top | two meanings | A {top} is also a toy that spins.
+pot | function | You cook soup in a {pot}.
+pot | two meanings | A plant can grow in a {pot} of dirt.
+hot | opposite | {Hot} is the opposite of cold.
+hot | examples | Fire and the sun are {hot}.
+fox | category | A {fox} is a wild animal, like a wolf.
+fox | parts | A {fox} has a long, bushy tail.
+box | function | You can keep toys in a {box}.
+box | shape | A {box} has corners and flat sides.
+mop | function | You clean the floor with a {mop}.
+mop | category | A {mop} and a broom are both for cleaning.
+rod | function | A fishing {rod} helps you catch fish.
+rod | meaning | A {rod} is a long, thin stick.
+
+# Level 8: short u and e
+sun | category | The {sun} is a star.
+sun | function | The {sun} gives us light and heat.
+run | compare | You {run} faster than you walk.
+run | fact | Horses and cheetahs {run} very fast.
+bun | category | A {bun} is a small, round bread.
+bun | where | A hot dog goes in a {bun}.
+bug | category | Ants, bees, and beetles are all {bugs}.
+bug | number | Many {bugs} have six legs.
+hug | body | You {hug} someone with your arms.
+hug | meaning | A {hug} can show someone you love them.
+mug | category | A {mug} is a cup with a handle.
+mug | function | You drink hot cocoa from a {mug}.
+cup | function | You drink from a {cup}.
+cup | function | A {cup} can hold milk, juice, or water.
+pup | family | A {pup} is a baby dog.
+pup | family | Baby seals are called {pups} too.
+bus | category | A {bus} is a vehicle, like a car or a train.
+bus | fact | Most school {buses} are yellow.
+tub | function | You take a bath in a {tub}.
+tub | meaning | A {tub} is a big container that holds water.
+nut | fact | Squirrels eat {nuts} and seeds.
+nut | category | An acorn is a {nut} from an oak tree.
+bed | function | You sleep in a {bed} at night.
+bed | parts | A {bed} has a pillow and a blanket.
+red | category | {Red} is a color, like blue and green.
+red | examples | Apples, strawberries, and fire trucks can be {red}.
+pen | function | You write with a {pen}.
+pen | two meanings | A {pen} is also a fence that keeps pigs in.
+hen | family | A {hen} is a girl chicken.
+hen | fact | A {hen} lays eggs.
+ten | number | {Ten} is one more than nine.
+ten | number | You have {ten} fingers.
+net | function | You catch fish with a {net}.
+net | parts | A {net} is full of little holes.
+wet | opposite | {Wet} is the opposite of dry.
+wet | cause | Rain makes the grass {wet}.
+web | function | A spider spins a {web} to catch bugs.
+web | made from | A spider's {web} is made of silk.
+leg | function | You walk on your {legs}.
+leg | number | A dog has four {legs}, and a bird has two.
+
+# Level 9: sh ch th ck ll ss
+ship | category | A {ship} is a big boat.
+ship | fact | {Ships} sail across the sea.
+shop | function | You buy things at a {shop}.
+shop | category | A bakery is a {shop} that sells bread.
+fish | fact | A {fish} lives in water and breathes with gills.
+fish | category | Sharks and goldfish are both {fish}.
+dish | function | You eat food from a {dish}.
+dish | category | Plates and bowls are both {dishes}.
+wish | fact | You make a {wish} when you blow out candles.
+wish | meaning | A {wish} is something you hope will happen.
+chin | where | Your {chin} is below your mouth.
+chin | body | You can rest your {chin} on your hand.
+chip | category | A {chip} is a thin, crunchy snack.
+chip | made from | A potato {chip} is made from a potato.
+chop | tool | You {chop} wood with an axe.
+chop | meaning | To {chop} means to cut into pieces.
+rich | meaning | {Rich} means having lots of money.
+rich | opposite | {Rich} is the opposite of poor.
+thin | opposite | {Thin} is the opposite of thick.
+thin | compare | A pencil is {thin}, but a tree trunk is thick.
+moth | category | A {moth} is an insect, like a butterfly.
+moth | fact | Many {moths} fly at night.
+bath | function | You get clean in a {bath}.
+bath | made from | A {bath} uses soap and warm water.
+duck | category | A {duck} is a bird that can swim.
+duck | family | A baby {duck} is called a duckling.
+sock | where | You wear {socks} on your feet.
+sock | number | {Socks} come in pairs, one for each foot.
+rock | fact | {Rocks} are hard.
+rock | category | A pebble is a small, smooth {rock}.
+kick | body | You {kick} a ball with your foot.
+kick | fact | Soccer players {kick} the ball into the goal.
+bell | function | A {bell} makes a ringing sound.
+bell | function | A bike {bell} tells people you are coming.
+doll | meaning | A {doll} is a toy that looks like a person.
+doll | fact | You can dress a {doll} in tiny clothes.
+hill | compare | A {hill} is smaller than a mountain.
+hill | fact | You can sled down a snowy {hill}.
+kiss | body | You {kiss} someone with your lips.
+kiss | meaning | A {kiss} can say I love you.
+
+# Level 10: blends
+frog | fact | A {frog} can live in water and on land.
+frog | family | A tadpole grows up to be a {frog}.
+stop | fact | A red light means {stop}.
+stop | opposite | {Stop} is the opposite of go.
+flag | fact | Every country has its own {flag}.
+flag | cause | A {flag} waves in the wind.
+crab | fact | A {crab} walks sideways on the sand.
+crab | parts | A {crab} has a hard shell and two claws.
+drum | function | You hit a {drum} to make music.
+drum | category | A {drum} is an instrument, like a piano or a flute.
+clap | body | You {clap} your hands to make a sound.
+clap | fact | People {clap} when they like a show.
+plum | category | A {plum} is a fruit, like a peach or a cherry.
+plum | name | A dried {plum} is called a prune.
+swim | fact | Fish {swim} in water.
+swim | fact | Ducks can {swim}, and most can fly too.
+sled | function | You ride a {sled} down a snowy hill.
+sled | fact | A {sled} slides on snow.
+snap | body | You {snap} your fingers to make a click.
+snap | cause | A twig {snaps} when you break it.
+spot | fact | Many ladybugs have black {spots}.
+spot | compare | A leopard has {spots}, but a tiger has stripes.
+trip | meaning | A {trip} is when you travel somewhere.
+trip | examples | You can take a {trip} by car, train, or plane.
+jump | fact | Kangaroos {jump} with their strong back legs.
+jump | meaning | You {jump} up and land on your feet.
+hand | number | You have five fingers on each {hand}.
+hand | function | You use your {hands} to hold things.
+nest | function | A bird's {nest} holds its eggs.
+nest | made from | Many birds build {nests} out of twigs and grass.
+milk | made from | {Milk} comes from cows.
+milk | made from | Cheese and butter are made from {milk}.
+tent | where | You sleep in a {tent} when you go camping.
+tent | made from | A {tent} is made of cloth held up by poles.
+lamp | function | A {lamp} gives light when it is dark.
+lamp | function | A {lamp} can light up a dark room.
+belt | where | You wear a {belt} around your waist.
+belt | function | A {belt} helps hold your pants up.
+gift | meaning | A {gift} is something you give to someone.
+gift | fact | People give {gifts} on birthdays.
+
+# Level 11: silent e
+cake | fact | You eat {cake} on your birthday.
+cake | made from | A {cake} is made from flour, eggs, and sugar.
+lake | meaning | A {lake} is water with land all around it.
+lake | compare | A {lake} is bigger than a pond.
+game | category | Tag and hide-and-seek are {games}.
+game | fact | In a {game}, you follow the rules.
+gate | meaning | A {gate} is a door in a fence.
+gate | function | You open the {gate} to go in.
+bike | number | A {bike} has two wheels.
+bike | function | You pedal a {bike} to make it go.
+kite | cause | A {kite} flies high in the wind.
+kite | parts | You hold a {kite} by its long string.
+time | function | A clock tells you the {time}.
+time | category | Morning, noon, and night are {times} of day.
+ride | examples | You can {ride} a horse or a bike.
+ride | meaning | To {ride} means to sit on something that moves.
+five | number | {Five} is one more than four.
+five | number | You have {five} fingers on one hand.
+home | meaning | Your {home} is where you live.
+home | fact | A shell is a snail's {home}.
+bone | body | {Bones} are inside your body.
+bone | function | Your {bones} hold you up.
+rope | made from | A {rope} is made of strings twisted together.
+rope | fact | You pull a {rope} in tug of war.
+nose | function | You smell with your {nose}.
+nose | two meanings | An elephant's {nose} is called a trunk.
+cube | shape | A {cube} has six square faces.
+cube | examples | Dice are shaped like {cubes}.
+tube | examples | Toothpaste comes in a {tube}.
+tube | shape | A {tube} is long, round, and hollow.
+cute | meaning | {Cute} means sweet and nice to look at.
+cute | fact | Baby animals are often {cute}.
+mule | family | A {mule} is part horse and part donkey.
+mule | function | {Mules} carry heavy loads up mountains.
+hope | meaning | To {hope} is to wish something will happen.
+hope | fact | I {hope} it is sunny tomorrow.
+lime | category | A {lime} is a green fruit.
+lime | compare | A {lime} is sour, like a lemon.
+wave | body | You {wave} your hand to say hi.
+wave | two meanings | A {wave} is water moving in the sea.
+
+# Level 12: ai ee oa ar or
+rain | cause | {Rain} falls from clouds.
+rain | cause | Plants need {rain} to grow.
+tail | category | Monkeys and cats have {tails}.
+tail | function | A fish swims with its {tail}.
+snail | fact | A {snail} carries its shell on its back.
+snail | compare | A {snail} moves very slowly.
+feet | number | You have two {feet}.
+feet | where | You wear shoes on your {feet}.
+bee | made from | Honey{bees} make honey.
+bee | number | A {bee} has six legs and four wings.
+tree | category | A {tree} is a plant with a trunk.
+tree | where | Apples grow on {trees}.
+seed | fact | A plant grows from a {seed}.
+seed | parts | An apple has {seeds} inside.
+sheep | made from | Wool comes from {sheep}.
+sheep | family | A baby {sheep} is called a lamb.
+boat | fact | A {boat} floats on water.
+boat | category | A {boat} is a vehicle, like a car or a plane.
+goat | fact | A {goat} can climb steep rocks.
+goat | made from | {Goats} give milk, just like cows.
+road | fact | Cars drive on a {road}.
+road | function | A {road} goes from one place to another.
+soap | function | You wash your hands with {soap}.
+soap | cause | {Soap} makes bubbles in water.
+car | number | Most {cars} have four wheels.
+car | category | A {car} is a vehicle, like a bus or a truck.
+star | fact | {Stars} shine in the sky at night.
+star | fact | {Stars} look tiny because they are far away.
+park | where | You play on the swings at the {park}.
+park | two meanings | To {park} a car means to stop it and leave it.
+farm | where | Cows, pigs, and sheep live on a {farm}.
+farm | function | A farmer grows food on a {farm}.
+fork | function | You eat with a {fork}.
+fork | category | A {fork}, a spoon, and a knife are all for eating.
+corn | where | {Corn} grows on tall plants.
+corn | made from | Pop{corn} is made from {corn}.
+horn | fact | A car {horn} goes beep.
+horn | parts | A rhino has a {horn} on its nose.
+storm | fact | A {storm} brings strong wind.
+storm | cause | Thunder and lightning come with some {storms}.

@@ -1,4 +1,5 @@
 import data from './data/words.json'
+import sentenceData from './data/sentences.json'
 
 /** One part of a word: the letters that make one sound (or none — a silent e). */
 export interface Part {
@@ -19,6 +20,22 @@ export interface Word {
 
 /** Built by tools/words/build.py from tools/words/parts.txt. */
 export const WORDS = data as Word[]
+
+/** A sentence for the 💬 card, with timings to light its words as they are read. */
+export interface Sentence {
+  text: string
+  /** [start, end) character spans of the word being learnt (or its form: fins, bigger). */
+  marks: number[][]
+  /** What it teaches: category, parts, opposite … */
+  concept: string
+  /** Clip name in /games/words/sentences/. */
+  audio: string
+  /** Each word: [first char, end char, start s, end s]. */
+  words: number[][]
+}
+
+/** Built by tools/words/build.py from tools/words/sentences.txt: word → its sentences. */
+export const SENTENCES = sentenceData as Record<string, Sentence[]>
 
 /**
  * Levels 1–5: his Preschool Prep sight words (known already — familiar ground).

@@ -8,6 +8,10 @@ For each word in parts.txt:
      Levelled by level.py, house format (MP3 64 kbps mono).
   2. packages/games/words/src/data/words.json written: each word's parts,
      for the silent slider to light up.
+  3. Each sentence in sentences.txt spoken (public/games/words/sentences/),
+     with its words' timings for the card to light them up as they are read,
+     into packages/games/words/src/data/sentences.json. A sentence is
+     re-spoken only when its text changes.
 
     python3 tools/words/build.py                 # only fetch what's missing
     python3 tools/words/build.py --force         # re-speak every word
@@ -16,6 +20,7 @@ For each word in parts.txt:
 The key is read from ~/.config/elevenlabs/key (or $ELEVENLABS_API_KEY) and
 never written anywhere.
 """
+import base64
 import json
 import os
 import re
@@ -30,6 +35,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.join(HERE, '..', '..')
 AUDIO = os.path.join(REPO, 'packages', 'app', 'public', 'games', 'words', 'audio')
 OUT = os.path.join(REPO, 'packages', 'games', 'words', 'src', 'data', 'words.json')
+SENT_AUDIO = os.path.join(REPO, 'packages', 'app', 'public', 'games', 'words', 'sentences')
+SENT_OUT = os.path.join(REPO, 'packages', 'games', 'words', 'src', 'data', 'sentences.json')
 
 # The voice already used for spoken instructions (Gifted). Normal speed:
 # slowing a single short word blurred its vowel.
@@ -124,6 +131,66 @@ def speak(word: str, arpa: list, take: str, key: str, out: str, speed: float = S
     print(f'  spoke "{word}" ({take}{note})', flush=True)
 
 
+def parse_sentences():
+    """{word: [(concept, text with {braces} round the word)]} from sentences.txt."""
+    out = {}
+    for line in open(os.path.join(HERE, 'sentences.txt'), encoding='utf-8'):
+        line = line.strip()
+        if not line or line.startswith('#'):
+            continue
+        word, concept, text = [x.strip() for x in line.split('|', 2)]
+        assert '{' in text, f'{word}: no {{word}} marked in "{text}"'
+        out.setdefault(word, []).append((concept, text))
+    return out
+
+
+def speak_sentence(text: str, key: str, out: str):
+    """Speak a sentence (Alexandra, English-only model, the instructions' pace) and time its words."""
+    body = {'text': text, 'model_id': TAKES['plain']['model'], 'voice_settings': VOICE['settings']}
+    for _ in range(4):
+        req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE['id']}/with-timestamps",
+                                     data=json.dumps(body).encode(),
+                                     headers={'xi-api-key': key, 'Content-Type': 'application/json'})
+        res = json.load(urllib.request.urlopen(req))
+        raw = out + '.raw.mp3'
+        open(raw, 'wb').write(base64.b64decode(res['audio_base64']))
+        if loudness(raw)[0] > -45:
+            break
+    level(out, src=raw)
+    os.remove(raw)
+    a = res['alignment']
+    assert ''.join(a['characters']) == text, f'timings do not line up with "{text}"'
+    # Each word: [first char, end char, start s, end s].
+    return [[m.start(), m.end(), a['character_start_times_seconds'][m.start()], a['character_end_times_seconds'][m.end() - 1]]
+            for m in re.finditer(r"[\w'-]+", text)]
+
+
+def build_sentences(key: str, force: bool) -> None:
+    os.makedirs(SENT_AUDIO, exist_ok=True)
+    old = json.load(open(SENT_OUT)) if os.path.exists(SENT_OUT) else {}
+    out = {}
+    for word, items in parse_sentences().items():
+        out[word] = []
+        for i, (concept, marked) in enumerate(items):
+            text = marked.replace('{', '').replace('}', '')
+            # The marked spans ([start, end) in the plain text): every {…}.
+            marks, shift = [], 0
+            for m in re.finditer(r'\{([^}]*)\}', marked):
+                marks.append([m.start() - shift, m.end() - shift - 2])
+                shift += 2
+            name = f'{word}-{i + 1}'
+            mp3 = os.path.join(SENT_AUDIO, f'{name}.mp3')
+            prev = next((e for e in old.get(word, []) if e['audio'] == name and e['text'] == text), None)
+            if prev and os.path.exists(mp3) and not force:
+                words = prev['words']
+            else:
+                words = speak_sentence(text, key, mp3)
+                print(f'  said "{text}"', flush=True)
+            out[word].append({'text': text, 'marks': marks, 'concept': concept, 'audio': name, 'words': words})
+    json.dump(out, open(SENT_OUT, 'w'), indent=1)
+    print(f'{sum(len(v) for v in out.values())} sentences for {len(out)} words → {os.path.relpath(SENT_OUT, REPO)}')
+
+
 def main():
     force = '--force' in sys.argv
     key = api_key()
@@ -158,6 +225,7 @@ def main():
             speak(entry['word'], cmu[entry['word']], take, key, out)
     json.dump(words, open(OUT, 'w'), indent=1)
     print(f'{len(words)} words → {os.path.relpath(OUT, REPO)}')
+    build_sentences(key, force)
 
 
 if __name__ == '__main__':
