@@ -7,14 +7,15 @@ import { LEVELS, SENTENCES, WORDS } from './words'
 const PUBLIC = join(__dirname, '..', '..', '..', 'app', 'public', 'games', 'words')
 
 describe('word data', () => {
-  it('has the five sight-word levels, then seven sound-it-out levels beyond them', () => {
+  it('has five sight-word levels, seven sound-it-out levels, then ten word-power levels', () => {
     expect(LEVELS.filter((l) => l.kind === 'sight').map((l) => l.words.length)).toEqual([16, 16, 15, 15, 16]) // level 5 also holds "now"
     expect(LEVELS.filter((l) => l.kind === 'sound').map((l) => l.words.length)).toEqual([20, 20, 20, 20, 20, 20, 20])
+    expect(LEVELS.filter((l) => l.kind === 'vocab').map((l) => l.words.length)).toEqual(Array(10).fill(20))
     expect(new Set(WORDS.map((w) => w.word)).size).toBe(WORDS.length)
   })
 
-  it('keeps sound-it-out words regular: no heart parts', () => {
-    for (const w of WORDS.filter((w) => w.level >= 6)) expect(w.parts.some((p) => p.heart), w.word).toBe(false)
+  it('keeps sound-it-out words regular: no heart parts (word power may need them: heavy, ocean)', () => {
+    for (const w of WORDS.filter((w) => w.level >= 6 && w.level <= 12)) expect(w.parts.some((p) => p.heart), w.word).toBe(false)
   })
 
   it('splits every word into parts that join back up', () => {

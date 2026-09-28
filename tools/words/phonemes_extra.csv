@@ -139,3 +139,203 @@ fork,F AO R K
 corn,K AO R N
 horn,HH AO R N
 storm,S T AO R M
+tall,T AO L
+short,SH AO R T
+long,L AO NG
+wide,W AY D
+deep,D IY P
+flat,F L AE T
+tiny,T AY N IY
+huge,HH Y UW JH
+large,L AA R JH
+small,S M AO L
+thick,TH IH K
+narrow,N EH R OW
+shallow,SH AE L OW
+heavy,HH EH V IY
+light,L AY T
+taller,T AO L ER
+biggest,B IH G AH S T
+smallest,S M AO L AH S T
+same,S EY M
+different,D IH F ER AH N T
+more,M AO R
+less,L EH S
+fewer,F Y UW ER
+most,M OW S T
+least,L IY S T
+zero,Z IH R OW
+few,F Y UW
+none,N AH N
+both,B OW TH
+several,S EH V R AH L
+pair,P EH R
+half,HH AE F
+double,D AH B AH L
+dozen,D AH Z AH N
+equal,IY K W AH L
+empty,EH M P T IY
+full,F UH L
+whole,HH OW L
+extra,EH K S T R AH
+plenty,P L EH N T IY
+under,AH N D ER
+over,OW V ER
+above,AH B AH V
+below,B IH L OW
+behind,B IH HH AY N D
+beside,B IH S AY D
+between,B IH T W IY N
+inside,IH N S AY D
+outside,AW T S AY D
+around,ER AW N D
+across,AH K R AO S
+middle,M IH D AH L
+front,F R AH N T
+bottom,B AA T AH M
+left,L EH F T
+right,R AY T
+near,N IH R
+far,F AA R
+beneath,B IH N IY TH
+corner,K AO R N ER
+first,F ER S T
+last,L AE S T
+next,N EH K S T
+before,B IH F AO R
+after,AE F T ER
+begin,B IH G IH N
+finish,F IH N IH SH
+early,ER L IY
+late,L EY T
+soon,S UW N
+today,T AH D EY
+tonight,T AH N AY T
+morning,M AO R N IH NG
+noon,N UW N
+week,W IY K
+spring,S P R IH NG
+summer,S AH M ER
+winter,W IH N T ER
+season,S IY Z AH N
+yesterday,Y EH S T ER D EY
+circle,S ER K AH L
+square,S K W EH R
+triangle,T R AY AE NG G AH L
+oval,OW V AH L
+diamond,D AY M AH N D
+cone,K OW N
+sphere,S F IH R
+line,L AY N
+curve,K ER V
+angle,AE NG G AH L
+stripe,S T R AY P
+spiral,S P AY R AH L
+pattern,P AE T ER N
+row,R OW
+shape,SH EY P
+edge,EH JH
+dot,D AA T
+side,S AY D
+point,P OY N T
+center,S EH N T ER
+smooth,S M UW DH
+rough,R AH F
+soft,S AA F T
+hard,HH AA R D
+sharp,SH AA R P
+sticky,S T IH K IY
+fuzzy,F AH Z IY
+shiny,SH AY N IY
+bumpy,B AH M P IY
+metal,M EH T AH L
+wood,W UH D
+glass,G L AE S
+plastic,P L AE S T IH K
+happy,HH AE P IY
+angry,AE NG G R IY
+proud,P R AW D
+calm,K AA M
+brave,B R EY V
+scared,S K EH R D
+tired,T AY ER D
+animal,AE N AH M AH L
+mammal,M AE M AH L
+reptile,R EH P T AY L
+insect,IH N S EH K T
+bird,B ER D
+vehicle,V IY HH IH K AH L
+tool,T UW L
+fruit,F R UW T
+vegetable,V EH JH T AH B AH L
+plant,P L AE N T
+furniture,F ER N IH CH ER
+clothing,K L OW DH IH NG
+instrument,IH N S T R AH M AH N T
+weather,W EH DH ER
+planet,P L AE N AH T
+body,B AA D IY
+family,F AE M AH L IY
+food,F UW D
+drink,D R IH NG K
+place,P L EY S
+forest,F AO R AH S T
+desert,D EH Z ER T
+ocean,OW SH AH N
+island,AY L AH N D
+river,R IH V ER
+mountain,M AW N T AH N
+volcano,V AA L K EY N OW
+jungle,JH AH NG G AH L
+pond,P AA N D
+cave,K EY V
+tadpole,T AE D P OW L
+caterpillar,K AE T AH P IH L ER
+cocoon,K AH K UW N
+butterfly,B AH T ER F L AY
+sprout,S P R AW T
+blossom,B L AA S AH M
+shadow,SH AE D OW
+thunder,TH AH N D ER
+rainbow,R EY N B OW
+magnet,M AE G N AH T
+calf,K AE F
+foal,F OW L
+cub,K AH B
+lamb,L AE M
+chick,CH IH K
+kitten,K IH T AH N
+hive,HH AY V
+den,D EH N
+burrow,B ER OW
+barn,B AA R N
+kennel,K EH N AH L
+stable,S T EY B AH L
+farmer,F AA R M ER
+baker,B EY K ER
+doctor,D AA K T ER
+pilot,P AY L AH T
+builder,B IH L D ER
+dentist,D EH N T AH S T
+nurse,N ER S
+painter,P EY N T ER
+bark,B AA R K
+trunk,T R AH NG K
+bank,B AE NG K
+match,M AE CH
+seal,S IY L
+watch,W AA CH
+bill,B IH L
+club,K L AH B
+palm,P AA M
+crane,K R EY N
+mouse,M AW S
+glasses,G L AE S AH Z
+pitcher,P IH CH ER
+block,B L AA K
+key,K IY
+nail,N EY L
+pupil,P Y UW P AH L
+letter,L EH T ER
+ruler,R UW L ER
+fly,F L AY

@@ -301,3 +301,427 @@ horn | fact | A car {horn} goes beep.
 horn | parts | A rhino has a {horn} on its nose.
 storm | fact | A {storm} brings strong wind.
 storm | cause | Thunder and lightning come with some {storms}.
+
+# Levels 13-22: vocabulary for gifted-test skills. Each word's sentences give its meaning
+# and use it the way the tests do: comparing, counting, placing, ordering, grouping,
+# analogies (cow : calf :: horse : foal) and second meanings.
+
+# Level 13: size and comparing
+tall | example | A giraffe is {tall}, so it can eat leaves high up.
+tall | opposite | {Tall} is the opposite of short.
+short | opposite | {Short} is the opposite of tall.
+short | cause | A pencil gets {shorter} when you sharpen it.
+long | example | A snake has a {long} body.
+long | opposite | {Long} is the opposite of short.
+wide | cause | A river is {wide}, so you need a bridge to cross it.
+wide | opposite | {Wide} is the opposite of narrow.
+deep | example | The ocean is very {deep}.
+deep | opposite | {Deep} is the opposite of shallow.
+flat | compare | A pancake is {flat}, but a ball is round.
+flat | example | A table has a {flat} top.
+tiny | compare | An ant is {tiny} next to an elephant.
+tiny | meaning | {Tiny} means very, very small.
+huge | fact | Blue whales are {huge}; they are the biggest animals ever.
+huge | meaning | {Huge} means very, very big.
+large | meaning | {Large} is another word for big.
+large | order | A pizza can be small, medium, or {large}.
+small | compare | A mouse is {small}, and an elephant is big.
+small | opposite | {Small} is the opposite of large.
+thick | compare | A tree trunk is {thick}, but a twig is thin.
+thick | example | A {thick} book has lots of pages.
+narrow | meaning | A {narrow} path has room for only one person.
+narrow | opposite | {Narrow} is the opposite of wide.
+shallow | example | Little kids swim in the {shallow} end of a pool.
+shallow | opposite | {Shallow} is the opposite of deep.
+heavy | compare | An elephant is {heavy}, and a feather is light.
+heavy | compare | A bowling ball is {heavier} than a balloon.
+light | cause | A feather is {light}, so the wind can blow it away.
+light | two meanings | {Light} also means bright, like the sun.
+taller | compare | A giraffe is {taller} than a horse.
+taller | cause | You get {taller} as you grow.
+biggest | fact | The blue whale is the {biggest} animal of all.
+biggest | compare | Of a mouse, a dog, and a horse, the horse is the {biggest}.
+smallest | compare | Of a cat, a mouse, and a cow, the mouse is the {smallest}.
+smallest | example | Your little finger is your {smallest} finger.
+same | example | Twins can look the {same}.
+same | number | Two plus two and three plus one are the {same}.
+different | category | A cat and a dog are {different} animals.
+different | category | Apples and bananas are {different}, but both are fruit.
+
+# Level 14: how many
+more | number | Five is {more} than three.
+more | opposite | {More} is the opposite of less.
+less | number | Two is {less} than four.
+less | compare | A cup holds {less} water than a bucket.
+fewer | compare | A bird has {fewer} legs than a dog.
+fewer | meaning | {Fewer} means not as many.
+most | number | Of two, five, and nine cookies, nine is the {most}.
+most | opposite | {Most} is the opposite of least.
+least | number | Of four, one, and six, one is the {least}.
+least | meaning | {Least} means the smallest amount.
+zero | meaning | {Zero} means none at all.
+zero | number | Three take away three is {zero}.
+few | meaning | A {few} means a small number, like two or three.
+few | example | There are only a {few} cookies left.
+none | meaning | {None} means not even one.
+none | cause | If you eat all the grapes, there are {none} left.
+both | number | {Both} of your hands have five fingers.
+both | category | Cats and dogs {both} have fur.
+several | meaning | {Several} means more than two, but not many.
+several | number | An octopus has {several} arms: eight in all.
+pair | meaning | A {pair} is two things that go together.
+pair | example | You wear a {pair} of shoes.
+half | number | Two {halves} make a whole.
+half | number | {Half} of ten is five.
+double | meaning | {Double} means two times as many.
+double | number | {Double} three is six.
+dozen | number | A {dozen} is twelve.
+dozen | example | Eggs often come in a box of a {dozen}.
+equal | meaning | {Equal} means the same amount.
+equal | number | Two plus two is {equal} to four.
+empty | meaning | An {empty} box has nothing in it.
+empty | opposite | {Empty} is the opposite of full.
+full | meaning | A {full} glass has no room for more.
+full | two meanings | The moon looks round and bright when it is {full}.
+whole | example | You ate the {whole} apple, so none is left.
+whole | meaning | A {whole} is all of something.
+extra | meaning | {Extra} means more than you need.
+extra | example | Bring an {extra} sock in case one gets wet.
+plenty | meaning | {Plenty} means more than enough.
+plenty | example | There is {plenty} of food for everyone.
+
+# Level 15: where
+under | where | The cat is hiding {under} the bed.
+under | opposite | {Under} is the opposite of over.
+over | where | A bird flies {over} the house.
+over | example | You jump {over} a puddle.
+above | where | The sky is {above} the ground.
+above | meaning | {Above} means higher than.
+below | where | Roots grow {below} the ground.
+below | opposite | {Below} is the opposite of above.
+behind | body | Your back is {behind} you.
+behind | where | The moon hid {behind} a cloud.
+beside | meaning | {Beside} means right next to.
+beside | where | The spoon goes {beside} the bowl.
+between | body | Your nose is {between} your eyes.
+between | number | Five comes {between} four and six.
+inside | fact | A turtle can pull its head {inside} its shell.
+inside | opposite | {Inside} is the opposite of outside.
+outside | example | We play {outside} when it is sunny.
+outside | parts | The bark is on the {outside} of a tree.
+around | fact | The Earth goes {around} the sun.
+around | where | A fence goes all the way {around} the yard.
+across | function | A bridge goes {across} a river.
+across | example | You walk {across} the street at a crosswalk.
+middle | body | Your nose is in the {middle} of your face.
+middle | number | Two is the {middle} number of one, two, three.
+front | body | Your face is on the {front} of your head.
+front | opposite | {Front} is the opposite of back.
+bottom | parts | Roots are at the {bottom} of a plant.
+bottom | opposite | {Bottom} is the opposite of top.
+left | fact | Most people write with their right hand, not their {left}.
+left | opposite | {Left} is the opposite of right.
+right | opposite | {Right} is the opposite of left.
+right | two meanings | {Right} also means correct.
+near | meaning | {Near} means close by.
+near | opposite | {Near} is the opposite of far.
+far | fact | The stars are very {far} away.
+far | compare | The moon is {farther} away than the clouds.
+beneath | meaning | {Beneath} means under.
+beneath | where | Worms live {beneath} the ground.
+corner | shape | A square has four {corners}.
+corner | meaning | Two walls meet at a {corner}.
+
+# Level 16: when
+first | sequence | An egg comes {first}, then a chick.
+first | sequence | The {first} letter of the alphabet is A.
+last | sequence | Z is the {last} letter of the alphabet.
+last | opposite | {Last} is the opposite of first.
+next | sequence | After Monday, the {next} day is Tuesday.
+next | number | Four comes {next} after three.
+before | sequence | You put on socks {before} shoes.
+before | number | Three comes {before} four.
+after | sequence | Night comes {after} day.
+after | opposite | {After} is the opposite of before.
+begin | meaning | {Begin} means to start.
+begin | example | Every race has a place to {begin} and a place to end.
+finish | meaning | {Finish} means to end.
+finish | example | The first runner to {finish} wins the race.
+early | opposite | {Early} is the opposite of late.
+early | time | The sun comes up {early} in the morning.
+late | fact | Owls stay up {late} at night.
+late | meaning | If you are {late}, you missed the start.
+soon | meaning | {Soon} means in a short time.
+soon | cause | It is dark, so it will {soon} be bedtime.
+today | meaning | {Today} is the day it is now.
+today | sequence | Yesterday came before {today}.
+tonight | meaning | {Tonight} means this night.
+tonight | example | You might see the moon {tonight} if the sky is clear.
+morning | time | The sun rises in the {morning}.
+morning | sequence | {Morning} comes before noon.
+noon | meaning | {Noon} is the middle of the day.
+noon | fact | At {noon}, the sun is high in the sky.
+week | number | A {week} has seven days.
+week | category | Monday is a day of the {week}.
+spring | season | In {spring}, flowers start to grow.
+spring | two meanings | A {spring} is also a coil that bounces back.
+summer | season | {Summer} is the hottest season.
+summer | sequence | {Summer} comes after spring.
+winter | season | {Winter} is the coldest season.
+winter | fact | Snow can fall in {winter}.
+season | category | Spring, summer, fall, and winter are the four {seasons}.
+season | number | Each {season} lasts about three months.
+yesterday | meaning | {Yesterday} was the day before today.
+yesterday | sequence | Tomorrow comes after today, and {yesterday} came before it.
+
+# Level 17: shapes
+circle | shape | A {circle} is round and has no corners.
+circle | example | A wheel is shaped like a {circle}.
+square | shape | A {square} has four sides that are all the same length.
+square | category | A {square} is a kind of rectangle.
+triangle | shape | A {triangle} has three sides and three corners.
+triangle | example | A slice of pizza looks like a {triangle}.
+oval | example | An egg is shaped like an {oval}.
+oval | compare | An {oval} is like a stretched circle.
+diamond | example | A kite is often shaped like a {diamond}.
+diamond | two meanings | A {diamond} is also a very hard, shiny stone.
+cone | example | A party hat is shaped like a {cone}.
+cone | shape | A {cone} is round at the bottom and pointy at the top.
+sphere | example | A ball is a {sphere}.
+sphere | fact | The Earth is shaped like a {sphere}.
+line | shape | A straight {line} goes from one point to another.
+line | two meanings | You wait in {line} for your turn.
+curve | meaning | A {curve} is a line that bends.
+curve | example | The letter C is a {curve}.
+angle | meaning | An {angle} is made where two lines meet.
+angle | shape | A square has four {angles} that are all the same.
+stripe | example | A zebra has black and white {stripes}.
+stripe | meaning | A {stripe} is a long, thin band of color.
+spiral | example | A snail's shell has a {spiral} shape.
+spiral | meaning | A {spiral} goes around and around, getting bigger.
+pattern | example | Red, blue, red, blue is a {pattern}.
+pattern | meaning | A {pattern} repeats again and again.
+row | meaning | Chairs can stand in a {row}, side by side.
+row | two meanings | To {row} a boat, you pull the oars.
+shape | category | A circle, a square, and a triangle are all {shapes}.
+shape | meaning | A {shape} is the outline of something.
+edge | meaning | An {edge} is where something ends.
+edge | shape | A cube has twelve {edges}.
+dot | meaning | A {dot} is a tiny round mark.
+dot | example | A period at the end of a sentence is a {dot}.
+side | shape | A triangle has three {sides}.
+side | example | A coin has two {sides}.
+point | example | A pencil has a sharp {point}.
+point | two meanings | To {point}, you use your finger.
+center | meaning | The {center} is the middle of something.
+center | example | A bullseye is the {center} of a target.
+
+# Level 18: feel and feelings
+smooth | example | Glass feels {smooth}.
+smooth | opposite | {Smooth} is the opposite of rough.
+rough | example | Sandpaper feels {rough}.
+rough | example | Most tree bark feels {rough}.
+soft | example | A pillow is {soft}.
+soft | opposite | {Soft} is the opposite of hard.
+hard | example | A rock is {hard}.
+hard | two meanings | {Hard} can also mean not easy.
+sharp | cause | A knife is {sharp}, so be careful.
+sharp | opposite | {Sharp} is the opposite of dull.
+sticky | example | Honey is {sticky}.
+sticky | example | Tape is {sticky} on one side.
+fuzzy | example | A peach feels {fuzzy}.
+fuzzy | example | Some caterpillars are {fuzzy}.
+shiny | example | A new coin is {shiny}.
+shiny | example | Metal can be {shiny} when it is clean.
+bumpy | example | A road with holes is {bumpy}.
+bumpy | example | A toad's skin looks {bumpy}.
+metal | material | A spoon can be made of {metal}.
+metal | category | Iron and gold are {metals}.
+wood | material | Tables can be made of {wood}.
+wood | made from | {Wood} comes from trees.
+glass | material | Windows are made of {glass}.
+glass | fact | You can see through clear {glass}.
+plastic | material | Many toys are made of {plastic}.
+plastic | material | A water bottle can be made of {plastic}.
+happy | feeling | You smile when you are {happy}.
+happy | opposite | {Happy} is the opposite of sad.
+angry | meaning | {Angry} means very mad.
+angry | feeling | When you feel {angry}, take a deep breath.
+proud | feeling | You feel {proud} when you do something well.
+proud | example | The team was {proud} of its win.
+calm | meaning | {Calm} means quiet and still.
+calm | example | A lake is {calm} when there is no wind.
+brave | meaning | {Brave} means not giving up when you are scared.
+brave | example | Firefighters are {brave}.
+scared | cause | Loud thunder can make you feel {scared}.
+scared | meaning | {Scared} means afraid.
+tired | cause | You feel {tired} after running a long way.
+tired | cause | When you are {tired}, you need sleep.
+
+# Level 19: groups
+animal | category | A dog, a fish, and a bird are all {animals}.
+animal | meaning | An {animal} is a living thing that can move on its own.
+mammal | category | A whale is a {mammal}, not a fish.
+mammal | meaning | A {mammal} has hair or fur and feeds its babies milk.
+reptile | category | Snakes, lizards, and turtles are {reptiles}.
+reptile | parts | A {reptile} has dry, scaly skin.
+insect | number | An {insect} has six legs.
+insect | category | A spider is not an {insect}; it has eight legs.
+bird | parts | A {bird} has feathers and wings.
+bird | category | A penguin is a {bird} that cannot fly.
+vehicle | category | A car, a bus, and a train are all {vehicles}.
+vehicle | function | A {vehicle} carries people or things from place to place.
+tool | function | A hammer is a {tool} for hitting nails.
+tool | meaning | A {tool} helps you do a job.
+fruit | category | Apples, bananas, and grapes are all {fruits}.
+fruit | fact | A {fruit} holds the seeds of a plant.
+vegetable | category | Carrots and peas are {vegetables}.
+vegetable | where | A carrot is a {vegetable} that grows under the ground.
+plant | cause | A {plant} needs water and sunlight to grow.
+plant | category | Trees, grass, and flowers are all {plants}.
+furniture | category | Chairs, beds, and tables are {furniture}.
+furniture | example | A sofa is a piece of {furniture}.
+clothing | category | Shirts, socks, and hats are all {clothing}.
+clothing | function | {Clothing} keeps your body warm.
+instrument | category | A drum and a violin are both {instruments}.
+instrument | function | You play music on an {instrument}.
+weather | category | Rain, snow, and wind are kinds of {weather}.
+weather | meaning | The {weather} is what the sky is doing outside.
+planet | fact | Earth is the {planet} we live on.
+planet | number | Our sun has eight {planets} going around it.
+body | number | Your {body} has two arms and two legs.
+body | fact | Your heart pumps blood around your {body}.
+family | category | Parents, brothers, and sisters are part of a {family}.
+family | meaning | A {family} is people who belong together.
+food | function | {Food} gives your body energy.
+food | category | Bread, cheese, and apples are all {food}.
+drink | category | Milk, juice, and water are things you {drink}.
+drink | fact | Plants {drink} water through their roots.
+place | category | A park, a school, and a store are all {places}.
+place | example | Put your toys back in their {place}.
+
+# Level 20: nature
+forest | meaning | A {forest} is a place with lots of trees.
+forest | where | Deer and owls live in the {forest}.
+desert | meaning | A {desert} gets very little rain.
+desert | where | Camels can live in the {desert}.
+ocean | meaning | The {ocean} is huge and full of salty water.
+ocean | where | Whales and sharks live in the {ocean}.
+island | meaning | An {island} is land with water all around it.
+island | example | Hawaii is made of {islands}.
+river | meaning | A {river} is water that flows downhill.
+river | where | Fish swim in a {river}.
+mountain | compare | A {mountain} is much taller than a hill.
+mountain | fact | Snow can stay on top of a {mountain} all year.
+volcano | fact | Hot melted rock comes out of a {volcano}.
+volcano | cause | A {volcano} can make a new island.
+jungle | meaning | A {jungle} is hot, wet, and full of plants.
+jungle | where | Monkeys and parrots live in the {jungle}.
+pond | compare | A {pond} is smaller than a lake.
+pond | where | Frogs and ducks live near a {pond}.
+cave | meaning | A {cave} is a hole in a hill or rock.
+cave | where | Many bats sleep in {caves}.
+tadpole | sequence | A {tadpole} grows into a frog.
+tadpole | parts | A {tadpole} lives in water and has a tail.
+caterpillar | sequence | A {caterpillar} can turn into a butterfly.
+caterpillar | fact | A {caterpillar} eats lots of leaves.
+cocoon | sequence | A moth grows inside a {cocoon}.
+cocoon | made from | A {cocoon} is a soft case made of silk.
+butterfly | number | A {butterfly} has four wings.
+butterfly | sequence | A {butterfly} starts life as a caterpillar.
+sprout | meaning | A {sprout} is a new plant that has just come up.
+sprout | cause | A seed can {sprout} when it gets water.
+blossom | meaning | A {blossom} is a flower on a tree.
+blossom | sequence | Apple {blossoms} grow into apples.
+shadow | cause | Your {shadow} is dark where you block the light.
+shadow | cause | Your {shadow} gets long when the sun is low.
+thunder | meaning | {Thunder} is the loud boom in a storm.
+thunder | sequence | You see lightning before you hear {thunder}.
+rainbow | cause | A {rainbow} can appear when the sun shines through rain.
+rainbow | example | A {rainbow} has many colors.
+magnet | function | A {magnet} pulls on things made of iron.
+magnet | example | Magnetic cubes stick together because of {magnets}.
+
+# Level 21: babies, homes and jobs
+calf | family | A baby cow is called a {calf}.
+calf | family | A baby whale is also called a {calf}.
+foal | family | A baby horse is called a {foal}.
+foal | analogy | Cow is to calf as horse is to {foal}.
+cub | family | A baby bear is called a {cub}.
+cub | family | Baby lions are called {cubs} too.
+lamb | family | A baby sheep is called a {lamb}.
+lamb | analogy | Dog is to puppy as sheep is to {lamb}.
+chick | family | A baby chicken is called a {chick}.
+chick | sequence | A {chick} hatches from an egg.
+kitten | family | A baby cat is called a {kitten}.
+kitten | sequence | A {kitten} grows up to be a cat.
+hive | home | Bees live in a {hive}.
+hive | analogy | Bird is to nest as bee is to {hive}.
+den | home | A fox lives in a {den}.
+den | home | Bears can sleep all winter in a {den}.
+burrow | home | A rabbit lives in a {burrow} under the ground.
+burrow | meaning | A {burrow} is a hole an animal digs to live in.
+barn | home | Cows and horses can sleep in a {barn}.
+barn | function | A farmer keeps hay in a {barn}.
+kennel | home | A dog can sleep in a {kennel}.
+kennel | analogy | Bird is to nest as dog is to {kennel}.
+stable | home | Horses live in a {stable}.
+stable | two meanings | {Stable} also means steady and not wobbly.
+farmer | job | A {farmer} grows food and raises animals.
+farmer | tool | A {farmer} drives a tractor.
+baker | job | A {baker} makes bread and cakes.
+baker | tool | A {baker} uses an oven.
+doctor | job | A {doctor} helps sick people get well.
+doctor | example | A {doctor} listens to your heart.
+pilot | job | A {pilot} flies an airplane.
+pilot | analogy | Driver is to car as {pilot} is to plane.
+builder | job | A {builder} makes houses.
+builder | tool | A {builder} uses a hammer and nails.
+dentist | job | A {dentist} takes care of your teeth.
+dentist | example | You visit the {dentist} to keep your teeth healthy.
+nurse | job | A {nurse} helps sick people in a hospital.
+nurse | example | A {nurse} and a doctor work together.
+painter | tool | A {painter} uses a brush and paint.
+painter | job | A {painter} can paint a picture or a wall.
+
+# Level 22: two meanings
+bark | two meanings | A dog can {bark}.
+bark | two meanings | {Bark} is also the rough skin of a tree.
+trunk | two meanings | An elephant's nose is called a {trunk}.
+trunk | two meanings | A tree {trunk} holds up its branches.
+bank | two meanings | You keep money in a {bank}.
+bank | two meanings | The side of a river is called a {bank}.
+match | two meanings | A {match} can light a fire.
+match | two meanings | Socks that {match} look the same.
+seal | two meanings | A {seal} is an animal that swims in the sea.
+seal | two meanings | To {seal} an envelope is to close it tight.
+watch | two meanings | A {watch} tells the time on your wrist.
+watch | two meanings | To {watch} means to look at something.
+bill | two meanings | A duck's mouth is called a {bill}.
+bill | two meanings | A {bill} is also paper money.
+club | two meanings | A {club} is a group of people who meet.
+club | two meanings | A golf {club} is a stick for hitting a ball.
+palm | two meanings | The {palm} is the inside of your hand.
+palm | two meanings | A {palm} tree has big leaves at the top.
+crane | two meanings | A {crane} is a bird with long legs.
+crane | two meanings | A {crane} is also a machine that lifts heavy things.
+mouse | two meanings | A {mouse} is a small animal with a long tail.
+mouse | two meanings | A computer {mouse} helps you point and click.
+glasses | two meanings | You drink from {glasses}.
+glasses | two meanings | Some people wear {glasses} to see better.
+pitcher | two meanings | A {pitcher} holds water or juice for pouring.
+pitcher | two meanings | In baseball, the {pitcher} throws the ball.
+block | two meanings | A {block} is a toy you can stack.
+block | two meanings | A city {block} has streets on all four sides.
+key | two meanings | A {key} opens a lock.
+key | two meanings | A piano has black and white {keys}.
+nail | two meanings | You hit a {nail} with a hammer.
+nail | two meanings | Your fingers have {nails} at the tips.
+pupil | two meanings | A {pupil} is a student in a school.
+pupil | two meanings | The {pupil} is the black circle in your eye.
+letter | two meanings | A is the first {letter} of the alphabet.
+letter | two meanings | You can mail a {letter} to a friend.
+ruler | two meanings | A {ruler} measures how long things are.
+ruler | two meanings | A king or queen is a {ruler}.
+fly | two meanings | A {fly} is a small insect with wings.
+fly | two meanings | Birds and planes can {fly}.

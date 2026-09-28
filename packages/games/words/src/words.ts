@@ -41,6 +41,9 @@ export const SENTENCES = sentenceData as Record<string, Sentence[]>
  * Levels 1–5: his Preschool Prep sight words (known already — familiar ground).
  * Levels 6–12: the point of the app — common words that follow the sound
  * rules, in phonics order, for sounding out.
+ * Levels 13–22: word power — the vocabulary gifted and IQ screeners test:
+ * concept words (size, quantity, position, time, shape, texture, feelings),
+ * categories, analogies (cow : calf :: horse : foal) and double meanings.
  */
 const PATTERNS: Record<number, string> = {
   6: 'short a',
@@ -50,13 +53,23 @@ const PATTERNS: Record<number, string> = {
   10: 'blends',
   11: 'silent e',
   12: 'ai ee oa ar or',
+  13: 'size and comparing',
+  14: 'how many',
+  15: 'where',
+  16: 'when',
+  17: 'shapes',
+  18: 'feel and feelings',
+  19: 'groups',
+  20: 'nature',
+  21: 'babies, homes and jobs',
+  22: 'two meanings',
 }
 
 export interface Level {
   level: number
-  /** Sight words, or sound-it-out words. */
-  kind: 'sight' | 'sound'
-  /** Spelling pattern, for sound-it-out levels. */
+  /** Sight words, sound-it-out words, or word power (vocabulary). */
+  kind: 'sight' | 'sound' | 'vocab'
+  /** Spelling pattern (sound it out) or theme (word power). */
   pattern?: string
   words: Word[]
 }
@@ -65,7 +78,7 @@ export const LEVELS: Level[] = [...new Set(WORDS.map((w) => w.level))]
   .sort((a, b) => a - b)
   .map((level) => ({
     level,
-    kind: level <= 5 ? 'sight' : 'sound',
+    kind: level <= 5 ? 'sight' : level <= 12 ? 'sound' : 'vocab',
     pattern: PATTERNS[level],
     words: WORDS.filter((w) => w.level === level),
   }))

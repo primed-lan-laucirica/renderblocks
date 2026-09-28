@@ -247,3 +247,206 @@
 12 | corn | c or^ n
 12 | horn | h or^ n
 12 | storm | s t or^ m
+
+# Levels 13-22: vocabulary for gifted-test skills (see decodable.txt). ♥ (!) marks the
+# irregular spellings English forces on some of these words.
+13 | tall | t a^ ll
+13 | short | sh or^ t
+13 | long | l o^ ng
+13 | wide | w i^ d e_
+13 | deep | d ee^ p
+13 | flat | f l a^ t
+13 | tiny | t i^ n y^
+13 | huge | h u^ g e_
+13 | large | l ar^ g e_
+13 | small | s m a^ ll
+13 | thick | th i^ ck
+13 | narrow | n a^ rr ow^
+13 | shallow | sh a^ ll ow^
+13 | heavy | h ea^! v y^
+13 | light | l igh^ t
+13 | taller | t a^ ll er^
+13 | biggest | b i^ gg e^ s t
+13 | smallest | s m a^ ll e^ s t
+13 | same | s a^ m e_
+13 | different | d i^ ff er^ e^ n t
+14 | more | m or^ e_
+14 | less | l e^ ss
+14 | fewer | f ew^ er^
+14 | most | m o^! s t
+14 | least | l ea^ s t
+14 | zero | z e^ r o^
+14 | few | f ew^
+14 | none | n o^! n e_
+14 | both | b o^! th
+14 | several | s e^ v er^ a^ l
+14 | pair | p air^
+14 | half | h a^ l_ f
+14 | double | d ou^! b le^
+14 | dozen | d o^! z e^ n
+14 | equal | e^ qu a^ l
+14 | empty | e^ m p t y^
+14 | full | f u^ ll
+14 | whole | wh! o^ l e_
+14 | extra | e^ x t r a^
+14 | plenty | p l e^ n t y^
+15 | under | u^ n d er^
+15 | over | o^ v er^
+15 | above | a^ b o^! v e_
+15 | below | b e^ l ow^
+15 | behind | b e^ h i^ n d
+15 | beside | b e^ s i^ d e_
+15 | between | b e^ t w ee^ n
+15 | inside | i^ n s i^ d e_
+15 | outside | ou^ t s i^ d e_
+15 | around | a^ r ou^ n d
+15 | across | a^ c r o^ ss
+15 | middle | m i^ dd le^
+15 | front | f r o^! n t
+15 | bottom | b o^ tt o^ m
+15 | left | l e^ f t
+15 | right | r igh^ t
+15 | near | n ear^
+15 | far | f ar^
+15 | beneath | b e^ n ea^ th
+15 | corner | c or^ n er^
+16 | first | f ir^ s t
+16 | last | l a^ s t
+16 | next | n e^ x t
+16 | before | b e^ f or^ e_
+16 | after | a^ f t er^
+16 | begin | b e^ g i^ n
+16 | finish | f i^ n i^ sh
+16 | early | ear^! l y^
+16 | late | l a^ t e_
+16 | soon | s oo^ n
+16 | today | t o^ d ay^
+16 | tonight | t o^ n igh^ t
+16 | morning | m or^ n i^ ng
+16 | noon | n oo^ n
+16 | week | w ee^ k
+16 | spring | s p r i^ ng
+16 | summer | s u^ mm er^
+16 | winter | w i^ n t er^
+16 | season | s ea^ s o^ n
+16 | yesterday | y e^ s t er^ d ay^
+17 | circle | c ir^ c le^
+17 | square | s qu are^
+17 | triangle | t r i^ a^ n g le^
+17 | oval | o^ v a^ l
+17 | diamond | d i^ a^ m o^ n d
+17 | cone | c o^ n e_
+17 | sphere | s ph ere^
+17 | line | l i^ n e_
+17 | curve | c ur^ v e_
+17 | angle | a^ n g le^
+17 | stripe | s t r i^ p e_
+17 | spiral | s p i^ r a^ l
+17 | pattern | p a^ tt er^ n
+17 | row | r ow^
+17 | shape | sh a^ p e_
+17 | edge | e^ dge
+17 | dot | d o^ t
+17 | side | s i^ d e_
+17 | point | p oi^ n t
+17 | center | c e^ n t er^
+18 | smooth | s m oo^ th
+18 | rough | r ough^!
+18 | soft | s o^ f t
+18 | hard | h ar^ d
+18 | sharp | sh ar^ p
+18 | sticky | s t i^ ck y^
+18 | fuzzy | f u^ zz y^
+18 | shiny | sh i^ n y^
+18 | bumpy | b u^ m p y^
+18 | metal | m e^ t a^ l
+18 | wood | w oo^ d
+18 | glass | g l a^ ss
+18 | plastic | p l a^ s t i^ c
+18 | happy | h a^ pp y^
+18 | angry | a^ n g r y^
+18 | proud | p r ou^ d
+18 | calm | c a^ l_ m
+18 | brave | b r a^ v e_
+18 | scared | s c are^ d
+18 | tired | t i^ r e_ d
+19 | animal | a^ n i^ m a^ l
+19 | mammal | m a^ mm a^ l
+19 | reptile | r e^ p t i^ l e_
+19 | insect | i^ n s e^ c t
+19 | bird | b ir^ d
+19 | vehicle | v e^ h_ i^ c le^
+19 | tool | t oo^ l
+19 | fruit | f r ui^! t
+19 | vegetable | v e^ g e_ t a^ b le^
+19 | plant | p l a^ n t
+19 | furniture | f ur^ n i^ t ure^
+19 | clothing | c l o^ th i^ ng
+19 | instrument | i^ n s t r u^ m e^ n t
+19 | weather | w ea^! th er^
+19 | planet | p l a^ n e^ t
+19 | body | b o^ d y^
+19 | family | f a^ m i^ l y^
+19 | food | f oo^ d
+19 | drink | d r i^ n k
+19 | place | p l a^ c e_
+20 | forest | f or^ e^ s t
+20 | desert | d e^ s er^ t
+20 | ocean | o^ c! ea^ n
+20 | island | i^ s_ l a^ n d
+20 | river | r i^ v er^
+20 | mountain | m ou^ n t ai^! n
+20 | volcano | v o^ l c a^ n o^
+20 | jungle | j u^ n g le^
+20 | pond | p o^ n d
+20 | cave | c a^ v e_
+20 | tadpole | t a^ d p o^ l e_
+20 | caterpillar | c a^ t er^ p i^ ll ar^
+20 | cocoon | c o^ c oo^ n
+20 | butterfly | b u^ tt er^ f l y^
+20 | sprout | s p r ou^ t
+20 | blossom | b l o^ ss o^ m
+20 | shadow | sh a^ d ow^
+20 | thunder | th u^ n d er^
+20 | rainbow | r ai^ n b ow^
+20 | magnet | m a^ g n e^ t
+21 | calf | c a^ l_ f
+21 | foal | f oa^ l
+21 | cub | c u^ b
+21 | lamb | l a^ m b_
+21 | chick | ch i^ ck
+21 | kitten | k i^ tt e^ n
+21 | hive | h i^ v e_
+21 | den | d e^ n
+21 | burrow | b ur^ r ow^
+21 | barn | b ar^ n
+21 | kennel | k e^ nn e^ l
+21 | stable | s t a^ b le^
+21 | farmer | f ar^ m er^
+21 | baker | b a^ k er^
+21 | doctor | d o^ c t or^
+21 | pilot | p i^ l o^ t
+21 | builder | b ui^! l d er^
+21 | dentist | d e^ n t i^ s t
+21 | nurse | n ur^ s e_
+21 | painter | p ai^ n t er^
+22 | bark | b ar^ k
+22 | trunk | t r u^ n k
+22 | bank | b a^ n k
+22 | match | m a^ tch
+22 | seal | s ea^ l
+22 | watch | w a^! tch
+22 | bill | b i^ ll
+22 | club | c l u^ b
+22 | palm | p a^ l_ m
+22 | crane | c r a^ n e_
+22 | mouse | m ou^ s e_
+22 | glasses | g l a^ ss e^ s
+22 | pitcher | p i^ tch er^
+22 | block | b l o^ ck
+22 | key | k ey^
+22 | nail | n ai^ l
+22 | pupil | p u^ p i^ l
+22 | letter | l e^ tt er^
+22 | ruler | r u^ l er^
+22 | fly | f l y^

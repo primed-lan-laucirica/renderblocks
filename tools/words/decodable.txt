@@ -8,3 +8,26 @@
 10 | blends | frog stop flag crab drum clap plum swim sled snap spot trip jump hand nest milk tent lamp belt gift
 11 | silent e | cake lake game gate bike kite time ride five home bone rope nose cube tube cute mule hope lime wave
 12 | ai ee oa ar or | rain tail snail feet bee tree seed sheep boat goat road soap car star park farm fork corn horn storm
+
+# Levels 13-22: vocabulary for the skills gifted and IQ screeners test (skills_map.csv in
+# Drive RenderBlocks/Gifted): concept words (Bracken), categories, analogies, double meanings.
+# 13: Bracken sizes and comparisons; analogies
+13 | size and comparing | tall short long wide deep flat tiny huge large small thick narrow shallow heavy light taller biggest smallest same different
+# 14: quantitative reasoning (Bracken quantity)
+14 | how many | more less fewer most least zero few none both several pair half double dozen equal empty full whole extra plenty
+# 15: following directions (Bracken direction and position)
+15 | where | under over above below behind beside between inside outside around across middle front bottom left right near far beneath corner
+# 16: series and sequence (Bracken time)
+16 | when | first last next before after begin finish early late soon today tonight morning noon week spring summer winter season yesterday
+# 17: pattern matrices; spatial (Bracken shapes)
+17 | shapes | circle square triangle oval diamond cone sphere line curve angle stripe spiral pattern row shape edge dot side point center
+# 18: Bracken texture, material and self/social
+18 | feel and feelings | smooth rough soft hard sharp sticky fuzzy shiny bumpy metal wood glass plastic happy angry proud calm brave scared tired
+# 19: classification
+19 | groups | animal mammal reptile insect bird vehicle tool fruit vegetable plant furniture clothing instrument weather planet body family food drink place
+# 20: general knowledge; life-cycle series
+20 | nature | forest desert ocean island river mountain volcano jungle pond cave tadpole caterpillar cocoon butterfly sprout blossom shadow thunder rainbow magnet
+# 21: analogies (parent:baby, animal:home, worker:tool)
+21 | babies, homes and jobs | calf foal cub lamb chick kitten hive den burrow barn kennel stable farmer baker doctor pilot builder dentist nurse painter
+# 22: verbal reasoning: double meanings (tier 3)
+22 | two meanings | bark trunk bank match seal watch bill club palm crane mouse glasses pitcher block key nail pupil letter ruler fly

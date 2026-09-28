@@ -5266,5 +5266,6503 @@
     "silent": false
    }
   ]
+ },
+ {
+  "word": "tall",
+  "level": 13,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "short",
+  "level": 13,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "long",
+  "level": 13,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ng",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "wide",
+  "level": 13,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "deep",
+  "level": 13,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ee",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "flat",
+  "level": 13,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "tiny",
+  "level": 13,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "huge",
+  "level": 13,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "large",
+  "level": 13,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "small",
+  "level": 13,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "thick",
+  "level": 13,
+  "parts": [
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ck",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "narrow",
+  "level": 13,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "rr",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ow",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "shallow",
+  "level": 13,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ow",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "heavy",
+  "level": 13,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ea",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "light",
+  "level": 13,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "igh",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "taller",
+  "level": 13,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "biggest",
+  "level": 13,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "gg",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "smallest",
+  "level": 13,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "same",
+  "level": 13,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "different",
+  "level": 13,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ff",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "more",
+  "level": 14,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "less",
+  "level": 14,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ss",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "fewer",
+  "level": 14,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ew",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "most",
+  "level": 14,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "least",
+  "level": 14,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ea",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "zero",
+  "level": 14,
+  "parts": [
+   {
+    "g": "z",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "few",
+  "level": 14,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ew",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "none",
+  "level": 14,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "both",
+  "level": 14,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "several",
+  "level": 14,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "pair",
+  "level": 14,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "air",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "half",
+  "level": 14,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   },
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "double",
+  "level": 14,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ou",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "dozen",
+  "level": 14,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "z",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "equal",
+  "level": 14,
+  "parts": [
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "qu",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "empty",
+  "level": 14,
+  "parts": [
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "full",
+  "level": 14,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "whole",
+  "level": 14,
+  "parts": [
+   {
+    "g": "wh",
+    "vowel": false,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "extra",
+  "level": 14,
+  "parts": [
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "x",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "plenty",
+  "level": 14,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "under",
+  "level": 15,
+  "parts": [
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "over",
+  "level": 15,
+  "parts": [
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "above",
+  "level": 15,
+  "parts": [
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "below",
+  "level": 15,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ow",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "behind",
+  "level": 15,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "beside",
+  "level": 15,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "between",
+  "level": 15,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ee",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "inside",
+  "level": 15,
+  "parts": [
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "outside",
+  "level": 15,
+  "parts": [
+   {
+    "g": "ou",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "around",
+  "level": 15,
+  "parts": [
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ou",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "across",
+  "level": 15,
+  "parts": [
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ss",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "middle",
+  "level": 15,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "dd",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "front",
+  "level": 15,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "bottom",
+  "level": 15,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "tt",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "left",
+  "level": 15,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "right",
+  "level": 15,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "igh",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "near",
+  "level": 15,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ear",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "far",
+  "level": 15,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "beneath",
+  "level": 15,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ea",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "corner",
+  "level": 15,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "first",
+  "level": 16,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ir",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "last",
+  "level": 16,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "next",
+  "level": 16,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "x",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "before",
+  "level": 16,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "after",
+  "level": 16,
+  "parts": [
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "begin",
+  "level": 16,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "finish",
+  "level": 16,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "early",
+  "level": 16,
+  "parts": [
+   {
+    "g": "ear",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "late",
+  "level": 16,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "soon",
+  "level": 16,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oo",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "today",
+  "level": 16,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ay",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "tonight",
+  "level": 16,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "igh",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "morning",
+  "level": 16,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ng",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "noon",
+  "level": 16,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oo",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "week",
+  "level": 16,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ee",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "spring",
+  "level": 16,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ng",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "summer",
+  "level": 16,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "mm",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "winter",
+  "level": 16,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "season",
+  "level": 16,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ea",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "yesterday",
+  "level": 16,
+  "parts": [
+   {
+    "g": "y",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ay",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "circle",
+  "level": 17,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ir",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "square",
+  "level": 17,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "qu",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "are",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "triangle",
+  "level": 17,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "oval",
+  "level": 17,
+  "parts": [
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "diamond",
+  "level": 17,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "cone",
+  "level": 17,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "sphere",
+  "level": 17,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ph",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ere",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "line",
+  "level": 17,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "curve",
+  "level": 17,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ur",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "angle",
+  "level": 17,
+  "parts": [
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "stripe",
+  "level": 17,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "spiral",
+  "level": 17,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "pattern",
+  "level": 17,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "tt",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "row",
+  "level": 17,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ow",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "shape",
+  "level": 17,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "edge",
+  "level": 17,
+  "parts": [
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "dge",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "dot",
+  "level": 17,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "side",
+  "level": 17,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "point",
+  "level": 17,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oi",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "center",
+  "level": 17,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "smooth",
+  "level": 18,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oo",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "rough",
+  "level": 18,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ough",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "soft",
+  "level": 18,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "hard",
+  "level": 18,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "sharp",
+  "level": 18,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "sticky",
+  "level": 18,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ck",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "fuzzy",
+  "level": 18,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "zz",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "shiny",
+  "level": 18,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "bumpy",
+  "level": 18,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "metal",
+  "level": 18,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "wood",
+  "level": 18,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oo",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "glass",
+  "level": 18,
+  "parts": [
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ss",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "plastic",
+  "level": 18,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "happy",
+  "level": 18,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "pp",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "angry",
+  "level": 18,
+  "parts": [
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "proud",
+  "level": 18,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ou",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "calm",
+  "level": 18,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "brave",
+  "level": 18,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "scared",
+  "level": 18,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "are",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "tired",
+  "level": 18,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "animal",
+  "level": 19,
+  "parts": [
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "mammal",
+  "level": 19,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "mm",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "reptile",
+  "level": 19,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "insect",
+  "level": 19,
+  "parts": [
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "bird",
+  "level": 19,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ir",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "vehicle",
+  "level": 19,
+  "parts": [
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "tool",
+  "level": 19,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oo",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "fruit",
+  "level": 19,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ui",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "vegetable",
+  "level": 19,
+  "parts": [
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "plant",
+  "level": 19,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "furniture",
+  "level": 19,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ur",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ure",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "clothing",
+  "level": 19,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ng",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "instrument",
+  "level": 19,
+  "parts": [
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "weather",
+  "level": 19,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ea",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "planet",
+  "level": 19,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "body",
+  "level": 19,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "family",
+  "level": 19,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "food",
+  "level": 19,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oo",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "drink",
+  "level": 19,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "place",
+  "level": 19,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "forest",
+  "level": 20,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "desert",
+  "level": 20,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "ocean",
+  "level": 20,
+  "parts": [
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "ea",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "island",
+  "level": 20,
+  "parts": [
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "river",
+  "level": 20,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "mountain",
+  "level": 20,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ou",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ai",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "volcano",
+  "level": 20,
+  "parts": [
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "jungle",
+  "level": 20,
+  "parts": [
+   {
+    "g": "j",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "pond",
+  "level": 20,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "cave",
+  "level": 20,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "tadpole",
+  "level": 20,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "caterpillar",
+  "level": 20,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "cocoon",
+  "level": 20,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oo",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "butterfly",
+  "level": 20,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "tt",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "sprout",
+  "level": 20,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ou",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "blossom",
+  "level": 20,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ss",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "shadow",
+  "level": 20,
+  "parts": [
+   {
+    "g": "sh",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ow",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "thunder",
+  "level": 20,
+  "parts": [
+   {
+    "g": "th",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "rainbow",
+  "level": 20,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ai",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ow",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "magnet",
+  "level": 20,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "calf",
+  "level": 21,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   },
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "foal",
+  "level": 21,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "oa",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "cub",
+  "level": 21,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "lamb",
+  "level": 21,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "chick",
+  "level": 21,
+  "parts": [
+   {
+    "g": "ch",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ck",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "kitten",
+  "level": 21,
+  "parts": [
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "tt",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "hive",
+  "level": 21,
+  "parts": [
+   {
+    "g": "h",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "v",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "den",
+  "level": 21,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "burrow",
+  "level": 21,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ur",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ow",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "barn",
+  "level": 21,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "kennel",
+  "level": 21,
+  "parts": [
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "nn",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "stable",
+  "level": 21,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "le",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "farmer",
+  "level": 21,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "baker",
+  "level": 21,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "doctor",
+  "level": 21,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "or",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "pilot",
+  "level": 21,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "builder",
+  "level": 21,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ui",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "dentist",
+  "level": 21,
+  "parts": [
+   {
+    "g": "d",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "nurse",
+  "level": 21,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ur",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "painter",
+  "level": 21,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ai",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "bark",
+  "level": 22,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ar",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "trunk",
+  "level": 22,
+  "parts": [
+   {
+    "g": "t",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "bank",
+  "level": 22,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "match",
+  "level": 22,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "tch",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "seal",
+  "level": 22,
+  "parts": [
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ea",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "watch",
+  "level": 22,
+  "parts": [
+   {
+    "g": "w",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": true,
+    "silent": false
+   },
+   {
+    "g": "tch",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "bill",
+  "level": 22,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ll",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "club",
+  "level": 22,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "palm",
+  "level": 22,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   },
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "crane",
+  "level": 22,
+  "parts": [
+   {
+    "g": "c",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "mouse",
+  "level": 22,
+  "parts": [
+   {
+    "g": "m",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ou",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": false,
+    "heart": false,
+    "silent": true
+   }
+  ]
+ },
+ {
+  "word": "glasses",
+  "level": 22,
+  "parts": [
+   {
+    "g": "g",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "a",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ss",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "s",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "pitcher",
+  "level": 22,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "tch",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "block",
+  "level": 22,
+  "parts": [
+   {
+    "g": "b",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "o",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ck",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "key",
+  "level": 22,
+  "parts": [
+   {
+    "g": "k",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ey",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "nail",
+  "level": 22,
+  "parts": [
+   {
+    "g": "n",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "ai",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "pupil",
+  "level": 22,
+  "parts": [
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "p",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "i",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "letter",
+  "level": 22,
+  "parts": [
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "e",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "tt",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "ruler",
+  "level": 22,
+  "parts": [
+   {
+    "g": "r",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "u",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "er",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
+ },
+ {
+  "word": "fly",
+  "level": 22,
+  "parts": [
+   {
+    "g": "f",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "l",
+    "vowel": false,
+    "heart": false,
+    "silent": false
+   },
+   {
+    "g": "y",
+    "vowel": true,
+    "heart": false,
+    "silent": false
+   }
+  ]
  }
 ]

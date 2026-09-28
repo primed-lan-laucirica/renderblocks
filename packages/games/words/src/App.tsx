@@ -51,11 +51,9 @@ function App({ services }: GameProps) {
       key={lvl}
       type="button"
       onClick={() => open(lvl)}
-      className={`rounded-3xl bg-white shadow-md border-4 px-5 py-3 text-left ${
-        kind === 'sound' ? 'border-emerald-200 active:bg-emerald-50' : 'border-sky-200 active:bg-sky-50'
-      }`}
+      className={`rounded-3xl bg-white shadow-md border-4 px-5 py-3 text-left ${LEVEL_STYLE[kind].card}`}
     >
-      <div className={`text-base font-extrabold ${kind === 'sound' ? 'text-emerald-600' : 'text-sky-600'}`}>
+      <div className={`text-base font-extrabold ${LEVEL_STYLE[kind].title}`}>
         Level {lvl}
         {pattern && <span className="ml-2 font-black text-slate-500">{pattern}</span>}
       </div>
@@ -75,6 +73,8 @@ function App({ services }: GameProps) {
           </div>
           <h2 className="mt-2 text-xl font-black text-emerald-700">Sound it out</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">{LEVELS.filter((l) => l.kind === 'sound').map(levelButton)}</div>
+          <h2 className="mt-2 text-xl font-black text-violet-700">Word power</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">{LEVELS.filter((l) => l.kind === 'vocab').map(levelButton)}</div>
           {/* Familiar ground below the line: the sight words he already knows. */}
           <div className="h-1.5 rounded-full bg-sky-200 my-2" aria-hidden />
           <h2 className="text-xl font-black text-sky-700">Sight words</h2>
@@ -134,6 +134,12 @@ function App({ services }: GameProps) {
       )}
     </div>
   )
+}
+
+const LEVEL_STYLE: Record<Level['kind'], { card: string; title: string }> = {
+  sound: { card: 'border-emerald-200 active:bg-emerald-50', title: 'text-emerald-600' },
+  vocab: { card: 'border-violet-200 active:bg-violet-50', title: 'text-violet-600' },
+  sight: { card: 'border-sky-200 active:bg-sky-50', title: 'text-sky-600' },
 }
 
 type Mode = 'slide' | 'find' | 'pop'
