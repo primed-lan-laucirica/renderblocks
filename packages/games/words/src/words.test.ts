@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { lookAlikes, shuffle } from './balloons'
 import { LEVELS, SENTENCES, WORDS } from './words'
 
 const PUBLIC = join(__dirname, '..', '..', '..', 'app', 'public', 'games', 'words')
@@ -52,5 +53,28 @@ describe('sentences', () => {
         }
       }
     }
+  })
+})
+
+describe('balloons', () => {
+  it('pairs a word with look-alikes one letter apart first', () => {
+    const level7 = LEVELS.find((l) => l.level === 7)!.words.map((w) => w.word)
+    const alike = lookAlikes('fin', level7, 3)
+    expect(alike).toHaveLength(3)
+    expect(alike).not.toContain('fin')
+    // pin is one letter from fin; every pick is at least as close as any word left out.
+    expect(alike).toContain('pin')
+    const apart = (w: string) => (w.length === 3 ? [...w].filter((c, i) => c !== 'fin'[i]).length : 9)
+    const worst = Math.max(...alike.map(apart))
+    for (const w of level7.filter((w) => w !== 'fin' && !alike.includes(w))) expect(apart(w)).toBeGreaterThanOrEqual(worst)
+  })
+
+  it('finds three look-alikes for every word in every level', () => {
+    for (const l of LEVELS) for (const w of l.words) expect(lookAlikes(w.word, l.words.map((x) => x.word), 3)).toHaveLength(3)
+  })
+
+  it('shuffles without losing anything', () => {
+    const list = ['a', 'b', 'c', 'd', 'e']
+    expect(shuffle(list).sort()).toEqual(list)
   })
 })

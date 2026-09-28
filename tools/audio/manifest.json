@@ -541,6 +541,20 @@
           "seconds": 0.6
         }
       }
+    },
+    {
+      "dir": "words/sfx",
+      "normalize": true,
+      "items": {
+        "pop": {
+          "prompt": "single cheerful balloon pop, rubber balloon bursting, short and crisp, playful, no reverb",
+          "seconds": 0.5
+        },
+        "boing": {
+          "prompt": "soft gentle cartoon boing, springy bounce, short, friendly, not harsh",
+          "seconds": 0.6
+        }
+      }
     }
   ],
   "chorus": [

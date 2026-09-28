@@ -1,9 +1,25 @@
-import { useEffect, useRef, useState } from 'react'
-import { playSentence, sentenceTime, stopAll, unlockAudio } from './audio'
+import { useState } from 'react'
+import { stopAll } from './audio'
+import { nextSentence, useReader } from './reading'
 import { SENTENCES, type Sentence } from './words'
 
-/** Which of a word's sentences shows next: they take turns, one per opening. */
-const turn = new Map<string, number>()
+/** A sentence with the word being learnt marked, and the word being said lit. */
+export function SentenceText({ s, spoken }: { s: Sentence; spoken: number | null }) {
+  return (
+    <>
+      {pieces(s).map((p, k) => (
+        <span
+          key={k}
+          className={`${p.mark ? 'text-sky-600 underline decoration-4 underline-offset-8' : ''} ${
+            p.token !== null && p.token === spoken ? 'bg-amber-200 rounded-lg' : ''
+          }`}
+        >
+          {p.text}
+        </span>
+      ))}
+    </>
+  )
+}
 
 /**
  * The 💬 card: a sentence using the word that teaches something beyond it
@@ -12,47 +28,16 @@ const turn = new Map<string, number>()
  * lighting up as it is said.
  */
 export function SentenceCard({ word }: { word: string }) {
-  const list = SENTENCES[word]
   const [open, setOpen] = useState<Sentence | null>(null)
-  const [spoken, setSpoken] = useState<number | null>(null)
-  const raf = useRef(0)
-
-  useEffect(() => () => cancelAnimationFrame(raf.current), [])
-  if (!list?.length) return null
+  const { spoken, read, hush } = useReader()
+  if (!SENTENCES[word]?.length) return null
 
   const toggle = () => {
-    cancelAnimationFrame(raf.current)
-    setSpoken(null)
+    hush()
     if (open) {
       stopAll()
       setOpen(null)
-      return
-    }
-    const i = turn.get(word) ?? 0
-    turn.set(word, (i + 1) % list.length)
-    setOpen(list[i])
-  }
-
-  const read = (s: Sentence) => {
-    unlockAudio()
-    cancelAnimationFrame(raf.current)
-    playSentence(s.audio)
-    const asked = performance.now()
-    let began = false
-    const follow = () => {
-      const t = sentenceTime()
-      if (t === null) {
-        // Not started yet (first play fetches the clip), or finished.
-        if (!began && performance.now() - asked < 3000) raf.current = requestAnimationFrame(follow)
-        else setSpoken(null)
-        return
-      }
-      began = true
-      const i = s.words.findIndex(([, , start, end]) => t >= start && t < end + 0.08)
-      setSpoken(i >= 0 ? i : null)
-      raf.current = requestAnimationFrame(follow)
-    }
-    raf.current = requestAnimationFrame(follow)
+    } else setOpen(nextSentence(word))
   }
 
   return (
@@ -68,20 +53,11 @@ export function SentenceCard({ word }: { word: string }) {
       {open && (
         <button
           type="button"
-          onClick={() => read(open)}
+          onClick={() => void read(open)}
           aria-label="Read the sentence"
           className="rounded-3xl bg-white shadow-lg px-6 py-4 text-left text-[clamp(1.5rem,4.5vw,2.6rem)] font-bold leading-snug text-slate-800 max-w-[min(92vw,48rem)]"
         >
-          {pieces(open).map((p, k) => (
-            <span
-              key={k}
-              className={`${p.mark ? 'text-sky-600 underline decoration-4 underline-offset-8' : ''} ${
-                p.token !== null && p.token === spoken ? 'bg-amber-200 rounded-lg' : ''
-              }`}
-            >
-              {p.text}
-            </span>
-          ))}
+          <SentenceText s={open} spoken={spoken} />
           <span className="ml-3 text-[0.8em] opacity-60" aria-hidden>
             🔊
           </span>
