@@ -118,6 +118,9 @@ export function Balloons({ words, mode }: { words: Word[]; mode: BalloonMode }) 
     ).map((o) => words.find((x) => x.word === o)!)
     const now = performance.now()
     spawnAt.current = shuffle([w, ...others]).map((word, i) => ({ at: now + 300 + i * 650, word }))
+    // The repeat timer runs from now: left at zero, it fired at once and the
+    // word was said twice, the second cutting off the first.
+    said.current = now
     window.setTimeout(() => alive.current && target.current === w && say(w), 250)
   }, [words, say])
 
@@ -186,7 +189,11 @@ export function Balloons({ words, mode }: { words: Word[]; mode: BalloonMode }) 
       // Not this one: it boings away, saying what it is.
       live.current = live.current.map((x) => (x === b ? { ...x, state: 'leave' } : x))
       playEffect('boing')
-      window.setTimeout(() => alive.current && void playWord(b.word.word), 180)
+      window.setTimeout(() => {
+        if (!alive.current) return
+        said.current = performance.now() // don't talk over it with the repeat
+        void playWord(b.word.word)
+      }, 180)
       return
     }
     live.current = live.current.filter((x) => x !== b)
