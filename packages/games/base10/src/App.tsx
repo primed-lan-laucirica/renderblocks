@@ -44,12 +44,12 @@ function play(name: 'pop' | 'whoosh', volume = 0.7) {
 }
 /** Block names, one clip per place (tools/audio/manifest.json), so there's no stitching pause. */
 const sayPlace = (place: number) => {
+  // Past the palette's blocks, the number voice says it word by word ("one quadrillion").
   if (place <= PALETTE_MAX_TOP) playFile(`/games/base10/place/${place}.mp3`, 1)
+  else say(10n ** BigInt(place))
 }
-/** Say a whole number (the number voice reaches the hundreds of trillions). */
-function say(n: bigint) {
-  if (n <= 999_999_999_999_999n) speakNumber(Number(n))
-}
+/** Say a whole number, exactly (the number voice reaches the decillions). */
+const say = (n: bigint) => speakNumber(n)
 function playFile(src: string, volume: number) {
   let a = sfx.get(src)
   if (!a) {

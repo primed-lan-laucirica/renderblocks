@@ -604,7 +604,14 @@
         "negative": "negative",
         "point": "point",
         "undefined": "undefined",
-        "and": "and"
+        "and": "and",
+        "quadrillion": "quadrillion",
+        "quintillion": "quintillion",
+        "sextillion": "sextillion",
+        "septillion": "septillion",
+        "octillion": "octillion",
+        "nonillion": "nonillion",
+        "decillion": "decillion"
       },
       "pad": false
     },

@@ -16,7 +16,10 @@ const TENS: Record<number, string> = {
   2: 'twenty', 3: 'thirty', 4: 'forty', 5: 'fifty',
   6: 'sixty', 7: 'seventy', 8: 'eighty', 9: 'ninety',
 }
-const SCALES = ['', 'thousand', 'million', 'billion', 'trillion']
+const SCALES = [
+  '', 'thousand', 'million', 'billion', 'trillion',
+  'quadrillion', 'quintillion', 'sextillion', 'septillion', 'octillion', 'nonillion', 'decillion',
+]
 
 /** Under 1000 -> clip names, e.g. 342 -> three hundred forty two */
 function underThousand(n: number): string[] {
@@ -34,8 +37,37 @@ function underThousand(n: number): string[] {
   return out
 }
 
-/** Clip names that read `value` aloud. Returns [] if it can't be spoken. */
-export function numberToClips(value: number): string[] {
+/** 3-digit groups (most significant first) -> clip names; [] beyond the decillions. */
+function groupClips(groups: number[]): string[] {
+  if (groups.length > SCALES.length) return []
+  const out: string[] = []
+  groups.forEach((g, i) => {
+    if (g === 0) return
+    out.push(...underThousand(g))
+    const scale = SCALES[groups.length - 1 - i]
+    if (scale) out.push(scale)
+  })
+  return out
+}
+
+/**
+ * Clip names that read `value` aloud. Returns [] if it can't be spoken.
+ * A bigint is read exactly, however long (Base 10's mats pass a quadrillion,
+ * where a number starts dropping digits); a number may have decimals.
+ */
+export function numberToClips(value: number | bigint): string[] {
+  if (typeof value === 'bigint') {
+    const out = value < 0n ? ['negative'] : []
+    let rest = value < 0n ? -value : value
+    if (rest === 0n) return ['zero']
+    const groups: number[] = []
+    while (rest > 0n) {
+      groups.unshift(Number(rest % 1000n))
+      rest /= 1000n
+    }
+    const words = groupClips(groups)
+    return words.length ? [...out, ...words] : []
+  }
   if (!Number.isFinite(value)) return []
   const out: string[] = []
   let n = value
@@ -55,13 +87,9 @@ export function numberToClips(value: number): string[] {
       groups.unshift(rest % 1000)
       rest = Math.floor(rest / 1000)
     }
-    if (groups.length > SCALES.length) return [] // beyond trillions
-    groups.forEach((g, i) => {
-      if (g === 0) return
-      out.push(...underThousand(g))
-      const scale = SCALES[groups.length - 1 - i]
-      if (scale) out.push(scale)
-    })
+    const words = groupClips(groups)
+    if (!words.length) return []
+    out.push(...words)
   }
 
   if (frac > 0) {
@@ -115,7 +143,7 @@ export function playClips(names: string[], volume = 1): void {
   next()
 }
 
-export function speakNumber(value: number, volume = 1): void {
+export function speakNumber(value: number | bigint, volume = 1): void {
   playClips(numberToClips(value), volume)
 }
 
