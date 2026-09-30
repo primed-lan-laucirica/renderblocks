@@ -115,6 +115,11 @@ function App({ services }: GameProps) {
   const HEADER = compact ? (colW < 120 ? 76 : 62) : colW < 150 ? 120 : 104 // narrow columns wrap "hundred thousands" to two lines
   const blockArea = { w: colW - 16, h: box.h - 16 - HEADER - 16 }
 
+  /** Say the whole number (the number voice reaches the hundreds of trillions). */
+  const sayNumber = () => {
+    if (n <= 999_999_999_999_999n) speakNumber(Number(n))
+  }
+
   /** Add a block, playing each carry in turn (spec: the regroup is animated). */
   const addBlock = (place: number) => {
     timers.current.forEach(window.clearTimeout)
@@ -193,7 +198,14 @@ function App({ services }: GameProps) {
         <button type="button" onClick={services.exitToHome} className={`${compact ? 'w-10 h-10 text-xl' : 'w-12 h-12 text-2xl'} rounded-full bg-white shadow font-bold shrink-0`} aria-label="Home">
           ←
         </button>
-        <div className="flex-1 min-w-0 flex items-baseline justify-center flex-wrap font-black tabular-nums leading-tight" style={{ fontSize: 'clamp(1.5rem, min(7vw, 11vh), 5.5rem)' }}>
+        {/* Tapping the number says it, like 🔊. */}
+        <button
+          type="button"
+          onClick={sayNumber}
+          aria-label="Say the number"
+          className="flex-1 min-w-0 flex items-baseline justify-center flex-wrap font-black tabular-nums leading-tight transition-transform active:scale-95"
+          style={{ fontSize: 'clamp(1.5rem, min(7vw, 11vh), 5.5rem)' }}
+        >
           {groupsOf(n).map((g, i, all) => {
             const c = colours(all.length - 1 - i)
             return (
@@ -205,10 +217,10 @@ function App({ services }: GameProps) {
               </span>
             )
           })}
-        </div>
+        </button>
         <button
           type="button"
-          onClick={() => n <= 999_999_999_999_999n && speakNumber(Number(n))}
+          onClick={sayNumber}
           className={`${compact ? 'w-10 h-10 text-xl' : 'w-14 h-14 text-3xl'} rounded-full bg-white shadow shrink-0`}
           aria-label="Say the number"
         >
