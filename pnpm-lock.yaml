@@ -83,6 +83,9 @@ importers:
       '@renderblocks/add':
         specifier: workspace:*
         version: link:../games/add
+      '@renderblocks/base10':
+        specifier: workspace:*
+        version: link:../games/base10
       '@renderblocks/blocks':
         specifier: workspace:*
         version: link:../games/blocks
@@ -177,6 +180,22 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.7(react@19.2.7)
+
+  packages/games/base10:
+    dependencies:
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@types/node@24.13.2)(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0))
 
   packages/games/blocks:
     dependencies:

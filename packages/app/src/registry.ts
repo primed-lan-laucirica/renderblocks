@@ -6,6 +6,7 @@ import { subtractModule } from '@renderblocks/subtract/module'
 import { timesModule } from '@renderblocks/times/module'
 import { divideModule } from '@renderblocks/divide/module'
 import { calendarModule } from '@renderblocks/calendar/module'
+import { base10Module } from '@renderblocks/base10/module'
 import { graphModule } from '@renderblocks/graph/module'
 import { numlineModule } from '@renderblocks/numline/module'
 import { giftedModule } from '@renderblocks/gifted/module'
@@ -29,6 +30,7 @@ export const games: GameModule[] = [
   lavaModule,
   wordsModule,
   magcubesModule,
+  base10Module,
 ]
 
 export const upcoming: UpcomingGame[] = []
