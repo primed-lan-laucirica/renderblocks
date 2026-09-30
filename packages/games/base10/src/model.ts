@@ -166,17 +166,19 @@ export function placeName(place: number): string {
 }
 
 /**
- * Colours (spec: colours start from the mat). Ones group: the mat's yellow,
- * green and blue; thousands cube: the mat's red. Each later group varies
- * subtly — cubes deepen through reds, rods drift toward teal, flats toward
- * indigo and violet. `tint` shades that group's digits in the number.
+ * Colours (spec: colours start from the mat). Each group of three has its
+ * own colour family, so a thousand and a million never look alike: colour
+ * says the group, shape says the place within it. Ones keep the mat's
+ * yellow, green and blue; thousands are the mat's red; then purple
+ * millions, slate billions and teal trillions. Within a group the three
+ * shapes vary only a little. `tint` shades that group's digits in the number.
  */
 export const GROUP_COLOURS: Array<{ cube: string; rod: string; flat: string; tint: string; ink: string }> = [
-  { cube: '#F2B632', rod: '#1E9E57', flat: '#2E8BD8', tint: '#FEF3C7', ink: '#92400E' },
-  { cube: '#D63A3A', rod: '#1FA38A', flat: '#3F6FD6', tint: '#FEE2E2', ink: '#991B1B' },
-  { cube: '#A92E3F', rod: '#13806F', flat: '#4B4FC9', tint: '#FCE7F3', ink: '#9D174D' },
-  { cube: '#7C2244', rod: '#0E6B6B', flat: '#5B3FB8', tint: '#F3E8FF', ink: '#6B21A8' },
-  { cube: '#5E1A4F', rod: '#0B5A70', flat: '#6A34A8', tint: '#E0F2FE', ink: '#075985' },
+  { cube: '#F2B632', rod: '#1E9E57', flat: '#2E8BD8', tint: '#FEF3C7', ink: '#92400E' }, // ones: the mat
+  { cube: '#D63A3A', rod: '#C22F36', flat: '#E0564C', tint: '#FEE2E2', ink: '#991B1B' }, // thousands: red
+  { cube: '#8243CC', rod: '#6F35B5', flat: '#9458DA', tint: '#EDE9FE', ink: '#5B21B6' }, // millions: purple
+  { cube: '#52627A', rod: '#435268', flat: '#617390', tint: '#E2E8F0', ink: '#1E293B' }, // billions: slate
+  { cube: '#0E9AA7', rod: '#0B8591', flat: '#1AAFBC', tint: '#CCFBF1', ink: '#115E59' }, // trillions: teal
 ]
 export const colours = (group: number) => GROUP_COLOURS[Math.min(group, GROUP_COLOURS.length - 1)]
 export const colourOf = (place: number) => colours(groupOf(place))[shapeOf(place)]

@@ -85,6 +85,12 @@ describe('places', () => {
     expect([0, 1, 2, 3].map(colourOf)).toEqual(['#F2B632', '#1E9E57', '#2E8BD8', '#D63A3A'])
     expect(colourOf(4)).not.toBe(colourOf(1)) // each group varies
   })
+  it('gives every group its own colour family (a thousand never looks like a million)', () => {
+    const cubes = [0, 3, 6, 9, 12].map(colourOf)
+    expect(new Set(cubes).size).toBe(5)
+    expect(colourOf(3)).toBe('#D63A3A')
+    expect(colourOf(6)).toBe('#8243CC')
+  })
 })
 
 describe('block sizes', () => {
