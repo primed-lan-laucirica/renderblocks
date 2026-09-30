@@ -10,8 +10,10 @@ import {
   expanded,
   groupOf,
   groupsOf,
-  PALETTE_PLACES,
+  palettePlaces,
+  PALETTE_MAX_TOP,
   placeName,
+  placeShort,
   placeValue,
   power,
   powers,
@@ -41,9 +43,8 @@ function play(name: 'pop' | 'whoosh', volume = 0.7) {
   playFile(`/games/shared/sfx/${name}.mp3`, volume)
 }
 /** Block names, one clip per place (tools/audio/manifest.json), so there's no stitching pause. */
-const NAMED_PLACES = 15
 const sayPlace = (place: number) => {
-  if (place < NAMED_PLACES) playFile(`/games/base10/place/${place}.mp3`, 1)
+  if (place <= PALETTE_MAX_TOP) playFile(`/games/base10/place/${place}.mp3`, 1)
 }
 /** Say a whole number (the number voice reaches the hundreds of trillions). */
 function say(n: bigint) {
@@ -77,6 +78,22 @@ interface Drag {
   y0: number
   /** A mat block held over the palette, where letting go takes it away. */
   overPalette?: boolean
+}
+
+/** A palette block's value: all its digits if they fit (at `min` px or more), else short ("100 trillion"). */
+function PaletteValue({ place, width, max, min, colour }: { place: number; width: number; max: number; min: number; colour: string }) {
+  const fit = (text: string) => Math.min(max, width / (text.length * 0.6))
+  const digits = placeValue(place)
+  const text = fit(digits) >= min ? digits : placeShort(place)
+  const words = text !== digits
+  return (
+    <div
+      className={`font-black tabular-nums leading-none text-center ${words ? '' : 'whitespace-nowrap'}`}
+      style={{ color: colour, fontSize: words ? Math.max(min, Math.min(max, fit(text.split(' ').reduce((a, b) => (a.length > b.length ? a : b))))) : fit(digits) }}
+    >
+      {text}
+    </div>
+  )
 }
 
 /**
@@ -121,6 +138,21 @@ function App({ services }: GameProps) {
   /** Column headers have a fixed height, so every column's block area is the same. */
   const HEADER = compact ? (colW < 120 ? 76 : 62) : colW < 150 ? 120 : 104 // narrow columns wrap "hundred thousands" to two lines
   const blockArea = { w: colW - 16, h: box.h - 16 - HEADER - 16 }
+
+  // The palette grows with the mat (palettePlaces). Its blocks share the width
+  // until they'd be too small to read, then it scrolls sideways; a swipe
+  // along it scrolls, a drag up onto the mat still carries a block.
+  const palette = palettePlaces(mat)
+  const PAL_GAP = compact ? 4 : 8
+  const palW = Math.min(136, (view.w - (compact ? 12 : 24) - PAL_GAP * (palette.length - 1)) / palette.length)
+  const palMin = compact ? 46 : 76
+  const palScrolls = palW < palMin
+  const itemW = palScrolls ? palMin : palW
+  const top = palette[palette.length - 1]
+  // A new block (a column just reached a new place) scrolls into view.
+  useEffect(() => {
+    paletteBox.current?.lastElementChild?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' })
+  }, [top])
 
   /** Add a block, playing each carry in turn (spec: the regroup is animated). */
   const addBlock = (place: number) => {
@@ -300,25 +332,25 @@ function App({ services }: GameProps) {
         </div>
       </div>
 
-      {/* The palette: 1 to 1,000,000 (10⁰ to 10⁶), in the mat's order — ones on the right. Drag onto the mat, or tap. */}
+      {/* The palette: 1 to 1,000,000 (10⁰ to 10⁶), growing with the mat, in the mat's order — ones on the right. Drag onto the mat, or tap. */}
       <div
         ref={paletteBox}
-        className={`flex flex-row-reverse justify-center transition-colors ${compact ? 'gap-1 p-1.5' : 'gap-2 p-3'} ${drag?.from === 'mat' ? (drag.overPalette ? 'bg-rose-200' : 'bg-rose-100') : ''}`}
+        className={`flex flex-row-reverse transition-colors ${palScrolls ? 'justify-start overflow-x-auto' : 'justify-center'} ${compact ? 'p-1.5' : 'p-3'} ${drag?.from === 'mat' ? (drag.overPalette ? 'bg-rose-200' : 'bg-rose-100') : ''}`}
+        style={{ gap: PAL_GAP }}
       >
-        {PALETTE_PLACES.map((p) => (
+        {palette.map((p) => (
           <button
             key={p}
             type="button"
             onPointerDown={(e) => startDrag(e, p, 'palette')}
-            className={`flex-1 min-w-0 max-w-[8.5rem] bg-white shadow flex flex-col items-center cursor-grab touch-none ${compact ? 'rounded-xl px-0.5 py-1 gap-0.5' : 'rounded-2xl px-2 py-2 gap-1'}`}
+            className={`shrink-0 bg-white shadow flex flex-col items-center cursor-grab ${palScrolls ? 'touch-pan-x' : 'touch-none'} ${compact ? 'rounded-xl px-0.5 py-1 gap-0.5' : 'rounded-2xl px-2 py-2 gap-1'}`}
+            style={{ width: itemW }}
             aria-label={`${placeValue(p)} block`}
           >
             <div className={`${compact ? 'h-7' : 'h-12'} flex items-center justify-center`}>
-              <Block place={p} size={shapeOf(p) === 'rod' ? (compact ? 44 : 96) : compact ? 26 : 46} />
+              <Block place={p} size={shapeOf(p) === 'rod' ? Math.min(compact ? 44 : 96, itemW - 10) : compact ? 26 : 46} />
             </div>
-            <div className={`${compact ? 'text-[10px]' : 'text-lg'} font-black tabular-nums leading-none whitespace-nowrap`} style={{ color: colours(groupOf(p)).ink }}>
-              {placeValue(p)}
-            </div>
+            <PaletteValue place={p} width={itemW - (compact ? 4 : 16)} max={compact ? 10 : 18} min={compact ? 7 : 10} colour={colours(groupOf(p)).ink} />
             <div className={`${compact ? 'text-[10px]' : 'text-sm'} font-bold text-slate-500 leading-none`}>{power(p)}</div>
           </button>
         ))}

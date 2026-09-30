@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { add, addSteps, blockSize, colourOf, columns, expanded, groupsOf, placeName, power, powers, remove, shapeOf, standard, value, words } from './model'
+import { add, addSteps, blockSize, palettePlaces, placeShort, colourOf, columns, expanded, groupsOf, placeName, power, powers, remove, shapeOf, standard, value, words } from './model'
 
 const build = (...places: number[]) => places.reduce((m, p) => add(m, p), [] as number[])
 
@@ -78,6 +78,7 @@ describe('places', () => {
     expect([0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 12].map(placeName)).toEqual([
       'ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands', 'millions', 'ten millions', 'billions', 'ten billions', 'trillions',
     ])
+    expect([0, 2, 3, 6, 14].map(placeShort)).toEqual(['1', '100', '1 thousand', '1 million', '100 trillion'])
     expect(power(0)).toBe('10⁰')
     expect(power(12)).toBe('10¹²')
   })
@@ -90,6 +91,16 @@ describe('places', () => {
     expect(new Set(cubes).size).toBe(5)
     expect(colourOf(3)).toBe('#D63A3A')
     expect(colourOf(6)).toBe('#8243CC')
+  })
+})
+
+describe('the palette', () => {
+  it('offers 1 to 1,000,000, then one place past the highest column, up to 10¹⁴', () => {
+    expect(palettePlaces([])).toEqual([0, 1, 2, 3, 4, 5, 6])
+    expect(palettePlaces([0, 0, 0, 0, 0, 0, 3]).at(-1)).toBe(7) // a millions column: 10⁷ appears
+    expect(palettePlaces(add([0, 0, 0, 0, 0, 0, 0, 5], 8)).at(-1)).toBe(9)
+    expect(palettePlaces(Array(15).fill(1)).at(-1)).toBe(14)
+    expect(palettePlaces(Array(16).fill(1)).at(-1)).toBe(14)
   })
 })
 

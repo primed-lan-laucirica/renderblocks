@@ -15,8 +15,18 @@ export type Shape = 'cube' | 'rod' | 'flat'
 export const shapeOf = (place: number): Shape => (['cube', 'rod', 'flat'] as const)[place % 3]
 export const groupOf = (place: number) => Math.floor(place / 3)
 
-/** Blocks the palette offers: 10⁰ to 10⁶ (1 to 1,000,000). */
-export const PALETTE_PLACES = [0, 1, 2, 3, 4, 5, 6]
+/**
+ * The palette's blocks: 10⁰ to 10⁶ to start, then always one place past the
+ * mat's highest column, so a mat that has reached 10⁷ offers a 10⁷ block
+ * and one more. It stops at 10¹⁴ (one hundred trillion), the end of the
+ * colour families and of the number voice.
+ */
+export const PALETTE_START_TOP = 6
+export const PALETTE_MAX_TOP = 14
+export function palettePlaces(m: Mat): number[] {
+  const top = Math.min(PALETTE_MAX_TOP, Math.max(PALETTE_START_TOP, trim(m).length))
+  return Array.from({ length: top + 1 }, (_, i) => i)
+}
 
 /**
  * The largest block that still lets nine of a place fit in a column's
@@ -136,6 +146,10 @@ export const power = (place: number) => `10${superscript(place)}`
 
 /** One place's value, written out: place 6 → "1,000,000". */
 export const placeValue = (place: number) => standard(10n ** BigInt(place))
+
+/** One place's value, short: place 6 → "1 million", place 14 → "100 trillion" (places under 1,000 stay as digits). */
+export const placeShort = (place: number) =>
+  place < 3 || !GROUP_NAMES[groupOf(place)] ? placeValue(place) : `${['1', '10', '100'][place % 3]} ${GROUP_NAMES[groupOf(place)]}`
 
 /** 1,203 → "1,000 + 200 + 3" (zero places left out). */
 export function expanded(m: Mat): string {
