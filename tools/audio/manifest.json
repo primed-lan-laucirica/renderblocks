@@ -2611,6 +2611,38 @@
         "6": {
           "text": "one million",
           "seconds": 1.6
+        },
+        "7": {
+          "text": "ten million",
+          "seconds": 1.6
+        },
+        "8": {
+          "text": "one hundred million",
+          "seconds": 2.2
+        },
+        "9": {
+          "text": "one billion",
+          "seconds": 1.6
+        },
+        "10": {
+          "text": "ten billion",
+          "seconds": 1.6
+        },
+        "11": {
+          "text": "one hundred billion",
+          "seconds": 2.2
+        },
+        "12": {
+          "text": "one trillion",
+          "seconds": 1.6
+        },
+        "13": {
+          "text": "ten trillion",
+          "seconds": 1.6
+        },
+        "14": {
+          "text": "one hundred trillion",
+          "seconds": 2.2
         }
       }
     }

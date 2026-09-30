@@ -40,8 +40,15 @@ const sfx = new Map<string, HTMLAudioElement>()
 function play(name: 'pop' | 'whoosh', volume = 0.7) {
   playFile(`/games/shared/sfx/${name}.mp3`, volume)
 }
-/** A block's name, one clip per place ("one hundred thousand"), so there's no stitching pause. */
-const sayPlace = (place: number) => playFile(`/games/base10/place/${place}.mp3`, 1)
+/** Block names, one clip per place (tools/audio/manifest.json), so there's no stitching pause. */
+const NAMED_PLACES = 15
+const sayPlace = (place: number) => {
+  if (place < NAMED_PLACES) playFile(`/games/base10/place/${place}.mp3`, 1)
+}
+/** Say a whole number (the number voice reaches the hundreds of trillions). */
+function say(n: bigint) {
+  if (n <= 999_999_999_999_999n) speakNumber(Number(n))
+}
 function playFile(src: string, volume: number) {
   let a = sfx.get(src)
   if (!a) {
@@ -115,11 +122,6 @@ function App({ services }: GameProps) {
   const HEADER = compact ? (colW < 120 ? 76 : 62) : colW < 150 ? 120 : 104 // narrow columns wrap "hundred thousands" to two lines
   const blockArea = { w: colW - 16, h: box.h - 16 - HEADER - 16 }
 
-  /** Say the whole number (the number voice reaches the hundreds of trillions). */
-  const sayNumber = () => {
-    if (n <= 999_999_999_999_999n) speakNumber(Number(n))
-  }
-
   /** Add a block, playing each carry in turn (spec: the regroup is animated). */
   const addBlock = (place: number) => {
     timers.current.forEach(window.clearTimeout)
@@ -128,7 +130,7 @@ function App({ services }: GameProps) {
     const final = steps[steps.length - 1].mat
     setMat(final)
     play('pop', 0.4)
-    sayPlace(place)
+    say(value(final)) // the new total, carries and all
     setShown({ mat: steps[0].mat, landed: place })
     let t = LAND_MS
     for (let i = 1; i < steps.length; i++) {
@@ -201,7 +203,7 @@ function App({ services }: GameProps) {
         {/* Tapping the number says it, like 🔊. */}
         <button
           type="button"
-          onClick={sayNumber}
+          onClick={() => say(n)}
           aria-label="Say the number"
           className="flex-1 min-w-0 flex items-baseline justify-center flex-wrap font-black tabular-nums leading-tight transition-transform active:scale-95"
           style={{ fontSize: 'clamp(1.5rem, min(7vw, 11vh), 5.5rem)' }}
@@ -220,7 +222,7 @@ function App({ services }: GameProps) {
         </button>
         <button
           type="button"
-          onClick={sayNumber}
+          onClick={() => say(n)}
           className={`${compact ? 'w-10 h-10 text-xl' : 'w-14 h-14 text-3xl'} rounded-full bg-white shadow shrink-0`}
           aria-label="Say the number"
         >
@@ -249,7 +251,14 @@ function App({ services }: GameProps) {
             const size = blockSize(shapeOf(p), blockArea.w, blockArea.h)
             return (
               <div key={p} className={`h-full flex flex-col bg-white overflow-hidden ${compact ? 'rounded-xl' : 'rounded-2xl'}`} style={{ width: colW }}>
-                <div className="px-1 pt-1 text-center overflow-hidden flex flex-col justify-end" style={{ background: c.tint, height: HEADER }}>
+                {/* Tapping the header says the block's name ("one hundred thousand"). */}
+                <button
+                  type="button"
+                  onClick={() => sayPlace(p)}
+                  aria-label={`Say ${placeName(p)}`}
+                  className="w-full px-1 pt-1 text-center overflow-hidden flex flex-col items-center justify-end active:brightness-95"
+                  style={{ background: c.tint, height: HEADER }}
+                >
                   <div className={`${compact ? 'text-[11px]' : 'text-sm'} font-black leading-tight`} style={{ color: c.ink }}>
                     {placeName(p)}
                   </div>
@@ -262,7 +271,7 @@ function App({ services }: GameProps) {
                   <div className={`${compact ? 'text-2xl' : 'text-4xl'} font-black tabular-nums leading-tight`} style={{ color: colourOf(p) }}>
                     {Math.min(k, 10)}
                   </div>
-                </div>
+                </button>
                 <div className="flex-1 min-h-0 relative overflow-hidden">
                   <div
                     className={`absolute inset-0 p-2 flex flex-wrap-reverse content-start justify-center items-end gap-1.5 transition-transform ${merging ? 'scale-50 opacity-60' : ''}`}
