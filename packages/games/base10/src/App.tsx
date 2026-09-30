@@ -208,7 +208,7 @@ function App({ services }: GameProps) {
             const k = shown.mat[p] ?? 0
             const merging = shown.merging === p
             // Rods fill the width; flats and cubes sit two or three across, so nine always fit.
-            const size = shapeOf(p) === 'rod' ? colW - 24 : shapeOf(p) === 'flat' ? (colW - 30) / 2 : colW * 0.28
+            const size = shapeOf(p) === 'rod' ? Math.min(colW - 24, 140) : shapeOf(p) === 'flat' ? Math.min((colW - 30) / 2, 52) : Math.min(colW * 0.28, 52)
             return (
               <div key={p} className="h-full flex flex-col rounded-2xl bg-white overflow-hidden" style={{ width: colW }}>
                 <div className="px-2 pt-2 pb-1 text-center" style={{ background: c.tint }}>
@@ -250,8 +250,8 @@ function App({ services }: GameProps) {
         </div>
       </div>
 
-      {/* The palette: 1 to 1,000,000 (10⁰ to 10⁶). Drag onto the mat, or tap. */}
-      <div className="flex justify-center gap-2 p-3 overflow-x-auto">
+      {/* The palette: 1 to 1,000,000 (10⁰ to 10⁶), in the mat's order — ones on the right. Drag onto the mat, or tap. */}
+      <div className="flex flex-row-reverse justify-center gap-2 p-3 overflow-x-auto">
         {PALETTE_PLACES.map((p) => (
           <button
             key={p}
