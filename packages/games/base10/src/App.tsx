@@ -142,14 +142,14 @@ function App({ services }: GameProps) {
   // The palette grows with the mat (palettePlaces). Its blocks share the width
   // until they'd be too small to read, then it scrolls sideways; a swipe
   // along it scrolls, a drag up onto the mat still carries a block.
-  const palette = palettePlaces(mat)
+  const palette = palettePlaces(shown.mat) // what the mat shows, so a new block appears as its column lands
   const PAL_GAP = compact ? 4 : 8
   const palW = Math.min(136, (view.w - (compact ? 12 : 24) - PAL_GAP * (palette.length - 1)) / palette.length)
   const palMin = compact ? 46 : 76
   const palScrolls = palW < palMin
   const itemW = palScrolls ? palMin : palW
   const top = palette[palette.length - 1]
-  // A new block (a column just reached a new place) scrolls into view.
+  // A new block (a carry just made a new column) scrolls into view.
   useEffect(() => {
     paletteBox.current?.lastElementChild?.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' })
   }, [top])

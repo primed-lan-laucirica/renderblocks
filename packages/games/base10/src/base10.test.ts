@@ -95,10 +95,12 @@ describe('places', () => {
 })
 
 describe('the palette', () => {
-  it('offers 1 to 1,000,000, then one place past the highest column, up to 10¹⁴', () => {
+  it('offers 1 to 1,000,000, then a block for each column the mat grows, up to 10¹⁴', () => {
     expect(palettePlaces([])).toEqual([0, 1, 2, 3, 4, 5, 6])
-    expect(palettePlaces([0, 0, 0, 0, 0, 0, 3]).at(-1)).toBe(7) // a millions column: 10⁷ appears
-    expect(palettePlaces(add([0, 0, 0, 0, 0, 0, 0, 5], 8)).at(-1)).toBe(9)
+    expect(palettePlaces([0, 0, 0, 0, 0, 0, 9]).at(-1)).toBe(6) // nine millions: no 10⁷ block yet
+    const tenMillion = add([0, 0, 0, 0, 0, 0, 9], 6) // the tenth million carries
+    expect(tenMillion).toEqual([0, 0, 0, 0, 0, 0, 0, 1])
+    expect(palettePlaces(tenMillion).at(-1)).toBe(7) // now the column exists, so does its block
     expect(palettePlaces(Array(15).fill(1)).at(-1)).toBe(14)
     expect(palettePlaces(Array(16).fill(1)).at(-1)).toBe(14)
   })

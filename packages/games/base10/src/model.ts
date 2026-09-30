@@ -16,15 +16,15 @@ export const shapeOf = (place: number): Shape => (['cube', 'rod', 'flat'] as con
 export const groupOf = (place: number) => Math.floor(place / 3)
 
 /**
- * The palette's blocks: 10⁰ to 10⁶ to start, then always one place past the
- * mat's highest column, so a mat that has reached 10⁷ offers a 10⁷ block
- * and one more. It stops at 10¹⁴ (one hundred trillion), the end of the
- * colour families and of the number voice.
+ * The palette's blocks: 10⁰ to 10⁶ to start, then one for each column the
+ * mat has grown, so the 10⁷ block appears only once a carry has made the
+ * ten-millions column. It stops at 10¹⁴ (one hundred trillion), the end of
+ * the colour families and of the number voice.
  */
 export const PALETTE_START_TOP = 6
 export const PALETTE_MAX_TOP = 14
 export function palettePlaces(m: Mat): number[] {
-  const top = Math.min(PALETTE_MAX_TOP, Math.max(PALETTE_START_TOP, trim(m).length))
+  const top = Math.min(PALETTE_MAX_TOP, Math.max(PALETTE_START_TOP, trim(m).length - 1))
   return Array.from({ length: top + 1 }, (_, i) => i)
 }
 
