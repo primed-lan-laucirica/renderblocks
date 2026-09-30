@@ -3,6 +3,7 @@ import { speakNumber, type GameProps } from '@renderblocks/kernel'
 import { Block } from './Block'
 import {
   addSteps,
+  blockSize,
   colours,
   colourOf,
   columns,
@@ -84,18 +85,27 @@ function App({ services }: GameProps) {
   // The photo's four columns, or up to the highest holding a block, or one past a carry in progress.
   const cols = Math.max(columns(shown.mat), shown.merging !== undefined ? shown.merging + 2 : 0)
   const places = Array.from({ length: cols }, (_, i) => i)
-  // The columns share the mat's whole width, however many there are; past about
-  // twelve they stop narrowing and the mat scrolls instead.
-  const [matW, setMatW] = useState(() => window.innerWidth - 24)
+  // The columns share the mat's whole width, however many there are; past a
+  // dozen or so they stop narrowing and the mat scrolls instead. On a phone
+  // (either way up) everything is compact.
+  const [box, setBox] = useState(() => ({ w: window.innerWidth - 24, h: 400 }))
+  const [view, setView] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }))
   useEffect(() => {
     const el = matBox.current
     if (!el) return
-    const ro = new ResizeObserver(() => setMatW(el.clientWidth))
+    const ro = new ResizeObserver(() => {
+      setBox({ w: el.clientWidth, h: el.clientHeight })
+      setView({ w: window.innerWidth, h: window.innerHeight })
+    })
     ro.observe(el)
     return () => ro.disconnect()
   }, [])
-  const GAP = 8
-  const colW = Math.max(96, (matW - 16 - GAP * (cols - 1)) / cols)
+  const compact = view.w < 700 || view.h < 560
+  const GAP = compact ? 4 : 8
+  const colW = Math.max(compact ? 70 : 96, (box.w - 16 - GAP * (cols - 1)) / cols)
+  /** Column headers have a fixed height, so every column's block area is the same. */
+  const HEADER = compact ? (colW < 120 ? 76 : 62) : 104 // narrow phone columns wrap "hundred thousands" to two lines
+  const blockArea = { w: colW - 16, h: box.h - 16 - HEADER - 16 }
 
   /** Add a block, playing each carry in turn (spec: the regroup is animated). */
   const addBlock = (place: number) => {
@@ -166,16 +176,16 @@ function App({ services }: GameProps) {
   return (
     <div className="h-dvh flex flex-col bg-slate-100 text-slate-900 select-none overflow-hidden touch-none">
       {/* The number, each group of three in its colour. */}
-      <div className="flex items-center gap-3 px-4 pt-3">
-        <button type="button" onClick={services.exitToHome} className="w-12 h-12 rounded-full bg-white shadow text-2xl font-bold shrink-0" aria-label="Home">
+      <div className={`flex items-center ${compact ? 'gap-2 px-2 pt-1' : 'gap-3 px-4 pt-3'}`}>
+        <button type="button" onClick={services.exitToHome} className={`${compact ? 'w-10 h-10 text-xl' : 'w-12 h-12 text-2xl'} rounded-full bg-white shadow font-bold shrink-0`} aria-label="Home">
           ←
         </button>
-        <div className="flex-1 min-w-0 flex items-baseline justify-center flex-wrap font-black tabular-nums text-[clamp(2.5rem,7vw,5.5rem)] leading-tight">
+        <div className="flex-1 min-w-0 flex items-baseline justify-center flex-wrap font-black tabular-nums leading-tight" style={{ fontSize: 'clamp(1.5rem, min(7vw, 11vh), 5.5rem)' }}>
           {groupsOf(n).map((g, i, all) => {
             const c = colours(all.length - 1 - i)
             return (
               <span key={i} className="flex items-baseline">
-                <span className="rounded-2xl px-2" style={{ background: c.tint, color: c.ink }}>
+                <span className="rounded-xl px-1.5" style={{ background: c.tint, color: c.ink }}>
                   {g}
                 </span>
                 {i < all.length - 1 && <span className="text-slate-400 mx-0.5">,</span>}
@@ -186,44 +196,45 @@ function App({ services }: GameProps) {
         <button
           type="button"
           onClick={() => n <= 999_999_999_999_999n && speakNumber(Number(n))}
-          className="w-14 h-14 rounded-full bg-white shadow text-3xl shrink-0"
+          className={`${compact ? 'w-10 h-10 text-xl' : 'w-14 h-14 text-3xl'} rounded-full bg-white shadow shrink-0`}
           aria-label="Say the number"
         >
           🔊
         </button>
-        <button type="button" onClick={() => (timers.current.forEach(window.clearTimeout), setMat([]), setShown({ mat: [] }))} className="h-12 px-4 rounded-2xl bg-white shadow font-extrabold shrink-0">
+        <button type="button" onClick={() => (timers.current.forEach(window.clearTimeout), setMat([]), setShown({ mat: [] }))} className={`${compact ? 'h-10 px-3 text-sm' : 'h-12 px-4'} rounded-2xl bg-white shadow font-extrabold shrink-0`}>
           Clear
         </button>
       </div>
 
       {/* Read it back (spec): words, expanded form, powers. */}
-      <div className="px-6 py-2 flex flex-col gap-0.5 text-center">
-        <div className="text-xl font-extrabold">{words(n)}</div>
-        <div className="text-base font-bold text-slate-500 tabular-nums">{expanded(mat)}</div>
-        <div className="text-base font-bold text-slate-500 tabular-nums">{powers(mat)}</div>
+      <div className={`flex flex-col gap-0.5 text-center ${compact ? 'px-2 py-1' : 'px-6 py-2'}`}>
+        <div className={`${compact ? 'text-sm' : 'text-xl'} font-extrabold leading-snug`}>{words(n)}</div>
+        <div className={`${compact ? 'text-xs' : 'text-base'} font-bold text-slate-500 tabular-nums`}>{expanded(mat)}</div>
+        <div className={`${compact ? 'text-xs' : 'text-base'} font-bold text-slate-500 tabular-nums`}>{powers(mat)}</div>
       </div>
 
       {/* The mat: ones on the right, growing to the left as the number needs. */}
-      <div ref={matBox} className="flex-1 min-h-0 mx-3 rounded-3xl bg-[#2436A6] p-2 overflow-x-auto">
+      <div ref={matBox} className={`flex-1 min-h-0 bg-[#2436A6] p-2 overflow-x-auto ${compact ? 'mx-1 rounded-2xl' : 'mx-3 rounded-3xl'}`}>
         {/* Ones first, laid out right to left: when the mat outgrows the screen it scrolls from the ones. */}
-        <div className="h-full flex flex-row-reverse gap-2 min-w-max">
+        <div className="h-full flex flex-row-reverse min-w-max" style={{ gap: GAP }}>
           {places.map((p) => {
             const c = colours(groupOf(p))
             const k = shown.mat[p] ?? 0
             const merging = shown.merging === p
-            // Rods fill the width; flats and cubes sit two or three across, so nine always fit.
-            const size = shapeOf(p) === 'rod' ? Math.min(colW - 24, 140) : shapeOf(p) === 'flat' ? Math.min((colW - 30) / 2, 52) : Math.min(colW * 0.28, 52)
+            const size = blockSize(shapeOf(p), blockArea.w, blockArea.h)
             return (
-              <div key={p} className="h-full flex flex-col rounded-2xl bg-white overflow-hidden" style={{ width: colW }}>
-                <div className="px-2 pt-2 pb-1 text-center" style={{ background: c.tint }}>
-                  <div className="text-sm font-black leading-tight" style={{ color: c.ink }}>
+              <div key={p} className={`h-full flex flex-col bg-white overflow-hidden ${compact ? 'rounded-xl' : 'rounded-2xl'}`} style={{ width: colW }}>
+                <div className="px-1 pt-1 text-center overflow-hidden flex flex-col justify-end" style={{ background: c.tint, height: HEADER }}>
+                  <div className={`${compact ? 'text-[11px]' : 'text-sm'} font-black leading-tight`} style={{ color: c.ink }}>
                     {placeName(p)}
                   </div>
-                  <div className="font-bold text-slate-500 tabular-nums whitespace-nowrap leading-tight" style={{ fontSize: Math.min(12, (colW - 12) / (placeValue(p).length * 0.62)) }}>
-                    {placeValue(p)}
-                  </div>
-                  <div className="text-xs font-bold text-slate-500">{power(p)}</div>
-                  <div className="text-4xl font-black tabular-nums" style={{ color: colourOf(p) }}>
+                  {!compact && (
+                    <div className="font-bold text-slate-500 tabular-nums whitespace-nowrap leading-tight" style={{ fontSize: Math.min(12, (colW - 12) / (placeValue(p).length * 0.62)) }}>
+                      {placeValue(p)}
+                    </div>
+                  )}
+                  <div className={`${compact ? 'text-[10px]' : 'text-xs'} font-bold text-slate-500 leading-tight`}>{power(p)}</div>
+                  <div className={`${compact ? 'text-2xl' : 'text-4xl'} font-black tabular-nums leading-tight`} style={{ color: colourOf(p) }}>
                     {Math.min(k, 10)}
                   </div>
                 </div>
@@ -255,22 +266,22 @@ function App({ services }: GameProps) {
       </div>
 
       {/* The palette: 1 to 1,000,000 (10⁰ to 10⁶), in the mat's order — ones on the right. Drag onto the mat, or tap. */}
-      <div className="flex flex-row-reverse justify-center gap-2 p-3 overflow-x-auto">
+      <div className={`flex flex-row-reverse justify-center ${compact ? 'gap-1 p-1.5' : 'gap-2 p-3'}`}>
         {PALETTE_PLACES.map((p) => (
           <button
             key={p}
             type="button"
             onPointerDown={(e) => startDrag(e, p, 'palette')}
-            className="shrink-0 w-[8.5rem] rounded-2xl bg-white shadow px-2 py-2 flex flex-col items-center gap-1 cursor-grab"
+            className={`flex-1 min-w-0 max-w-[8.5rem] bg-white shadow flex flex-col items-center cursor-grab ${compact ? 'rounded-xl px-0.5 py-1 gap-0.5' : 'rounded-2xl px-2 py-2 gap-1'}`}
             aria-label={`${placeValue(p)} block`}
           >
-            <div className="h-12 flex items-center justify-center">
-              <Block place={p} size={shapeOf(p) === 'rod' ? 96 : 46} />
+            <div className={`${compact ? 'h-7' : 'h-12'} flex items-center justify-center`}>
+              <Block place={p} size={shapeOf(p) === 'rod' ? (compact ? 44 : 96) : compact ? 26 : 46} />
             </div>
-            <div className="text-lg font-black tabular-nums leading-none" style={{ color: colours(groupOf(p)).ink }}>
+            <div className={`${compact ? 'text-[10px]' : 'text-lg'} font-black tabular-nums leading-none whitespace-nowrap`} style={{ color: colours(groupOf(p)).ink }}>
               {placeValue(p)}
             </div>
-            <div className="text-sm font-bold text-slate-500">{power(p)}</div>
+            <div className={`${compact ? 'text-[10px]' : 'text-sm'} font-bold text-slate-500 leading-none`}>{power(p)}</div>
           </button>
         ))}
       </div>

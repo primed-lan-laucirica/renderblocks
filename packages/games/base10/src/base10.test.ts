@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { add, addSteps, colourOf, columns, expanded, groupsOf, placeName, power, powers, remove, shapeOf, standard, value, words } from './model'
+import { add, addSteps, blockSize, colourOf, columns, expanded, groupsOf, placeName, power, powers, remove, shapeOf, standard, value, words } from './model'
 
 const build = (...places: number[]) => places.reduce((m, p) => add(m, p), [] as number[])
 
@@ -84,5 +84,21 @@ describe('places', () => {
   it('colours start from the mat: yellow, green, blue, then the red thousand', () => {
     expect([0, 1, 2, 3].map(colourOf)).toEqual(['#F2B632', '#1E9E57', '#2E8BD8', '#D63A3A'])
     expect(colourOf(4)).not.toBe(colourOf(1)) // each group varies
+  })
+})
+
+describe('block sizes', () => {
+  it('always fits nine of a place, as big as the room allows', () => {
+    for (const [w, h] of [[80, 200], [300, 330], [90, 600], [140, 150]]) {
+      for (const shape of ['cube', 'flat'] as const) {
+        const s = blockSize(shape, w, h)
+        const perRow = Math.floor((w + 6) / (s + 6))
+        expect(Math.ceil(9 / perRow) * (s + 6), `${shape} ${w}×${h}`).toBeLessThanOrEqual(h)
+        expect(s * perRow, `${shape} ${w}×${h}`).toBeLessThanOrEqual(w)
+      }
+      const rod = blockSize('rod', w, h)
+      expect(9 * (rod * 0.16 + 6)).toBeLessThanOrEqual(h + 1)
+    }
+    expect(blockSize('cube', 300, 330)).toBeGreaterThan(blockSize('cube', 80, 200)) // bigger when there's room
   })
 })

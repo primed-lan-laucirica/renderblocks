@@ -18,6 +18,21 @@ export const groupOf = (place: number) => Math.floor(place / 3)
 /** Blocks the palette offers: 10⁰ to 10⁶ (1 to 1,000,000). */
 export const PALETTE_PLACES = [0, 1, 2, 3, 4, 5, 6]
 
+/**
+ * The largest block that still lets nine of a place fit in a column's
+ * block area (w × h px): rods stack one per row, cubes and flats sit as
+ * many across as fit. Blocks grow into room they have and shrink on a phone.
+ */
+export function blockSize(shape: Shape, w: number, h: number): number {
+  const gap = 6
+  if (shape === 'rod') return Math.max(20, Math.min(w - 8, 220, (h / 9 - gap) / 0.16))
+  for (let s = Math.min(110, w); s >= 10; s--) {
+    const perRow = Math.floor((w + gap) / (s + gap))
+    if (perRow >= 1 && Math.ceil(9 / perRow) * (s + gap) <= h) return s
+  }
+  return 10
+}
+
 /** The mat starts with the photo's four columns and grows as needed. */
 export const MIN_COLUMNS = 4
 
