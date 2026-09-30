@@ -260,7 +260,8 @@ function App({ services }: GameProps) {
                       <div
                         key={i}
                         onPointerDown={(e) => startDrag(e, p, 'mat')}
-                        className={`cursor-grab ${shown.landed === p && i === k - 1 ? 'animate-[land_260ms_ease-out]' : ''}`}
+                        // touch-none: a finger on a block drags it; without this the mat's sideways scroll claims the touch and cancels the drag.
+                        className={`cursor-grab touch-none ${shown.landed === p && i === k - 1 ? 'animate-[land_260ms_ease-out]' : ''}`}
                       >
                         <Block place={p} size={size} />
                       </div>
@@ -288,7 +289,7 @@ function App({ services }: GameProps) {
             key={p}
             type="button"
             onPointerDown={(e) => startDrag(e, p, 'palette')}
-            className={`flex-1 min-w-0 max-w-[8.5rem] bg-white shadow flex flex-col items-center cursor-grab ${compact ? 'rounded-xl px-0.5 py-1 gap-0.5' : 'rounded-2xl px-2 py-2 gap-1'}`}
+            className={`flex-1 min-w-0 max-w-[8.5rem] bg-white shadow flex flex-col items-center cursor-grab touch-none ${compact ? 'rounded-xl px-0.5 py-1 gap-0.5' : 'rounded-2xl px-2 py-2 gap-1'}`}
             aria-label={`${placeValue(p)} block`}
           >
             <div className={`${compact ? 'h-7' : 'h-12'} flex items-center justify-center`}>
