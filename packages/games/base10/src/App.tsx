@@ -84,14 +84,18 @@ function App({ services }: GameProps) {
   // The photo's four columns, or up to the highest holding a block, or one past a carry in progress.
   const cols = Math.max(columns(shown.mat), shown.merging !== undefined ? shown.merging + 2 : 0)
   const places = Array.from({ length: cols }, (_, i) => i)
-  // Wide columns while there are few, like the photo's mat; narrower as places are added.
-  const [width, setWidth] = useState(() => window.innerWidth)
+  // The columns share the mat's whole width, however many there are; past about
+  // twelve they stop narrowing and the mat scrolls instead.
+  const [matW, setMatW] = useState(() => window.innerWidth - 24)
   useEffect(() => {
-    const on = () => setWidth(window.innerWidth)
-    window.addEventListener('resize', on)
-    return () => window.removeEventListener('resize', on)
+    const el = matBox.current
+    if (!el) return
+    const ro = new ResizeObserver(() => setMatW(el.clientWidth))
+    ro.observe(el)
+    return () => ro.disconnect()
   }, [])
-  const colW = Math.max(96, Math.min(190, (width - 48) / cols - 8))
+  const GAP = 8
+  const colW = Math.max(96, (matW - 16 - GAP * (cols - 1)) / cols)
 
   /** Add a block, playing each carry in turn (spec: the regroup is animated). */
   const addBlock = (place: number) => {
