@@ -38,10 +38,15 @@ function loadMat(raw: string | null): Mat {
 
 const sfx = new Map<string, HTMLAudioElement>()
 function play(name: 'pop' | 'whoosh', volume = 0.7) {
-  let a = sfx.get(name)
+  playFile(`/games/shared/sfx/${name}.mp3`, volume)
+}
+/** A block's name, one clip per place ("one hundred thousand"), so there's no stitching pause. */
+const sayPlace = (place: number) => playFile(`/games/base10/place/${place}.mp3`, 1)
+function playFile(src: string, volume: number) {
+  let a = sfx.get(src)
   if (!a) {
-    a = new Audio(`/games/shared/sfx/${name}.mp3`)
-    sfx.set(name, a)
+    a = new Audio(src)
+    sfx.set(src, a)
   }
   a.volume = volume
   a.currentTime = 0
@@ -63,6 +68,8 @@ interface Drag {
   y: number
   x0: number
   y0: number
+  /** A mat block held over the palette, where letting go takes it away. */
+  overPalette?: boolean
 }
 
 /**
@@ -77,6 +84,7 @@ function App({ services }: GameProps) {
   const [drag, setDrag] = useState<Drag | null>(null)
   const timers = useRef<number[]>([])
   const matBox = useRef<HTMLDivElement>(null)
+  const paletteBox = useRef<HTMLDivElement>(null)
 
   useEffect(() => storage.set(KEY, JSON.stringify(mat)), [storage, mat])
   useEffect(() => () => timers.current.forEach(window.clearTimeout), [])
@@ -104,7 +112,7 @@ function App({ services }: GameProps) {
   const GAP = compact ? 4 : 8
   const colW = Math.max(compact ? 70 : 96, (box.w - 16 - GAP * (cols - 1)) / cols)
   /** Column headers have a fixed height, so every column's block area is the same. */
-  const HEADER = compact ? (colW < 120 ? 76 : 62) : 104 // narrow phone columns wrap "hundred thousands" to two lines
+  const HEADER = compact ? (colW < 120 ? 76 : 62) : colW < 150 ? 120 : 104 // narrow columns wrap "hundred thousands" to two lines
   const blockArea = { w: colW - 16, h: box.h - 16 - HEADER - 16 }
 
   /** Add a block, playing each carry in turn (spec: the regroup is animated). */
@@ -114,7 +122,8 @@ function App({ services }: GameProps) {
     const steps = addSteps(mat, place)
     const final = steps[steps.length - 1].mat
     setMat(final)
-    play('pop', 0.6)
+    play('pop', 0.4)
+    sayPlace(place)
     setShown({ mat: steps[0].mat, landed: place })
     let t = LAND_MS
     for (let i = 1; i < steps.length; i++) {
@@ -142,21 +151,25 @@ function App({ services }: GameProps) {
     play('pop', 0.35)
   }
 
-  const overMat = (x: number, y: number) => {
-    const r = matBox.current?.getBoundingClientRect()
+  const over = (el: HTMLElement | null, x: number, y: number) => {
+    const r = el?.getBoundingClientRect()
     return !!r && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom
   }
 
   // One drag at a time, followed on the window so it can leave where it started.
   useEffect(() => {
     if (!drag) return
-    const move = (e: PointerEvent) => setDrag((d) => (d ? { ...d, x: e.clientX, y: e.clientY } : d))
+    const move = (e: PointerEvent) =>
+      setDrag((d) => (d ? { ...d, x: e.clientX, y: e.clientY, overPalette: over(paletteBox.current, e.clientX, e.clientY) } : d))
     const up = (e: PointerEvent) => {
       const d = drag
       setDrag(null)
+      // A cancelled touch (the system took it over) does nothing.
+      if (e.type === 'pointercancel') return
       const tap = Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < 10
-      if (d.from === 'palette' && (tap || overMat(e.clientX, e.clientY))) addBlock(d.place)
-      if (d.from === 'mat' && !tap && !overMat(e.clientX, e.clientY)) takeBlock(d.place)
+      if (d.from === 'palette' && (tap || over(matBox.current, e.clientX, e.clientY))) addBlock(d.place)
+      // Taking away is deliberate: only a block dropped back on the palette goes.
+      if (d.from === 'mat' && over(paletteBox.current, e.clientX, e.clientY)) takeBlock(d.place)
     }
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
@@ -266,7 +279,10 @@ function App({ services }: GameProps) {
       </div>
 
       {/* The palette: 1 to 1,000,000 (10⁰ to 10⁶), in the mat's order — ones on the right. Drag onto the mat, or tap. */}
-      <div className={`flex flex-row-reverse justify-center ${compact ? 'gap-1 p-1.5' : 'gap-2 p-3'}`}>
+      <div
+        ref={paletteBox}
+        className={`flex flex-row-reverse justify-center transition-colors ${compact ? 'gap-1 p-1.5' : 'gap-2 p-3'} ${drag?.from === 'mat' ? (drag.overPalette ? 'bg-rose-200' : 'bg-rose-100') : ''}`}
+      >
         {PALETTE_PLACES.map((p) => (
           <button
             key={p}
