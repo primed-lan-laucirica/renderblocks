@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { wrapFor } from './sheet'
 import { Page, type Done, type Pen, type Size } from './Page'
-import { say, effect } from './audio'
+import { effect } from './audio'
 import type { TraceSet } from './items'
 import { COLOURS, NIBS, traceStep, type Guides } from './store'
 
@@ -27,9 +27,6 @@ export function TraceScreen({ set, index, onIndex, guides, onGuides, pen, onPen,
   const [done, setDone] = useState<string | null>(null)
   const [round, setRound] = useState(0)
   const [wrap] = useState(() => wrapFor(window.innerWidth, window.innerHeight))
-
-  // Each page is said as it opens.
-  useEffect(() => say(item.say), [item])
 
   const go = (d: number) => onIndex((index + d + set.items.length) % set.items.length)
   const pageDone = done === `${item.key}-${round}`
@@ -60,7 +57,6 @@ export function TraceScreen({ set, index, onIndex, guides, onGuides, pen, onPen,
           lines={guides.lines}
           pen={pen}
           size={guides.size}
-          onSpeak={() => say(item.say)}
           onDone={(d) => {
             setDone(`${item.key}-${round}`)
             effect('correct', 0.5)

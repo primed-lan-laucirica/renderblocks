@@ -135,7 +135,6 @@ interface PageProps {
   pen: Pen
   size: Size
   onDone: (d: Done) => void
-  onSpeak: () => void
 }
 
 /**
@@ -144,7 +143,7 @@ interface PageProps {
  * order and direction; a free step takes whatever he writes and, when he
  * stops, fades the model in over it.
  */
-export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: PageProps) {
+export function Page({ item, wrap, step, lines, pen, size, onDone }: PageProps) {
   const lay = useMemo(() => pageLayout(item, wrap), [item, wrap])
   const vb = viewBox(lay)
   const svg = useRef<SVGSVGElement>(null)
@@ -426,7 +425,6 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
         </svg>
       </div>
       <div className="flex items-center justify-center gap-2 p-2">
-        <Tool label="Say it" onClick={onSpeak}>🔊</Tool>
         {!finished && (
           <>
             <Tool label="Show me" onClick={showMe}>👀</Tool>

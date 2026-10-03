@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { wrapFor } from './sheet'
 import { Page, type Done, type Pen } from './Page'
-import { effect, say } from './audio'
+import { effect } from './audio'
 import { FADE, nextLevel, TOP } from './fade'
 import { levelOf, startLevel, type Item, type ProgressMap } from './items'
 
@@ -31,9 +31,6 @@ export function PracticeScreen({ round, progress, onProgress, pen, onFinished, o
   const [level] = useState(() => round.map((i) => levelOf(i, progress)))
   const step = item ? FADE[level[index]] : FADE[0]
 
-  useEffect(() => {
-    if (item) say(item.say)
-  }, [item])
   useEffect(() => () => window.clearTimeout(timer.current), [])
 
   const onDone = (d: Done) => {
@@ -85,7 +82,7 @@ export function PracticeScreen({ round, progress, onProgress, pen, onFinished, o
       <div className="mx-auto w-40 h-1.5 rounded-full bg-slate-200 overflow-hidden" aria-label={`Fade step ${level[index] + 1} of ${TOP + 1}`}>
         <div className="h-full bg-sky-400" style={{ width: `${((level[index] + 1) / (TOP + 1)) * 100}%` }} />
       </div>
-      <Page key={`${item.key}-${index}`} item={item} wrap={wrap} step={step} lines pen={pen} size="big" onDone={onDone} onSpeak={() => say(item.say)} />
+      <Page key={`${item.key}-${index}`} item={item} wrap={wrap} step={step} lines pen={pen} size="big" onDone={onDone} />
       {star && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="text-[9rem] leading-none text-amber-400 drop-shadow-xl animate-[pop_600ms_ease-out]">★</div>

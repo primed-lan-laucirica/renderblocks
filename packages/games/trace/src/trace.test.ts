@@ -151,7 +151,7 @@ describe('items', () => {
   it('reads a typed entry as a number, a letter, a word or a sentence', () => {
     expect(textItem('42').kind).toBe('number')
     expect(textItem('Q').kind).toBe('upper')
-    expect(textItem('cat').say).toEqual({ word: 'cat' })
+    expect(textItem('cat').kind).toBe('word')
     expect(textItem('I see a cat').kind).toBe('sentence')
   })
   it('picks a mixed round with no repeats, least recently practised first', () => {

@@ -1,36 +1,29 @@
 /**
  * What can be traced (Handwriting-MVP-spec.md: tracing, what can be traced)
  * and the Practice pool. Words and sentences come from the Words app, so
- * they are ones he can read and they already have recordings.
+ * they are ones he can read.
  */
-import { LEVELS, SENTENCES, WORDS } from '@renderblocks/words/words'
+import { LEVELS, SENTENCES } from '@renderblocks/words/words'
 import { NUMBER_START } from './fade'
 
 export type Kind = 'number' | 'upper' | 'lower' | 'word' | 'sentence' | 'shape'
-
-/** How an item is said when its page opens. */
-export type Say = { number: string } | { letter: string } | { word: string } | { sentence: string } | { shape: string } | null
 
 export interface Item {
   /** Stable id for progress and the gallery, e.g. "lower:a", "word:cat". */
   key: string
   kind: Kind
   text: string
-  say: Say
 }
 
-const WORD_SET = new Set(WORDS.map((w) => w.word))
-
-export const numberItem = (n: string): Item => ({ key: `number:${n}`, kind: 'number', text: n, say: { number: n } })
+export const numberItem = (n: string): Item => ({ key: `number:${n}`, kind: 'number', text: n })
 export const letterItem = (ch: string): Item => ({
   key: `${ch === ch.toUpperCase() ? 'upper' : 'lower'}:${ch}`,
   kind: ch === ch.toUpperCase() ? 'upper' : 'lower',
   text: ch,
-  say: { letter: ch.toLowerCase() },
 })
-export const wordItem = (w: string): Item => ({ key: `word:${w}`, kind: 'word', text: w, say: WORD_SET.has(w) ? { word: w } : null })
-const sentenceItem = (text: string, audio: string | null): Item => ({ key: `sentence:${text}`, kind: 'sentence', text, say: audio ? { sentence: audio } : null })
-const shapeItem = (name: string): Item => ({ key: `shape:${name}`, kind: 'shape', text: name, say: { shape: name } })
+export const wordItem = (w: string): Item => ({ key: `word:${w}`, kind: 'word', text: w })
+const sentenceItem = (text: string): Item => ({ key: `sentence:${text}`, kind: 'sentence', text })
+const shapeItem = (name: string): Item => ({ key: `shape:${name}`, kind: 'shape', text: name })
 
 /** Plain text (typed by a parent): one word, a number, or a sentence. */
 export function textItem(text: string): Item {
@@ -38,7 +31,7 @@ export function textItem(text: string): Item {
   if (/^\d+$/.test(t)) return numberItem(t)
   if (/^[A-Za-z]$/.test(t)) return letterItem(t)
   if (!/\s/.test(t)) return wordItem(t)
-  return sentenceItem(t, null)
+  return sentenceItem(t)
 }
 
 const range = (a: number, b: number, step = 1) => Array.from({ length: Math.floor((b - a) / step) + 1 }, (_, i) => a + i * step)
@@ -61,7 +54,7 @@ export interface TraceGroup {
 }
 
 /** A run of numbers across one page, e.g. "2 4 6 8 10". */
-const run = (title: string, nums: number[]): Item => ({ key: `run:${title}`, kind: 'number', text: nums.join(' '), say: null })
+const run = (title: string, nums: number[]): Item => ({ key: `run:${title}`, kind: 'number', text: nums.join(' ') })
 
 export function traceGroups(myWords: string[]): TraceGroup[] {
   const alphabet = [LOWER.slice(0, 7), LOWER.slice(7, 14), LOWER.slice(14, 21), LOWER.slice(21)]
@@ -69,7 +62,7 @@ export function traceGroups(myWords: string[]): TraceGroup[] {
     id: `sentences-${l.level}`,
     title: `Sentences ${l.level}`,
     sample: SENTENCES[l.words.find((w) => SENTENCES[w.word])!.word][0].text.split(' ').slice(0, 2).join(' '),
-    items: l.words.flatMap((w) => (SENTENCES[w.word] ?? []).map((s) => sentenceItem(s.text, s.audio))),
+    items: l.words.flatMap((w) => (SENTENCES[w.word] ?? []).map((s) => sentenceItem(s.text))),
   }))
   return [
     {
@@ -97,8 +90,8 @@ export function traceGroups(myWords: string[]): TraceGroup[] {
       sets: [
         { id: 'lower', title: 'a to z', sample: 'abc', items: LOWER.map(letterItem) },
         { id: 'upper', title: 'A to Z', sample: 'ABC', items: UPPER.map(letterItem) },
-        { id: 'pairs', title: 'Aa to Zz', sample: 'Aa', items: LOWER.map((c) => ({ key: `pair:${c}`, kind: 'upper' as const, text: `${c.toUpperCase()}${c}`, say: { letter: c } })) },
-        { id: 'alphabet', title: 'Alphabet', sample: 'a b c', items: alphabet.map((row) => ({ key: `alphabet:${row[0]}`, kind: 'lower' as const, text: row.join(' '), say: null })) },
+        { id: 'pairs', title: 'Aa to Zz', sample: 'Aa', items: LOWER.map((c) => ({ key: `pair:${c}`, kind: 'upper' as const, text: `${c.toUpperCase()}${c}` })) },
+        { id: 'alphabet', title: 'Alphabet', sample: 'a b c', items: alphabet.map((row) => ({ key: `alphabet:${row[0]}`, kind: 'lower' as const, text: row.join(' ') })) },
       ],
     },
     {
