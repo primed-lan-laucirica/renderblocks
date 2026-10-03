@@ -116,7 +116,7 @@ function Tray({ pen, onPen, guides, onGuides }: { pen: Pen; onPen: (p: Pen) => v
       <span className="w-px h-8 bg-slate-200" />
       {toggle(guides.path === 'solid', 'Path', () => onGuides({ ...guides, path: 'solid' }))}
       {toggle(guides.path === 'dots', 'Dots', () => onGuides({ ...guides, path: 'dots' }))}
-      {toggle(guides.arrows, '1 2 3 Arrows', () => onGuides({ ...guides, arrows: !guides.arrows }))}
+      {toggle(guides.arrows, 'Arrows', () => onGuides({ ...guides, arrows: !guides.arrows }))}
       {toggle(guides.lines, 'Lines', () => onGuides({ ...guides, lines: !guides.lines }))}
     </div>
   )

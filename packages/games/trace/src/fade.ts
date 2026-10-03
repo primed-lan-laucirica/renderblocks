@@ -8,7 +8,7 @@ import type { Poly, Pt } from './glyphs'
 
 export interface FadeStep {
   phase: 'solid' | 'dots' | 'flash' | 'blank'
-  /** Numbered arrows at each stroke's start. */
+  /** An arrow showing which way the current stroke goes. */
   arrows?: boolean
   /** Dot spacing along the path (units); Infinity keeps only the shape-carrying dots. */
   spacing?: number

@@ -84,39 +84,19 @@ function ModelPath({ lay, color, width, opacity = 1 }: { lay: Layout; color: str
   )
 }
 
-/** Numbered arrows on the character being traced: a numbered badge on each stroke's start and an arrowhead along it. */
-function Arrows({ lay, stroke }: { lay: Layout; stroke: number }) {
-  // Which character the current stroke belongs to, and where its strokes begin.
-  const starts = lay.chars.map((_, i) => lay.chars.slice(0, i).reduce((n, c) => n + c.polys.length, 0))
-  const ci = lay.chars.findIndex((c, i) => stroke < starts[i] + c.polys.length)
-  if (ci < 0) return null
-  const ch = lay.chars[ci]
-  const first = starts[ci]
+/** Where to touch, pointing the way to go: an arrow on the current stroke where he's got to. */
+function Arrow({ lay, trace }: { lay: Layout; trace: Trace }) {
+  const p = lay.strokes[trace.stroke]
+  if (!p) return null
+  const at = p.dot ? 0 : Math.max(0, p.at.findIndex((s) => s >= trace.progress))
+  const a = p.pts[at]
+  const b = p.pts[Math.min(p.pts.length - 1, at + 3)]
+  const ang = p.dot ? 90 : (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI
   return (
-    <g>
-      {ch.polys.map((p, i) => {
-        const a = p.pts[0]
-        const now = first + i === stroke
-        const badge = (
-          <g key={`b${i}`} opacity={now || first + i > stroke ? 1 : 0.35}>
-            <circle cx={a.x} cy={a.y} r={0.14} fill="#F59E0B" />
-            <text x={a.x} y={a.y + 0.07} fontSize={0.2} fontWeight={900} fill="white" textAnchor="middle">
-              {i + 1}
-            </text>
-          </g>
-        )
-        if (p.dot) return badge
-        const j = Math.min(p.pts.length - 1, Math.max(2, p.at.findIndex((s) => s >= Math.min(0.6, p.at[p.at.length - 1] * 0.55))))
-        const b = p.pts[j]
-        const c = p.pts[Math.max(0, j - 2)]
-        const ang = (Math.atan2(b.y - c.y, b.x - c.x) * 180) / Math.PI
-        return (
-          <g key={i}>
-            <polygon points="0.13,0 -0.1,-0.11 -0.1,0.11" fill="#F59E0B" opacity={now || first + i > stroke ? 1 : 0.35} transform={`translate(${b.x} ${b.y}) rotate(${ang})`} />
-            {badge}
-          </g>
-        )
-      })}
+    <g transform={`translate(${a.x} ${a.y}) rotate(${ang})`}>
+      <polygon points="0.2,0 -0.13,-0.17 -0.06,0 -0.13,0.17" fill="#16A34A" stroke="white" strokeWidth={0.03} strokeLinejoin="round">
+        <animate attributeName="opacity" values="1;0.45;1" dur="1.3s" repeatCount="indefinite" />
+      </polygon>
     </g>
   )
 }
@@ -392,16 +372,16 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
           {lines && <Lines lay={lay} baselineOnly={step.baselineOnly} />}
           {pathShown && <ModelPath lay={lay} color="#D6DEE8" width={0.36} />}
           {dotsShown && <Dots lay={lay} step={step} />}
-          {step.arrows && !finished && <Arrows lay={lay} stroke={trace.stroke} />}
-          {/* Flash: the whole pattern, for a moment. */}
+                    {/* Flash: the whole pattern, for a moment. */}
           {step.show !== undefined && <ModelPath lay={lay} color="#64748B" width={0.2} opacity={flash ? 0.85 : 0} />}
-          {/* Where to carry on. */}
-          {resume && show === null && (
+          {/* Where to carry on: the arrow, or (arrows off) a ring. */}
+          {!step.arrows && resume && show === null && (
             <circle cx={resume.x} cy={resume.y} r={0.14} fill="none" stroke="#16A34A" strokeWidth={0.05}>
               <animate attributeName="r" values="0.1;0.24;0.1" dur="1.3s" repeatCount="indefinite" />
             </circle>
           )}
           <InkStrokes ink={ink} pen={pen} until={replay ?? undefined} />
+          {step.arrows && !finished && show === null && <Arrow lay={lay} trace={trace} />}
           {/* Show me: the strokes drawn in order. */}
           {show !== null && (
             <g stroke="#F59E0B" fill="#F59E0B" strokeWidth={0.16} strokeLinecap="round" strokeLinejoin="round">
