@@ -148,6 +148,10 @@ describe('items', () => {
     expect(groups[2].sets[0].items[0].text).toBe('Render')
     for (const g of groups) for (const s of g.sets) for (const item of s.items) expect(layout(item.text, 16, item.kind === 'shape' ? item.text : undefined).strokes.length, item.text).toBeGreaterThan(0)
   })
+  it('has a 1 to 100 set, one number a page', () => {
+    const set = traceGroups([])[0].sets.find((s) => s.id === 'hundred')!
+    expect(set.items.map((i) => i.text)).toEqual(Array.from({ length: 100 }, (_, i) => String(i + 1)))
+  })
   it('reads a typed entry as a number, a letter, a word or a sentence', () => {
     expect(textItem('42').kind).toBe('number')
     expect(textItem('Q').kind).toBe('upper')

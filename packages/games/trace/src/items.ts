@@ -70,6 +70,7 @@ export function traceGroups(myWords: string[]): TraceGroup[] {
       sets: [
         { id: 'digits', title: '0 to 9', sample: '123', items: range(0, 9).map((n) => numberItem(String(n))) },
         { id: 'teens', title: '10 to 20', sample: '15', items: range(10, 20).map((n) => numberItem(String(n))) },
+        { id: 'hundred', title: '1 to 100', sample: '100', items: range(1, 100).map((n) => numberItem(String(n))) },
         { id: 'tens', title: 'Tens', sample: '50', items: range(10, 100, 10).map((n) => numberItem(String(n))) },
         {
           id: 'counting',
