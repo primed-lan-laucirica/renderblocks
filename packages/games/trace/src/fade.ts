@@ -113,6 +113,8 @@ function angle(ax: number, ay: number, bx: number, by: number): number {
 export const TOLERANCE = 0.32
 /** How far ahead along the path one move may jump (so a stroke can't be skipped). */
 const AHEAD = 0.6
+/** How far past where it got to a finger may rejoin a stroke. */
+const REJOIN = 0.35
 /** A stroke this close to finished counts as finished when the finger lifts. */
 const NEARLY = 0.85
 
@@ -153,10 +155,11 @@ export function moveTrace(t: Trace, strokes: Poly[], q: Pt, tol = TOLERANCE): { 
   if (p.dot) return Math.hypot(p.pts[0].x - q.x, p.pts[0].y - q.y) < tol * 1.3 ? { t: next(), ink: true } : { t, ink: false }
   const len = p.at[p.at.length - 1]
   if (!t.engaged) {
-    // Join where the stroke has got to (not further along it).
+    // Join where the stroke has got to, or a little past it (a slip off and back).
+    // Joining doesn't move it on; only moving forward from there does.
     const near = nearest(p, q, Math.max(0, t.progress - 0.3), t.progress + AHEAD)
-    if (near.d > tol * 0.6 || near.s > t.progress + 0.1) return { t, ink: false }
-    return { t: { ...t, engaged: true, at: near.s, progress: Math.max(t.progress, near.s) }, ink: true }
+    if (near.d > tol * 0.6 || near.s > t.progress + REJOIN) return { t, ink: false }
+    return { t: { ...t, engaged: true, at: near.s }, ink: true }
   }
   // Follow the finger along the stroke from where it was.
   const near = nearest(p, q, Math.max(0, t.at - 0.2), t.at + AHEAD)

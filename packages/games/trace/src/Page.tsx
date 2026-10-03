@@ -3,6 +3,7 @@ import type { Layout, Poly, Pt } from './glyphs'
 import { pageLayout, viewBox } from './sheet'
 import { dots, FINISH_MS, goodEnough, liftTrace, moveTrace, overlap, STALL_MS, startTrace, TOLERANCE, traced, type FadeStep, type Trace } from './fade'
 import type { Item } from './items'
+import { strokeDone, tick, TICK_EVERY, wake } from './clicks'
 
 export interface Pen {
   color: string
@@ -154,7 +155,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
   const [show, setShow] = useState<number | null>(null)
   const [replay, setReplay] = useState<number | null>(null)
   // Bookkeeping for the handlers (never read while rendering).
-  const live = useRef({ trace: startTrace(), ink: [] as Ink[], pointer: -1, t0: 0, moves: 0, off: 0, showMe: false, timers: [] as number[], busy: false })
+  const live = useRef({ trace: startTrace(), ink: [] as Ink[], pointer: -1, t0: 0, moves: 0, off: 0, showMe: false, timers: [] as number[], busy: false, ticked: 0 })
 
   const finished = done !== null
   const locked = step.locked
@@ -241,6 +242,19 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
     setInk(l.ink)
   }
 
+  /** The dial: a tick for each bit of path covered (pitch rising through the stroke), a tone when a stroke is done. */
+  const dial = (before: Trace, after: Trace) => {
+    const l = live.current
+    if (after.stroke !== before.stroke) {
+      l.ticked = 0
+      return strokeDone()
+    }
+    const p = lay.strokes[after.stroke]
+    if (!p || p.dot || after.progress - l.ticked < TICK_EVERY) return
+    l.ticked = after.progress
+    tick(after.progress / p.at[p.at.length - 1])
+  }
+
   const onDown = (e: React.PointerEvent) => {
     const l = live.current
     if (e.pointerType === 'pen') stylusSeen = true
@@ -250,11 +264,13 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
     l.pointer = e.pointerId
     ;(e.target as Element).setPointerCapture?.(e.pointerId)
     clearTimers()
+    wake()
     if (locked) {
       const before = l.trace
       const r = moveTrace(l.trace, lay.strokes, u.q, u.tol)
       l.trace = r.t
       setTrace(r.t)
+      dial(before, r.t)
       if (r.ink) addPoint(u.q, true, before.stroke)
       if (traced(r.t, lay.strokes)) finish(l.off / Math.max(1, l.moves) < 0.35 && !l.showMe ? 'clean' : 'ok')
     } else addPoint(u.q, true)
@@ -272,6 +288,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
     if (!r.ink) l.off++
     l.trace = r.t
     setTrace(r.t)
+    dial(before, r.t)
     // Ink only on the path: a fresh ink stroke whenever the finger rejoins it, or a new model stroke begins.
     const last = l.ink[l.ink.length - 1]
     if (r.ink) addPoint(u.q, !before.engaged || !last || last.s !== before.stroke, before.stroke)
@@ -285,6 +302,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
     if (finished) return
     if (locked) {
       const t = liftTrace(l.trace, lay.strokes)
+      dial(l.trace, t)
       l.trace = t
       setTrace(t)
       if (traced(t, lay.strokes)) finish(l.off / Math.max(1, l.moves) < 0.35 && !l.showMe ? 'clean' : 'ok')
@@ -300,6 +318,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
       const back = l.ink.some((s) => s.s === cur) ? cur : Math.max(0, cur - 1)
       l.ink = l.ink.filter((s) => (s.s ?? 0) < back)
       l.trace = { stroke: back, progress: 0, engaged: false, at: 0 }
+      l.ticked = 0
       setTrace(l.trace)
     } else l.ink = l.ink.slice(0, -1)
     setInk(l.ink)
@@ -311,6 +330,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone, onSpeak }: Pa
     clearTimers()
     l.ink = []
     l.trace = startTrace()
+    l.ticked = 0
     setInk([])
     setTrace(l.trace)
   }

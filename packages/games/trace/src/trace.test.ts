@@ -70,6 +70,16 @@ describe('tracing a locked path', () => {
     across.pts.forEach((q) => (t = moveTrace(t, strokes, q).t))
     expect(t.stroke).toBe(0)
   })
+  it('lets a finger that slips off rejoin a little further along', () => {
+    let t = startTrace()
+    const p = strokes[0]
+    const third = Math.floor(p.pts.length / 3)
+    p.pts.slice(0, third).forEach((q) => (t = moveTrace(t, strokes, q).t))
+    t = moveTrace(t, strokes, { x: 3, y: 3 }).t
+    // Back on, about 0.25 further along, and on to the end.
+    p.pts.slice(third + 8).forEach((q) => (t = moveTrace(t, strokes, q).t))
+    expect(t.stroke).toBe(1)
+  })
   it('lets a wandering finger come back and carry on', () => {
     let t = startTrace()
     const p = strokes[0]
