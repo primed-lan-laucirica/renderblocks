@@ -34,14 +34,36 @@ export const DEFAULT_PEN: Pen = { color: '#3B82F6', rainbow: false, nib: 0.16 }
 /** Tracing guides, each on or off. */
 export interface Guides {
   arrows: boolean
-  path: 'solid' | 'dots'
+  /** The sparsity slider: 0 is the solid track, then dots further and further apart (SPARSITY). */
+  sparsity: number
   lines: boolean
   size: Size
 }
-export const DEFAULT_GUIDES: Guides = { arrows: true, path: 'solid', lines: true, size: 'big' }
+export const DEFAULT_GUIDES: Guides = { arrows: true, sparsity: 0, lines: true, size: 'big' }
 
-/** The step a tracing page is drawn at: always locked to the path. */
-export const traceStep = (g: Guides): FadeStep => (g.path === 'solid' ? { phase: 'solid', arrows: g.arrows, locked: true } : { phase: 'dots', spacing: 0.16, arrows: g.arrows, locked: true })
+/**
+ * The sparsity slider's stops: the solid track, then dots spaced further
+ * apart each stop (units; x-height is 1), then only the dots that carry the
+ * shape (starts, ends, corners, curve tops and sides), then start dots only.
+ */
+export const SPARSITY: Array<Pick<FadeStep, 'spacing' | 'startsOnly'> | null> = [
+  null,
+  { spacing: 0.16 },
+  { spacing: 0.22 },
+  { spacing: 0.3 },
+  { spacing: 0.42 },
+  { spacing: 0.6 },
+  { spacing: 0.85 },
+  { spacing: 1.2 },
+  { spacing: Infinity },
+  { startsOnly: true },
+]
+
+/** The step a tracing page is drawn at: always locked to the path, at the slider's sparsity. */
+export function traceStep(g: Guides): FadeStep {
+  const stop = SPARSITY[Math.max(0, Math.min(SPARSITY.length - 1, Math.round(g.sparsity ?? 0)))]
+  return stop ? { phase: 'dots', ...stop, arrows: g.arrows, locked: true } : { phase: 'solid', arrows: g.arrows, locked: true }
+}
 
 /** A finished page in his gallery. */
 export interface Saved {

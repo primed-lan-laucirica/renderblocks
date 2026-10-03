@@ -103,13 +103,20 @@ function Arrow({ lay, trace }: { lay: Layout; trace: Trace }) {
 }
 
 function Dots({ lay, step }: { lay: Layout; step: FadeStep }) {
+  // Strokes that run over the same ground (B's middle bar) would double their dots: keep the first, and every start dot.
+  const placed: { q: Pt; start: boolean; key: string }[] = []
+  lay.strokes.forEach((p, i) =>
+    dots(p, step.spacing ?? 0.16, step.startsOnly).forEach((q, k) => {
+      const start = k === 0
+      if (!start && placed.some((d) => Math.hypot(d.q.x - q.x, d.q.y - q.y) < 0.12)) return
+      placed.push({ q, start, key: `${i}-${k}` })
+    }),
+  )
   return (
     <g>
-      {lay.strokes.map((p, i) =>
-        dots(p, step.spacing ?? 0.16, step.startsOnly).map((q, k) => (
-          <circle key={`${i}-${k}`} cx={q.x} cy={q.y} r={k === 0 ? 0.095 : 0.065} fill={k === 0 ? '#16A34A' : '#94A3B8'} />
-        )),
-      )}
+      {placed.map((d) => (
+        <circle key={d.key} cx={d.q.x} cy={d.q.y} r={d.start ? 0.095 : 0.065} fill={d.start ? '#16A34A' : '#94A3B8'} />
+      ))}
     </g>
   )
 }
@@ -162,7 +169,8 @@ export function Page({ item, wrap, step, lines, pen, size, onDone }: PageProps) 
   // The page opens: the clock starts; a flash on opening, then on a timer.
   useEffect(() => {
     const l = live.current
-    l.t0 = performance.now()
+    // The page's clock (for replay) starts once, even if the guides change mid-page.
+    if (!l.t0) l.t0 = performance.now()
     const timers: number[] = []
     const flashOnce = () => {
       if (live.current.busy) return

@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { wrapFor } from './sheet'
 import { Page, type Done, type Pen, type Size } from './Page'
 import { effect } from './audio'
 import type { TraceSet } from './items'
-import { COLOURS, NIBS, traceStep, type Guides } from './store'
+import { COLOURS, NIBS, SPARSITY, traceStep, type Guides } from './store'
 
 interface Props {
   set: TraceSet
@@ -28,6 +28,8 @@ export function TraceScreen({ set, index, onIndex, guides, onGuides, pen, onPen,
   const [round, setRound] = useState(0)
   const [wrap] = useState(() => wrapFor(window.innerWidth, window.innerHeight))
 
+  // One step object per setting, so the page isn't reset when nothing changed.
+  const step = useMemo(() => traceStep(guides), [guides])
   const go = (d: number) => onIndex((index + d + set.items.length) % set.items.length)
   const pageDone = done === `${item.key}-${round}`
 
@@ -47,13 +49,15 @@ export function TraceScreen({ set, index, onIndex, guides, onGuides, pen, onPen,
 
       {tray && <Tray pen={pen} onPen={onPen} guides={guides} onGuides={onGuides} />}
 
+      <Sparsity value={guides.sparsity} onChange={(sparsity) => onGuides({ ...guides, sparsity })} />
+
       <div className="flex-1 min-h-0 flex items-stretch">
         <SideArrow onClick={() => go(-1)} label="Back a page">‹</SideArrow>
         <Page
-          key={`${item.key}-${round}-${guides.path}-${guides.arrows}`}
+          key={`${item.key}-${round}`}
           item={item}
           wrap={wrap}
-          step={traceStep(guides)}
+          step={step}
           lines={guides.lines}
           pen={pen}
           size={guides.size}
@@ -110,10 +114,33 @@ function Tray({ pen, onPen, guides, onGuides }: { pen: Pen; onPen: (p: Pen) => v
         toggle(guides.size === s, s === 'big' ? 'Big' : s === 'medium' ? 'Medium' : 'Small', () => onGuides({ ...guides, size: s })),
       )}
       <span className="w-px h-8 bg-slate-200" />
-      {toggle(guides.path === 'solid', 'Path', () => onGuides({ ...guides, path: 'solid' }))}
-      {toggle(guides.path === 'dots', 'Dots', () => onGuides({ ...guides, path: 'dots' }))}
       {toggle(guides.arrows, 'Arrows', () => onGuides({ ...guides, arrows: !guides.arrows }))}
       {toggle(guides.lines, 'Lines', () => onGuides({ ...guides, lines: !guides.lines }))}
+    </div>
+  )
+}
+
+/** The sparsity slider: from the solid track (left) to start dots only (right). Moving it keeps what's traced. */
+function Sparsity({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  return (
+    <div className="mx-auto w-full max-w-xl px-4 flex items-center gap-3">
+      <svg viewBox="0 0 40 16" className="w-10 h-4 shrink-0" aria-hidden>
+        <line x1={4} y1={8} x2={36} y2={8} stroke="#94A3B8" strokeWidth={6} strokeLinecap="round" />
+      </svg>
+      <input
+        type="range"
+        min={0}
+        max={SPARSITY.length - 1}
+        step={1}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        aria-label="How many dots"
+        className="flex-1 h-10 accent-sky-500 cursor-pointer"
+      />
+      <svg viewBox="0 0 40 16" className="w-10 h-4 shrink-0" aria-hidden>
+        <circle cx={5} cy={8} r={3.5} fill="#16A34A" />
+        <circle cx={35} cy={8} r={2.5} fill="#94A3B8" />
+      </svg>
     </div>
   )
 }
