@@ -4,7 +4,7 @@
  * they are ones he can read.
  */
 import { LEVELS, SENTENCES } from '@renderblocks/words/words'
-import { NUMBER_START } from './fade'
+import { NUMBER_START, PRACTICE_START } from './fade'
 
 export type Kind = 'number' | 'upper' | 'lower' | 'word' | 'sentence' | 'shape'
 
@@ -138,9 +138,10 @@ export function practicePool(s: PracticeSettings, myWords: string[]): Item[] {
   ]
 }
 
-/** Where an item starts on the dial: numbers at start dots, everything else at the solid path. */
-export const startLevel = (item: Item) => (item.kind === 'number' ? NUMBER_START : 0)
-export const levelOf = (item: Item, progress: ProgressMap) => progress[item.key]?.level ?? startLevel(item)
+/** Where an item starts on the dial: numbers at start dots, letters and words at the dotted path. */
+export const startLevel = (item: Item) => (item.kind === 'number' ? NUMBER_START : PRACTICE_START)
+/** An item's step in Practice (never the solid track, even if saved there before v1.60.5). */
+export const levelOf = (item: Item, progress: ProgressMap) => Math.max(PRACTICE_START, progress[item.key]?.level ?? startLevel(item))
 
 /**
  * A round: the items least recently practised, taken in turn from each kind

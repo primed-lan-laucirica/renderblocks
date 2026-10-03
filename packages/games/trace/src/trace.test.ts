@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { arcPoint, GLYPHS, layout, sample, SHAPES, type Seg } from './glyphs'
-import { dots, FADE, goodEnough, liftTrace, moveTrace, nextLevel, NUMBER_START, overlap, startTrace, TOP, traced } from './fade'
-import { DEFAULT_PRACTICE, pickRound, practicePool, textItem, traceGroups } from './items'
+import { dots, FADE, goodEnough, liftTrace, moveTrace, nextLevel, NUMBER_START, overlap, PRACTICE_START, startTrace, TOP, traced } from './fade'
+import { DEFAULT_PRACTICE, levelOf, pickRound, practicePool, startLevel, textItem, traceGroups } from './items'
 
 const start = (s: Seg) => (s.k === 'L' ? s.a : arcPoint(s, s.from))
 const end = (s: Seg) => (s.k === 'L' ? s.b : arcPoint(s, s.to))
@@ -157,6 +157,12 @@ describe('items', () => {
     expect(textItem('Q').kind).toBe('upper')
     expect(textItem('cat').kind).toBe('word')
     expect(textItem('I see a cat').kind).toBe('sentence')
+  })
+  it('never shows the solid track in Practice: letters start at dots, numbers at start dots', () => {
+    expect(FADE[PRACTICE_START].phase).toBe('dots')
+    expect(startLevel(textItem('cat'))).toBe(PRACTICE_START)
+    expect(startLevel(textItem('7'))).toBe(NUMBER_START)
+    expect(levelOf(textItem('cat'), { 'word:cat': { level: 0, seen: 0 } })).toBe(PRACTICE_START)
   })
   it('picks a mixed round with no repeats, least recently practised first', () => {
     const pool = practicePool(DEFAULT_PRACTICE, [])

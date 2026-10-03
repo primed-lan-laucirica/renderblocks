@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FADE, TOP } from './fade'
+import { FADE, PRACTICE_START, TOP } from './fade'
 import { levelOf, practicePool, type PracticeSettings, type ProgressMap } from './items'
 import { LEVELS } from '@renderblocks/words/words'
 
@@ -102,7 +102,7 @@ export function Parent({ settings, onSettings, myWords, onMyWords, progress, onL
             </button>
           </div>
           <p className="text-sm text-slate-500">
-            {TOP + 1} steps: path with arrows, path, thinning dots, start dots, flashes getting shorter and rarer, then a blank page. A clean try moves an item one step on; a struggle moves it back one.
+            {TOP + 1 - PRACTICE_START} steps: thinning dots, start dots, flashes getting shorter and rarer, then a blank page. A clean try moves an item one step on; a struggle moves it back one.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
             {pool.map((item) => {
@@ -110,12 +110,12 @@ export function Parent({ settings, onSettings, myWords, onMyWords, progress, onL
               return (
                 <div key={item.key} className="flex items-center gap-2 bg-white rounded-xl shadow px-2 py-1">
                   <span className="w-20 font-black text-lg truncate">{item.text}</span>
-                  <button type="button" className="w-9 h-9 rounded-lg bg-slate-100" onClick={() => onLevel(item.key, Math.max(0, lv - 1))} aria-label={`More help for ${item.text}`}>
+                  <button type="button" className="w-9 h-9 rounded-lg bg-slate-100" onClick={() => onLevel(item.key, Math.max(PRACTICE_START, lv - 1))} aria-label={`More help for ${item.text}`}>
                     −
                   </button>
                   <div className="flex-1 flex flex-col gap-0.5">
                     <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
-                      <div className="h-full bg-sky-400" style={{ width: `${((lv + 1) / (TOP + 1)) * 100}%` }} />
+                      <div className="h-full bg-sky-400" style={{ width: `${((lv - PRACTICE_START + 1) / (TOP - PRACTICE_START + 1)) * 100}%` }} />
                     </div>
                     <span className="text-xs text-slate-500 font-bold">{stepName(lv)}</span>
                   </div>

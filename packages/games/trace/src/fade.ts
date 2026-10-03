@@ -46,6 +46,8 @@ export const FADE: FadeStep[] = [
 ]
 
 export const TOP = FADE.length - 1
+/** Practice starts where Trace leaves off: the dotted path. The solid track is Trace's, never Practice's. */
+export const PRACTICE_START = FADE.findIndex((s) => s.phase === 'dots')
 /** Numbers start at start dots: he already writes them freehand. */
 export const NUMBER_START = FADE.findIndex((s) => s.startsOnly)
 /** Seconds of stillness before a stall flash, and before a page without a path is looked at. */

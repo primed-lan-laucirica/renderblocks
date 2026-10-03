@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { wrapFor } from './sheet'
 import { Page, type Done, type Pen } from './Page'
 import { effect } from './audio'
-import { FADE, nextLevel, TOP } from './fade'
+import { FADE, nextLevel, PRACTICE_START, TOP } from './fade'
 import { levelOf, startLevel, type Item, type ProgressMap } from './items'
 
 interface Props {
@@ -33,7 +33,10 @@ export function PracticeScreen({ round, progress, onProgress, pen, onFinished, o
 
   useEffect(() => () => window.clearTimeout(timer.current), [])
 
+  const handled = useRef(-1)
   const onDone = (d: Done) => {
+    if (handled.current === index) return
+    handled.current = index
     const from = level[index]
     const to = nextLevel(from, d.result, Math.min(from, startLevel(item)))
     onProgress(item.key, to)
@@ -79,8 +82,8 @@ export function PracticeScreen({ round, progress, onProgress, pen, onFinished, o
         <div className="text-2xl font-black text-amber-500 w-16 text-right">★ {stars}</div>
       </div>
       {/* How far this item has faded, for a grown-up glancing over. */}
-      <div className="mx-auto w-40 h-1.5 rounded-full bg-slate-200 overflow-hidden" aria-label={`Fade step ${level[index] + 1} of ${TOP + 1}`}>
-        <div className="h-full bg-sky-400" style={{ width: `${((level[index] + 1) / (TOP + 1)) * 100}%` }} />
+      <div className="mx-auto w-40 h-1.5 rounded-full bg-slate-200 overflow-hidden" aria-label={`Fade step ${level[index] - PRACTICE_START + 1} of ${TOP - PRACTICE_START + 1}`}>
+        <div className="h-full bg-sky-400" style={{ width: `${((level[index] - PRACTICE_START + 1) / (TOP - PRACTICE_START + 1)) * 100}%` }} />
       </div>
       <Page key={`${item.key}-${index}`} item={item} wrap={wrap} step={step} lines pen={pen} size="big" onDone={onDone} />
       {star && (

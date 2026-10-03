@@ -154,7 +154,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone }: PageProps) 
   const [show, setShow] = useState<number | null>(null)
   const [replay, setReplay] = useState<number | null>(null)
   // Bookkeeping for the handlers (never read while rendering).
-  const live = useRef({ trace: startTrace(), ink: [] as Ink[], pointer: -1, t0: 0, moves: 0, off: 0, showMe: false, timers: [] as number[], busy: false, ticked: 0 })
+  const live = useRef({ trace: startTrace(), ink: [] as Ink[], pointer: -1, t0: 0, moves: 0, off: 0, showMe: false, timers: [] as number[], busy: false, ticked: 0, done: false })
 
   const finished = done !== null
   const locked = step.locked
@@ -184,6 +184,9 @@ export function Page({ item, wrap, step, lines, pen, size, onDone }: PageProps) 
   }
 
   const finish = (result: Done['result']) => {
+    // A page finishes once: the last stroke, the finger lifting and a stray move can all arrive before the screen updates.
+    if (live.current.done) return
+    live.current.done = true
     clearTimers()
     const d = { result, ink: live.current.ink, wrap }
     live.current.busy = true
@@ -257,7 +260,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone }: PageProps) 
   const onDown = (e: React.PointerEvent) => {
     const l = live.current
     if (e.pointerType === 'pen') stylusSeen = true
-    if ((stylusSeen && e.pointerType === 'touch') || l.pointer !== -1 || finished || show !== null) return
+    if ((stylusSeen && e.pointerType === 'touch') || l.pointer !== -1 || l.done || show !== null) return
     const u = toUnits(e)
     if (!u) return
     l.pointer = e.pointerId
@@ -277,7 +280,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone }: PageProps) 
 
   const onMove = (e: React.PointerEvent) => {
     const l = live.current
-    if (e.pointerId !== l.pointer) return
+    if (e.pointerId !== l.pointer || l.done) return
     const u = toUnits(e)
     if (!u) return
     if (!locked) return addPoint(u.q, false)
@@ -298,7 +301,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone }: PageProps) 
     const l = live.current
     if (e.pointerId !== l.pointer) return
     l.pointer = -1
-    if (finished) return
+    if (l.done) return
     if (locked) {
       const t = liftTrace(l.trace, lay.strokes)
       dial(l.trace, t)
@@ -392,7 +395,7 @@ export function Page({ item, wrap, step, lines, pen, size, onDone }: PageProps) 
           {pathShown && <ModelPath lay={lay} color="#D6DEE8" width={0.36} />}
           {dotsShown && <Dots lay={lay} step={step} />}
                     {/* Flash: the whole pattern, for a moment. */}
-          {step.show !== undefined && <ModelPath lay={lay} color="#64748B" width={0.2} opacity={flash ? 0.85 : 0} />}
+          <ModelPath lay={lay} color="#64748B" width={0.2} opacity={flash ? 0.85 : 0} />
           {/* Where to carry on: the arrow, or (arrows off) a ring. */}
           {!step.arrows && resume && show === null && (
             <circle cx={resume.x} cy={resume.y} r={0.14} fill="none" stroke="#16A34A" strokeWidth={0.05}>
