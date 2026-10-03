@@ -1,12 +1,11 @@
 {
-  "name": "@renderblocks/words",
+  "name": "@renderblocks/trace",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./module": "./src/module.ts",
-    "./words": "./src/words.ts"
+    "./module": "./src/module.ts"
   },
   "scripts": {
     "test": "vitest run"
@@ -14,7 +13,8 @@
   "dependencies": {
     "@renderblocks/kernel": "workspace:*",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "@renderblocks/words": "workspace:*"
   },
   "devDependencies": {
     "vitest": "^5.0.1"

@@ -131,6 +131,9 @@ importers:
       '@renderblocks/times':
         specifier: workspace:*
         version: link:../games/times
+      '@renderblocks/trace':
+        specifier: workspace:*
+        version: link:../games/trace
       '@renderblocks/words':
         specifier: workspace:*
         version: link:../games/words
@@ -428,6 +431,25 @@ importers:
       react-dom:
         specifier: ^19.2.0
         version: 19.2.7(react@19.2.7)
+
+  packages/games/trace:
+    dependencies:
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
+      '@renderblocks/words':
+        specifier: workspace:*
+        version: link:../words
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@types/node@24.13.2)(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0))
 
   packages/games/words:
     dependencies:
@@ -5198,6 +5220,10 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.4
 
+  fdir@6.5.0(picomatch@4.0.7):
+    optionalDependencies:
+      picomatch: 4.0.7
+
   file-entry-cache@8.0.0:
     dependencies:
       flat-cache: 4.0.1
@@ -6127,8 +6153,8 @@ snapshots:
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
 
   tr46@1.0.1:
     dependencies:
