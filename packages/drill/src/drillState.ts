@@ -9,6 +9,13 @@
 
 export const REQUEUE_GAP = 3
 
+/**
+ * The mixed run (the default): random facts from every key. Its queue holds
+ * fact ids across all keys (keyIndex × steps + stepIndex) instead of step
+ * indices within one key.
+ */
+export const MIX = -1
+
 export interface DrillRunState {
   key: number
   queue: number[]
@@ -21,6 +28,21 @@ export function freshQueue(steps: number): number[] {
 
 export function freshRun(key: number, steps: number): DrillRunState {
   return { key, queue: freshQueue(steps), missed: [] }
+}
+
+/** A mixed run of `length` different facts drawn at random from every key. */
+export function freshMixRun(keyCount: number, steps: number, length = steps, rand = Math.random): DrillRunState {
+  const ids = Array.from({ length: keyCount * steps }, (_, i) => i)
+  for (let i = ids.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1))
+    ;[ids[i], ids[j]] = [ids[j], ids[i]]
+  }
+  return { key: MIX, queue: ids.slice(0, Math.min(length, ids.length)), missed: [] }
+}
+
+/** Which key and step a queued fact is: a step index within the key, or (mixed) an id across all keys. */
+export function factOf(run: DrillRunState, id: number, keys: number[], steps: number): { key: number; step: number } {
+  return run.key === MIX ? { key: keys[Math.floor(id / steps)], step: id % steps } : { key: run.key, step: id }
 }
 
 /**
@@ -73,11 +95,17 @@ export function loadDrillState(
     const saved = JSON.parse(raw) as Record<string, unknown>
     const stars: Record<string, boolean> = {}
     if (saved.stars && typeof saved.stars === 'object') {
-      for (const k of keys) {
+      for (const k of [...keys, MIX]) {
         if ((saved.stars as Record<string, unknown>)[String(k)] === true) {
           stars[String(k)] = true
         }
       }
+    }
+
+    if (saved.version === 2 && saved.key === MIX) {
+      const queue = sanitizeIndices(saved.queue, keys.length * steps)
+      if (queue.length === 0) return { run: freshMixRun(keys.length, steps), stars }
+      return { run: { key: MIX, queue, missed: sanitizeIndices(saved.missed, keys.length * steps) }, stars }
     }
 
     if (saved.version === 2) {

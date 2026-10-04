@@ -8,13 +8,21 @@ import { useDarkMode } from './useDarkMode'
 import { FactReveal, type RevealKind } from './FactReveal'
 import {
   advanceQueue,
+  factOf,
+  freshMixRun,
   freshRun,
   loadDrillState,
+  MIX,
   saveDrillState,
   type LoadedDrillState,
 } from './drillState'
 
 const STORAGE_KEY = 'progress'
+/** Answer by picking one of three choices, or by typing it on a number pad. */
+const INPUT_KEY = 'input'
+type InputMode = 'choose' | 'type'
+/** Longest typed answer (144 is the biggest). */
+const MAX_DIGITS = 3
 
 export interface DrillProblem {
   a: number
@@ -96,9 +104,15 @@ export function DrillGame({ services, config }: DrillGameProps) {
   const { isDark, toggle: toggleDarkMode } = useDarkMode()
   const effects = useMemo(() => createEffectPlayer(config.audioBase), [config.audioBase])
 
-  const [state, setState] = useState<LoadedDrillState>(() =>
-    loadDrillState(services.storage.get(STORAGE_KEY), config.keys, config.stepsPerKey),
-  )
+  // The app opens on Mix: random facts from every key. A mixed run in progress
+  // carries on; a single-key run from last time gives way to a fresh mix.
+  const [state, setState] = useState<LoadedDrillState>(() => {
+    const loaded = loadDrillState(services.storage.get(STORAGE_KEY), config.keys, config.stepsPerKey)
+    return loaded.run.key === MIX ? loaded : { ...loaded, run: freshMixRun(config.keys.length, config.stepsPerKey) }
+  })
+  const [inputMode, setInputMode] = useState<InputMode>(() => (services.storage.get(INPUT_KEY) === 'type' ? 'type' : 'choose'))
+  // Digits typed on the number pad so far.
+  const [typed, setTyped] = useState('')
   const { run, stars } = state
   // Bumped after each wrong answer: regenerates distractor values AND order,
   // so neither remembered positions nor remembered wrong values help — the
@@ -128,9 +142,13 @@ export function DrillGame({ services, config }: DrillGameProps) {
   useEffect(() => {
     services.storage.set(STORAGE_KEY, saveDrillState(run, stars))
   }, [services, run, stars])
+  useEffect(() => services.storage.set(INPUT_KEY, inputMode), [services, inputMode])
 
+  const mixed = run.key === MIX
   const factIndex = run.queue[0]
-  const problem = config.operands(run.key, factIndex)
+  // The current fact's own key: the chosen one, or (mixed) whichever key it came from.
+  const fact = factOf(run, factIndex, config.keys, config.stepsPerKey)
+  const problem = config.operands(fact.key, fact.step)
 
   // Read the problem aloud when it appears, ending on "equals" — that is the
   // cue to solve. The answer is spoken separately, as just the number.
@@ -148,13 +166,16 @@ export function DrillGame({ services, config }: DrillGameProps) {
   }, [run.key, factIndex, encounter])
 
   const choices = useMemo(
-    () => makeChoices(config, run.key, factIndex),
+    () => makeChoices(config, fact.key, fact.step),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- attempt redeals on wrong answers; encounter freshens re-queued facts
     [config, run.key, factIndex, attempt, encounter],
   )
 
   const nextKeyOf = (key: number) =>
-    config.keys[(config.keys.indexOf(key) + 1) % config.keys.length]
+    key === MIX ? MIX : config.keys[(config.keys.indexOf(key) + 1) % config.keys.length]
+  const freshRunOf = (key: number) => (key === MIX ? freshMixRun(config.keys.length, config.stepsPerKey) : freshRun(key, config.stepsPerKey))
+  const completeMessage = (key: number) => (key === MIX ? 'Mixed run done!' : config.completeMessage(key))
+  const nextMessage = (key: number) => (key === MIX ? 'Here comes another mix…' : config.nextMessage(key))
 
   // Wrong answer: shake, then deal a fresh set of choices — all greyed out.
   useEffect(() => {
@@ -163,6 +184,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
       setShakeValue(null)
       setAttempt((a) => a + 1)
       setEnabledCount(0)
+      setTyped('')
     }, 500)
     return () => window.clearTimeout(timer)
   }, [shakeValue])
@@ -204,7 +226,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
       effects.play('cheer', 0.8)
       setCelebrating({ earnedStar, completedKey })
       setState((s) => ({
-        run: freshRun(nextKeyOf(completedKey), config.stepsPerKey),
+        run: freshRunOf(nextKeyOf(completedKey)),
         stars: earnedStar ? { ...s.stars, [String(completedKey)]: true } : s.stars,
       }))
     } else {
@@ -225,10 +247,9 @@ export function DrillGame({ services, config }: DrillGameProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot the state at solve time
   }, [solved])
 
-  const pick = (value: number, index: number) => {
+  const pick = (value: number) => {
     // No picks until the reactivation sequence has fully played out — lit
-    // buttons are display-only until all three are back.
-    void index
+    // buttons (and the number pad) are display-only until all three are back.
     if (celebrating || solved || shakeValue !== null || enabledCount < 3) return
     if (value === problem.answer) {
       setAttempt(0)
@@ -269,7 +290,19 @@ export function DrillGame({ services, config }: DrillGameProps) {
     setStreak(0)
     setBanner(null)
     setEnabledCount(3)
-    setState((s) => ({ ...s, run: freshRun(next, config.stepsPerKey) }))
+    setTyped('')
+    setState((s) => ({ ...s, run: freshRunOf(next) }))
+  }
+
+  /** A number pad key: a digit, rub out, or check the answer. */
+  const press = (k: string) => {
+    if (celebrating || solved || shakeValue !== null || enabledCount < 3) return
+    if (k === '⌫') return setTyped((t) => t.slice(0, -1))
+    if (k === '✓') {
+      if (typed) pick(Number(typed))
+      return
+    }
+    setTyped((t) => (t.length < MAX_DIGITS ? (t === '0' ? k : t + k) : t))
   }
 
   const factsDone = config.stepsPerKey - run.queue.length
@@ -279,7 +312,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
       className={`min-h-dvh ${isDark ? palette.containerDark : palette.container} flex flex-col items-center p-4 gap-4 select-none`}
     >
       {/* Top bar: key selector + progress dots + dark mode toggle */}
-      <div className="w-full max-w-xl flex items-center justify-between gap-3">
+      <div className="w-full max-w-3xl flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <label
           className={`flex items-center gap-2 font-extrabold text-lg ${isDark ? 'text-slate-300' : 'text-slate-600'}`}
         >
@@ -289,6 +322,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
             onChange={(e) => selectKey(Number(e.target.value))}
             className={`text-2xl font-extrabold rounded-2xl px-4 py-2 shadow-playful border-2 ${isDark ? palette.selectDark : palette.select}`}
           >
+            <option value={MIX}>Mix 🔀{stars[String(MIX)] ? ' ⭐' : ''}</option>
             {config.keys.map((k) => (
               <option key={k} value={k}>
                 {k}
@@ -297,7 +331,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
             ))}
           </select>
         </label>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-3">
           <div
             className="flex gap-1.5"
             aria-label={`${factsDone} of ${config.stepsPerKey} facts done`}
@@ -306,15 +340,32 @@ export function DrillGame({ services, config }: DrillGameProps) {
               <div
                 key={i}
                 className={`w-3 h-3 rounded-full ${
-                  factIndex === i
+                  (mixed ? i === factsDone : factIndex === i)
                     ? 'bg-amber-400'
-                    : !run.queue.includes(i)
+                    : (mixed ? i < factsDone : !run.queue.includes(i))
                       ? palette.dotDone
                       : isDark
                         ? 'bg-slate-600'
                         : 'bg-slate-300'
                 }`}
               />
+            ))}
+          </div>
+          <div className={`flex rounded-2xl p-1 ${isDark ? 'bg-slate-700' : 'bg-white/70'} shadow-playful`} role="group" aria-label="How to answer">
+            {(['choose', 'type'] as InputMode[]).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => {
+                  setInputMode(m)
+                  setTyped('')
+                }}
+                className={`px-3 py-1.5 rounded-xl text-sm font-extrabold transition-colors ${
+                  inputMode === m ? (isDark ? palette.buttonDark : palette.button) : isDark ? 'text-slate-400' : 'text-slate-500'
+                }`}
+              >
+                {m === 'choose' ? 'Choose' : '🔢 Type'}
+              </button>
             ))}
           </div>
           <button
@@ -355,7 +406,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -24, scale: 0.9 }}
               transition={{ type: 'spring', bounce: 0.4, duration: 0.5 }}
-              className={`text-7xl font-extrabold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-700'}`}
+              className={`text-[clamp(2.75rem,11vw,4.5rem)] whitespace-nowrap font-extrabold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-700'}`}
             >
               {problem.a} {config.symbol} {problem.b} ={' '}
               {solved ? (
@@ -367,6 +418,8 @@ export function DrillGame({ services, config }: DrillGameProps) {
                 >
                   {problem.answer}
                 </motion.span>
+              ) : inputMode === 'type' && typed ? (
+                <span className={`${shakeValue !== null ? 'drill-shake' : ''} inline-block underline decoration-4 underline-offset-8 ${isDark ? palette.accentDark : palette.accent}`}>{typed}</span>
               ) : (
                 <span className={isDark ? palette.accentDark : palette.accent}>?</span>
               )}
@@ -443,7 +496,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
         )}
 
         {/* Choices — swapped for the cube reveal during the solved pause */}
-        <div className="h-40 flex items-center justify-center w-full">
+        <div className={`${inputMode === 'type' && !solved ? 'min-h-40' : 'h-40'} flex items-center justify-center w-full`}>
           {solved ? (
             <FactReveal
               kind={config.reveal}
@@ -453,6 +506,39 @@ export function DrillGame({ services, config }: DrillGameProps) {
               cubeColor={palette.cube}
               animate
             />
+          ) : inputMode === 'type' ? (
+            <div className="grid grid-cols-3 gap-3 w-full max-w-xs">
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', '✓'].map((k) => {
+                const enabled = enabledCount >= 3 && (k !== '✓' || typed.length > 0)
+                return (
+                  <motion.button
+                    key={k}
+                    type="button"
+                    onPointerDown={(e) => {
+                      e.stopPropagation()
+                      press(k)
+                    }}
+                    style={{ touchAction: 'manipulation' }}
+                    aria-label={k === '⌫' ? 'Rub out' : k === '✓' ? 'Check' : k}
+                    animate={{ opacity: enabled ? 1 : 0.4 }}
+                    whileTap={enabled ? { scale: 0.9 } : undefined}
+                    className={`h-16 rounded-2xl text-4xl font-extrabold shadow-playful border-4 ${
+                      enabled
+                        ? k === '✓'
+                          ? 'bg-emerald-500 text-white border-emerald-600'
+                          : isDark
+                            ? palette.buttonDark
+                            : palette.button
+                        : isDark
+                          ? 'bg-slate-700 text-slate-500 border-slate-600'
+                          : 'bg-slate-200 text-slate-400 border-slate-300'
+                    }`}
+                  >
+                    {k}
+                  </motion.button>
+                )
+              })}
+            </div>
           ) : (
             <div className="flex gap-5 w-full justify-center">
               {choices.map((value, index) => {
@@ -468,7 +554,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
                     // answering tap can't bubble to the container's skip handler.
                     onPointerDown={(e) => {
                       e.stopPropagation()
-                      pick(value, index)
+                      pick(value)
                     }}
                     style={{ touchAction: 'manipulation' }}
                     animate={{ scale: enabled ? 1 : 0.9, opacity: enabled ? 1 : 0.35 }}
@@ -511,7 +597,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
               {celebrating.earnedStar ? '⭐' : '🎉'}
             </motion.div>
             <div className="text-5xl font-extrabold text-white drop-shadow text-center px-6">
-              {config.completeMessage(celebrating.completedKey)}
+              {completeMessage(celebrating.completedKey)}
             </div>
             {celebrating.earnedStar && (
               <div className="text-3xl font-extrabold text-yellow-300 drop-shadow">
@@ -519,7 +605,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
               </div>
             )}
             <div className={`text-2xl font-bold ${palette.overlaySub}`}>
-              {config.nextMessage(nextKeyOf(celebrating.completedKey))}
+              {nextMessage(nextKeyOf(celebrating.completedKey))}
             </div>
           </motion.div>
         )}
