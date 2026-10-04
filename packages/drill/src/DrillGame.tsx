@@ -18,8 +18,12 @@ import {
 } from './drillState'
 
 const STORAGE_KEY = 'progress'
-/** Answer by picking one of three choices, or by typing it on a number pad. */
-const INPUT_KEY = 'input'
+/**
+ * Answer by typing it on a number pad (the default) or by picking one of
+ * three choices. Saved only when the toggle is tapped. ('input' was v1.61.0's
+ * key, which saved Choose on every first open; it's no longer read.)
+ */
+const INPUT_KEY = 'answer'
 type InputMode = 'choose' | 'type'
 /** Longest typed answer (144 is the biggest). */
 const MAX_DIGITS = 3
@@ -110,7 +114,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
     const loaded = loadDrillState(services.storage.get(STORAGE_KEY), config.keys, config.stepsPerKey)
     return loaded.run.key === MIX ? loaded : { ...loaded, run: freshMixRun(config.keys.length, config.stepsPerKey) }
   })
-  const [inputMode, setInputMode] = useState<InputMode>(() => (services.storage.get(INPUT_KEY) === 'type' ? 'type' : 'choose'))
+  const [inputMode, setInputMode] = useState<InputMode>(() => (services.storage.get(INPUT_KEY) === 'choose' ? 'choose' : 'type'))
   // Digits typed on the number pad so far.
   const [typed, setTyped] = useState('')
   const { run, stars } = state
@@ -142,7 +146,6 @@ export function DrillGame({ services, config }: DrillGameProps) {
   useEffect(() => {
     services.storage.set(STORAGE_KEY, saveDrillState(run, stars))
   }, [services, run, stars])
-  useEffect(() => services.storage.set(INPUT_KEY, inputMode), [services, inputMode])
 
   const mixed = run.key === MIX
   const factIndex = run.queue[0]
@@ -360,6 +363,7 @@ export function DrillGame({ services, config }: DrillGameProps) {
                 type="button"
                 onClick={() => {
                   setInputMode(m)
+                  services.storage.set(INPUT_KEY, m)
                   setTyped('')
                 }}
                 className={`px-3 py-1.5 rounded-xl text-sm font-extrabold transition-colors ${
