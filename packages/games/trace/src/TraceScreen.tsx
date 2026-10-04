@@ -114,25 +114,19 @@ function Tray({ pen, onPen, guides, onGuides }: { pen: Pen; onPen: (p: Pen) => v
         toggle(guides.size === s, s === 'big' ? 'Big' : s === 'medium' ? 'Medium' : 'Small', () => onGuides({ ...guides, size: s })),
       )}
       <span className="w-px h-8 bg-slate-200" />
-      {/* Shortcuts for the sparsity slider: the solid path, or dots (densest, unless already sparser). */}
-      {toggle(guides.sparsity === 0, 'Path', () => onGuides({ ...guides, sparsity: 0 }))}
-      {toggle(guides.sparsity > 0, 'Dots', () => onGuides({ ...guides, sparsity: Math.max(1, guides.sparsity) }))}
-            {toggle(guides.arrows, 'Arrows', () => onGuides({ ...guides, arrows: !guides.arrows }))}
+      {toggle(guides.arrows, 'Arrows', () => onGuides({ ...guides, arrows: !guides.arrows }))}
       {toggle(guides.lines, 'Lines', () => onGuides({ ...guides, lines: !guides.lines }))}
     </div>
   )
 }
 
-/** The sparsity slider: from the solid path (left) to start dots only (right). Moving it keeps what's traced. */
+/** The sparsity slider: from the solid track (left) to start dots only (right). Moving it keeps what's traced. */
 function Sparsity({ value, onChange }: { value: number; onChange: (v: number) => void }) {
   return (
-    <div className="mx-auto w-full max-w-xl px-3 flex items-center gap-2">
-      <button type="button" onClick={() => onChange(0)} className={`shrink-0 flex items-center gap-1.5 text-sm font-black ${value === 0 ? 'text-sky-600' : 'text-slate-400'}`}>
-        <svg viewBox="0 0 24 12" className="w-6 h-3" aria-hidden>
-          <line x1={3} y1={6} x2={21} y2={6} stroke="currentColor" strokeWidth={5} strokeLinecap="round" />
-        </svg>
-        Path
-      </button>
+    <div className="mx-auto w-full max-w-xl px-4 flex items-center gap-3">
+      <svg viewBox="0 0 40 16" className="w-10 h-4 shrink-0" aria-hidden>
+        <line x1={4} y1={8} x2={36} y2={8} stroke="#94A3B8" strokeWidth={6} strokeLinecap="round" />
+      </svg>
       <input
         type="range"
         min={0}
@@ -140,17 +134,13 @@ function Sparsity({ value, onChange }: { value: number; onChange: (v: number) =>
         step={1}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        aria-label="Path to dots"
-        className="flex-1 min-w-0 h-10 accent-sky-500 cursor-pointer"
+        aria-label="How many dots"
+        className="flex-1 h-10 accent-sky-500 cursor-pointer"
       />
-      <button type="button" onClick={() => onChange(Math.max(1, value))} className={`shrink-0 flex items-center gap-1.5 text-sm font-black ${value > 0 ? 'text-sky-600' : 'text-slate-400'}`}>
-        Dots
-        <svg viewBox="0 0 24 12" className="w-6 h-3" aria-hidden>
-          <circle cx={4} cy={6} r={2.5} fill="currentColor" />
-          <circle cx={12} cy={6} r={2.5} fill="currentColor" />
-          <circle cx={20} cy={6} r={2.5} fill="currentColor" />
-        </svg>
-      </button>
+      <svg viewBox="0 0 40 16" className="w-10 h-4 shrink-0" aria-hidden>
+        <circle cx={5} cy={8} r={3.5} fill="#16A34A" />
+        <circle cx={35} cy={8} r={2.5} fill="#94A3B8" />
+      </svg>
     </div>
   )
 }
