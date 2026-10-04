@@ -14,6 +14,7 @@ import { lavaModule } from '@renderblocks/lava/module'
 import { wordsModule } from '@renderblocks/words/module'
 import { magcubesModule } from '@renderblocks/magcubes/module'
 import { traceModule } from '@renderblocks/trace/module'
+import { skateModule } from '@renderblocks/skate/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
 
 export const games: GameModule[] = [
@@ -33,6 +34,7 @@ export const games: GameModule[] = [
   magcubesModule,
   base10Module,
   traceModule,
+  skateModule,
 ]
 
 export const upcoming: UpcomingGame[] = []
