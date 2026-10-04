@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
-import { crouched, F, pose, press, R, ready, release, step, type Skater } from './physics'
+import { COPE, drag, fling, grab, pose, R, ready, step, tapFlip, type Skater, type Vec } from './physics'
 import { drawFourteen, drawPipe, WORLD_W } from './draw'
 import { clack, effect, rolling, wake } from './sounds'
 
@@ -40,7 +40,9 @@ function App({ services }: GameProps) {
     const g = el.getContext('2d')
     if (!g) return
     let k: Skater = ready()
-    let fingers = 0
+    // The finger holding him (one at a time), and the camera's mapping (world blocks → screen px), kept from the last frame.
+    let holder = -1
+    let view = { scale: 1, ox: 0, oy: 0 }
     let acc = 0
     let last = performance.now()
     let top = R + 10 // the camera's top edge (world y), eased toward what's needed
@@ -48,21 +50,42 @@ function App({ services }: GameProps) {
     let sparks: Spark[] = []
     let raf = 0
     // For a test harness to read.
-    ;(window as unknown as { __skate?: () => Skater }).__skate = () => k
+    const harness = window as unknown as { __skate?: () => Skater; __skateToScreen?: (p: Vec) => Vec }
+    harness.__skate = () => k
+    harness.__skateToScreen = (p) => ({ x: view.ox + p.x * view.scale, y: view.oy - p.y * view.scale })
 
+    const toWorld = (e: PointerEvent): Vec => {
+      const r = el.getBoundingClientRect()
+      return { x: (e.clientX - r.left - view.ox) / view.scale, y: (view.oy - (e.clientY - r.top)) / view.scale }
+    }
+    const secs = () => performance.now() / 1000
+    // A touch on him grabs him; anywhere else while he's flying asks for a flip.
     const down = (e: PointerEvent) => {
       e.preventDefault()
       wake()
-      fingers++
-      const wasAir = k.mode === 'air'
-      k = press(k)
-      if (wasAir) effect('whoosh', 0.35)
+      if (holder !== -1) return
+      const held = grab(k, toWorld(e), secs())
+      if (held) {
+        k = held
+        holder = e.pointerId
+        el.setPointerCapture?.(e.pointerId)
+      } else if (k.mode === 'air') {
+        k = tapFlip(k)
+        effect('whoosh', 0.35)
+      }
     }
-    const up = () => {
-      fingers = Math.max(0, fingers - 1)
-      if (!fingers) k = release(k)
+    const move = (e: PointerEvent) => {
+      if (e.pointerId === holder) k = drag(k, toWorld(e), secs())
+    }
+    // Let go: flung with the finger's speed.
+    const up = (e: PointerEvent) => {
+      if (e.pointerId !== holder) return
+      holder = -1
+      k = fling(k)
+      if (Math.hypot(k.vel.x, k.vel.y) > 12 || Math.abs(k.v) > 12) effect('whoosh', 0.3)
     }
     el.addEventListener('pointerdown', down)
+    el.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
     window.addEventListener('pointercancel', up)
 
@@ -83,10 +106,11 @@ function App({ services }: GameProps) {
         acc -= DT
       }
       // Sounds and shouts for what just happened.
-      if (before === 'rolling' && k.mode === 'air') clack(0.6)
+      // The board on the coping, or landing.
+      if (before !== 'air' && before !== 'held' && k.mode === 'air') clack(0.4)
+      if (before === 'air' && (k.mode === 'pipe' || k.mode === 'deck')) clack(0.8)
       if (k.landed) {
         const l = k.landed
-        clack(1)
         const blocks = Math.max(1, Math.round(l.air))
         shout = {
           text: `${blocks} block${blocks === 1 ? '' : 's'} high!`,
@@ -105,7 +129,7 @@ function App({ services }: GameProps) {
         } else if (l.air >= 8) shout = { ...shout, text: 'Gnarly!', sub: `${blocks} blocks high` }
         k = { ...k, landed: null }
       }
-      rolling(k.mode === 'rolling' ? Math.abs(k.v) : 0)
+      rolling(k.mode === 'pipe' || k.mode === 'deck' ? Math.abs(k.v) : 0)
       sparks = sparks.filter((s) => s.until > now)
       for (const s of sparks) {
         s.vy -= 30 / 60
@@ -134,7 +158,8 @@ function App({ services }: GameProps) {
       g.fillStyle = sky
       g.fillRect(0, 0, w, h)
       // World → screen: centred, y up, the pipe's bottom near the screen's foot.
-      g.setTransform(scale * dpr, 0, 0, -scale * dpr, (w / 2) * dpr, (h - (0 - bottom) * scale) * dpr)
+      view = { scale, ox: w / 2, oy: h + bottom * scale }
+      g.setTransform(scale * dpr, 0, 0, -scale * dpr, view.ox * dpr, view.oy * dpr)
       drawPipe(g)
 
       // The best air so far: a dashed line over both copings.
@@ -142,7 +167,7 @@ function App({ services }: GameProps) {
         g.setLineDash([0.4, 0.3])
         g.lineWidth = 0.08
         g.strokeStyle = '#F59E0B'
-        for (const x of [-F / 2 - R, F / 2 + R]) {
+        for (const x of [-COPE, COPE]) {
           g.beginPath()
           g.moveTo(x - 2, R + k.best)
           g.lineTo(x + 2, R + k.best)
@@ -151,8 +176,8 @@ function App({ services }: GameProps) {
         g.setLineDash([])
       }
       // In the air: a ruler from the coping up to him, a tick per block.
-      if (k.mode === 'air') {
-        const x = k.side < 0 ? -F / 2 - R - 1.2 : F / 2 + R + 1.2
+      if (k.mode === 'air' && k.pos.y > R) {
+        const x = (k.pos.x < 0 ? -1 : 1) * (COPE + 1.2)
         const hgt = Math.max(0, k.pos.y - R)
         g.lineWidth = 0.1
         g.strokeStyle = '#0EA5E9'
@@ -172,7 +197,7 @@ function App({ services }: GameProps) {
       g.save()
       g.translate(p.at.x, p.at.y)
       g.rotate(p.angle)
-      drawFourteen(g, k, crouched(k), k.mode === 'rolling' ? Math.sign(k.v) : 0)
+      drawFourteen(g, k, k.mode === 'held', k.mode === 'pipe' || k.mode === 'deck' ? Math.sign(k.v) : 0)
       g.restore()
 
       for (const s of sparks) {
@@ -193,10 +218,10 @@ function App({ services }: GameProps) {
         g.fillText(`best ${Math.round(k.best)} block${Math.round(k.best) === 1 ? '' : 's'}`, w - 20, 16 + unit * 0.095)
       }
       g.textAlign = 'center'
-      if (k.mode === 'air') {
+      if (k.mode === 'air' && k.pos.y > R) {
         // The height in blocks, at the top of the ruler, on the outside of the coping.
         const hgt = Math.max(0, k.pos.y - R)
-        const rx = (k.side < 0 ? -F / 2 - R - 2.6 : F / 2 + R + 2.6) * scale + w / 2
+        const rx = (k.pos.x < 0 ? -1 : 1) * (COPE + 2.6) * scale + w / 2
         const ry = h - (R + hgt - bottom) * scale
         g.fillStyle = '#0369A1'
         g.font = `900 ${Math.round(unit * 0.07)}px Nunito, system-ui, sans-serif`
@@ -219,6 +244,7 @@ function App({ services }: GameProps) {
     return () => {
       cancelAnimationFrame(raf)
       el.removeEventListener('pointerdown', down)
+      el.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
       window.removeEventListener('pointercancel', up)
       rolling(0)
