@@ -215,6 +215,8 @@ export function DrillGame({ services, config }: DrillGameProps) {
     solvedRef.current = false
     setSolved(false)
     setBanner(null)
+    // The next problem starts with an empty answer.
+    setTyped('')
     const dirty = encounterDirty
     setEncounterDirty(false)
     setEncounter((e) => e + 1)
