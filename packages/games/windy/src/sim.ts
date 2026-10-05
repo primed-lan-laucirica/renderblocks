@@ -31,10 +31,10 @@ export interface Rider {
   cols: RAPIER.Collider[]
 }
 
-/** Collides with everything (the default). */
-const SOLID = 0xffffffff
-/** While held, a character flies through everything — buildings, ramps, everyone — so he can Superman-fly it anywhere. */
-const GHOST = 0x00020000
+/** Overlap tests check against everything. */
+const ALL = 0xffffffff
+/** Pulled toward the finger but not following it for this long (s): wedged, so it pops free. */
+const WEDGED_S = 0.65
 
 interface Built {
   pieces: Piece[]
@@ -47,6 +47,8 @@ interface Grab {
   rider: Rider
   local: { x: number; y: number }
   target: { x: number; y: number }
+  /** How long it has been pulled toward the finger without following (s). */
+  stuck: number
 }
 
 /**
@@ -226,38 +228,44 @@ export class Town {
     const a = r.rb.rotation()
     const dx = x - t.x
     const dy = y - t.y
-    this.grab = { rider: r, local: { x: dx * Math.cos(-a) - dy * Math.sin(-a), y: dx * Math.sin(-a) + dy * Math.cos(-a) }, target: { x, y } }
-    // Held: it flies through everything (and anything wedged comes straight out).
-    for (const col of r.cols) col.setCollisionGroups(GHOST)
+    this.grab = { rider: r, local: { x: dx * Math.cos(-a) - dy * Math.sin(-a), y: dx * Math.sin(-a) + dy * Math.cos(-a) }, target: { x, y }, stuck: 0 }
     r.rb.wakeUp()
   }
 
-  /** Is this character overlapping anything (a building, a ramp, someone), if moved up by dy? */
-  private overlapping(r: Rider, dy: number): boolean {
+  /** Would this character overlap anything (a building, a ramp, someone) if moved by (dx, dy)? */
+  private overlapping(r: Rider, dx: number, dy: number): boolean {
     let hit = false
     for (const col of r.cols) {
       const t = col.translation()
-      this.world.intersectionsWithShape({ x: t.x, y: t.y + dy }, col.rotation(), col.shape, () => {
+      this.world.intersectionsWithShape({ x: t.x + dx, y: t.y + dy }, col.rotation(), col.shape, () => {
         hit = true
         return false
-      }, undefined, SOLID, undefined, r.rb)
+      }, undefined, ALL, undefined, r.rb)
       if (hit) return true
     }
     return false
   }
 
-  /** Let go of a ghost: if it's inside something, lift it straight up until it's clear; then it's solid again. */
-  private land(r: Rider): void {
-    let dy = 0
-    while (dy < 60 && this.overlapping(r, dy)) dy += 0.5
-    if (dy > 0) {
+  /**
+   * Wedged (pulled toward the finger, not moving): pop straight up, just high
+   * enough that the way toward the finger is clear — over the building or ramp
+   * that has it stuck.
+   */
+  private unwedge(r: Rider, toward: number): void {
+    const dir = Math.sign(toward) || 1
+    for (let dy = 0.5; dy <= 40; dy += 0.5) {
+      if (this.overlapping(r, 0, dy) || this.overlapping(r, dir, dy)) continue
       const t = r.rb.translation()
       r.rb.setTranslation({ x: t.x, y: t.y + dy }, true)
-      const v = r.rb.linvel()
-      r.rb.setLinvel({ x: v.x, y: Math.max(0, v.y) }, true)
+      r.rb.setLinvel({ x: 0, y: 0 }, true)
+      r.rb.setAngvel(0, true)
+      this.popped++
+      return
     }
-    for (const col of r.cols) col.setCollisionGroups(SOLID)
   }
+
+  /** How many times a wedged character has popped free (for the screen's sound, and tests). */
+  popped = 0
 
   moveGrab(x: number, y: number): void {
     if (this.grab) this.grab.target = { x, y }
@@ -276,7 +284,6 @@ export class Town {
     const max = 38
     if (sp > max) rb.setLinvel({ x: (v.x * max) / sp, y: (v.y * max) / sp }, true)
     rb.setAngvel(Math.max(-12, Math.min(12, rb.angvel())), true)
-    this.land(g.rider)
     return g.rider
   }
 
@@ -359,6 +366,14 @@ export class Town {
     const a = rb.rotation()
     const p = { x: t.x + g.local.x * Math.cos(a) - g.local.y * Math.sin(a), y: t.y + g.local.x * Math.sin(a) + g.local.y * Math.cos(a) }
     const v = rb.velocityAtPoint(p)
+    // Wedged? Far from the finger, hardly moving, for a moment: pop it free.
+    const far = Math.hypot(g.target.x - p.x, g.target.y - p.y) > 2.5
+    const still = Math.hypot(rb.linvel().x, rb.linvel().y) < 1.5
+    g.stuck = far && still ? g.stuck + STEP : 0
+    if (g.stuck > WEDGED_S) {
+      g.stuck = 0
+      this.unwedge(g.rider, g.target.x - p.x)
+    }
     const w = 14
     const z = 0.8
     let ax = w * w * (g.target.x - p.x) - 2 * z * w * v.x

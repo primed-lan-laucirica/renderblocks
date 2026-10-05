@@ -249,8 +249,7 @@ function Play({ cast, storage, onLineup, onHome }: { cast: Character[]; storage:
     let holder = -1
     // The camera follows the last character touched (until then, the pack); the edge arrows can be tapped to switch.
     let focus: Rider | null = null
-    // Where the holding finger is on screen: re-aimed every frame, so holding still near an edge keeps him flying as the camera follows.
-    let finger: { x: number; y: number } | null = null
+    let popped = 0
     let arrows: { x0: number; y0: number; x1: number; y1: number; r: Rider }[] = []
 
     const toWorld = (e: PointerEvent) => {
@@ -272,7 +271,6 @@ function Play({ cast, storage, onLineup, onHome }: { cast: Character[]; storage:
       const r = town.riderAt(p.x, p.y)
       if (r) {
         focus = r
-        finger = { x: sx, y: sy }
         town.startGrab(r, p.x, p.y)
         holder = e.pointerId
         el.setPointerCapture?.(e.pointerId)
@@ -280,8 +278,6 @@ function Play({ cast, storage, onLineup, onHome }: { cast: Character[]; storage:
     }
     const move = (e: PointerEvent) => {
       if (town && e.pointerId === holder) {
-        const box = el.getBoundingClientRect()
-        finger = { x: e.clientX - box.left, y: e.clientY - box.top }
         const p = toWorld(e)
         town.moveGrab(p.x, p.y)
       }
@@ -289,7 +285,6 @@ function Play({ cast, storage, onLineup, onHome }: { cast: Character[]; storage:
     const up = (e: PointerEvent) => {
       if (!town || e.pointerId !== holder) return
       holder = -1
-      finger = null
       const r = town.endGrab()
       if (r && Math.hypot(r.rb.linvel().x, r.rb.linvel().y) > 8) whoosh(0.4)
     }
@@ -302,10 +297,14 @@ function Play({ cast, storage, onLineup, onHome }: { cast: Character[]; storage:
       if (!alive || !town) return
       acc = Math.min(0.1, acc + (now - last) / 1000)
       last = now
-      if (finger && holder !== -1) town.moveGrab((finger.x - view.ox) / view.scale, (view.oy - finger.y) / view.scale)
       while (acc >= STEP) {
         for (const s of town.step()) thud(s)
         acc -= STEP
+      }
+      // A wedged character popping free: a soft whoosh, so the jump reads as on purpose.
+      if (town.popped !== popped) {
+        popped = town.popped
+        whoosh(0.3)
       }
       const k = acc / STEP
       const pose = (r: Rider) => ({ x: r.prev.x + (r.cur.x - r.prev.x) * k, y: r.prev.y + (r.cur.y - r.prev.y) * k, a: r.prev.a + (r.cur.a - r.prev.a) * k })

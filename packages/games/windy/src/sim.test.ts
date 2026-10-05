@@ -39,20 +39,33 @@ describe('the town physics', () => {
     run(t, 3)
     t.riders.forEach((r, i) => expect(Math.abs(r.cur.x - before[i])).toBeLessThan(0.05))
   })
-  it('held, a character flies through buildings; let go inside one, it pops up on top', () => {
+  it('dragged into a wall and stuck there, a character pops up over it', () => {
     const t = crowd()
-    run(t, 0.2)
     t.setWind(false)
+    run(t, 0.5)
+    // The first building after the start rooftop.
+    const wall = [...t.built.values()].flatMap((b) => b.pieces).filter((p) => p.kind === 'building').sort((a, b) => a.x - b.x)[1] as { x: number; w: number; h: number }
     const r = t.riders[0]
+    // Put One on the street just before that building, and pull it into the wall, low down.
+    r.rb.setTranslation({ x: wall.x - 2, y: 0.05 }, true)
+    r.rb.setLinvel({ x: 0, y: 0 }, true)
+    run(t, 0.3)
     const p = r.rb.translation()
-    t.startGrab(r, p.x, p.y)
-    // Superman-fly it down into the rooftop's building (the roof is 6 high).
-    t.moveGrab(p.x + 2, 2)
-    run(t, 1.5)
-    expect(r.rb.translation().y).toBeLessThan(5)
-    t.endGrab()
-    expect(r.rb.translation().y).toBeGreaterThanOrEqual(5.99)
-    run(t, 1)
-    expect(r.cur.y).toBeGreaterThanOrEqual(5.9) // standing on the roof, not stuck inside
+    t.startGrab(r, p.x + 0.5, p.y + 0.5)
+    t.moveGrab(wall.x + 4, 1)
+    const before = t.popped
+    run(t, 2.5)
+    expect(t.popped).toBeGreaterThan(before)
+    expect(r.rb.translation().y).toBeGreaterThan(wall.h - 0.5) // up on (or over) the building
+  })
+  it("doesn't pop anyone who's just being flown about freely", () => {
+    const t = crowd()
+    t.setWind(false)
+    const r = t.riders[9]
+    const p = r.rb.translation()
+    t.startGrab(r, p.x, p.y + 1)
+    t.moveGrab(p.x, p.y + 12) // straight up into open sky
+    run(t, 2)
+    expect(t.popped).toBe(0)
   })
 })
