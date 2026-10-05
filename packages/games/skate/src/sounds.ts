@@ -76,3 +76,58 @@ export function effect(name: 'whoosh' | 'pop' | 'celebrate', volume = 0.6) {
   el.currentTime = 0
   void el.play().catch(() => {})
 }
+
+/** The background song: looped without a gap (Web Audio), quietly under everything else. */
+let music: { gain: GainNode; src: AudioBufferSourceNode | null; buffer: AudioBuffer | null; on: boolean; loading: boolean } | null = null
+const MUSIC_VOLUME = 0.32
+
+/** Turn the song on or off (it starts once sound is allowed: after a touch). */
+export function setMusic(on: boolean) {
+  const a = audio()
+  if (!a) return
+  if (!music) {
+    const gain = a.createGain()
+    gain.gain.value = 0
+    gain.connect(a.destination)
+    music = { gain, src: null, buffer: null, on, loading: false }
+  }
+  const m = music
+  m.on = on
+  if (on && !m.buffer && !m.loading) {
+    m.loading = true
+    void fetch('/games/skate/music.mp3')
+      .then((r) => r.arrayBuffer())
+      .then((b) => a.decodeAudioData(b))
+      .then((buffer) => {
+        m.buffer = buffer
+        m.loading = false
+        if (m.on) setMusic(true)
+      })
+      .catch(() => {
+        m.loading = false
+      })
+    return
+  }
+  if (on && m.buffer && !m.src) {
+    const src = a.createBufferSource()
+    src.buffer = m.buffer
+    src.loop = true
+    src.connect(m.gain)
+    src.start()
+    m.src = src
+  }
+  m.gain.gain.setTargetAtTime(on ? MUSIC_VOLUME : 0, a.currentTime, 0.15)
+}
+
+/** Leaving the game: the song stops. */
+export function stopMusic() {
+  if (!music?.src) return
+  try {
+    music.src.stop()
+  } catch {
+    // already stopped
+  }
+  music.src.disconnect()
+  music.src = null
+  music.gain.gain.value = 0
+}

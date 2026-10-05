@@ -1,10 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
 import { Course } from './course'
 import { drag, fling, grab, ready, step, tap, type Rider, type Vec } from './rider'
 import { drawFourteen, drawRunner, RAINBOW } from './draw'
 import { drawNumberlings, drawSkyline, drawTown } from './scene'
-import { clack, effect, rolling, wake } from './sounds'
+import { clack, effect, rolling, setMusic, stopMusic, wake } from './sounds'
 
 const DT = 1 / 120
 
@@ -35,6 +35,16 @@ interface Spark {
  */
 function App({ services }: GameProps) {
   const canvas = useRef<HTMLCanvasElement>(null)
+  // The song: on unless he's turned it off (remembered).
+  const [music, setMusicOn] = useState(() => services.storage.get('music') !== 'off')
+  const musicOn = useRef(music)
+  const toggleMusic = () => {
+    const on = !music
+    setMusicOn(on)
+    musicOn.current = on
+    services.storage.set('music', on ? 'on' : 'off')
+    setMusic(on)
+  }
 
   useEffect(() => {
     const el = canvas.current
@@ -67,6 +77,8 @@ function App({ services }: GameProps) {
     const down = (e: PointerEvent) => {
       e.preventDefault()
       wake()
+      // Sound is allowed from the first touch: the song starts.
+      if (musicOn.current) setMusic(true)
       if (holder !== -1) return
       const p = toWorld(e)
       if (grab(k, p, secs())) {
@@ -87,6 +99,9 @@ function App({ services }: GameProps) {
       fling(k, course)
       if (Math.hypot(k.vel.x, k.vel.y) > 12 || Math.abs(k.v) > 12) effect('whoosh', 0.3)
     }
+    // Away from the app (another app, the screen off): the song pauses.
+    const hidden = () => setMusic(!document.hidden && musicOn.current)
+    document.addEventListener('visibilitychange', hidden)
     el.addEventListener('pointerdown', down)
     el.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
@@ -241,7 +256,9 @@ function App({ services }: GameProps) {
       el.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
       window.removeEventListener('pointercancel', up)
+      document.removeEventListener('visibilitychange', hidden)
       rolling(0)
+      stopMusic()
     }
   }, [])
 
@@ -255,6 +272,14 @@ function App({ services }: GameProps) {
         aria-label="Home"
       >
         ←
+      </button>
+      <button
+        type="button"
+        onClick={toggleMusic}
+        className={`absolute top-3 left-[4.25rem] w-12 h-12 rounded-full shadow text-2xl ${music ? 'bg-white/90' : 'bg-white/50 opacity-60'}`}
+        aria-label={music ? 'Music off' : 'Music on'}
+      >
+        {music ? '🎵' : '🔇'}
       </button>
     </div>
   )
