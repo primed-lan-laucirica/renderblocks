@@ -253,10 +253,11 @@ export class Town {
     const boost = gustNow(this.time - this.gustAt)
     for (const r of this.riders) {
       if (this.grab?.rider === r) continue
-      if (!this.windOn) {
-        r.rb.resetForces(true)
-        continue
-      }
+      // Clear last step's push AND twist: a push off-centre also twists, and an
+      // uncleared twist piles up step after step (wild spinning that never stops).
+      r.rb.resetForces(true)
+      r.rb.resetTorques(true)
+      if (!this.windOn) continue
       // What it shows the wind: the height of its tilted outline, pushed at the middle of it.
       const t = r.rb.translation()
       const a = r.rb.rotation()
@@ -278,7 +279,6 @@ export class Town {
       const com = r.rb.worldCom()
       const wind = windAt(com.x, this.time, zones, boost)
       const f = push(wind, r.rb.linvel().x, hi - lo)
-      r.rb.resetForces(true)
       if (f > 0) r.rb.addForceAtPoint({ x: f, y: 0 }, { x: com.x, y: (lo + hi) / 2 }, true)
       // Against a building's windward wall the wind turns upward: an updraft that can carry him up and over.
       const half = (r.geo.x1 - r.geo.x0) * r.geo.scale * 0.5
