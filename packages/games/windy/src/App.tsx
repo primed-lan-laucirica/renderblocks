@@ -362,6 +362,41 @@ function Play({ cast, storage, onLineup, onHome }: { cast: Character[]; storage:
         drawFeatures(g, r.c.n, r.c.shape, r.c.leftovers, r.c.look)
         g.restore()
       })
+      // Numberlings: each character's number floating above its head, upright however it tumbles — plain bold black, as in Blocks.
+      g.setTransform(dpr, 0, 0, dpr, 0, 0)
+      g.textAlign = 'center'
+      town.riders.forEach((r, i) => {
+        const p = poses[i]
+        const s = r.geo.scale
+        const cos = Math.cos(p.a)
+        const sin = Math.sin(p.a)
+        const boxes = r.geo.rects.length > 24 ? [{ x: r.geo.x0, y: r.geo.y0, w: r.geo.x1 - r.geo.x0, h: r.geo.y1 - r.geo.y0 }] : r.geo.rects
+        let top = -Infinity
+        let lo = Infinity
+        let hi = -Infinity
+        for (const q of boxes)
+          for (const [cx, cy] of [
+            [q.x, q.y],
+            [q.x + q.w, q.y],
+            [q.x, q.y + q.h],
+            [q.x + q.w, q.y + q.h],
+          ]) {
+            const wx = p.x + (cx * cos - cy * sin) * s
+            const wy = p.y + (cx * sin + cy * cos) * s
+            top = Math.max(top, wy)
+            lo = Math.min(lo, wx)
+            hi = Math.max(hi, wx)
+          }
+        const sx = ox + ((lo + hi) / 2) * scale
+        if (sx < -80 || sx > w + 80) return
+        // About a block and a half tall, as in the show (so a giant shrunk to fit gets a smaller one).
+        const size = Math.max(18, Math.min(44, 1.5 * s * scale))
+        const bob = Math.sin(now / 420 + i * 1.7) * size * 0.08
+        const sy = oy - top * scale - size * 0.45 + bob
+        g.font = `700 ${Math.round(size)}px Nunito, system-ui, sans-serif`
+        g.fillStyle = '#000'
+        g.fillText(fmt(r.c.n), sx, sy)
+      })
       // Anyone off the left edge: an arrow with their number.
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
       g.font = '900 16px Nunito, system-ui, sans-serif'
