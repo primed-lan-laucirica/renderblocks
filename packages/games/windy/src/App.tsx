@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
 import { bounds, drawBody, drawFeatures } from '@renderblocks/designer/draw'
 import { fmt } from '@renderblocks/designer/shapes'
-import { fromKey, fromShared, standard, STANDARD, type Character } from './characters'
+import { fromKey, fromShared, standard, type Character } from './characters'
 import { ALL_SETS, defaultRange, lineupFor, rangeLabel, RANGES, type NumberRange, type SetId } from './sets'
 import { GRAVITY, initPhysics, STEP, Town, type Rider } from './sim'
 import { blowLeaves, drawLeaves, drawSkyline, drawTown, type Leaf } from './scene'
@@ -50,16 +50,16 @@ function App({ services }: GameProps) {
   })
   const [playing, setPlaying] = useState(false)
   const [keypad, setKeypad] = useState(false)
+  // The wheels: which set and how far. The cards show exactly that.
+  const [set, setSet] = useState<SetId>('integers')
+  const [range, setRange] = useState<NumberRange>({ from: 1, to: 25 })
+  const members = useMemo(() => lineupFor(set, range), [set, range])
   useEffect(() => services.storage.set('lineup', JSON.stringify(cast)), [services, cast])
 
   const chosen = useMemo(() => cast.map((k) => fromKey(k, mine)).filter((c): c is Character => !!c), [cast, mine])
-  // Cards for 1–20, then every other number in the lineup (from the ranges or the keypad), in order.
-  const cards = useMemo(() => {
-    const more = [...new Set(cast.filter((k) => k.startsWith('n-')).map((k) => BigInt(k.slice(2))))]
-      .filter((n) => n > 20n)
-      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
-    return [...STANDARD, ...more.map(standard)]
-  }, [cast])
+  // A card for every number the wheels have picked (e.g. Odds 1–100: all fifty).
+  const cards = useMemo(() => members.map((n) => standard(BigInt(n))), [members])
+  const setName = ALL_SETS.find((x) => x.id === set)?.name ?? ''
 
   if (playing) return <Play cast={chosen} storage={services.storage} onLineup={() => setPlaying(false)} onHome={services.exitToHome} />
 
@@ -101,7 +101,7 @@ function App({ services }: GameProps) {
         </button>
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6 flex flex-col gap-4">
-        <SetPicker onAdd={(ns) => add(...ns.map((n) => `n-${n}`))} />
+        <SetPicker set={set} range={range} numbers={members} onSet={setSet} onRange={setRange} onAdd={(ns) => add(...ns.map((n) => `n-${n}`))} />
         <div>
           <button type="button" onClick={() => setKeypad(true)} className="h-12 px-4 rounded-2xl bg-white shadow font-black text-sky-700 active:scale-95 transition-transform">
             + any number 🔢
@@ -114,7 +114,9 @@ function App({ services }: GameProps) {
           </section>
         )}
         <section>
-          <h2 className="font-black text-slate-600 text-lg px-1 pb-2">Numberblocks</h2>
+          <h2 className="font-black text-slate-600 text-lg px-1 pb-2">
+            {setName} {rangeLabel(range)} <span className="text-slate-400 text-base">· {cards.length}</span>
+          </h2>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] gap-2">{cards.map(card)}</div>
         </section>
       </div>
@@ -134,10 +136,7 @@ function App({ services }: GameProps) {
  * LavaBlocks' sets in two sliding wheels — which set, and how far — and one
  * button to add them all. Compact: one row each, swiped sideways.
  */
-function SetPicker({ onAdd }: { onAdd: (ns: number[]) => void }) {
-  const [set, setSet] = useState<SetId>('integers')
-  const [range, setRange] = useState<NumberRange>({ from: 1, to: 10 })
-  const numbers = useMemo(() => lineupFor(set, range), [set, range])
+function SetPicker({ set, range, numbers, onSet, onRange, onAdd }: { set: SetId; range: NumberRange; numbers: number[]; onSet: (s: SetId) => void; onRange: (r: NumberRange) => void; onAdd: (ns: number[]) => void }) {
   const preview = numbers.length <= 4 ? numbers.join(' ') : `${numbers.slice(0, 3).join(' ')} … ${numbers[numbers.length - 1].toLocaleString('en-US')}`
   const chip = (on: boolean) => `snap-center shrink-0 rounded-2xl shadow px-3 py-1.5 flex flex-col items-center transition-colors ${on ? 'bg-sky-500 text-white' : 'bg-white text-slate-600'}`
   return (
@@ -148,9 +147,9 @@ function SetPicker({ onAdd }: { onAdd: (ns: number[]) => void }) {
             key={s.id}
             type="button"
             onClick={() => {
-              setSet(s.id)
+              onSet(s.id)
               const d = defaultRange(s.id)
-              if (d) setRange({ from: Math.max(1, d.from), to: d.to })
+              if (d) onRange({ from: Math.max(1, d.from), to: d.to })
             }}
             className={chip(s.id === set)}
           >
@@ -162,7 +161,7 @@ function SetPicker({ onAdd }: { onAdd: (ns: number[]) => void }) {
       <div className="flex gap-2 items-center">
         <div className="flex-1 min-w-0 flex gap-2 overflow-x-auto snap-x snap-mandatory pb-1">
           {RANGES.map((r) => (
-            <button key={`${r.from}-${r.to}`} type="button" onClick={() => setRange(r)} className={chip(r.from === range.from && r.to === range.to)}>
+            <button key={`${r.from}-${r.to}`} type="button" onClick={() => onRange(r)} className={chip(r.from === range.from && r.to === range.to)}>
               <span className="font-black tabular-nums whitespace-nowrap">{rangeLabel(r)}</span>
             </button>
           ))}
