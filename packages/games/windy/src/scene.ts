@@ -42,7 +42,7 @@ export function drawTown(ctx: CanvasRenderingContext2D, town: Town, x0: number, 
   ctx.fillStyle = '#FDE68A'
   for (let x = Math.floor(x0 / 4) * 4; x < x1; x += 4) ctx.fillRect(x, -1.6, 2, 0.2)
   for (const [i, b] of town.built) {
-    if ((i + 1) * CHUNK < x0 - 20 || i * CHUNK > x1 + 20) continue
+    if ((i + 1) * CHUNK + town.offset < x0 - 20 || i * CHUNK + town.offset > x1 + 20) continue
     for (const p of b.pieces) {
       if (p.kind === 'building') building(ctx, p, px)
       else if (p.kind === 'ramp') {
@@ -101,7 +101,8 @@ export function blowLeaves(leaves: Leaf[], town: Town, x0: number, x1: number, y
     l.a += l.spin * dt
   }
   for (let i = leaves.length - 1; i >= 0; i--) if (leaves[i].x > x1 + 5 || leaves[i].y < -1) leaves.splice(i, 1)
-  const want = 70
+  // No wind, no new leaves.
+  const want = town.windOn ? 70 : 0
   while (leaves.length < want) {
     const y = Math.random() * y1
     const x = x0 - 4 - Math.random() * 6

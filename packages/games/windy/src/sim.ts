@@ -1,6 +1,6 @@
 import RAPIER from '@dimforge/rapier2d-compat'
 import { body, mass, type Character } from './characters'
-import { chunk, CHUNK, startRoof, type Piece, type Zone } from './course'
+import { chunk, CHUNK, START, startRoof, type Piece, type Zone } from './course'
 import { gustNow, push, windAt } from './wind'
 
 let ready: Promise<void> | null = null
@@ -57,21 +57,35 @@ export class Town {
   private grab: Grab | null = null
   time = 0
   gustAt = -1e9
+  /** The wind can be turned off, so they move only when flung. */
+  windOn = true
+  /** Gravity (blocks/s²), from the slider. */
+  gravity = GRAVITY
+  /**
+   * How much wider the start rooftop is than usual, to fit everyone in the
+   * lineup (no limit on how many); the rest of the town moves along by this.
+   */
+  readonly offset: number
 
   constructor(cast: Character[]) {
     this.world = new RAPIER.World({ x: 0, y: -GRAVITY })
     this.world.timestep = STEP
-    // Behind the start: a street and a wall, so nobody is lost off the left.
+    // The lineup decides how long the start rooftop is.
+    const geos = cast.map((c) => body(c))
+    const widths = geos.map((g) => (g.x1 - g.x0) * g.scale)
+    const needed = widths.reduce((a, w) => a + w + Math.max(0.8, 0.2 * w), 0) + 4
+    this.offset = Math.max(0, needed - START.w)
+    // Behind the start and under the whole rooftop: a street, and a wall, so nobody is lost off the left.
     const behind = this.world.createRigidBody(RAPIER.RigidBodyDesc.fixed())
-    this.world.createCollider(RAPIER.ColliderDesc.cuboid(100, 0.5).setTranslation(-100, -0.5).setFriction(FRICTION), behind)
+    this.world.createCollider(RAPIER.ColliderDesc.cuboid((200 + this.offset) / 2, 0.5).setTranslation((this.offset - 200) / 2, -0.5).setFriction(FRICTION), behind)
     this.world.createCollider(RAPIER.ColliderDesc.cuboid(0.5, 60).setTranslation(-40, 60), behind)
     this.ensure(0)
 
-    // The lineup: side by side on the start rooftop, smallest first.
+    // The lineup: side by side on the start rooftop, in the order chosen.
     const roof = startRoof()
     let x = roof.x0
-    for (const c of cast) {
-      const geo = body(c)
+    cast.forEach((c, ci) => {
+      const geo = geos[ci]
       const s = geo.scale
       const w = (geo.x1 - geo.x0) * s
       const ox = x - geo.x0 * s
@@ -92,7 +106,12 @@ export class Town {
       }
       this.riders.push(rider)
       x += w + Math.max(0.8, 0.2 * w)
-    }
+    })
+  }
+
+  /** Which chunk a world x is in (chunks start after the widened rooftop). */
+  chunkAt(x: number): number {
+    return Math.floor((x - this.offset) / CHUNK)
   }
 
   /** Every windy stretch built so far. */
@@ -104,9 +123,9 @@ export class Town {
   ensure(x: number): void {
     const behind = Math.min(x, ...this.riders.map((r) => r.cur.x)) - 160
     const ahead = Math.max(x, ...this.riders.map((r) => r.cur.x)) + 140
-    for (let i = Math.max(0, Math.floor(behind / CHUNK)); i <= Math.floor(ahead / CHUNK); i++) if (!this.built.has(i)) this.build(i)
+    for (let i = Math.max(0, this.chunkAt(behind)); i <= this.chunkAt(ahead); i++) if (!this.built.has(i)) this.build(i)
     for (const [i, b] of this.built) {
-      if ((i + 1) * CHUNK >= behind) continue
+      if ((i + 1) * CHUNK + this.offset >= behind) continue
       for (const s of b.seesaws) this.world.removeRigidBody(s.plank)
       this.world.removeRigidBody(b.fixed)
       this.built.delete(i)
@@ -114,11 +133,15 @@ export class Town {
   }
 
   private build(i: number): void {
-    const { pieces, zones } = chunk(i)
+    // The town moves along by the offset; the start rooftop (and its windy stretch) grows instead.
+    const raw = chunk(i)
+    const o = this.offset
+    const pieces: Piece[] = raw.pieces.map((p) => (i === 0 && p.kind === 'building' && p.x === START.x ? { ...p, w: p.w + o } : { ...p, x: p.x + o }))
+    const zones: Zone[] = raw.zones.map((z) => (i === 0 && z.x0 === START.x - 4 ? { ...z, x1: z.x1 + o } : { ...z, x0: z.x0 + o, x1: z.x1 + o }))
     const fixed = this.world.createRigidBody(RAPIER.RigidBodyDesc.fixed())
     const add = (d: RAPIER.ColliderDesc) => this.world.createCollider(d.setFriction(FRICTION), fixed)
     // The street.
-    add(RAPIER.ColliderDesc.cuboid(CHUNK / 2 + 0.5, 0.5).setTranslation(i * CHUNK + CHUNK / 2, -0.5))
+    add(RAPIER.ColliderDesc.cuboid(CHUNK / 2 + 0.5, 0.5).setTranslation(i * CHUNK + CHUNK / 2 + o, -0.5))
     const seesaws: Built['seesaws'] = []
     for (const p of pieces) {
       if (p.kind === 'building') add(RAPIER.ColliderDesc.cuboid(p.w / 2, p.h / 2).setTranslation(p.x + p.w / 2, p.h / 2))
@@ -138,10 +161,22 @@ export class Town {
 
   /** Buildings in the chunks around x. */
   private buildingsNear(x: number): Extract<Piece, { kind: 'building' }>[] {
-    const i = Math.floor(x / CHUNK)
+    const i = this.chunkAt(x)
     const out: Extract<Piece, { kind: 'building' }>[] = []
     for (const k of [i - 1, i, i + 1]) for (const p of this.built.get(k)?.pieces ?? []) if (p.kind === 'building') out.push(p)
     return out
+  }
+
+  /** The gravity slider: changes how heavy everything falls, right away. */
+  setGravity(g: number): void {
+    this.gravity = g
+    this.world.gravity = { x: 0, y: -g }
+    for (const r of this.riders) r.rb.wakeUp()
+  }
+
+  setWind(on: boolean): void {
+    this.windOn = on
+    for (const r of this.riders) r.rb.wakeUp()
   }
 
   /** A big gust from the 🌬️ button. */
@@ -150,9 +185,9 @@ export class Town {
     for (const r of this.riders) r.rb.wakeUp()
   }
 
-  /** The wind where x is, right now. */
+  /** The wind where x is, right now (none when it's turned off). */
   windAt(x: number): number {
-    return windAt(x, this.time, this.zones(), gustNow(this.time - this.gustAt))
+    return this.windOn ? windAt(x, this.time, this.zones(), gustNow(this.time - this.gustAt)) : 0
   }
 
   /** Which character is at a world point (the one drawn on top: the last). */
@@ -218,6 +253,10 @@ export class Town {
     const boost = gustNow(this.time - this.gustAt)
     for (const r of this.riders) {
       if (this.grab?.rider === r) continue
+      if (!this.windOn) {
+        r.rb.resetForces(true)
+        continue
+      }
       // What it shows the wind: the height of its tilted outline, pushed at the middle of it.
       const t = r.rb.translation()
       const a = r.rb.rotation()
@@ -285,7 +324,7 @@ export class Town {
     const w = 14
     const z = 0.8
     let ax = w * w * (g.target.x - p.x) - 2 * z * w * v.x
-    let ay = w * w * (g.target.y - p.y) - 2 * z * w * v.y + GRAVITY
+    let ay = w * w * (g.target.y - p.y) - 2 * z * w * v.y + this.gravity
     const mag = Math.hypot(ax, ay)
     if (mag > 400) {
       ax *= 400 / mag

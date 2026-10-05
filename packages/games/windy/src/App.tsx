@@ -2,12 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
 import { bounds, drawBody, drawFeatures } from '@renderblocks/designer/draw'
 import { fmt } from '@renderblocks/designer/shapes'
-import { fromShared, STANDARD, type Character } from './characters'
-import { initPhysics, STEP, Town, type Rider } from './sim'
+import { fromKey, fromShared, STANDARD, type Character } from './characters'
+import { GRAVITY, initPhysics, STEP, Town, type Rider } from './sim'
 import { blowLeaves, drawLeaves, drawSkyline, drawTown, type Leaf } from './scene'
 import { blowing, silence, thud, wake, whoosh } from './sound'
-
-const MAX_CAST = 8
 
 /** A character drawn to fit a box (lineup cards). */
 function Portrait({ c }: { c: Character }) {
@@ -37,51 +35,76 @@ function Portrait({ c }: { c: Character }) {
  */
 function App({ services }: GameProps) {
   const mine = useMemo(() => fromShared(services.shared.get('designs')), [services])
-  const all = useMemo(() => [...mine, ...STANDARD], [mine])
+  // The lineup: keys in order, repeats allowed, no limit ("n-7" any number, "mine-14" his design).
   const [cast, setCast] = useState<string[]>(() => {
     try {
-      const saved = JSON.parse(services.storage.get('lineup') ?? '[]') as string[]
-      return Array.isArray(saved) && saved.length ? saved : ['std-1', 'std-4', 'std-7', 'std-9', 'std-10']
+      const saved = (JSON.parse(services.storage.get('lineup') ?? '[]') as string[]).map((k) => k.replace(/^std-/, 'n-'))
+      return Array.isArray(saved) && saved.length ? saved : ['n-1', 'n-4', 'n-7', 'n-9', 'n-10']
     } catch {
-      return ['std-1', 'std-4', 'std-7', 'std-9', 'std-10']
+      return ['n-1', 'n-4', 'n-7', 'n-9', 'n-10']
     }
   })
   const [playing, setPlaying] = useState(false)
+  const [keypad, setKeypad] = useState(false)
   useEffect(() => services.storage.set('lineup', JSON.stringify(cast)), [services, cast])
 
-  const chosen = cast.map((k) => all.find((c) => c.key === k)).filter((c): c is Character => !!c)
+  const chosen = useMemo(() => cast.map((k) => fromKey(k, mine)).filter((c): c is Character => !!c), [cast, mine])
 
-  if (playing) return <Play cast={chosen} onLineup={() => setPlaying(false)} onHome={services.exitToHome} />
+  if (playing) return <Play cast={chosen} storage={services.storage} onLineup={() => setPlaying(false)} onHome={services.exitToHome} />
 
-  const toggle = (k: string) => setCast((c) => (c.includes(k) ? c.filter((x) => x !== k) : c.length < MAX_CAST ? [...c, k] : c))
-  const card = (c: Character) => {
-    const on = cast.includes(c.key)
-    return (
-      <button key={c.key} type="button" onClick={() => toggle(c.key)} className={`h-32 rounded-2xl shadow p-2 flex flex-col items-center transition-colors ${on ? 'bg-sky-500 text-white' : 'bg-white text-slate-600'}`}>
-        <div className="flex-1 w-full min-h-0">
-          <Portrait c={c} />
-        </div>
-        <span className="font-black tabular-nums text-lg truncate max-w-full">{fmt(c.n)}</span>
-      </button>
-    )
-  }
+  const add = (...keys: string[]) => setCast((c) => [...c, ...keys])
+  const range = (a: number, b: number) => Array.from({ length: b - a + 1 }, (_, i) => `n-${a + i}`)
+  const count = (k: string) => cast.filter((x) => x === k).length
+  const card = (c: Character) => (
+    <button key={c.key} type="button" onClick={() => add(c.key)} className="relative h-32 rounded-2xl shadow p-2 flex flex-col items-center bg-white text-slate-600 active:scale-95 transition-transform">
+      <div className="flex-1 w-full min-h-0">
+        <Portrait c={c} />
+      </div>
+      <span className="font-black tabular-nums text-lg truncate max-w-full">{fmt(c.n)}</span>
+      {count(c.key) > 0 && <span className="absolute top-1 right-1 min-w-7 h-7 px-1.5 rounded-full bg-sky-500 text-white text-sm font-black flex items-center justify-center">{count(c.key)}</span>}
+    </button>
+  )
   return (
     <div className="h-dvh flex flex-col bg-gradient-to-b from-sky-200 to-sky-50 text-slate-900 select-none">
       <div className="flex items-center gap-2 p-2">
-        <button type="button" onClick={services.exitToHome} className="w-12 h-12 rounded-full bg-white shadow text-2xl font-bold" aria-label="Home">
+        <button type="button" onClick={services.exitToHome} className="w-12 h-12 rounded-full bg-white shadow text-2xl font-bold shrink-0" aria-label="Home">
           ←
         </button>
         <div className="flex-1 text-center text-2xl font-black text-slate-700">Who goes?</div>
-        <button
-          type="button"
-          disabled={!chosen.length}
-          onClick={() => setPlaying(true)}
-          className="h-14 px-7 rounded-2xl bg-emerald-500 text-white text-2xl font-black shadow disabled:opacity-30 active:scale-95 transition-transform"
-        >
+        <button type="button" disabled={!chosen.length} onClick={() => setPlaying(true)} className="h-14 px-7 rounded-2xl bg-emerald-500 text-white text-2xl font-black shadow disabled:opacity-30 active:scale-95 transition-transform shrink-0">
           Go! 🌬️
         </button>
       </div>
+      {/* The lineup so far: tap one to take it out. */}
+      <div className="mx-3 mb-2 p-2 rounded-2xl bg-white/70 shadow flex items-center gap-2">
+        <div className="flex-1 min-w-0 flex gap-1.5 overflow-x-auto">
+          {cast.length === 0 && <span className="text-slate-400 font-bold px-2 py-1">Tap characters to line them up</span>}
+          {cast.map((k, i) => (
+            <button key={`${k}-${i}`} type="button" onClick={() => setCast((c) => c.filter((_, j) => j !== i))} className={`shrink-0 h-9 px-3 rounded-xl font-black tabular-nums ${k.startsWith('mine') ? 'bg-amber-200' : 'bg-sky-100'} text-slate-700`}>
+              {fmt(BigInt(k.split('-')[1]))} ✕
+            </button>
+          ))}
+        </div>
+        <span className="shrink-0 font-black text-slate-500 tabular-nums">{cast.length}</span>
+        <button type="button" onClick={() => setCast([])} className="shrink-0 h-9 px-3 rounded-xl bg-white shadow font-bold text-rose-600">
+          Clear
+        </button>
+      </div>
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6 flex flex-col gap-4">
+        <div className="flex flex-wrap gap-2">
+          {[
+            [1, 10],
+            [1, 20],
+            [1, 100],
+          ].map(([a, b]) => (
+            <button key={b} type="button" onClick={() => add(...range(a, b))} className="h-12 px-4 rounded-2xl bg-white shadow font-black text-sky-700 active:scale-95 transition-transform">
+              + {a}–{b}
+            </button>
+          ))}
+          <button type="button" onClick={() => setKeypad(true)} className="h-12 px-4 rounded-2xl bg-white shadow font-black text-sky-700 active:scale-95 transition-transform">
+            + any number 🔢
+          </button>
+        </div>
         {mine.length > 0 && (
           <section>
             <h2 className="font-black text-slate-600 text-lg px-1 pb-2">Mine (from Designer)</h2>
@@ -93,15 +116,70 @@ function App({ services }: GameProps) {
           <div className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] gap-2">{STANDARD.map(card)}</div>
         </section>
       </div>
+      {keypad && (
+        <Keypad
+          onDone={(n) => {
+            setKeypad(false)
+            if (n) add(`n-${n}`)
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
+/** Type any number at all. */
+function Keypad({ onDone }: { onDone: (n: string | null) => void }) {
+  const [typed, setTyped] = useState('')
+  const key = (k: string, cls = 'bg-white') => (
+    <button
+      key={k}
+      type="button"
+      onClick={() => (k === '⌫' ? setTyped((t) => t.slice(0, -1)) : k === '✓' ? onDone(typed && BigInt(typed) > 0n ? BigInt(typed).toString() : null) : setTyped((t) => (t === '0' ? k : t + k)))}
+      className={`h-16 rounded-2xl shadow text-3xl font-black active:scale-95 transition-transform ${cls}`}
+    >
+      {k}
+    </button>
+  )
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => onDone(null)}>
+      <div className="w-full max-w-sm bg-sky-50 rounded-3xl p-4 flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
+        <div className="min-h-16 px-3 py-2 rounded-2xl bg-white shadow font-black tabular-nums text-sky-700 text-3xl break-all text-center">{typed ? fmt(BigInt(typed)) : ' '}</div>
+        <div className="grid grid-cols-3 gap-2">
+          {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((k) => key(k))}
+          {key('⌫')}
+          {key('0')}
+          {key('✓', 'bg-emerald-500 text-white')}
+        </div>
+      </div>
     </div>
   )
 }
 
 /** The town: everyone blown along, the camera following, a finger to fling with. */
-function Play({ cast, onLineup, onHome }: { cast: Character[]; onLineup: () => void; onHome: () => void }) {
+function Play({ cast, storage, onLineup, onHome }: { cast: Character[]; storage: GameProps['services']['storage']; onLineup: () => void; onHome: () => void }) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const townRef = useRef<Town | null>(null)
-  const [board, setBoard] = useState<{ n: string; best: number }[]>([])
+  // Wind on or off (off: they move only when flung), and gravity from a slider; both remembered.
+  const [windOn, setWindOn] = useState(() => storage.get('wind') !== 'off')
+  const [gravity, setGravity] = useState(() => {
+    const g = Number(storage.get('gravity'))
+    return Number.isFinite(g) && storage.get('gravity') !== null ? Math.max(0, Math.min(40, g)) : GRAVITY
+  })
+  useEffect(() => {
+    storage.set('wind', windOn ? 'on' : 'off')
+    townRef.current?.setWind(windOn)
+  }, [storage, windOn])
+  useEffect(() => {
+    storage.set('gravity', String(gravity))
+    townRef.current?.setGravity(gravity)
+  }, [storage, gravity])
+  // The town reads the settings when it starts (kept in a ref for the start-up code).
+  const settings = useRef({ windOn, gravity })
+  useEffect(() => {
+    settings.current = { windOn, gravity }
+  }, [windOn, gravity])
+  const [board, setBoard] = useState<{ n: string; best: number; rank: number }[]>([])
 
   useEffect(() => {
     const el = canvas.current
@@ -235,9 +313,13 @@ function Play({ cast, onLineup, onHome }: { cast: Character[]; onLineup: () => v
       g.font = '900 22px Nunito, system-ui, sans-serif'
       for (const side of [-1, 1]) {
         const off = town.riders
-          .map((r, i) => ({ r, sy: Math.max(240, Math.min(h - 130, oy - poses[i].y * scale)), x: poses[i].x }))
+          .map((r, i) => ({ r, sy: Math.max(240, Math.min(h - 200, oy - poses[i].y * scale)), x: poses[i].x }))
           .filter((m) => (side < 0 ? m.x < x0 - 1 : m.x > x1 + 1))
-          .sort((a, b) => a.sy - b.sy)
+          // The nearest four (lots more would cover the screen); the rest are counted below them.
+          .sort((a, b) => (side < 0 ? b.x - a.x : a.x - b.x))
+        const more = Math.max(0, off.length - 4)
+        off.splice(4)
+        off.sort((a, b) => a.sy - b.sy)
         off.forEach((m, i) => {
           if (i > 0) m.sy = Math.max(m.sy, off[i - 1].sy + 40)
           const label = side < 0 ? `◀ ${fmt(m.r.c.n)}` : `${fmt(m.r.c.n)} ▶`
@@ -252,11 +334,21 @@ function Play({ cast, onLineup, onHome }: { cast: Character[]; onLineup: () => v
           g.fillText(label, bx + 10, m.sy)
           arrows.push({ x0: bx, y0: m.sy - 26, x1: bx + tw, y1: m.sy + 10, r: m.r })
         })
+        if (more && off.length) {
+          g.fillStyle = 'rgba(15,23,42,0.6)'
+          g.textAlign = side < 0 ? 'left' : 'right'
+          g.fillText(`+${more}`, side < 0 ? 12 : w - 12, off[off.length - 1].sy + 40)
+        }
       }
       blowing(town.windAt(cam.x))
       if (now - lastBoard > 250) {
         lastBoard = now
-        setBoard(town.riders.map((r) => ({ n: fmt(r.c.n), best: Math.max(0, Math.floor(r.best)) })).sort((a, b) => b.best - a.best))
+        // The top five, plus whoever the camera is following.
+        const all = town.riders.map((r) => ({ n: fmt(r.c.n), best: Math.max(0, Math.floor(r.best)), r })).sort((a, b) => b.best - a.best)
+        const top = all.slice(0, 5)
+        const f = all.find((x) => x.r === focus)
+        if (f && !top.includes(f)) top.push(f)
+        setBoard(top.map(({ n, best }) => ({ n, best, rank: all.findIndex((x) => x.n === n && x.best === best) + 1 })))
       }
       raf = requestAnimationFrame(frame)
     }
@@ -264,6 +356,8 @@ function Play({ cast, onLineup, onHome }: { cast: Character[]; onLineup: () => v
     void initPhysics().then(() => {
       if (!alive) return
       town = new Town(cast)
+      town.setWind(settings.current.windOn)
+      town.setGravity(settings.current.gravity)
       townRef.current = town
       const xs = town.riders.map((r) => r.cur.x)
       cam = { x: (Math.min(...xs) + Math.max(...xs)) / 2 + 4, w: 40, top: 22 }
@@ -303,25 +397,57 @@ function Play({ cast, onLineup, onHome }: { cast: Character[]; onLineup: () => v
       <div className="absolute top-3 right-3 bg-white/85 rounded-2xl shadow px-3 py-2 flex flex-col gap-0.5 pointer-events-none">
         {board.map((b, i) => (
           <div key={`${b.n}-${i}`} className="flex items-center gap-2 font-black tabular-nums text-slate-700">
-            <span className="w-5 text-center">{i === 0 ? '👑' : ''}</span>
+            <span className="w-7 text-center text-sm text-slate-400">{b.rank === 1 ? '👑' : i === 5 ? `${b.rank}.` : ''}</span>
             <span className="text-lg">{b.n}</span>
             <span className="text-sm text-slate-500">{b.best} blocks</span>
           </div>
         ))}
       </div>
-      <button
-        type="button"
-        onPointerDown={(e) => {
-          e.stopPropagation()
-          wake()
-          townRef.current?.gust()
-          whoosh(0.6)
-        }}
-        className="absolute bottom-4 right-4 w-24 h-24 rounded-full bg-white/90 shadow-lg text-5xl active:scale-95 transition-transform"
-        aria-label="Gust of wind"
-      >
-        🌬️
-      </button>
+      {windOn && (
+        <button
+          type="button"
+          onPointerDown={(e) => {
+            e.stopPropagation()
+            wake()
+            townRef.current?.gust()
+            whoosh(0.6)
+          }}
+          className="absolute bottom-4 right-4 w-24 h-24 rounded-full bg-white/90 shadow-lg text-5xl active:scale-95 transition-transform"
+          aria-label="Gust of wind"
+        >
+          🌬️
+        </button>
+      )}
+      {/* The wind, on or off; and gravity. */}
+      <div className="absolute bottom-4 left-4 bg-white/85 rounded-2xl shadow px-3 py-2 flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setWindOn((w) => !w)}
+          aria-label={windOn ? 'Turn the wind off' : 'Turn the wind on'}
+          className={`h-12 px-3 rounded-xl font-black text-lg shadow ${windOn ? 'bg-sky-500 text-white' : 'bg-slate-200 text-slate-500'}`}
+        >
+          🌬️ {windOn ? 'On' : 'Off'}
+        </button>
+        <label className="flex items-center gap-2 font-black text-slate-600">
+          <span className="text-xl" aria-hidden>
+            🪶
+          </span>
+          <input
+            type="range"
+            min={0}
+            max={40}
+            step={1}
+            value={gravity}
+            onChange={(e) => setGravity(Number(e.target.value))}
+            aria-label="Gravity"
+            className="w-32 sm:w-44 h-10 accent-sky-500"
+          />
+          <span className="text-xl" aria-hidden>
+            🪨
+          </span>
+          <span className="w-20 text-sm tabular-nums">gravity {gravity}</span>
+        </label>
+      </div>
     </div>
   )
 }

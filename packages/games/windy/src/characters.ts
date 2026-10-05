@@ -1,11 +1,11 @@
 /**
- * The characters that get blown through the town: the standard
- * Numberblocks 1–10, plus every character he made in Designer (read from
- * shared storage). Each becomes a physics body shaped exactly like its
+ * The characters that get blown through the town: any number at all as a
+ * Numberblock usually stands, plus every character he made in Designer (read
+ * from shared storage). Each becomes a physics body shaped exactly like its
  * design — a tall tower catches the wind, a wide square holds its ground —
  * and heavier the bigger its number.
  */
-import { draggable, slots, type Shape } from '@renderblocks/designer/shapes'
+import { draggable, shapesFor, slots, startSlots, type Shape } from '@renderblocks/designer/shapes'
 import { DEFAULT_LOOK, fromDesign, type Design, type Look } from '@renderblocks/designer/look'
 
 export interface Character {
@@ -23,14 +23,30 @@ export const MAX_SIZE = 9
 
 const sh = (kind: Shape['kind'], cols: number, rows: number, left = 0): Shape => ({ kind, cols: BigInt(cols), rows: BigInt(rows), left: BigInt(left) })
 
-/** The Numberblocks 1–10 as they usually stand: towers, Four and Nine squares, Six, Eight and Ten in two columns. */
-export function standard(n: number): Character {
-  const shape =
-    n === 4 ? sh('square', 2, 2) : n === 9 ? sh('square', 3, 3) : n === 6 || n === 8 || n === 10 ? sh('rectangle', 2, n / 2) : sh('tower', 1, n)
-  return { key: `std-${n}`, n: BigInt(n), shape, leftovers: [], look: DEFAULT_LOOK, mine: false }
+/**
+ * Any number as a Numberblock usually stands: 1–10 as in the show (towers,
+ * Four and Nine squares, Six, Eight and Ten in two columns), 11–20 in two
+ * columns with the odd one on top, bigger ones as square as they get.
+ */
+export function standard(n: bigint): Character {
+  const v = Number(n)
+  let shape: Shape
+  if (n <= 10n) shape = v === 4 ? sh('square', 2, 2) : v === 9 ? sh('square', 3, 3) : v === 6 || v === 8 || v === 10 ? sh('rectangle', 2, v / 2) : sh('tower', 1, v)
+  else if (n <= 20n) shape = sh('pairs', 2, Math.floor(v / 2), v % 2)
+  else shape = shapesFor(n)[0]
+  return { key: `n-${n}`, n, shape, leftovers: startSlots(shape), look: DEFAULT_LOOK, mine: false }
 }
 
-export const STANDARD = Array.from({ length: 10 }, (_, i) => standard(i + 1))
+/** The cards shown: Numberblocks 1–20. */
+export const STANDARD = Array.from({ length: 20 }, (_, i) => standard(BigInt(i + 1)))
+
+/** A character from its lineup key: "n-<number>" (any number at all) or "mine-<number>" (his design). */
+export function fromKey(key: string, mine: Character[]): Character | null {
+  const m = /^(n|mine)-(\d+)$/.exec(key)
+  if (!m) return null
+  if (m[1] === 'mine') return mine.find((c) => c.key === key) ?? null
+  return BigInt(m[2]) >= 1n ? standard(BigInt(m[2])) : null
+}
 
 /** His Designer characters (newest numbers first), from the shared "designs" record. */
 export function fromShared(raw: string | null): Character[] {

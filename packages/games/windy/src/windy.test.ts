@@ -1,14 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { body, fromShared, mass, MAX_SIZE, STANDARD, standard } from './characters'
+import { body, fromKey, fromShared, mass, MAX_SIZE, STANDARD, standard } from './characters'
 import { CHUNK, chunk, START } from './course'
 import { BREEZE, gustNow, push, windAt } from './wind'
 
 describe('characters', () => {
-  it('stands the Numberblocks 1–10 as usual', () => {
-    expect(STANDARD.map((c) => `${c.shape.cols}x${c.shape.rows}`)).toEqual(['1x1', '1x2', '1x3', '2x2', '1x5', '2x3', '1x7', '2x4', '3x3', '2x5'])
+  it('stands the Numberblocks as usual, and any number at all', () => {
+    expect(STANDARD.slice(0, 10).map((c) => `${c.shape.cols}x${c.shape.rows}`)).toEqual(['1x1', '1x2', '1x3', '2x2', '1x5', '2x3', '1x7', '2x4', '3x3', '2x5'])
+    expect(STANDARD).toHaveLength(20)
+    expect(standard(13n).shape).toMatchObject({ cols: 2n, rows: 6n, left: 1n })
+    expect(standard(13n).leftovers).toEqual([0])
+    expect(standard(10n ** 30n).n).toBe(10n ** 30n)
+    expect(fromKey('n-123456789012345678901234567890', [])?.n).toBe(123456789012345678901234567890n)
+    expect(fromKey('n-0', [])).toBeNull()
+    expect(fromKey('mine-14', [])).toBeNull()
   })
   it('builds the body from the design, leftovers and all', () => {
-    const c = { key: 'x', n: 13n, shape: { kind: 'nearly' as const, cols: 3n, rows: 4n, left: 1n }, leftovers: [3 + 2 * 1 + 1], look: standard(1).look, mine: true }
+    const c = { key: 'x', n: 13n, shape: { kind: 'nearly' as const, cols: 3n, rows: 4n, left: 1n }, leftovers: [3 + 2 * 1 + 1], look: standard(1n).look, mine: true }
     const b = body(c)
     expect(b.rects).toHaveLength(2)
     expect(b.rects[1]).toEqual({ x: 3, y: 1, w: 1, h: 1 }) // beside the right column, second row
@@ -16,7 +23,7 @@ describe('characters', () => {
     expect(b.scale).toBe(1)
   })
   it('shrinks giants to fit the town, but keeps them heavy', () => {
-    const big = { key: 'm', n: 1_000_000n, shape: { kind: 'square' as const, cols: 1000n, rows: 1000n, left: 0n }, leftovers: [], look: standard(1).look, mine: true }
+    const big = { key: 'm', n: 1_000_000n, shape: { kind: 'square' as const, cols: 1000n, rows: 1000n, left: 0n }, leftovers: [], look: standard(1n).look, mine: true }
     const b = body(big)
     expect((b.x1 - b.x0) * b.scale).toBeCloseTo(MAX_SIZE)
     expect(mass(1_000_000n)).toBeGreaterThan(mass(1000n))
