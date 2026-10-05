@@ -27,7 +27,14 @@ export interface Rider {
   prev: Pose
   cur: Pose
   lastThud: number
+  /** Its colliders (turned ghostly while it's held). */
+  cols: RAPIER.Collider[]
 }
+
+/** Collides with everything (the default). */
+const SOLID = 0xffffffff
+/** While held, a character flies through everything — buildings, ramps, everyone — so he can Superman-fly it anywhere. */
+const GHOST = 0x00020000
 
 interface Built {
   pieces: Piece[]
@@ -99,10 +106,11 @@ export class Town {
           ? [RAPIER.ColliderDesc.convexHull(new Float32Array(geo.rects.flatMap((r) => [r.x, r.y, r.x + r.w, r.y, r.x + r.w, r.y + r.h, r.x, r.y + r.h]).map((v) => v * s)))!]
           : geo.rects.map((r) => RAPIER.ColliderDesc.cuboid((r.w * s) / 2, (r.h * s) / 2).setTranslation((r.x + r.w / 2) * s, (r.y + r.h / 2) * s))
       const pose = { x: ox, y: oy, a: 0 }
-      const rider: Rider = { c, geo, rb, start: ox, best: 0, prev: pose, cur: pose, lastThud: -1 }
+      const rider: Rider = { c, geo, rb, start: ox, best: 0, prev: pose, cur: pose, lastThud: -1, cols: [] }
       for (const d of descs) {
         const col = this.world.createCollider(d.setDensity(density).setFriction(FRICTION).setRestitution(0.15).setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS), rb)
         this.byCollider.set(col.handle, rider)
+        rider.cols.push(col)
       }
       this.riders.push(rider)
       x += w + Math.max(0.8, 0.2 * w)
@@ -219,7 +227,36 @@ export class Town {
     const dx = x - t.x
     const dy = y - t.y
     this.grab = { rider: r, local: { x: dx * Math.cos(-a) - dy * Math.sin(-a), y: dx * Math.sin(-a) + dy * Math.cos(-a) }, target: { x, y } }
+    // Held: it flies through everything (and anything wedged comes straight out).
+    for (const col of r.cols) col.setCollisionGroups(GHOST)
     r.rb.wakeUp()
+  }
+
+  /** Is this character overlapping anything (a building, a ramp, someone), if moved up by dy? */
+  private overlapping(r: Rider, dy: number): boolean {
+    let hit = false
+    for (const col of r.cols) {
+      const t = col.translation()
+      this.world.intersectionsWithShape({ x: t.x, y: t.y + dy }, col.rotation(), col.shape, () => {
+        hit = true
+        return false
+      }, undefined, SOLID, undefined, r.rb)
+      if (hit) return true
+    }
+    return false
+  }
+
+  /** Let go of a ghost: if it's inside something, lift it straight up until it's clear; then it's solid again. */
+  private land(r: Rider): void {
+    let dy = 0
+    while (dy < 60 && this.overlapping(r, dy)) dy += 0.5
+    if (dy > 0) {
+      const t = r.rb.translation()
+      r.rb.setTranslation({ x: t.x, y: t.y + dy }, true)
+      const v = r.rb.linvel()
+      r.rb.setLinvel({ x: v.x, y: Math.max(0, v.y) }, true)
+    }
+    for (const col of r.cols) col.setCollisionGroups(SOLID)
   }
 
   moveGrab(x: number, y: number): void {
@@ -239,6 +276,7 @@ export class Town {
     const max = 38
     if (sp > max) rb.setLinvel({ x: (v.x * max) / sp, y: (v.y * max) / sp }, true)
     rb.setAngvel(Math.max(-12, Math.min(12, rb.angvel())), true)
+    this.land(g.rider)
     return g.rider
   }
 
