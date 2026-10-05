@@ -4,10 +4,13 @@
  * gravity along every ramp and pipe, flying in true arcs, grinding rails.
  * A tap while he flies is a flip.
  *
- * Where he can't skate on — he rolls back from something too steep, rides
- * into a wall, lands on stairs, or stops in front of an obstacle — he steps
- * off, board under his arm, and runs, vaults, climbs and leaps over it like
- * a parkour runner, hopping back on his board at the first stretch he can
+ * Rolling forward, he takes whatever's in his path in his stride: anything
+ * he hasn't the speed to ride over, he ollies over, and rolls on with his
+ * speed; off a ledge over stairs, he pops far enough to clear them. Only
+ * where he's too slow for that — he rolls back from something too steep,
+ * or stops in front of an obstacle — or lands on stairs, does he step off,
+ * board under his arm, and run, vault, climb and leap over it like a
+ * parkour runner, hopping back on his board at the first stretch he can
  * skate. Assists where a toddler needs them: he always lands on his board,
  * and flips always finish.
  */
@@ -31,6 +34,9 @@ const STEEP = Math.tan((50 * Math.PI) / 180)
 const DRIFT = 1.5
 /** A rise higher than this he climbs (a wall run) rather than vaults. */
 const CLIMB_OVER = 6
+/** Rolling forward at least this fast, he ollies over whatever's ahead rather than stopping at it; clearing it by this much. */
+export const OLLIE_MIN = 3
+const OLLIE_CLEAR = 1.2
 
 export interface Vec {
   x: number
@@ -52,7 +58,9 @@ export type News =
   | { kind: 'land'; air: number; flips: number; lucky: boolean; doubleLucky: boolean }
   | { kind: 'grind'; blocks: number; lucky: boolean; doubleLucky: boolean }
   | { kind: 'takeoff' }
+  | { kind: 'ollie' }
   | { kind: 'bump' }
+  | { kind: 'touchdown' }
   | { kind: 'step' }
   | { kind: 'off' }
   | { kind: 'on' }
@@ -86,6 +94,8 @@ export interface Rider {
   splitNext: boolean
   /** Grinding: where it started. */
   grindFrom: number
+  /** Over an obstacle: the speed he had going in, which he rolls away with after it. */
+  carry: number
   /** Stopped on the board this long (s). */
   still: number
   tricks: number
@@ -114,6 +124,7 @@ export const ready = (): Rider => ({
   split: false,
   splitNext: false,
   grindFrom: 0,
+  carry: 0,
   still: 0,
   tricks: 0,
   best: 0,
@@ -188,6 +199,7 @@ export function fling(k: Rider, c: Course) {
   const sp = Math.hypot(vel.x, vel.y)
   if (sp > VMAX) vel = { x: (vel.x * VMAX) / sp, y: (vel.y * VMAX) / sp }
   k.trail = []
+  k.carry = 0
   const s = c.segAt(k.pos.x)
   const u = unit(s)
   // On the ground and not flung up off it: rolling along it (or, where he can't skate, on foot).
@@ -285,6 +297,22 @@ function rideStep(k: Rider, c: Course, dt: number) {
     toFoot(k)
     return
   }
+  // Something ahead he can't ride over at this speed: an ollie, up over its top and onto it (or beyond).
+  if (v >= OLLIE_MIN) {
+    const ob = obstacleAhead(c, x, k.pos.y, v)
+    if (ob) {
+      const jump = ollie(k.pos, v * u.x, ob.at, ob.top, ob.land)
+      // Off he goes when, at his speed, he'd be at its edge just as he's up past its height.
+      if (ob.at - x <= v * u.x * jump.t1 + 0.2) {
+        // If that flight would come down into the side of what's next (another stack beyond), jump that too.
+        const vel = overWhatsNext(c, k.pos, jump.vel, v * u.x, ob.at, ob.top)
+        k.carry = v
+        takeOff(k, k.pos, { x: vel.x, y: Math.max(vel.y, v * u.y + 2) })
+        k.news.push({ kind: 'ollie' })
+        return
+      }
+    }
+  }
   let dist = v * dt
   while (dist !== 0) {
     const s = segs[i]
@@ -308,7 +336,7 @@ function rideStep(k: Rider, c: Course, dt: number) {
       }
       const vel = { x: v * u.x, y: v * u.y }
       if (n.y0 < s.y1 - 0.01 || leaves(vel, unit(n))) {
-        launch(k, { x, y: s.y1 }, vel)
+        launch(k, { x, y: s.y1 }, clearRough(k, c, { x, y: s.y1 }, vel))
         return
       }
       i++
@@ -356,6 +384,128 @@ function launch(k: Rider, at: Vec, vel: Vec) {
   takeOff(k, at, v)
 }
 
+/** What's ahead that he can't ride over at speed v: where it starts, how high it goes, and where on top he can land (null if nothing, or an edge he'll fly off first). */
+function obstacleAhead(c: Course, x: number, y: number, v: number): { at: number; top: number; land: number } | null {
+  const reach = Math.min(32, 2 + v)
+  let prev = c.heightAt(x)
+  for (let d = 0.25; d <= reach; d += 0.25) {
+    const h = c.heightAt(x + d)
+    if (h < prev - 1) return null
+    const s = c.segAt(x + d)
+    const wall = h - prev > WALL
+    if (wall || slope(s) > 0.14) {
+      const at = x + d - 0.25
+      const top = c.highest(at, at + 8)
+      // A ramp he has the speed for, he rides.
+      if (!wall && s.ride && ((v * v) / (2 * G)) * 0.85 >= top - y + 0.5) return null
+      // Where it levels off on top (or the far side of it).
+      let land = at + 0.25
+      while (land < at + 8 && (c.heightAt(land) < top - 0.4 || slope(c.segAt(land)) > 0.14)) land += 0.25
+      return { at, top, land }
+    }
+    prev = h
+  }
+  return null
+}
+
+/**
+ * An ollie from `from` (rolling at vx) over something starting at `at`, `top` high, landing on it at `land`:
+ * up to just over its top; fast enough to land on it, but (if he's close) slow enough to be up past its edge before he
+ * gets there. Also when he'd be up past its height (t1).
+ */
+function ollie(from: Vec, vx: number, at: number, top: number, land: number): { vel: Vec; t1: number } {
+  let out = { vel: { x: vx, y: 0 }, t1: 0.01 }
+  // Higher if need be: more time in the air lets him both clear the edge and reach the landing.
+  for (let extra = 0; extra <= 8; extra += 1) {
+    const clear = OLLIE_CLEAR + extra
+    const rise = Math.max(0.5, top - from.y + clear)
+    const vy = Math.sqrt(2 * G * rise)
+    const t1 = Math.max(0.01, (vy - Math.sqrt(2 * G * Math.min(rise, clear))) / G)
+    const T = vy / G + Math.sqrt((2 * Math.min(rise, clear)) / G)
+    const need = (land + 0.6 - from.x) / T
+    const most = Math.max(0, at - from.x) / t1
+    out = { vel: { x: Math.max(need, 1.5, Math.min(vx, most)), y: vy }, t1 }
+    if (need <= most) break
+  }
+  return out
+}
+
+/** A wall between x0 and x1 whose top is above y (one he'd fly into the side of): its x. */
+function wallBetween(c: Course, x0: number, x1: number, y: number): number | null {
+  const a = c.indexAt(Math.min(x0, x1))
+  const b = c.indexAt(Math.max(x0, x1))
+  for (let j = a; j < b; j++) {
+    const s = c.segs[j]
+    const n = c.segs[j + 1]
+    if (Math.abs(n.y0 - s.y1) > WALL && Math.max(s.y1, n.y0) > y) return s.x1
+  }
+  return null
+}
+
+/** Would a flight from `at` at `vel` come down into the side of something (rather than onto it)? Where. */
+function sideHit(c: Course, at: Vec, vel: Vec): { x: number } | null {
+  const p = { ...at }
+  const v = { ...vel }
+  for (let i = 0; i < 480; i++) {
+    const prev = { ...p }
+    v.y -= G / 120
+    p.x += v.x / 120
+    p.y += v.y / 120
+    if (p.y <= c.heightAt(p.x)) {
+      const w = wallBetween(c, prev.x, p.x, prev.y)
+      return w === null ? null : { x: w + 0.01 }
+    }
+  }
+  return null
+}
+
+/** Over whatever a flight from `from` at `vel` would hit the side of: the ollie that clears it (and anything just beyond). */
+function overWhatsNext(c: Course, from: Vec, vel: Vec, vx: number, at: number, top0: number): Vec {
+  let out = vel
+  let top = top0
+  for (let tries = 0; tries < 3; tries++) {
+    const hit = sideHit(c, from, out)
+    if (!hit) break
+    top = Math.max(top, c.highest(hit.x - 0.5, hit.x + 4))
+    let land = hit.x
+    while (land < hit.x + 8 && (c.heightAt(land) < top - 0.4 || slope(c.segAt(land)) > 0.14)) land += 0.25
+    out = ollie(from, vx, Math.min(at, hit.x), top, land).vel
+  }
+  return out
+}
+
+/** Where a flight from `at` at `vel` comes down. */
+function landsAt(c: Course, at: Vec, vel: Vec): number {
+  const p = { ...at }
+  const v = { ...vel }
+  for (let i = 0; i < 480; i++) {
+    v.y -= G / 120
+    p.x += v.x / 120
+    p.y += v.y / 120
+    if (p.y <= c.heightAt(p.x)) break
+  }
+  return p.x
+}
+
+/** Off an edge: if he'd fly into the side of what's next, pop over it; with stairs (or anything he can't skate) below, pop higher, to clear them. */
+function clearRough(k: Rider, c: Course, at: Vec, vel: Vec): Vec {
+  if (vel.x < OLLIE_MIN) return vel
+  if (sideHit(c, at, vel)) {
+    k.carry = vel.x
+    const over = overWhatsNext(c, at, vel, vel.x, Infinity, at.y)
+    return { x: over.x, y: Math.max(vel.y, over.y) }
+  }
+  const x = landsAt(c, at, vel)
+  if (c.segAt(x).ride) return vel
+  let end = x
+  while (!c.segAt(end).ride && end < x + 20) end += 0.25
+  const target = end + 1.5
+  const T = (target - at.x) / vel.x
+  const vy = (c.heightAt(target) - at.y + 0.5 * G * T * T) / T
+  k.carry = vel.x
+  return { x: vel.x, y: Math.max(vel.y, Math.min(vy, 24)) }
+}
+
 /** Seconds until he's back down to height y. */
 function timeTo(pos: Vec, vel: Vec, y: number) {
   return (vel.y + Math.sqrt(Math.max(0, vel.y ** 2 + 2 * G * Math.max(0, pos.y - y)))) / G
@@ -397,26 +547,20 @@ function airStep(k: Rider, c: Course, dt: number) {
       k.angle = Math.atan2(ru.y, ru.x)
       k.turned = k.flips
       k.grindFrom = pos.x
-      k.news.push({ kind: 'bump' })
+      k.news.push({ kind: 'touchdown' })
       return
     }
   }
 
   if (pos.y <= ground) {
     // Into the side of a wall (its top higher than he was)? Then off it, still falling.
-    const a = c.indexAt(Math.min(prev.x, pos.x))
-    const b = c.indexAt(Math.max(prev.x, pos.x))
-    for (let j = a; j < b; j++) {
-      const s = c.segs[j]
-      const n = c.segs[j + 1]
-      const top = Math.max(s.y1, n.y0)
-      if (Math.abs(n.y0 - s.y1) > WALL && top > prev.y) {
-        const wx = s.x1
-        k.pos = { x: wx + (vel.x > 0 ? -0.03 : 0.03), y: Math.max(pos.y, c.heightAt(wx + (vel.x > 0 ? -0.03 : 0.03))) }
-        k.vel = { x: -vel.x * 0.25, y: Math.min(vel.y, 0) }
-        k.news.push({ kind: 'bump' })
-        return
-      }
+    const wx = wallBetween(c, prev.x, pos.x, prev.y)
+    if (wx !== null) {
+      const back = wx + (vel.x > 0 ? -0.03 : 0.03)
+      k.pos = { x: back, y: Math.max(pos.y, c.heightAt(back)) }
+      k.vel = { x: -vel.x * 0.25, y: Math.min(vel.y, 0) }
+      k.news.push({ kind: 'bump' })
+      return
     }
     land(k, c, { x: pos.x, y: ground }, vel)
     return
@@ -435,16 +579,19 @@ function land(k: Rider, c: Course, at: Vec, vel: Vec) {
   const shown = Math.round(Math.max(0, air) * 10) / 10
   if (counted) k.best = Math.max(k.best, shown)
   if (counted || k.flips) k.news.push({ kind: 'land', air: counted ? shown : 0, flips: k.flips, lucky, doubleLucky })
-  else k.news.push({ kind: 'bump' })
+  else k.news.push({ kind: 'touchdown' })
   k.pos = at
   k.turned = k.flips
   k.split = false
   if (s.ride) {
     k.mode = 'ride'
     k.v = vel.x * u.x + vel.y * u.y
+    // Over an obstacle, he rolls on with the speed he had going in.
+    if (k.carry > 0 && vel.x > 0) k.v = Math.max(k.v, k.carry * 0.95)
     k.angle = Math.atan2(u.y, u.x)
     k.still = 0
   } else toFoot(k)
+  k.carry = 0
 }
 
 function grindStep(k: Rider, dt: number) {

@@ -121,7 +121,8 @@ function App({ services }: GameProps) {
       // Sounds and shouts for what just happened.
       for (const n of k.news) {
         if (n.kind === 'takeoff') clack(0.4)
-        else if (n.kind === 'bump' || n.kind === 'on') clack(0.6)
+        else if (n.kind === 'ollie') clack(0.7)
+        else if (n.kind === 'bump' || n.kind === 'touchdown' || n.kind === 'on') clack(0.6)
         else if (n.kind === 'step') clack(0.12)
         else if (n.kind === 'land') {
           clack(0.8)

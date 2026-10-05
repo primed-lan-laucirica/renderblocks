@@ -162,7 +162,9 @@ export class Course {
 
   private piece() {
     const r = this.r
-    const kind = this.count < OPENING.length ? OPENING[this.count] : KINDS[Math.floor(r() * KINDS.length)]
+    let kind = this.count < OPENING.length ? OPENING[this.count] : KINDS[Math.floor(r() * KINDS.length)]
+    // Never the same thing twice running.
+    while (this.count >= OPENING.length && kind === this.pieces[this.pieces.length - 1]?.kind) kind = KINDS[Math.floor(r() * KINDS.length)]
     this.count++
     this.flat(8 + r() * 8)
     this.pieces.push({ kind, x: this.x })
@@ -247,20 +249,17 @@ export class Course {
         break
       }
       case 'blocks': {
-        // Parkour blocks: stacks of 2 to 9, three wide, with gaps to jump.
-        const n = 3 + Math.floor(r() * 3)
+        // Parkour blocks: one to three stacks of 2 to 8, three wide, with room to land between (or, touching, stepping up).
+        const n = 1 + Math.floor(r() * 3)
         let prev = 0
-        let touching = false
         for (let i = 0; i < n; i++) {
-          let h = 2 + Math.floor(r() * 8)
-          // Stacks side by side are never the same height (they'd look like one wide one).
-          if (touching && h === prev) h = h === 9 ? 8 : h + 1
+          const touching = i > 0 && prev < 7 && r() < 0.3
+          const h = touching ? prev + 1 + Math.floor(r() * (8 - prev)) : 2 + Math.floor(r() * 7)
+          if (i > 0 && !touching) this.flat(5 + r() * 3)
           this.wall(h)
           this.line(this.x + 3 + Math.floor(r() * 2), h, true, 'blocks', h)
           this.wall(0)
           prev = h
-          touching = r() < 0.35
-          if (i < n - 1 && !touching) this.flat(1.5 + r() * 3)
         }
         break
       }

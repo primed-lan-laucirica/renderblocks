@@ -23,6 +23,7 @@ function run(k: Rider, c: Course, seconds: number, each?: (k: Rider) => void) {
 
 /** Put him on the street just before the first piece of a kind, rolling right at `v`. */
 function before(c: Course, kind: string, v: number): { k: Rider; x: number } {
+  c.ensure(800)
   const piece = c.pieces.find((p) => p.kind === kind)!
   const k = ready()
   k.pos = { x: piece.x - 4, y: c.heightAt(piece.x - 4) }
@@ -63,9 +64,25 @@ describe('Fourteen', () => {
     expect(k.far).toBeGreaterThan(900)
   })
 
+  it.each(['kicker', 'funbox', 'quarter', 'halfpipe', 'stairs', 'rail', 'pipe', 'blocks'])('rolling at a fair speed, he takes a %s in his stride: never stopping, never off his board', (kind) => {
+    const c = new Course(14)
+    const { k } = before(c, kind, 9)
+    const i = c.pieces.findIndex((p) => p.kind === kind)
+    const after = c.pieces[i + 1].x
+    let stopped = false
+    // (No flinging him on here: he has to get past it on his own momentum.)
+    for (let t = 0; t < 15 / DT && k.pos.x < after; t++) {
+      step(k, c, DT)
+      if (k.mode === 'foot' || k.news.some((n) => n.kind === 'bump') || (k.mode === 'ride' && k.v <= 0)) stopped = true
+      k.news = []
+    }
+    expect(stopped).toBe(false)
+    expect(k.pos.x).toBeGreaterThanOrEqual(after)
+  })
+
   it('too slow for a quarter pipe, he rolls back, so off he hops and climbs it, then skates on', () => {
     const c = new Course(14)
-    const { k, x } = before(c, 'quarter', 6)
+    const { k, x } = before(c, 'quarter', 2.5)
     const modes = new Set<string>()
     run(k, c, 12, (k) => {
       if (k.pos.x > x + 3) modes.add(k.mode)
@@ -74,9 +91,9 @@ describe('Fourteen', () => {
     expect(k.pos.x).toBeGreaterThan(x + 20)
   })
 
-  it('rides into a parkour block, vaults or climbs over the blocks, and is back on his board after them', () => {
+  it('creeping up to a parkour block, he vaults or climbs over the blocks, and is back on his board after them', () => {
     const c = new Course(14)
-    const { k, x } = before(c, 'blocks', 8)
+    const { k, x } = before(c, 'blocks', 2)
     const end = c.pieces[c.pieces.findIndex((p) => p.kind === 'blocks') + 1].x
     let footed = false
     run(k, c, 25, (k) => {
@@ -146,15 +163,24 @@ describe('Fourteen', () => {
     fling(up, c)
     expect(up.mode).toBe('air')
     expect(up.vel.y).toBeGreaterThan(10)
-    // Roll off the start deck into the drop-in: flying; flip twice.
-    run(k, c, 3, (k) => {
+    // Every air: two flips asked for; every landing: both (all but) finished in the air just before it.
+    let landings = 0
+    let left = 0
+    run(k, c, 8, (k) => {
       if (k.mode === 'air' && k.flips === 0) {
         tap(k)
         tap(k)
       }
+      for (const n of k.news)
+        if (n.kind === 'land') {
+          landings++
+          expect(left).toBeLessThan(0.15)
+        }
+      k.news = []
+      if (k.mode === 'air') left = k.flips - k.turned
     })
-    expect(k.tricks).toBeGreaterThanOrEqual(2)
-    expect(k.turned).toBe(k.flips)
+    expect(landings).toBeGreaterThan(2)
+    expect(k.tricks).toBeGreaterThanOrEqual(4)
   })
 
   it('only gets back on his board where he can skate', () => {
