@@ -71,3 +71,26 @@ describe('the wind', () => {
     expect(push(10, 12, 7)).toBe(0)
   })
 })
+
+import { ALL_SETS, lineupFor, RANGES, SAMPLE } from './sets'
+
+describe('LavaBlocks sets as lineups', () => {
+  it('offers every set, with positive ranges', () => {
+    expect(ALL_SETS.length).toBe(29) // 8 families, 12 times tables, 9 powers
+    for (const r of RANGES) expect(r.from).toBeGreaterThanOrEqual(1)
+  })
+  it('adds every member of a small set', () => {
+    expect(lineupFor('mult7', { from: 1, to: 84 })).toEqual([7, 14, 21, 28, 35, 42, 49, 56, 63, 70, 77, 84])
+    expect(lineupFor('squares', { from: 1, to: 100 })).toEqual([1, 4, 9, 16, 25, 36, 49, 64, 81, 100])
+    expect(lineupFor('integers', { from: 1, to: 100 })).toHaveLength(100)
+  })
+  it('spreads a sample across a huge one, small numbers kept', () => {
+    const big = lineupFor('integers', { from: 1, to: 1_000_000 })
+    expect(big.length).toBeLessThanOrEqual(SAMPLE)
+    expect(big).toContain(1)
+    expect(big[big.length - 1]).toBe(1_000_000)
+  })
+  it('skips zero and negatives', () => {
+    expect(lineupFor('evens', { from: -3, to: 10 })).toEqual([2, 4, 6, 8, 10])
+  })
+})
