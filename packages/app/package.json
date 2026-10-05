@@ -23,6 +23,7 @@
     "@renderblocks/base10": "workspace:*",
     "@renderblocks/trace": "workspace:*",
     "@renderblocks/skate": "workspace:*",
+    "@renderblocks/designer": "workspace:*",
     "@renderblocks/blocks": "workspace:*",
     "@renderblocks/calendar": "workspace:*",
     "@renderblocks/combos": "workspace:*",
