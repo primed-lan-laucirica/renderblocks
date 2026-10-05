@@ -30,7 +30,10 @@ describe('the town physics', () => {
     t.setWind(false)
     run(t, 6)
     expect(maxTwist(t)).toBe(0)
-    expect(maxSpin(t)).toBeLessThan(0.5)
+    // Everyone come to rest has stopped spinning (one still flying from an updraft's throw may tumble on).
+    const resting = t.riders.filter((r) => Math.hypot(r.rb.linvel().x, r.rb.linvel().y) < 3)
+    expect(resting.length).toBeGreaterThan(20)
+    expect(Math.max(...resting.map((r) => Math.abs(r.rb.angvel())))).toBeLessThan(0.5)
   })
   it('with the wind off from the start, nobody moves', () => {
     const t = crowd()
@@ -39,6 +42,36 @@ describe('the town physics', () => {
     run(t, 3)
     t.riders.forEach((r, i) => expect(Math.abs(r.cur.x - before[i])).toBeLessThan(0.05))
   })
+  // Everyone queued against a building's wall (upright), and big ones alone, upright or lying down.
+  const cases: [number[], boolean][] = [[[1, 4, 7, 9, 14], false], [[7], true], [[14], true], [[100], false], [[100], true]]
+  for (const gravity of [0, 20])
+    for (const [cast, lying] of cases)
+      it(`pinned against a building by the wind, the updraft carries them up and over (${cast.join(', ')}${lying ? ' lying down' : ''}, gravity ${gravity})`, () => {
+        const t = new Town(cast.map((n) => standard(BigInt(n))))
+        t.setGravity(gravity)
+        run(t, 0.5)
+        t.ensure(1200)
+        // A building with open street in front of it.
+        const all = [...t.built.values()].flatMap((b) => b.pieces) as { kind: string; x: number; w?: number; len?: number; h?: number }[]
+        const wall = all.find((w) => w.kind === 'building' && w.x > 25 && !all.some((p) => p.x < w.x && p.x + (p.w ?? p.len ?? 2) > w.x - 25)) as { x: number; w: number; h: number }
+        let edge = wall.x - 0.2
+        for (const r of t.riders) {
+          const s = r.geo.scale
+          const w = (r.geo.x1 - r.geo.x0) * s
+          const h = (r.geo.y1 - r.geo.y0) * s
+          r.rb.setTranslation(lying ? { x: edge, y: 0.05 } : { x: edge - w, y: 0.05 }, true)
+          r.rb.setRotation(lying ? Math.PI / 2 : 0, true)
+          r.rb.setLinvel({ x: 0, y: 0 }, true)
+          r.rb.setAngvel(0, true)
+          edge -= (lying ? h : w) + 0.3
+        }
+        run(t, 15)
+        const trapped = t.riders.filter((r) => {
+          const p = r.rb.worldCom()
+          return p.x < wall.x && p.y < wall.h
+        })
+        expect(trapped.map((r) => String(r.c.n))).toEqual([])
+      })
   it('dragged into a wall and stuck there, a character pops up over it', () => {
     const t = crowd()
     t.setWind(false)

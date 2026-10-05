@@ -27,8 +27,10 @@ export interface Rider {
   prev: Pose
   cur: Pose
   lastThud: number
-  /** Its colliders (turned ghostly while it's held). */
+  /** Its colliders. */
   cols: RAPIER.Collider[]
+  /** Carried up a wall by its updraft (so the air over the roof edge holds him till he's across). */
+  lifted: boolean
 }
 
 /** Overlap tests check against everything. */
@@ -57,6 +59,9 @@ interface Grab {
  * each character by how much it shows to the wind; a finger can grab any
  * character and fling it.
  */
+/** How far out from a building's windward wall its updraft reaches (blocks). */
+const UPDRAFT_REACH = 6
+
 export class Town {
   readonly world: RAPIER.World
   readonly riders: Rider[] = []
@@ -108,7 +113,7 @@ export class Town {
           ? [RAPIER.ColliderDesc.convexHull(new Float32Array(geo.rects.flatMap((r) => [r.x, r.y, r.x + r.w, r.y, r.x + r.w, r.y + r.h, r.x, r.y + r.h]).map((v) => v * s)))!]
           : geo.rects.map((r) => RAPIER.ColliderDesc.cuboid((r.w * s) / 2, (r.h * s) / 2).setTranslation((r.x + r.w / 2) * s, (r.y + r.h / 2) * s))
       const pose = { x: ox, y: oy, a: 0 }
-      const rider: Rider = { c, geo, rb, start: ox, best: 0, prev: pose, cur: pose, lastThud: -1, cols: [] }
+      const rider: Rider = { c, geo, rb, start: ox, best: 0, prev: pose, cur: pose, lastThud: -1, cols: [], lifted: false }
       for (const d of descs) {
         const col = this.world.createCollider(d.setDensity(density).setFriction(FRICTION).setRestitution(0.15).setActiveEvents(RAPIER.ActiveEvents.COLLISION_EVENTS), rb)
         this.byCollider.set(col.handle, rider)
@@ -309,6 +314,8 @@ export class Town {
       const s = r.geo.scale
       let lo = Infinity
       let hi = -Infinity
+      let left = Infinity
+      let right = -Infinity
       const corners = r.geo.rects.length > 24 ? [{ x: r.geo.x0, y: r.geo.y0, w: r.geo.x1 - r.geo.x0, h: r.geo.y1 - r.geo.y0 }] : r.geo.rects
       for (const q of corners)
         for (const [cx, cy] of [
@@ -317,21 +324,39 @@ export class Town {
           [q.x, q.y + q.h],
           [q.x + q.w, q.y + q.h],
         ]) {
+          const x = t.x + cx * s * Math.cos(a) - cy * s * Math.sin(a)
           const y = t.y + (cx * s) * Math.sin(a) + (cy * s) * Math.cos(a)
           lo = Math.min(lo, y)
           hi = Math.max(hi, y)
+          left = Math.min(left, x)
+          right = Math.max(right, x)
         }
       const com = r.rb.worldCom()
       const wind = windAt(com.x, this.time, zones, boost)
-      const f = push(wind, r.rb.linvel().x, hi - lo)
-      if (f > 0) r.rb.addForceAtPoint({ x: f, y: 0 }, { x: com.x, y: (lo + hi) / 2 }, true)
-      // Against a building's windward wall the wind turns upward: an updraft that can carry him up and over.
-      const half = (r.geo.x1 - r.geo.x0) * r.geo.scale * 0.5
+      // Before a building's windward wall the wind turns upward: an updraft that carries anyone
+      // there up — strongest at the wall, reaching a few blocks out (to those queued behind), and
+      // always enough to lift him whatever he weighs, so a building never traps anyone. Just over
+      // the roof edge it curls over: holding him up while the wind carries him across onto the roof.
+      let up = 0
+      let over = 0
       for (const b of this.buildingsNear(com.x)) {
-        const gap = b.x - com.x - half
-        if (gap < -0.5 || gap > 2.5 || lo > b.h + 0.5) continue
-        const lift = push(wind, 0, hi - lo) * 1.3
-        r.rb.addForce({ x: 0, y: lift }, true)
+        const gap = b.x - right
+        if (left > b.x || gap > UPDRAFT_REACH || lo > b.h + 3) continue
+        const k = Math.min(1, (UPDRAFT_REACH - gap) / (UPDRAFT_REACH - 2))
+        if (lo < b.h + 0.5) up = Math.max(up, k)
+        else over = Math.max(over, k)
+      }
+      const f = push(wind, r.rb.linvel().x, hi - lo)
+      // Right at the wall the wind goes up instead of pressing him into it (pressed in, he'd stick).
+      if (f > 0) r.rb.addForceAtPoint({ x: f * (1 - 0.8 * up), y: 0 }, { x: com.x, y: (lo + hi) / 2 }, true)
+      const m = r.rb.mass()
+      if (up > 0) r.rb.addForce({ x: 0, y: up * (push(wind, 0, hi - lo) + 1.3 * m * this.gravity) }, true)
+      if (up === 0 && over === 0) r.lifted = false
+      else if (up > 0) r.lifted = true
+      else if (r.lifted) {
+        // Carried along with the air, heavy or light: up held steady, and across at the wind's speed (a lull still drifts him over).
+        const v = r.rb.linvel()
+        r.rb.addForce({ x: over * m * 2 * (Math.max(4, wind) - v.x), y: over * m * (this.gravity - 2 * v.y) }, true)
       }
     }
     if (this.grab) this.pull(this.grab)
