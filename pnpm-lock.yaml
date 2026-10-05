@@ -140,6 +140,9 @@ importers:
       '@renderblocks/trace':
         specifier: workspace:*
         version: link:../games/trace
+      '@renderblocks/windy':
+        specifier: workspace:*
+        version: link:../games/windy
       '@renderblocks/words':
         specifier: workspace:*
         version: link:../games/words
@@ -485,6 +488,28 @@ importers:
       '@renderblocks/words':
         specifier: workspace:*
         version: link:../words
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@types/node@24.13.2)(vite@7.3.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(terser@5.48.0))
+
+  packages/games/windy:
+    dependencies:
+      '@dimforge/rapier2d-compat':
+        specifier: ^0.20.0
+        version: 0.20.0
+      '@renderblocks/designer':
+        specifier: workspace:*
+        version: link:../designer
+      '@renderblocks/kernel':
+        specifier: workspace:*
+        version: link:../../kernel
       react:
         specifier: ^19.2.0
         version: 19.2.7

@@ -1,14 +1,11 @@
 {
-  "name": "@renderblocks/designer",
+  "name": "@renderblocks/windy",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./module": "./src/module.ts",
-    "./draw": "./src/draw.ts",
-    "./shapes": "./src/shapes.ts",
-    "./look": "./src/look.ts"
+    "./module": "./src/module.ts"
   },
   "scripts": {
     "test": "vitest run"
@@ -17,7 +14,8 @@
     "@renderblocks/kernel": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "@renderblocks/blocks": "workspace:*"
+    "@renderblocks/designer": "workspace:*",
+    "@dimforge/rapier2d-compat": "^0.20.0"
   },
   "devDependencies": {
     "vitest": "^5.0.1"

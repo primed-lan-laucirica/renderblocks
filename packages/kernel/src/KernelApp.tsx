@@ -37,6 +37,7 @@ export function KernelApp({ games, upcoming = [] }: KernelAppProps) {
       active
         ? {
             storage: createNamespacedStorage(active.id),
+            shared: createNamespacedStorage('shared'),
             exitToHome: () => setActiveId(null),
             onBack: (handler) => {
               gameBackHandler.current = handler

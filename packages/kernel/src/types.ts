@@ -44,6 +44,12 @@ export interface NamespacedStorage {
 /** Services the kernel injects into each game. Grows in later phases. */
 export interface GameServices {
   storage: NamespacedStorage
+  /**
+   * Storage every game can read and write (rb:shared:…), for things games
+   * share — e.g. "designs": the Numberblock characters made in Designer,
+   * used by Windy and, later, LavaBlocks.
+   */
+  shared: NamespacedStorage
   /** Return to the game-select home screen. */
   exitToHome: () => void
   /**

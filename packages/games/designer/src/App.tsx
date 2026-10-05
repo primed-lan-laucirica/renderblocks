@@ -66,6 +66,8 @@ function App({ services }: GameProps) {
   const [keypad, setKeypad] = useState(false)
 
   useEffect(() => services.storage.set('designer', JSON.stringify({ n: n.toString(), look, designs } satisfies Saved)), [services, n, look, designs])
+  // His designs, for the other games (Windy now, LavaBlocks later): { [n]: Design }.
+  useEffect(() => services.shared.set('designs', JSON.stringify(designs)), [services, designs])
 
   const keep = (shape: Shape, leftovers: number[], lk = look) => setDesigns((d) => ({ ...d, [n.toString()]: toDesign(n, shape, leftovers, lk) }))
 
