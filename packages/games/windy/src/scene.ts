@@ -97,6 +97,11 @@ const LEAF_COLOURS = ['#22C55E', '#84CC16', '#F59E0B', '#EF4444', '#FFFFFF']
 export function blowLeaves(leaves: Leaf[], town: Town, x0: number, x1: number, y1: number, dt: number) {
   for (const l of leaves) {
     l.x += town.windAt(l.x) * dt
+    // With the wind off, nothing holds them up: they flutter down to the street.
+    if (!town.windOn) {
+      l.vy = Math.max(-4, l.vy - 6 * dt)
+      l.streak = false
+    }
     l.y += l.vy * dt
     l.a += l.spin * dt
   }

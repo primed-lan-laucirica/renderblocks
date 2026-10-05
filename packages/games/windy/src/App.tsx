@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
 import { bounds, drawBody, drawFeatures } from '@renderblocks/designer/draw'
 import { fmt } from '@renderblocks/designer/shapes'
-import { fromKey, fromShared, STANDARD, type Character } from './characters'
+import { fromKey, fromShared, standard, STANDARD, type Character } from './characters'
 import { GRAVITY, initPhysics, STEP, Town, type Rider } from './sim'
 import { blowLeaves, drawLeaves, drawSkyline, drawTown, type Leaf } from './scene'
 import { blowing, silence, thud, wake, whoosh } from './sound'
@@ -49,6 +49,13 @@ function App({ services }: GameProps) {
   useEffect(() => services.storage.set('lineup', JSON.stringify(cast)), [services, cast])
 
   const chosen = useMemo(() => cast.map((k) => fromKey(k, mine)).filter((c): c is Character => !!c), [cast, mine])
+  // Cards for 1–20, then every other number in the lineup (from the ranges or the keypad), in order.
+  const cards = useMemo(() => {
+    const more = [...new Set(cast.filter((k) => k.startsWith('n-')).map((k) => BigInt(k.slice(2))))]
+      .filter((n) => n > 20n)
+      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    return [...STANDARD, ...more.map(standard)]
+  }, [cast])
 
   if (playing) return <Play cast={chosen} storage={services.storage} onLineup={() => setPlaying(false)} onHome={services.exitToHome} />
 
@@ -113,7 +120,7 @@ function App({ services }: GameProps) {
         )}
         <section>
           <h2 className="font-black text-slate-600 text-lg px-1 pb-2">Numberblocks</h2>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] gap-2">{STANDARD.map(card)}</div>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] gap-2">{cards.map(card)}</div>
         </section>
       </div>
       {keypad && (

@@ -41,7 +41,8 @@ export function wake() {
 export function blowing(speed: number) {
   if (!ctx || !wind) return
   const f = Math.min(1, speed / 35)
-  wind.gain.gain.setTargetAtTime(0.03 + f * 0.25, ctx.currentTime, 0.2)
+  // No wind, no sound at all.
+  wind.gain.gain.setTargetAtTime(speed > 0 ? 0.03 + f * 0.25 : 0, ctx.currentTime, 0.2)
   wind.filter.frequency.setTargetAtTime(250 + f * 1100, ctx.currentTime, 0.2)
 }
 
