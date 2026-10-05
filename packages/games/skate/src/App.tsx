@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
-import { COPE, drag, fling, grab, pose, R, ready, step, tapFlip, type Skater, type Vec } from './physics'
-import { drawFourteen, drawPipe, WORLD_W } from './draw'
+import { Course } from './course'
+import { drag, fling, grab, ready, step, tap, type Rider, type Vec } from './rider'
+import { drawFourteen, drawRunner, RAINBOW } from './draw'
+import { drawNumberlings, drawSkyline, drawTown } from './scene'
 import { clack, effect, rolling, wake } from './sounds'
 
 const DT = 1 / 120
@@ -22,14 +24,14 @@ interface Spark {
   until: number
 }
 
-const RAINBOW = ['#EF4444', '#F97316', '#FACC15', '#22C55E', '#3B82F6', '#6366F1', '#A855F7']
-
 /**
- * Skate (Fingerboard-research.md): Fourteen on a halfpipe. One finger: hold
- * to crouch and pump (best on the way down), tap in the air for a kickflip
- * each tap. Landings are always caught. The numbers: how many blocks high
- * each air goes, his best, and the trick count — every 7th is lucky, every
- * 14th splits him into two Sevens for an air.
+ * Skate 14: Fourteen skating through an endless town of ramps, pipes,
+ * rails, stairs and parkour blocks. Touch him and fling him the way he
+ * should go; tap while he flies for flips. Where he can't skate
+ * over something he runs, vaults and climbs it, board under his arm, and
+ * skates on as soon as he can. The numbers: how far he's got (in blocks),
+ * how high each air goes, his best, and the trick count — every 7th is
+ * lucky, every 14th splits him into two Sevens for an air.
  */
 function App({ services }: GameProps) {
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -39,19 +41,21 @@ function App({ services }: GameProps) {
     if (!el) return
     const g = el.getContext('2d')
     if (!g) return
-    let k: Skater = ready()
+    const course = new Course(Math.floor(Math.random() * 1e9))
+    const k: Rider = ready()
     // The finger holding him (one at a time), and the camera's mapping (world blocks → screen px), kept from the last frame.
     let holder = -1
     let view = { scale: 1, ox: 0, oy: 0 }
     let acc = 0
     let last = performance.now()
-    let top = R + 10 // the camera's top edge (world y), eased toward what's needed
+    let cam = { x: k.pos.x + 8, bottom: -4 }
     let shout: Shout | null = null
     let sparks: Spark[] = []
     let raf = 0
     // For a test harness to read.
-    const harness = window as unknown as { __skate?: () => Skater; __skateToScreen?: (p: Vec) => Vec }
+    const harness = window as unknown as { __skate?: () => Rider; __skateCourse?: Course; __skateToScreen?: (p: Vec) => Vec }
     harness.__skate = () => k
+    harness.__skateCourse = course
     harness.__skateToScreen = (p) => ({ x: view.ox + p.x * view.scale, y: view.oy - p.y * view.scale })
 
     const toWorld = (e: PointerEvent): Vec => {
@@ -59,29 +63,28 @@ function App({ services }: GameProps) {
       return { x: (e.clientX - r.left - view.ox) / view.scale, y: (view.oy - (e.clientY - r.top)) / view.scale }
     }
     const secs = () => performance.now() / 1000
-    // A touch on him grabs him; anywhere else while he's flying asks for a flip.
+    // A touch on him grabs him (to fling him); anywhere else, while he's flying, is a flip.
     const down = (e: PointerEvent) => {
       e.preventDefault()
       wake()
       if (holder !== -1) return
-      const held = grab(k, toWorld(e), secs())
-      if (held) {
-        k = held
+      const p = toWorld(e)
+      if (grab(k, p, secs())) {
         holder = e.pointerId
         el.setPointerCapture?.(e.pointerId)
       } else if (k.mode === 'air') {
-        k = tapFlip(k)
+        tap(k)
         effect('whoosh', 0.35)
       }
     }
     const move = (e: PointerEvent) => {
-      if (e.pointerId === holder) k = drag(k, toWorld(e), secs())
+      if (e.pointerId === holder) drag(k, course, toWorld(e), secs())
     }
     // Let go: flung with the finger's speed.
     const up = (e: PointerEvent) => {
       if (e.pointerId !== holder) return
       holder = -1
-      k = fling(k)
+      fling(k, course)
       if (Math.hypot(k.vel.x, k.vel.y) > 12 || Math.abs(k.v) > 12) effect('whoosh', 0.3)
     }
     el.addEventListener('pointerdown', down)
@@ -96,48 +99,60 @@ function App({ services }: GameProps) {
         sparks.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp + 4, colour: RAINBOW[i % 7], until: now + 900 + Math.random() * 500 })
       }
     }
+    const celebrate = (lucky: boolean, doubleLucky: boolean, now: number) => {
+      if (doubleLucky) {
+        shout = { text: 'Double lucky!', sub: `${k.tricks} tricks`, until: now + 2600, big: true }
+        effect('celebrate', 0.7)
+        burst(k.pos.x, k.pos.y + 4, 42, now)
+      } else if (lucky) {
+        shout = { text: 'Lucky!', sub: `${k.tricks} tricks`, until: now + 2000, big: true }
+        effect('pop', 0.7)
+        burst(k.pos.x, k.pos.y + 4, 21, now)
+      }
+    }
 
     const frame = (now: number) => {
       acc = Math.min(0.25, acc + (now - last) / 1000)
       last = now
-      const before = k.mode
       while (acc >= DT) {
-        k = step(k, DT)
+        if (k.mode !== 'held') step(k, course, DT)
         acc -= DT
       }
       // Sounds and shouts for what just happened.
-      // The board on the coping, or landing.
-      if (before !== 'air' && before !== 'held' && k.mode === 'air') clack(0.4)
-      if (before === 'air' && (k.mode === 'pipe' || k.mode === 'deck')) clack(0.8)
-      if (k.landed) {
-        const l = k.landed
-        const blocks = Math.max(1, Math.round(l.air))
-        shout = {
-          text: `${blocks} block${blocks === 1 ? '' : 's'} high!`,
-          sub: l.flips ? `${l.flips} flip${l.flips === 1 ? '' : 's'}` : undefined,
-          until: now + 1600,
+      for (const n of k.news) {
+        if (n.kind === 'takeoff') clack(0.4)
+        else if (n.kind === 'bump' || n.kind === 'on') clack(0.6)
+        else if (n.kind === 'step') clack(0.12)
+        else if (n.kind === 'land') {
+          clack(0.8)
+          const blocks = Math.max(1, Math.round(n.air))
+          if (n.air > 0 || n.flips) {
+            shout = {
+              text: n.air > 0 ? `${blocks} block${blocks === 1 ? '' : 's'} high!` : `${n.flips} flip${n.flips === 1 ? '' : 's'}!`,
+              sub: n.air > 0 && n.flips ? `${n.flips} flip${n.flips === 1 ? '' : 's'}` : undefined,
+              until: now + 1600,
+            }
+            if (n.air >= 8) shout = { ...shout, text: 'Gnarly!', sub: `${blocks} blocks high` }
+          }
+          celebrate(n.lucky, n.doubleLucky, now)
+        } else if (n.kind === 'grind') {
+          shout = { text: 'Grind!', sub: `${n.blocks} block${n.blocks === 1 ? '' : 's'}`, until: now + 1600 }
+          celebrate(n.lucky, n.doubleLucky, now)
         }
-        const p = pose(k).at
-        if (l.doubleLucky) {
-          shout = { text: 'Double lucky!', sub: `${k.tricks} tricks`, until: now + 2600, big: true }
-          effect('celebrate', 0.7)
-          burst(p.x, p.y + 4, 42, now)
-        } else if (l.lucky) {
-          shout = { text: 'Lucky!', sub: `${k.tricks} tricks`, until: now + 2000, big: true }
-          effect('pop', 0.7)
-          burst(p.x, p.y + 4, 21, now)
-        } else if (l.air >= 8) shout = { ...shout, text: 'Gnarly!', sub: `${blocks} blocks high` }
-        k = { ...k, landed: null }
       }
-      rolling(k.mode === 'pipe' || k.mode === 'deck' ? Math.abs(k.v) : 0)
+      k.news = []
+      rolling(k.mode === 'ride' || k.mode === 'grind' ? Math.abs(k.v) : 0, k.mode === 'grind')
       sparks = sparks.filter((s) => s.until > now)
       for (const s of sparks) {
         s.vy -= 30 / 60
         s.x += s.vx / 60
         s.y += s.vy / 60
       }
+      // Grinding throws sparks off the rail.
+      if (k.mode === 'grind' && Math.random() < 0.6)
+        sparks.push({ x: k.pos.x, y: k.pos.y, vx: -Math.sign(k.v) * (2 + Math.random() * 4), vy: 2 + Math.random() * 4, colour: Math.random() < 0.5 ? '#FDE047' : '#FB923C', until: now + 350 })
 
-      // Camera: the whole pipe, rising to keep a high air in view.
+      // Camera: following him, looking ahead; the ground below him and room above him in view.
       const dpr = Math.min(2, window.devicePixelRatio || 1)
       const w = el.clientWidth
       const h = el.clientHeight
@@ -145,59 +160,38 @@ function App({ services }: GameProps) {
         el.width = Math.round(w * dpr)
         el.height = Math.round(h * dpr)
       }
-      const p = pose(k)
-      // Room for all of him (board, seven blocks, helmet) above where he is.
-      const want = Math.max(R + 10, p.at.y + 12)
-      top += (want - top) * 0.15
-      const bottom = -2.5
-      const scale = Math.min(w / WORLD_W, h / (top - bottom))
+      const scale = Math.min(h / 28, w / 22)
+      const viewW = w / scale
+      const viewH = h / scale
+      const ground = course.heightAt(k.pos.x)
+      // The ground 5 blocks up from the foot of the screen; up high, him in the middle (below the shouts).
+      const wantBottom = Math.max(Math.min(ground, k.pos.y) - 5, k.pos.y + 18 - viewH)
+      cam = { x: cam.x + (k.pos.x + viewW * 0.15 - cam.x) * 0.12, bottom: cam.bottom + (wantBottom - cam.bottom) * 0.1 }
+      // However fast he's flung, never off screen: his head below the top, his board above the bottom, him across the middle.
+      cam.bottom = Math.min(k.pos.y - 1.5, Math.max(cam.bottom, k.pos.y + 13 - viewH))
+      cam.x = Math.max(k.pos.x - viewW * 0.4, Math.min(k.pos.x + viewW * 0.4, cam.x))
+      view = { scale, ox: w / 2 - cam.x * scale, oy: h + cam.bottom * scale }
+      const x0 = cam.x - viewW / 2
+      const x1 = cam.x + viewW / 2
+
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
       const sky = g.createLinearGradient(0, 0, 0, h)
       sky.addColorStop(0, '#BAE6FD')
       sky.addColorStop(1, '#F0F9FF')
       g.fillStyle = sky
       g.fillRect(0, 0, w, h)
-      // World → screen: centred, y up, the pipe's bottom near the screen's foot.
-      view = { scale, ox: w / 2, oy: h + bottom * scale }
       g.setTransform(scale * dpr, 0, 0, -scale * dpr, view.ox * dpr, view.oy * dpr)
-      drawPipe(g)
-
-      // The best air so far: a dashed line over both copings.
-      if (k.best > 0.5) {
-        g.setLineDash([0.4, 0.3])
-        g.lineWidth = 0.08
-        g.strokeStyle = '#F59E0B'
-        for (const x of [-COPE, COPE]) {
-          g.beginPath()
-          g.moveTo(x - 2, R + k.best)
-          g.lineTo(x + 2, R + k.best)
-          g.stroke()
-        }
-        g.setLineDash([])
-      }
-      // In the air: a ruler from the coping up to him, a tick per block.
-      if (k.mode === 'air' && k.pos.y > R) {
-        const x = (k.pos.x < 0 ? -1 : 1) * (COPE + 1.2)
-        const hgt = Math.max(0, k.pos.y - R)
-        g.lineWidth = 0.1
-        g.strokeStyle = '#0EA5E9'
-        g.beginPath()
-        g.moveTo(x, R)
-        g.lineTo(x, R + hgt)
-        g.stroke()
-        for (let i = 1; i <= Math.floor(hgt); i++) {
-          g.beginPath()
-          g.moveTo(x - 0.35, R + i)
-          g.lineTo(x + 0.35, R + i)
-          g.stroke()
-        }
-      }
+      drawSkyline(g, x0, x1, cam.x, Math.min(0, cam.bottom + 2))
+      drawTown(g, course, x0, x1, cam.bottom - 1)
 
       // Fourteen.
       g.save()
-      g.translate(p.at.x, p.at.y)
-      g.rotate(p.angle)
-      drawFourteen(g, k, k.mode === 'held', k.mode === 'pipe' || k.mode === 'deck' ? Math.sign(k.v) : 0)
+      g.translate(k.pos.x, k.pos.y)
+      if (k.mode === 'foot') drawRunner(g, k)
+      else {
+        g.rotate(k.angle)
+        drawFourteen(g, k, k.mode === 'held', k.mode === 'ride' ? Math.sign(k.v) : 0)
+      }
       g.restore()
 
       for (const s of sparks) {
@@ -205,37 +199,36 @@ function App({ services }: GameProps) {
         g.fillRect(s.x - 0.15, s.y - 0.15, 0.3, 0.3)
       }
 
-      // Screen-space numbers.
+      // Screen-space numbers: the blocks' numberlings, his, and in the air, how high he is.
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
+      const toScreen = (x: number, y: number) => ({ x: view.ox + x * scale, y: view.oy - y * scale })
+      drawNumberlings(g, course, x0, x1, toScreen, Math.max(16, Math.min(40, scale * 1.4)))
+      const head = toScreen(k.pos.x - Math.sin(k.mode === 'foot' ? 0 : k.angle) * 9.3, k.pos.y + Math.cos(k.mode === 'foot' ? 0 : k.angle) * 9.3)
+      g.fillText('14', head.x, head.y)
       const unit = Math.min(w, h)
-      g.textAlign = 'right'
-      g.fillStyle = '#0F172A'
-      g.font = `900 ${Math.round(unit * 0.05)}px Nunito, system-ui, sans-serif`
-      g.fillText(`★ ${k.tricks}`, w - 20, 16 + unit * 0.05)
-      if (k.best > 0) {
-        g.fillStyle = '#B45309'
-        g.font = `800 ${Math.round(unit * 0.032)}px Nunito, system-ui, sans-serif`
-        g.fillText(`best ${Math.round(k.best)} block${Math.round(k.best) === 1 ? '' : 's'}`, w - 20, 16 + unit * 0.095)
-      }
-      g.textAlign = 'center'
-      if (k.mode === 'air' && k.pos.y > R) {
-        // The height in blocks, at the top of the ruler, on the outside of the coping.
-        const hgt = Math.max(0, k.pos.y - R)
-        const rx = (k.pos.x < 0 ? -1 : 1) * (COPE + 2.6) * scale + w / 2
-        const ry = h - (R + hgt - bottom) * scale
+      if (k.mode === 'air' && k.pos.y - k.from >= 1) {
+        const p = toScreen(k.pos.x + 3.2, k.pos.y + 4)
         g.fillStyle = '#0369A1'
         g.font = `900 ${Math.round(unit * 0.07)}px Nunito, system-ui, sans-serif`
-        g.fillText(String(Math.floor(hgt)), rx, Math.max(unit * 0.08, ry))
+        g.fillText(String(Math.floor(k.pos.y - k.from)), p.x, p.y)
       }
+      g.textAlign = 'right'
+      g.fillStyle = '#0F172A'
+      g.font = `900 ${Math.round(unit * 0.06)}px Nunito, system-ui, sans-serif`
+      const far = Math.max(0, Math.round(k.far))
+      g.fillText(`${far.toLocaleString()} block${far === 1 ? '' : 's'}`, w - 20, 16 + unit * 0.06)
+      g.font = `800 ${Math.round(unit * 0.036)}px Nunito, system-ui, sans-serif`
+      g.fillText(`★ ${k.tricks}${k.best > 0 ? `   best ${Math.round(k.best)} high` : ''}`, w - 20, 16 + unit * 0.11)
+      g.textAlign = 'center'
       if (shout && shout.until > now) {
         const s = shout
         g.fillStyle = s.big ? '#7C3AED' : '#0F172A'
-        g.font = `900 ${Math.round(Math.min(w, h) * (s.big ? 0.1 : 0.065))}px Nunito, system-ui, sans-serif`
+        g.font = `900 ${Math.round(unit * (s.big ? 0.1 : 0.065))}px Nunito, system-ui, sans-serif`
         g.fillText(s.text, w / 2, h * 0.2)
         if (s.sub) {
-          g.font = `800 ${Math.round(Math.min(w, h) * 0.045)}px Nunito, system-ui, sans-serif`
+          g.font = `800 ${Math.round(unit * 0.045)}px Nunito, system-ui, sans-serif`
           g.fillStyle = '#334155'
-          g.fillText(s.sub, w / 2, h * 0.2 + Math.min(w, h) * 0.065)
+          g.fillText(s.sub, w / 2, h * 0.2 + unit * 0.065)
         }
       }
       raf = requestAnimationFrame(frame)

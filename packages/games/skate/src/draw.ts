@@ -1,56 +1,14 @@
 /**
- * Drawing the halfpipe, Fourteen and his board on a 2D canvas, in world
- * units (Fourteen's blocks, y up). Fourteen: a 2 × 7 stack — ten white
- * red-edged blocks under four lime green — with rainbow eyebrows (he's a
- * double Seven), a striped green helmet, and a rainbow board on red wheels
- * that splits in two. Not a copy of any official artwork: drawn from blocks.
+ * Drawing Fourteen and his board on a 2D canvas, in world units (his
+ * blocks, y up). Fourteen: a 2 × 7 stack — ten white red-edged blocks under
+ * four lime green — with rainbow eyebrows (he's a double Seven), a striped
+ * green helmet, and a rainbow board on red wheels that splits in two. On
+ * foot he runs with the board under his arm. Not a copy of any official
+ * artwork: drawn from blocks.
  */
-import { F, L, pointAt, R, type Skater } from './physics'
+import type { Rider } from './rider'
 
-export const DECK = 4
-/** The world the camera shows, left to right. */
-export const WORLD_W = F + 2 * R + 2 * DECK + 2
-
-const RAINBOW = ['#EF4444', '#F97316', '#FACC15', '#22C55E', '#3B82F6', '#6366F1', '#A855F7']
-
-export function drawPipe(ctx: CanvasRenderingContext2D) {
-  const left = -F / 2 - R
-  const right = F / 2 + R
-  ctx.beginPath()
-  ctx.moveTo(left - DECK, R)
-  for (let s = 0; s <= L; s += 0.25) {
-    const p = pointAt(s)
-    ctx.lineTo(p.x, p.y)
-  }
-  ctx.lineTo(right, R)
-  ctx.lineTo(right + DECK, R)
-  ctx.lineTo(right + DECK, -2)
-  ctx.lineTo(left - DECK, -2)
-  ctx.closePath()
-  ctx.fillStyle = '#D9C3A0' // plywood
-  ctx.fill()
-  // The riding surface.
-  ctx.beginPath()
-  ctx.moveTo(left - DECK, R)
-  for (let s = 0; s <= L; s += 0.25) {
-    const p = pointAt(s)
-    ctx.lineTo(p.x, p.y)
-  }
-  // End exactly on the coping, so the deck runs level from it.
-  ctx.lineTo(right, R)
-  ctx.lineTo(right + DECK, R)
-  ctx.lineWidth = 0.35
-  ctx.lineJoin = 'round'
-  ctx.strokeStyle = '#8B6B43'
-  ctx.stroke()
-  // Copings.
-  for (const x of [left, right]) {
-    ctx.beginPath()
-    ctx.arc(x, R, 0.3, 0, Math.PI * 2)
-    ctx.fillStyle = '#64748B'
-    ctx.fill()
-  }
-}
+export const RAINBOW = ['#EF4444', '#F97316', '#FACC15', '#22C55E', '#3B82F6', '#6366F1', '#A855F7']
 
 function block(ctx: CanvasRenderingContext2D, x: number, y: number, fill: string, edge: string) {
   ctx.fillStyle = fill
@@ -135,28 +93,13 @@ function board(ctx: CanvasRenderingContext2D, x0: number, x1: number, flip: numb
   ctx.restore()
 }
 
-/** Fourteen on his board, in the board's frame (up is away from the surface). */
-export function drawFourteen(ctx: CanvasRenderingContext2D, k: Skater, crouched: boolean, look: number) {
-  const flipping = k.mode === 'air' && k.turned < k.flips
-  const hop = flipping ? 0.7 : 0
-  if (k.split) return drawSevens(ctx, k, look)
-  board(ctx, -1.7, 1.7, k.turned)
-  const squash = crouched ? 0.85 : 1
-  ctx.save()
-  ctx.translate(0, 0.85 + hop)
-  ctx.scale(1, squash)
-  // Legs, then the ten (white, red edges) and the four (lime) on top.
-  limb(ctx, -0.5, 0.25, -0.55, -0.1, '#65A30D')
-  limb(ctx, 0.5, 0.25, 0.55, -0.1, '#65A30D')
+/** His blocks, face and helmet (the bottom of his blocks at y = 0.25). */
+function blocks(ctx: CanvasRenderingContext2D, look: number) {
   for (let row = 0; row < 7; row++)
     for (let col = 0; col < 2; col++) {
       const lime = row >= 5
       block(ctx, col - 1, row + 0.25, lime ? '#A3E635' : '#FFFFFF', lime ? '#4D7C0F' : '#EF4444')
     }
-  // Arms out for balance (lower when crouched).
-  const arm = crouched ? 3.6 : 4.6
-  limb(ctx, -1, arm, -2, arm + 0.9, '#65A30D')
-  limb(ctx, 1, arm, 2, arm + 0.9, '#65A30D')
   // Face on the four: eyes, rainbow eyebrows, a grin.
   eye(ctx, -0.45, 6.55, look)
   eye(ctx, 0.45, 6.55, look)
@@ -173,11 +116,62 @@ export function drawFourteen(ctx: CanvasRenderingContext2D, k: Skater, crouched:
   ctx.lineWidth = 0.16
   ctx.strokeStyle = '#4ADE80'
   ctx.stroke()
+}
+
+/** On foot, his feet at y = 0: running (legs and free arm swinging), leaping (legs tucked) or climbing (hand over hand), the board under his arm. */
+export function drawRunner(ctx: CanvasRenderingContext2D, k: Rider) {
+  const leg = k.legs[0]
+  const ph = k.stride * Math.PI * 2
+  const s = Math.sin(ph)
+  ctx.save()
+  ctx.translate(0, 1.05)
+  if (leg?.kind === 'jump') {
+    limb(ctx, -0.5, 0.25, -0.95, -0.25, '#65A30D')
+    limb(ctx, 0.5, 0.25, 0.95, -0.45, '#65A30D')
+  } else {
+    limb(ctx, -0.5, 0.25, -0.5 + s * 0.75, -0.8 + Math.max(0, s) * 0.35, '#65A30D')
+    limb(ctx, 0.5, 0.25, 0.5 - s * 0.75, -0.8 + Math.max(0, -s) * 0.35, '#65A30D')
+  }
+  blocks(ctx, 1)
+  if (leg?.kind === 'climb') {
+    limb(ctx, -1, 5, -1.4, 6.6 + s * 0.8, '#65A30D')
+    limb(ctx, 1, 5, 1.4, 6.6 - s * 0.8, '#65A30D')
+  } else {
+    // The free arm swings; the other holds the board against his side.
+    limb(ctx, 1, 4.4, 1.7 + Math.cos(ph) * 0.4, 3.5 + s * 0.5, '#65A30D')
+    limb(ctx, -1, 4.4, -1.55, 3.4, '#65A30D')
+  }
+  ctx.save()
+  ctx.translate(-1.35, 3.1)
+  ctx.rotate(Math.PI / 2)
+  board(ctx, -1.7, 1.7, 0)
+  ctx.restore()
+  ctx.restore()
+}
+
+/** Fourteen on his board, in the board's frame (up is away from the surface). */
+export function drawFourteen(ctx: CanvasRenderingContext2D, k: Rider, crouched: boolean, look: number) {
+  const flipping = k.mode === 'air' && k.turned < k.flips
+  const hop = flipping ? 0.7 : 0
+  if (k.split) return drawSevens(ctx, k, look)
+  board(ctx, -1.7, 1.7, k.turned)
+  const squash = crouched ? 0.85 : 1
+  ctx.save()
+  ctx.translate(0, 0.85 + hop)
+  ctx.scale(1, squash)
+  // Legs, then the ten (white, red edges) and the four (lime) on top.
+  limb(ctx, -0.5, 0.25, -0.55, -0.1, '#65A30D')
+  limb(ctx, 0.5, 0.25, 0.55, -0.1, '#65A30D')
+  blocks(ctx, look)
+  // Arms out for balance (lower when crouched).
+  const arm = crouched ? 3.6 : 4.6
+  limb(ctx, -1, arm, -2, arm + 0.9, '#65A30D')
+  limb(ctx, 1, arm, 2, arm + 0.9, '#65A30D')
   ctx.restore()
 }
 
 /** Double lucky: two Sevens on two board halves, apart mid-air, together for the landing. */
-function drawSevens(ctx: CanvasRenderingContext2D, k: Skater, look: number) {
+function drawSevens(ctx: CanvasRenderingContext2D, k: Rider, look: number) {
   const t = Math.max(0, Math.min(1, k.vel.y / Math.max(1, Math.abs(k.vel.y) + 4) / 2 + 0.5))
   const apart = Math.sin(t * Math.PI) * 2.2
   for (const side of [-1, 1]) {

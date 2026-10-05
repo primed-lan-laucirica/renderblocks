@@ -1,128 +1,168 @@
 import { describe, expect, it } from 'vitest'
-import { COPE, drag, EDGE, energy, F, fling, grab, L, middle, nearest, pointAt, pose, Q, R, ready, step, tangentAt, tapFlip, type Skater, type Vec } from './physics'
+import { Course } from './course'
+import { canSkate, drag, fling, grab, middle, ready, step, tap, type Rider } from './rider'
 
 const DT = 1 / 120
-const run = (k: Skater, seconds: number) => {
-  for (let i = 0; i < seconds / DT; i++) k = step(k, DT)
-  return k
-}
-/** Grab him and swipe: from his middle, by `d` over `ms` milliseconds, then let go. */
-const swipe = (k: Skater, d: Vec, ms = 100) => {
+
+/** A finger flinging him to the right along the ground: touch his middle, drag, let go. */
+function flick(k: Rider, c: Course, speed = 14) {
   const m = middle(k)
-  let h = grab(k, m, 0)!
-  for (let i = 1; i <= 10; i++) h = drag(h, { x: m.x + (d.x * i) / 10, y: m.y + (d.y * i) / 10 }, (ms / 1000) * (i / 10))
-  return fling(h)
-}
-const untilLanded = (k: Skater) => {
-  for (let i = 0; i < 120 * 20 && k.mode === 'air'; i++) k = step(k, DT)
-  return k
+  expect(grab(k, m, 0)).toBe(true)
+  for (let i = 1; i <= 5; i++) drag(k, c, { x: m.x + (speed * 0.1 * i) / 5, y: m.y }, (0.1 * i) / 5)
+  fling(k, c)
 }
 
-describe('the halfpipe', () => {
-  it('is one smooth surface from coping to coping', () => {
-    expect(pointAt(0).y).toBeCloseTo(R)
-    expect(pointAt(L).y).toBeCloseTo(R)
-    expect(pointAt(Q).y).toBeCloseTo(0)
-    for (let s = 0; s < L; s += 0.25) {
-      const a = pointAt(s)
-      const b = pointAt(s + 0.25)
-      expect(Math.hypot(b.x - a.x, b.y - a.y)).toBeCloseTo(0.25, 1)
-    }
-  })
-  it('finds the nearest surface, and knows the inside of the ramp', () => {
-    expect(nearest({ x: 0, y: 3 })).toMatchObject({ on: 'pipe', inside: false })
-    expect(nearest({ x: 0, y: -0.5 })).toMatchObject({ on: 'pipe', inside: true })
-    expect(nearest({ x: -COPE - 2, y: R + 1 })).toMatchObject({ on: 'deck', inside: false })
-    const wall = nearest({ x: -COPE + 0.5, y: R - 1 }) // just inside the left wall
-    expect(wall.on).toBe('pipe')
-    expect(wall.s).toBeLessThan(2)
-    const inRamp = nearest({ x: -COPE - 0.3, y: R - 2 })
-    expect(inRamp.inside).toBe(true)
-  })
-})
-
-describe('flinging', () => {
-  it('grabs him only by his body', () => {
-    const k = ready()
-    expect(grab(k, middle(k), 0)).not.toBeNull()
-    expect(grab(k, { x: 0, y: 0 }, 0)).toBeNull()
-  })
-  it('flung off the deck into the pipe: down the wall, across, and up the other side', () => {
-    let k = swipe(ready(), { x: 3, y: 0 }) // a gentle push toward the pipe
-    k = run(k, 0.6)
-    expect(['air', 'pipe']).toContain(k.mode)
-    k = untilLanded(k)
-    expect(k.mode).toBe('pipe')
-    // He rolls back and forth after that, never below the surface.
-    for (let i = 0; i < 120 * 8; i++) {
-      k = step(k, DT)
-      expect(pose(k).at.y).toBeGreaterThan(-0.01)
-    }
-  })
-  it('a harder fling gives more speed', () => {
-    const onWall = (): Skater => ({ ...ready(), mode: 'pipe', s: Q / 2, v: 0 })
-    const soft = swipe(onWall(), { x: 2, y: -2 })
-    const hard = swipe(onWall(), { x: 4, y: -4 })
-    expect(Math.abs(hard.v)).toBeGreaterThan(Math.abs(soft.v))
-    expect(energy(hard)).toBeGreaterThan(energy(soft))
-  })
-  it('flung hard down a wall, he flies off the far coping and lands back on that wall', () => {
-    let k: Skater = { ...ready(), mode: 'pipe', s: 2, v: 0 }
-    k = swipe(k, { x: 3, y: -5 }, 80)
-    let flew = false
-    for (let i = 0; i < 120 * 4; i++) {
-      k = step(k, DT)
-      if (k.mode === 'air' && k.pos.x > 0) flew = true
-      if (flew && k.mode !== 'air') break
-    }
-    expect(flew).toBe(true)
-    expect(k.mode).toBe('pipe')
-    expect(k.landed?.air).toBeGreaterThan(1)
-    expect(k.tricks).toBe(1)
-  })
-  it('thrown into the air, he lands on his board wherever he comes down, keeping the speed along the surface', () => {
-    let k: Skater = { ...ready(), mode: 'pipe', s: Q + F / 2, v: 0 }
-    k = swipe(k, { x: -3, y: 4 }) // up and left
-    expect(k.mode).toBe('air')
-    k = untilLanded(k)
-    expect(['pipe', 'deck']).toContain(k.mode)
-    const p = pose(k)
-    expect(Math.abs(p.angle - Math.atan2(tangentAt(k.s).y, tangentAt(k.s).x))).toBeLessThan(0.01)
-  })
-  it('never gets faster than the cap, however hard he is flung', () => {
-    const k = swipe(ready(), { x: 40, y: 40 }, 20)
-    expect(Math.hypot(k.vel.x, k.vel.y)).toBeLessThanOrEqual(42.01)
-    const top = untilLanded(k)
-    expect(top.peak).toBeLessThanOrEqual(R + 14 + 0.1)
-  })
-  it('stays inside the park: bumps back off the ends of the decks', () => {
-    let k = swipe(ready(), { x: -6, y: 1 }) // away from the pipe
-    k = run(k, 4)
-    expect(Math.abs(pose(k).at.x)).toBeLessThanOrEqual(EDGE + 0.01)
-  })
-})
-
-describe('flips and lucky tricks', () => {
-  const lipAir = () => {
-    let k: Skater = { ...ready(), mode: 'pipe', s: Q + F, v: 28 }
-    for (let i = 0; i < 120 * 3 && k.mode !== 'air'; i++) k = step(k, DT)
-    return k
+/** Run him for `seconds`, flinging him on whenever he's stopped on his board (like a toddler would). */
+function run(k: Rider, c: Course, seconds: number, each?: (k: Rider) => void) {
+  for (let i = 0; i < seconds / DT; i++) {
+    if (k.mode === 'ride' && k.still > 0.4) flick(k, c)
+    step(k, c, DT)
+    each?.(k)
   }
-  it('finishes every flip tapped for before landing', () => {
-    let k = lipAir()
-    expect(k.mode).toBe('air')
-    k = tapFlip(tapFlip(tapFlip(k)))
-    k = untilLanded(k)
-    expect(k.landed?.flips).toBe(3)
-    expect(k.turned).toBe(3)
-    expect(k.tricks).toBe(4)
+}
+
+/** Put him on the street just before the first piece of a kind, rolling right at `v`. */
+function before(c: Course, kind: string, v: number): { k: Rider; x: number } {
+  const piece = c.pieces.find((p) => p.kind === kind)!
+  const k = ready()
+  k.pos = { x: piece.x - 4, y: c.heightAt(piece.x - 4) }
+  k.v = v
+  return { k, x: piece.x }
+}
+
+describe('the course', () => {
+  it('is one unbroken profile, the same every time for a seed', () => {
+    const a = new Course(5)
+    const b = new Course(5)
+    a.ensure(2000)
+    b.ensure(2000)
+    expect(a.segs.length).toBe(b.segs.length)
+    for (let i = 1; i < a.segs.length; i++) {
+      expect(a.segs[i].x0).toBeCloseTo(a.segs[i - 1].x1, 9)
+      expect(a.segs[i].x1).toBeGreaterThan(a.segs[i].x0)
+    }
+    expect(new Set(a.pieces.map((p) => p.kind)).size).toBe(8)
   })
-  it('splits into two Sevens on the air after every 14th trick', () => {
-    let k: Skater = { ...lipAir(), tricks: 12 }
-    k = untilLanded(tapFlip(k))
-    expect(k.landed?.doubleLucky).toBe(true)
-    k = { ...k, mode: 'pipe', s: Q + F, v: 28 }
-    for (let i = 0; i < 120 * 3 && k.mode !== 'air'; i++) k = step(k, DT)
-    expect(k.split).toBe(true)
+})
+
+describe('Fourteen', () => {
+  it.each([14, 1, 2, 3])('never gets stuck, and never sinks into the ground (town %i, 3 minutes)', (seed) => {
+    const c = new Course(seed)
+    const k = ready()
+    let best = 0
+    let since = 0
+    run(k, c, 180, (k) => {
+      expect(Number.isFinite(k.pos.x) && Number.isFinite(k.pos.y)).toBe(true)
+      if (k.mode === 'ride' || k.mode === 'air') expect(k.pos.y).toBeGreaterThan(c.heightAt(k.pos.x) - 0.1)
+      if (k.far > best + 1) {
+        best = k.far
+        since = 0
+      } else since += DT
+      expect(since).toBeLessThan(15)
+    })
+    expect(k.far).toBeGreaterThan(900)
+  })
+
+  it('too slow for a quarter pipe, he rolls back, so off he hops and climbs it, then skates on', () => {
+    const c = new Course(14)
+    const { k, x } = before(c, 'quarter', 6)
+    const modes = new Set<string>()
+    run(k, c, 12, (k) => {
+      if (k.pos.x > x + 3) modes.add(k.mode)
+    })
+    expect(modes.has('foot')).toBe(true)
+    expect(k.pos.x).toBeGreaterThan(x + 20)
+  })
+
+  it('rides into a parkour block, vaults or climbs over the blocks, and is back on his board after them', () => {
+    const c = new Course(14)
+    const { k, x } = before(c, 'blocks', 8)
+    const end = c.pieces[c.pieces.findIndex((p) => p.kind === 'blocks') + 1].x
+    let footed = false
+    run(k, c, 25, (k) => {
+      if (k.mode === 'foot') footed = true
+    })
+    expect(footed).toBe(true)
+    expect(k.pos.x).toBeGreaterThan(end)
+    expect(x).toBeLessThan(end)
+  })
+
+  it('stuck in the bottom of a halfpipe, he runs up and out', () => {
+    const c = new Course(14)
+    const piece = c.pieces.find((p) => p.kind === 'halfpipe')!
+    const k = ready()
+    const bottom = piece.x + 9
+    k.pos = { x: bottom, y: c.heightAt(bottom) }
+    k.v = 0
+    run(k, c, 10)
+    expect(c.heightAt(k.pos.x)).toBeGreaterThanOrEqual(-0.01)
+    expect(k.pos.x).toBeGreaterThan(piece.x + 20)
+  })
+
+  it('lands on stairs on his feet, runs down them, and gets back on his board at the bottom', () => {
+    const c = new Course(14)
+    const stairs = c.segs.find((s) => s.mat === 'stairs')!
+    const k = ready()
+    k.mode = 'air'
+    // Below the handrail (above it, he'd grind it).
+    k.pos = { x: stairs.x0 + 0.5, y: stairs.y0 + 1.2 }
+    k.vel = { x: 0, y: 0 }
+    let landedOnFoot = false
+    let backOn: string | null = null
+    run(k, c, 6, (k) => {
+      if (k.mode === 'foot') landedOnFoot = true
+      if (landedOnFoot && !backOn && k.news.some((n) => n.kind === 'on')) backOn = c.segAt(k.pos.x).mat
+      k.news = []
+    })
+    expect(landedOnFoot).toBe(true)
+    expect(backOn).toBe('street')
+  })
+
+  it('dropped onto a rail, he grinds it', () => {
+    const c = new Course(14)
+    const r = c.rails[0]
+    const k = ready()
+    k.mode = 'air'
+    k.pos = { x: (r.x0 + r.x1) / 2, y: Math.max(r.y0, r.y1) + 2 }
+    k.vel = { x: 6, y: 0 }
+    let grinds = 0
+    run(k, c, 3, (k) => {
+      for (const n of k.news) if (n.kind === 'grind') grinds++
+      k.news = []
+    })
+    expect(grinds).toBe(1)
+  })
+
+  it('flung along the ground he rolls off that way; flung up he flies; a tap while he flies is a flip, always finished by the landing', () => {
+    const c = new Course(14)
+    const k = ready()
+    flick(k, c)
+    expect(k.mode).toBe('ride')
+    expect(k.v).toBeGreaterThan(10)
+    const up = ready()
+    const m = middle(up)
+    grab(up, m, 0)
+    drag(up, c, { x: m.x + 0.5, y: m.y + 1.5 }, 0.1)
+    fling(up, c)
+    expect(up.mode).toBe('air')
+    expect(up.vel.y).toBeGreaterThan(10)
+    // Roll off the start deck into the drop-in: flying; flip twice.
+    run(k, c, 3, (k) => {
+      if (k.mode === 'air' && k.flips === 0) {
+        tap(k)
+        tap(k)
+      }
+    })
+    expect(k.tricks).toBeGreaterThanOrEqual(2)
+    expect(k.turned).toBe(k.flips)
+  })
+
+  it('only gets back on his board where he can skate', () => {
+    const c = new Course(14)
+    const stairs = c.segs.find((s) => s.mat === 'stairs')!
+    expect(canSkate(c, stairs.x0 + 0.5)).toBe(false)
+    const quarter = c.pieces.find((p) => p.kind === 'quarter')!
+    expect(canSkate(c, quarter.x - 2)).toBe(false)
+    expect(canSkate(c, -2)).toBe(true)
   })
 })

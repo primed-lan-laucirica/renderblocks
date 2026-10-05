@@ -1,6 +1,7 @@
 /**
- * Skate sounds: wheels rolling (filtered noise, louder with speed), a clack
- * on the coping, and the shared effects for flips and lucky tricks.
+ * Skate sounds: wheels rolling (filtered noise, louder with speed) and
+ * grinding, a clack on takeoffs and landings, footsteps, and the shared
+ * effects for flips and lucky tricks.
  * Synthesised where possible, so there's nothing to record.
  */
 let ctx: AudioContext | null = null
@@ -40,12 +41,12 @@ export function wake() {
   roll = { gain, filter }
 }
 
-/** Wheels: louder and brighter the faster he goes (0 in the air). */
-export function rolling(speed: number) {
+/** Wheels: louder and brighter the faster he goes (0 in the air, or on foot); on a rail, a bright grinding scrape. */
+export function rolling(speed: number, grind = false) {
   if (!ctx || !roll) return
   const f = Math.min(1, speed / 25)
-  roll.gain.gain.setTargetAtTime(0.05 + f * 0.22, ctx.currentTime, 0.05)
-  roll.filter.frequency.setTargetAtTime(180 + f * 900, ctx.currentTime, 0.05)
+  roll.gain.gain.setTargetAtTime(speed > 0 ? (grind ? 0.2 : 0.05) + f * 0.22 : 0, ctx.currentTime, 0.05)
+  roll.filter.frequency.setTargetAtTime(grind ? 2600 + f * 1500 : 180 + f * 900, ctx.currentTime, 0.05)
 }
 
 /** The board hitting the coping: a short knock. */
