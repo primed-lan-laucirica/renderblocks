@@ -9,6 +9,10 @@ const config: CapacitorConfig = {
     backgroundColor: '#1e293b'
   },
   plugins: {
+    // Insets are handled in MainActivity (the web view is padded clear of the status and navigation bars).
+    SystemBars: {
+      insetsHandling: 'disable'
+    },
     StatusBar: {
       overlaysWebView: false,
       style: 'DARK',
