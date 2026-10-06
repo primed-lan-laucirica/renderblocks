@@ -5,7 +5,8 @@
  * two of the bins on screen is left out rather than marked wrong. Judged
  * strictly (Lan, v1.73.1: "goat and turkey can both be either domestic or
  * wild"): a goat, turkey, pig, horse, duck or elephant lives both ways; a
- * fish is also food; corn is a grain; grandparents are grown-ups; a balloon
+ * pig, cow, sheep, rabbit, turtle or fish is also food ("pigs are both
+ * animals and food"); corn is a grain; grandparents are grown-ups; a balloon
  * is a party thing as much as a toy; an octopus has arms; sea snakes swim;
  * farm ducks don't fly; soap is in kitchens too; anyone uses salt, bandages
  * and thermometers.
@@ -86,7 +87,7 @@ function switchDeck(id: string, title: string, first: [string, string][], second
 export const DECKS: Deck[] = [
   // ——— Kinds ———
   deck('kinds', 'Animals, food, clothes', 'Kinds', [
-    ['animals', '🐾', '🐄 cow, 🐖 pig, 🐑 sheep, 🐕 dog, 🐈 cat, 🦁 lion, 🐘 elephant, 🦒 giraffe, 🐒 monkey, 🐻 bear, 🦊 fox, 🐇 rabbit, 🦋 butterfly, 🐢 turtle'],
+    ['animals', '🐾', '🐕 dog, 🐈 cat, 🦁 lion, 🐅 tiger, 🐘 elephant, 🦒 giraffe, 🦓 zebra, 🐒 monkey, 🦍 gorilla, 🐻 bear, 🦊 fox, 🦘 kangaroo, 🦋 butterfly'],
     ['food', '🍽️', '🍎 apple, 🍌 banana, 🍇 grapes, 🍓 strawberry, 🥕 carrot, 🥦 broccoli, 🌽 corn, 🍞 bread, 🧀 cheese, 🍕 pizza, 🍔 burger, 🥞 pancakes, 🍪 cookie, 🍰 cake'],
     ['clothes', '👚', '👕 T-shirt, 👖 jeans, 👗 dress, 🧥 coat, 🧦 socks, 👟 sneaker, 👢 boot, 🧢 cap, 🧤 gloves, 🧣 scarf, 🩳 shorts, 👒 sun hat'],
   ]),
