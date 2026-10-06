@@ -2,8 +2,13 @@
  * The sorting decks (Drive: Sorting/Sorting-research.md). Every deck is a
  * hand-picked list, card by card, so each card has exactly one right bin —
  * the fairness rule from Gifted: anything a reasonable person could put in
- * two bins (is a tomato a fruit? does a helicopter have wheels? is a duck a
- * farm animal?) is left out rather than marked wrong.
+ * two of the bins on screen is left out rather than marked wrong. Judged
+ * strictly (Lan, v1.73.1: "goat and turkey can both be either domestic or
+ * wild"): a goat, turkey, pig, horse, duck or elephant lives both ways; a
+ * fish is also food; corn is a grain; grandparents are grown-ups; a balloon
+ * is a party thing as much as a toy; an octopus has arms; sea snakes swim;
+ * farm ducks don't fly; soap is in kitchens too; anyone uses salt, bandages
+ * and thermometers.
  *
  * A card is "emoji name". Pictures are standard emoji (Unicode ≤ 13), drawn
  * by the tablet's own emoji font, as in Gifted.
@@ -81,23 +86,23 @@ function switchDeck(id: string, title: string, first: [string, string][], second
 export const DECKS: Deck[] = [
   // ——— Kinds ———
   deck('kinds', 'Animals, food, clothes', 'Kinds', [
-    ['animals', '🐾', '🐄 cow, 🐖 pig, 🐑 sheep, 🐕 dog, 🐈 cat, 🦁 lion, 🐘 elephant, 🦒 giraffe, 🐒 monkey, 🐻 bear, 🦊 fox, 🐇 rabbit, 🐟 fish, 🦋 butterfly, 🐢 turtle'],
+    ['animals', '🐾', '🐄 cow, 🐖 pig, 🐑 sheep, 🐕 dog, 🐈 cat, 🦁 lion, 🐘 elephant, 🦒 giraffe, 🐒 monkey, 🐻 bear, 🦊 fox, 🐇 rabbit, 🦋 butterfly, 🐢 turtle'],
     ['food', '🍽️', '🍎 apple, 🍌 banana, 🍇 grapes, 🍓 strawberry, 🥕 carrot, 🥦 broccoli, 🌽 corn, 🍞 bread, 🧀 cheese, 🍕 pizza, 🍔 burger, 🥞 pancakes, 🍪 cookie, 🍰 cake'],
     ['clothes', '👚', '👕 T-shirt, 👖 jeans, 👗 dress, 🧥 coat, 🧦 socks, 👟 sneaker, 👢 boot, 🧢 cap, 🧤 gloves, 🧣 scarf, 🩳 shorts, 👒 sun hat'],
   ]),
   deck('fruitveg', 'Fruit, vegetables', 'Kinds', [
     ['fruit', '🧺', '🍎 apple, 🍌 banana, 🍇 grapes, 🍓 strawberry, 🍊 orange, 🍋 lemon, 🍉 watermelon, 🍍 pineapple, 🍒 cherries, 🍑 peach, 🍐 pear, 🥝 kiwi, 🥭 mango'],
-    ['vegetables', '🥗', '🥕 carrot, 🥦 broccoli, 🌽 corn, 🥔 potato, 🧅 onion, 🧄 garlic, 🥬 lettuce'],
+    ['vegetables', '🥗', '🥕 carrot, 🥦 broccoli, 🥔 potato, 🧅 onion, 🧄 garlic, 🥬 lettuce'],
   ]),
   deck('habitat', 'Farm, wild, sea', 'Kinds', [
-    ['farm', '🚜', '🐄 cow, 🐖 pig, 🐑 sheep, 🐐 goat, 🐎 horse, 🐓 rooster, 🦃 turkey'],
-    ['wild', '🌳', '🦁 lion, 🐅 tiger, 🐘 elephant, 🦒 giraffe, 🦓 zebra, 🐒 monkey, 🦍 gorilla, 🐻 bear, 🦊 fox, 🐺 wolf, 🦏 rhino, 🦘 kangaroo'],
-    ['sea', '🌊', '🐠 tropical fish, 🐡 blowfish, 🦈 shark, 🐬 dolphin, 🐳 whale, 🐙 octopus, 🦑 squid, 🦐 shrimp, 🦞 lobster'],
+    ['farm', '🚜', '🐄 cow, 🐑 sheep, 🐓 rooster, 🐔 hen'],
+    ['wild', '🌳', '🦁 lion, 🐅 tiger, 🦒 giraffe, 🦓 zebra, 🦍 gorilla, 🐻 bear, 🐺 wolf, 🦏 rhino, 🦘 kangaroo'],
+    ['sea', '🌊', '🐡 blowfish, 🦈 shark, 🐳 whale, 🐙 octopus, 🦑 squid, 🦞 lobster'],
   ]),
   deck('travel', 'Land, water, air', 'Kinds', [
     ['land', '🛣️', '🚗 car, 🚌 bus, 🚲 bicycle, 🚂 train, 🚜 tractor, 🚒 fire truck, 🚑 ambulance, 🚓 police car, 🛴 scooter, 🏍️ motorcycle, 🚚 truck'],
     ['water', '🌊', '⛵ sailboat, 🚤 speedboat, 🛶 canoe, 🚢 ship'],
-    ['air', '☁️', '✈️ airplane, 🛩️ small plane, 🚁 helicopter, 🚀 rocket'],
+    ['air', '☁️', '✈️ airplane, 🛩️ small plane, 🚁 helicopter'],
   ]),
   deck('critters', 'Birds, bugs, fish', 'Kinds', [
     ['birds', '🪶', '🦅 eagle, 🦉 owl, 🐧 penguin, 🦩 flamingo, 🦚 peacock, 🕊️ dove, 🦢 swan, 🐦 bird, 🦜 parrot, 🐓 rooster, 🦆 duck'],
@@ -105,15 +110,15 @@ export const DECKS: Deck[] = [
     ['fish', '🎣', '🐟 fish, 🐠 tropical fish, 🐡 blowfish, 🦈 shark'],
   ]),
   deck('things', 'Toys, tools, music', 'Kinds', [
-    ['toys', '🎠', '🧸 teddy bear, 🪀 yo-yo, 🪁 kite, 🧩 puzzle piece, 🎲 dice, 🪆 nesting doll, 🎈 balloon'],
-    ['tools', '🧰', '🔨 hammer, 🪛 screwdriver, 🔧 wrench, 🪚 saw, 🪓 axe, 🔩 nut and bolt'],
+    ['toys', '🎠', '🧸 teddy bear, 🪀 yo-yo, 🪁 kite, 🧩 puzzle piece, 🪆 nesting doll'],
+    ['tools', '🧰', '🔨 hammer, 🪛 screwdriver, 🔧 wrench, 🪚 saw, 🪓 axe'],
     ['music', '🎵', '🎸 guitar, 🎹 piano, 🥁 drum, 🎺 trumpet, 🎻 violin, 🎷 saxophone, 🪕 banjo, 🪘 long drum'],
   ]),
 
   // ——— People ———
   deck('uses1', 'Who uses it? Doctor, cook, artist', 'People', [
-    ['doctor', '🧑‍⚕️', '🩺 stethoscope, 💉 syringe, 💊 medicine, 🩹 bandage, 🌡️ thermometer'],
-    ['cook', '🧑‍🍳', '🍳 frying pan, 🥘 pan of food, 🍲 pot of stew, 🧂 salt'],
+    ['doctor', '🧑‍⚕️', '🩺 stethoscope, 💉 syringe, 💊 medicine'],
+    ['cook', '🧑‍🍳', '🍳 frying pan, 🥘 pan of food, 🍲 pot of stew'],
     ['artist', '🧑‍🎨', '🎨 palette, 🖌️ paintbrush, 🖼️ painting'],
   ]),
   deck('uses2', 'Who uses it? Scientist, firefighter, farmer, police', 'People', [
@@ -122,19 +127,18 @@ export const DECKS: Deck[] = [
     ['farmer', '🧑‍🌾', '🚜 tractor, 🌾 wheat'],
     ['police', '👮', '🚓 police car, 🚔 police car coming'],
   ]),
-  deck('ages', 'Kids, grown-ups, grandparents', 'People', [
+  deck('ages', 'Kids, grown-ups', 'People', [
     ['kids', '🧒', '👶 baby, 👧 girl, 👦 boy'],
-    ['grown-ups', '🧑', '👩 woman, 👨 man, 👮 police officer, 🧑‍⚕️ doctor, 🧑‍🍳 cook, 🧑‍🚒 firefighter, 🧑‍🌾 farmer, 🧑‍🏫 teacher, 🧑‍🚀 astronaut'],
-    ['grandparents', '🧓', '👵 grandma, 👴 grandpa'],
+    ['grown-ups', '🧑', '👩 woman, 👨 man, 👵 grandma, 👴 grandpa, 👮 police officer, 🧑‍⚕️ doctor, 🧑‍🍳 cook, 🧑‍🚒 firefighter, 🧑‍🌾 farmer, 🧑‍🏫 teacher, 🧑‍🚀 astronaut'],
   ]),
 
   // ——— Where it goes ———
   deck('rooms', 'Kitchen, bathroom', 'Where it goes', [
     ['kitchen', '🍽️', '🍳 frying pan, 🥄 spoon, 🍴 fork and knife, 🔪 knife, 🫖 teapot, 🥣 bowl'],
-    ['bathroom', '🛁', '🚽 toilet, 🚿 shower, 🧼 soap, 🪥 toothbrush, 🧻 toilet paper'],
+    ['bathroom', '🛁', '🚽 toilet, 🚿 shower, 🪥 toothbrush, 🧻 toilet paper'],
   ]),
   deck('beachsnow', 'Beach, snow', 'Where it goes', [
-    ['beach', '🏖️', '🩴 sandals, 🦀 crab, 🐚 shell, 🏄 surfer, 👙 swimsuit, 🌴 palm tree'],
+    ['beach', '🏖️', '🦀 crab, 🐚 shell, 🏄 surfer, 👙 swimsuit'],
     ['snow', '🏔️', '⛄ snowman, 🧤 gloves, 🧣 scarf, 🎿 skis, 🛷 sled, ⛸️ ice skate, 🏂 snowboarder'],
   ]),
   deck('partyschool', 'Party, school', 'Where it goes', [
@@ -144,7 +148,7 @@ export const DECKS: Deck[] = [
 
   // ——— What it is ———
   deck('flies', 'Flies, doesn’t fly', 'What it is', [
-    ['flies', '🌤️', '🦅 eagle, 🦉 owl, 🕊️ dove, 🐦 bird, 🦜 parrot, 🦇 bat, 🐝 bee, 🦋 butterfly, 🐞 ladybug, 🦢 swan, 🦆 duck'],
+    ['flies', '🌤️', '🦅 eagle, 🦉 owl, 🕊️ dove, 🐦 bird, 🦜 parrot, 🦇 bat, 🐝 bee, 🦋 butterfly, 🐞 ladybug, 🦢 swan'],
     ['doesn’t fly', '🚶', '🐄 cow, 🐖 pig, 🐕 dog, 🐈 cat, 🦁 lion, 🐘 elephant, 🦒 giraffe, 🐍 snake, 🐢 turtle, 🐟 fish, 🐌 snail, 🐧 penguin, 🐛 caterpillar, 🕷️ spider, 🐸 frog'],
   ]),
   deck('wheels', 'Wheels, no wheels', 'What it is', [
@@ -153,7 +157,7 @@ export const DECKS: Deck[] = [
   ]),
   deck('waterland', 'Lives in water, lives on land', 'What it is', [
     ['water', '🌊', '🐟 fish, 🐠 tropical fish, 🐡 blowfish, 🦈 shark, 🐬 dolphin, 🐳 whale, 🐙 octopus, 🦑 squid, 🦐 shrimp, 🦞 lobster'],
-    ['land', '🌄', '🐄 cow, 🐖 pig, 🐑 sheep, 🐕 dog, 🐈 cat, 🦁 lion, 🐘 elephant, 🦒 giraffe, 🦓 zebra, 🐒 monkey, 🐻 bear, 🦊 fox, 🐇 rabbit, 🐍 snake, 🦎 lizard'],
+    ['land', '🌄', '🐄 cow, 🐖 pig, 🐑 sheep, 🐕 dog, 🐈 cat, 🦁 lion, 🐘 elephant, 🦒 giraffe, 🦓 zebra, 🐒 monkey, 🐻 bear, 🦊 fox, 🐇 rabbit, 🦎 lizard'],
   ]),
   deck('alive', 'Alive, not alive', 'What it is', [
     ['alive', '💓', '🐕 dog, 🐈 cat, 🐟 fish, 🐦 bird, 🐝 bee, 🌳 tree, 🌻 sunflower, 🌵 cactus, 🌷 tulip, 👶 baby'],
@@ -164,7 +168,7 @@ export const DECKS: Deck[] = [
     ['2 legs', '2', '🐓 rooster, 🦅 eagle, 🦉 owl, 🐧 penguin, 🦩 flamingo, 🦆 duck, 👦 boy'],
     ['4 legs', '4', '🐄 cow, 🐕 dog, 🐈 cat, 🦁 lion, 🐘 elephant, 🦒 giraffe, 🐢 turtle, 🦎 lizard'],
     ['6 legs', '6', '🐝 bee, 🐜 ant, 🐞 ladybug, 🦋 butterfly, 🦗 cricket, 🪲 beetle'],
-    ['8 legs', '8', '🕷️ spider, 🐙 octopus, 🦂 scorpion'],
+    ['8 legs', '8', '🕷️ spider, 🦂 scorpion'],
   ]),
 
   // ——— Switch: the same cards, sorted two ways ———
@@ -180,7 +184,7 @@ export const DECKS: Deck[] = [
       ['green', '🟩'],
       ['yellow', '🟨'],
     ],
-    '🍎 apple 0 0, 🍓 strawberry 0 0, 🍒 cherries 0 0, 🍏 green apple 0 1, 🍐 pear 0 1, 🍌 banana 0 2, 🍋 lemon 0 2, 🥦 broccoli 1 1, 🥬 lettuce 1 1, 🌽 corn 1 2',
+    '🍎 apple 0 0, 🍓 strawberry 0 0, 🍒 cherries 0 0, 🍏 green apple 0 1, 🍐 pear 0 1, 🍌 banana 0 2, 🍋 lemon 0 2, 🥦 broccoli 1 1, 🥬 lettuce 1 1',
   ),
   switchDeck(
     'farmlegs',
@@ -193,7 +197,7 @@ export const DECKS: Deck[] = [
       ['2 legs', '2'],
       ['4 legs', '4'],
     ],
-    '🐄 cow 0 1, 🐖 pig 0 1, 🐑 sheep 0 1, 🐐 goat 0 1, 🐓 rooster 0 0, 🦃 turkey 0 0, 🦁 lion 1 1, 🐅 tiger 1 1, 🦓 zebra 1 1, 🐘 elephant 1 1, 🦅 eagle 1 0, 🦉 owl 1 0',
+    '🐄 cow 0 1, 🐑 sheep 0 1, 🐓 rooster 0 0, 🐔 hen 0 0, 🦁 lion 1 1, 🐅 tiger 1 1, 🦓 zebra 1 1, 🦒 giraffe 1 1, 🦅 eagle 1 0, 🦉 owl 1 0',
   ),
 ]
 
