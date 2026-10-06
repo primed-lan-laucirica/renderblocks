@@ -86,9 +86,10 @@ function switchDeck(id: string, title: string, first: [string, string][], second
 
 export const DECKS: Deck[] = [
   // ——— Kinds ———
-  deck('kinds', 'Animals, food, clothes', 'Kinds', [
+  // Not animals vs food: animals are food (Lan). Three groups nothing can belong to two of.
+  deck('kinds', 'Animals, vehicles, clothes', 'Kinds', [
     ['animals', '🐾', '🐕 dog, 🐈 cat, 🦁 lion, 🐅 tiger, 🐘 elephant, 🦒 giraffe, 🦓 zebra, 🐒 monkey, 🦍 gorilla, 🐻 bear, 🦊 fox, 🦘 kangaroo, 🦋 butterfly'],
-    ['food', '🍽️', '🍎 apple, 🍌 banana, 🍇 grapes, 🍓 strawberry, 🥕 carrot, 🥦 broccoli, 🌽 corn, 🍞 bread, 🧀 cheese, 🍕 pizza, 🍔 burger, 🥞 pancakes, 🍪 cookie, 🍰 cake'],
+    ['vehicles', '🚦', '🚗 car, 🚌 bus, 🚲 bicycle, 🚂 train, 🚜 tractor, 🚒 fire truck, 🚑 ambulance, ✈️ airplane, 🚁 helicopter, ⛵ sailboat, 🚢 ship, 🏍️ motorcycle, 🚚 truck'],
     ['clothes', '👚', '👕 T-shirt, 👖 jeans, 👗 dress, 🧥 coat, 🧦 socks, 👟 sneaker, 👢 boot, 🧢 cap, 🧤 gloves, 🧣 scarf, 🩳 shorts, 👒 sun hat'],
   ]),
   deck('fruitveg', 'Fruit, vegetables', 'Kinds', [
