@@ -11,6 +11,14 @@
  * farm ducks don't fly; soap is in kitchens too; anyone uses salt, bandages
  * and thermometers.
  *
+ * And the categories themselves must be clear-cut, not just the cards (Lan:
+ * "if enough intelligence is applied some answers end up being wrong… we
+ * need to just be very clear-cut about everything"). So no fruit vs
+ * vegetable (a tomato is botanically a fruit), no farm vs wild, no animals
+ * vs food, no "bugs", no toys vs instruments: only groups that are true by
+ * definition or plain fact (legs, wheels, flies, alive, shape, colour, odd
+ * and even).
+ *
  * A card is "emoji name". Pictures are standard emoji (Unicode ≤ 13), drawn
  * by the tablet's own emoji font, as in Gifted.
  */
@@ -92,34 +100,24 @@ export const DECKS: Deck[] = [
     ['vehicles', '🚦', '🚗 car, 🚌 bus, 🚲 bicycle, 🚂 train, 🚜 tractor, 🚒 fire truck, 🚑 ambulance, ✈️ airplane, 🚁 helicopter, ⛵ sailboat, 🚢 ship, 🏍️ motorcycle, 🚚 truck'],
     ['clothes', '👚', '👕 T-shirt, 👖 jeans, 👗 dress, 🧥 coat, 🧦 socks, 👟 sneaker, 👢 boot, 🧢 cap, 🧤 gloves, 🧣 scarf, 🩳 shorts, 👒 sun hat'],
   ]),
-  deck('fruitveg', 'Fruit, vegetables', 'Kinds', [
-    ['fruit', '🧺', '🍎 apple, 🍌 banana, 🍇 grapes, 🍓 strawberry, 🍊 orange, 🍋 lemon, 🍉 watermelon, 🍍 pineapple, 🍒 cherries, 🍑 peach, 🍐 pear, 🥝 kiwi, 🥭 mango'],
-    ['vegetables', '🥗', '🥕 carrot, 🥦 broccoli, 🥔 potato, 🧅 onion, 🧄 garlic, 🥬 lettuce'],
-  ]),
-  deck('habitat', 'Farm, wild, sea', 'Kinds', [
-    ['farm', '🚜', '🐄 cow, 🐑 sheep, 🐓 rooster, 🐔 hen'],
-    ['wild', '🌳', '🦁 lion, 🐅 tiger, 🦒 giraffe, 🦓 zebra, 🦍 gorilla, 🐻 bear, 🐺 wolf, 🦏 rhino, 🦘 kangaroo'],
-    ['sea', '🌊', '🐡 blowfish, 🦈 shark, 🐳 whale, 🐙 octopus, 🦑 squid, 🦞 lobster'],
-  ]),
   deck('travel', 'Land, water, air', 'Kinds', [
     ['land', '🛣️', '🚗 car, 🚌 bus, 🚲 bicycle, 🚂 train, 🚜 tractor, 🚒 fire truck, 🚑 ambulance, 🚓 police car, 🛴 scooter, 🏍️ motorcycle, 🚚 truck'],
     ['water', '🌊', '⛵ sailboat, 🚤 speedboat, 🛶 canoe, 🚢 ship'],
     ['air', '☁️', '✈️ airplane, 🛩️ small plane, 🚁 helicopter'],
   ]),
-  deck('critters', 'Birds, bugs, fish', 'Kinds', [
+  deck('critters', 'Birds, insects, fish', 'Kinds', [
     ['birds', '🪶', '🦅 eagle, 🦉 owl, 🐧 penguin, 🦩 flamingo, 🦚 peacock, 🕊️ dove, 🦢 swan, 🐦 bird, 🦜 parrot, 🐓 rooster, 🦆 duck'],
-    ['bugs', '🍃', '🐝 bee, 🦋 butterfly, 🐞 ladybug, 🐜 ant, 🦗 cricket, 🪲 beetle, 🐛 caterpillar, 🕷️ spider'],
+    ['insects', '🍃', '🐝 bee, 🦋 butterfly, 🐞 ladybug, 🐜 ant, 🦗 cricket, 🪲 beetle'],
     ['fish', '🎣', '🐟 fish, 🐠 tropical fish, 🐡 blowfish, 🦈 shark'],
   ]),
-  deck('things', 'Toys, tools, music', 'Kinds', [
-    ['toys', '🎠', '🧸 teddy bear, 🪀 yo-yo, 🪁 kite, 🧩 puzzle piece, 🪆 nesting doll'],
+  deck('things', 'Tools, music', 'Kinds', [
     ['tools', '🧰', '🔨 hammer, 🪛 screwdriver, 🔧 wrench, 🪚 saw, 🪓 axe'],
     ['music', '🎵', '🎸 guitar, 🎹 piano, 🥁 drum, 🎺 trumpet, 🎻 violin, 🎷 saxophone, 🪕 banjo, 🪘 long drum'],
   ]),
 
   // ——— People ———
   deck('uses1', 'Who uses it? Doctor, cook, artist', 'People', [
-    ['doctor', '🧑‍⚕️', '🩺 stethoscope, 💉 syringe, 💊 medicine'],
+    ['doctor', '🧑‍⚕️', '🩺 stethoscope, 💉 syringe'],
     ['cook', '🧑‍🍳', '🍳 frying pan, 🥘 pan of food, 🍲 pot of stew'],
     ['artist', '🧑‍🎨', '🎨 palette, 🖌️ paintbrush, 🖼️ painting'],
   ]),
@@ -173,33 +171,34 @@ export const DECKS: Deck[] = [
     ['8 legs', '8', '🕷️ spider, 🦂 scorpion'],
   ]),
 
-  // ——— Switch: the same cards, sorted two ways ———
+  // ——— Switch: the same cards, sorted two ways (rules that are true by definition) ———
   switchDeck(
-    'fruitcolour',
-    'Fruit or vegetable, then by colour',
+    'shapecolour',
+    'Circle or square, then by colour',
     [
-      ['fruit', '🧺'],
-      ['vegetables', '🥗'],
+      ['circles', '⚪'],
+      ['squares', '⬜'],
     ],
     [
-      ['red', '🟥'],
-      ['green', '🟩'],
-      ['yellow', '🟨'],
+      ['red', '❤️'],
+      ['blue', '💙'],
+      ['green', '💚'],
+      ['yellow', '💛'],
     ],
-    '🍎 apple 0 0, 🍓 strawberry 0 0, 🍒 cherries 0 0, 🍏 green apple 0 1, 🍐 pear 0 1, 🍌 banana 0 2, 🍋 lemon 0 2, 🥦 broccoli 1 1, 🥬 lettuce 1 1',
+    '🔴 red circle 0 0, 🟥 red square 1 0, 🔵 blue circle 0 1, 🟦 blue square 1 1, 🟢 green circle 0 2, 🟩 green square 1 2, 🟡 yellow circle 0 3, 🟨 yellow square 1 3',
   ),
   switchDeck(
-    'farmlegs',
-    'Farm or wild, then by legs',
+    'oddeven',
+    'Odd or even, then under 5 or 5 and up',
     [
-      ['farm', '🚜'],
-      ['wild', '🌳'],
+      ['odd', '1 3'],
+      ['even', '2 4'],
     ],
     [
-      ['2 legs', '2'],
-      ['4 legs', '4'],
+      ['under 5', '1–4'],
+      ['5 and up', '5–9'],
     ],
-    '🐄 cow 0 1, 🐑 sheep 0 1, 🐓 rooster 0 0, 🐔 hen 0 0, 🦁 lion 1 1, 🐅 tiger 1 1, 🦓 zebra 1 1, 🦒 giraffe 1 1, 🦅 eagle 1 0, 🦉 owl 1 0',
+    '1️⃣ one 0 0, 2️⃣ two 1 0, 3️⃣ three 0 0, 4️⃣ four 1 0, 5️⃣ five 0 1, 6️⃣ six 1 1, 7️⃣ seven 0 1, 8️⃣ eight 1 1, 9️⃣ nine 0 1',
   ),
 ]
 

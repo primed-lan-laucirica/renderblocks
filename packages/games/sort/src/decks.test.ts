@@ -33,9 +33,9 @@ describe('the decks', () => {
   })
 
   it('a switch deck sorts the same cards a second way', () => {
-    const d = DECKS.find((x) => x.id === 'farmlegs')!
-    const owl = d.cards.find((c) => c.card.name === 'owl')!.card
-    expect(d.bins[rightBin(d, owl)].label).toBe('wild')
-    expect(d.then!.bins[rightBin(d, owl, true)].label).toBe('2 legs')
+    const d = DECKS.find((x) => x.id === 'oddeven')!
+    const seven = d.cards.find((c) => c.card.name === 'seven')!.card
+    expect(d.bins[rightBin(d, seven)].label).toBe('odd')
+    expect(d.then!.bins[rightBin(d, seven, true)].label).toBe('5 and up')
   })
 })
