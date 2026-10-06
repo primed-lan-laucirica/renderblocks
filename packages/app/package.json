@@ -23,6 +23,7 @@
     "@renderblocks/base10": "workspace:*",
     "@renderblocks/trace": "workspace:*",
     "@renderblocks/skate": "workspace:*",
+    "@renderblocks/sort": "workspace:*",
     "@renderblocks/designer": "workspace:*",
     "@renderblocks/windy": "workspace:*",
     "@renderblocks/blocks": "workspace:*",

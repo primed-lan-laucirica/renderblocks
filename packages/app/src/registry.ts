@@ -15,6 +15,7 @@ import { wordsModule } from '@renderblocks/words/module'
 import { magcubesModule } from '@renderblocks/magcubes/module'
 import { traceModule } from '@renderblocks/trace/module'
 import { skateModule } from '@renderblocks/skate/module'
+import { sortModule } from '@renderblocks/sort/module'
 import { designerModule } from '@renderblocks/designer/module'
 import { windyModule } from '@renderblocks/windy/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
@@ -37,6 +38,7 @@ export const games: GameModule[] = [
   base10Module,
   traceModule,
   skateModule,
+  sortModule,
   designerModule,
   windyModule,
 ]
