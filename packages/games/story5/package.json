@@ -1,0 +1,24 @@
+{
+  "name": "@renderblocks/story5",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./module": "./src/module.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "render": "node scripts/render.mjs",
+    "check": "node scripts/render.mjs --check"
+  },
+  "dependencies": {
+    "@renderblocks/kernel": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.55.0",
+    "vitest": "^5.0.1"
+  }
+}

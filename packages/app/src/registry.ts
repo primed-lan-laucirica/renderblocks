@@ -16,6 +16,7 @@ import { magcubesModule } from '@renderblocks/magcubes/module'
 import { traceModule } from '@renderblocks/trace/module'
 import { skateModule } from '@renderblocks/skate/module'
 import { sortModule } from '@renderblocks/sort/module'
+import { story5Module } from '@renderblocks/story5/module'
 import { designerModule } from '@renderblocks/designer/module'
 import { windyModule } from '@renderblocks/windy/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
@@ -39,6 +40,7 @@ export const games: GameModule[] = [
   traceModule,
   skateModule,
   sortModule,
+  story5Module,
   designerModule,
   windyModule,
 ]

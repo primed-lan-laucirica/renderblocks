@@ -24,6 +24,7 @@
     "@renderblocks/trace": "workspace:*",
     "@renderblocks/skate": "workspace:*",
     "@renderblocks/sort": "workspace:*",
+    "@renderblocks/story5": "workspace:*",
     "@renderblocks/designer": "workspace:*",
     "@renderblocks/windy": "workspace:*",
     "@renderblocks/blocks": "workspace:*",
