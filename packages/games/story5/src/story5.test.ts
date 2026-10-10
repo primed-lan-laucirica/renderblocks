@@ -4,7 +4,9 @@ import { describe, expect, it } from 'vitest'
 import { advanceQueue as drillAdvance } from '../../../drill/src/drillState'
 import { rng } from './engine/ease'
 import { ALL_SCENES } from './episodes'
+import { clip } from './engine/voice'
 import { exchange } from './kit/exchange'
+import { allLines } from './voice-lines'
 import { advanceQueue } from './workshops/queue'
 
 /** A scene's frame at t, as markup. */
@@ -67,4 +69,27 @@ describe('the workshop run rule', () => {
     ]
     for (const [q, dirty] of cases) expect(advanceQueue(q, dirty)).toEqual(drillAdvance(q, dirty))
   })
+})
+
+describe('narration', () => {
+  it('every line has a clip (run `pnpm voice` after changing a line)', () => {
+    for (const l of allLines()) expect(clip(l), l).toBeDefined()
+  })
+
+  for (const s of ALL_SCENES) {
+    it(`${s.id}: each line finishes before the next starts, and none is cut by a beat`, () => {
+      const v = [...s.voice].sort((a, b) => a.time - b.time)
+      v.forEach((l, i) => {
+        const end = l.time + (clip(l.say)?.dur ?? 0)
+        const next = v[i + 1]?.time ?? s.duration
+        expect(end + 0.1, `"${l.say}" runs into the next line`).toBeLessThanOrEqual(next)
+        for (const b of s.beats) {
+          // A line under way when the beat pauses keeps going while he works, so
+          // it must be over by the time the scene resumes (or it's said twice).
+          expect(l.time > b.time && l.time < b.resume, `"${l.say}" falls inside beat ${b.id}`).toBe(false)
+          if (l.time <= b.time) expect(end, `"${l.say}" runs past beat ${b.id}`).toBeLessThanOrEqual(b.resume)
+        }
+      })
+    })
+  }
 })

@@ -67,7 +67,13 @@ export const ep5: SceneDef = {
   title: 'Ten',
   duration: DURATION,
   events,
-  beats: [{ id: 'gather', time: GATHER[0], resume: GATHER[1], pieces: LOOSE, slots: SLOTS, piece: 'bead', prompt: 'Put the ten together' }],
+  beats: [{ id: 'gather', time: GATHER[0], resume: GATHER[1], pieces: LOOSE, slots: SLOTS, piece: 'bead', prompt: 'Put the ten together', say: 'Put the ten together.' }],
+  voice: [
+    { time: 0.5, say: 'Episode five. Ten.' },
+    { time: 12.0, say: 'Ten loose beads.' },
+    { time: 18.4, say: 'Ten units make one ten.' },
+    { time: 28, say: 'And when there are ten tens?' },
+  ],
   render: 'svg',
   Scene,
 }

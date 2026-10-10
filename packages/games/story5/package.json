@@ -10,7 +10,8 @@
   "scripts": {
     "test": "vitest run",
     "render": "node scripts/render.mjs",
-    "check": "node scripts/render.mjs --check"
+    "check": "node scripts/render.mjs --check",
+    "voice": "node scripts/voice.mjs"
   },
   "dependencies": {
     "@renderblocks/kernel": "workspace:*",

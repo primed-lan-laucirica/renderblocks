@@ -35,6 +35,19 @@ export interface Beat {
   piece: 'bead' | 'quarter' | 'tile'
   /** The prompt shown while waiting (a few words). */
   prompt: string
+  /** The prompt spoken (narrated when the beat begins, and on a tap). */
+  say: string
+}
+
+/**
+ * A narrated line: `say` is spoken at `time`. It's the spoken form of key
+ * text on screen (numbers in words, "3/4" as "three quarters"); the clip
+ * for each line is generated ahead of time (scripts/voice.mjs) and listed
+ * in voice.json.
+ */
+export interface VoiceLine {
+  time: number
+  say: string
 }
 
 export interface SceneDef {
@@ -45,6 +58,8 @@ export interface SceneDef {
   duration: number
   events: SceneEvent[]
   beats: Beat[]
+  /** The narration, in time order. */
+  voice: VoiceLine[]
   /** Drawn as SVG (or, for the ported Episode 0, canvas). */
   render: 'svg' | 'canvas'
   /**

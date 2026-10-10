@@ -3,12 +3,14 @@
  * t the export script asks for. Never part of the app.
  *   window.seek(t)       draw the frame at t (resolves once it's on screen)
  *   window.DURATION      the scene's length
- *   window.soundtrack()  the cues rendered offline, as a base64 WAV
+ *   window.soundtrack()  the cues and narration rendered offline, as a base64 WAV
+ *                        (watched straight through: no beat stops it)
  */
 import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import { ALL_SCENES } from './episodes'
 import { play } from './engine/tones'
+import { loadClips, speak } from './engine/voice'
 
 const id = new URLSearchParams(location.search).get('ep') ?? 'ep0'
 const scene = ALL_SCENES.find((s) => s.id === id) ?? ALL_SCENES[0]
@@ -29,11 +31,19 @@ w.seek = (t) =>
     requestAnimationFrame(() => requestAnimationFrame(() => done()))
   })
 
-/** The soundtrack: every cue, on an offline context, as 16-bit stereo WAV. */
+/** The soundtrack: every cue and line, on an offline context, as 16-bit stereo WAV. */
 w.soundtrack = async () => {
   const rate = 48000
   const ctx = new OfflineAudioContext(2, Math.ceil((scene.duration + 2) * rate), rate)
   for (const e of scene.events) play(ctx, e, e.time)
+  const clips = await loadClips(
+    ctx,
+    scene.voice.map((v) => v.say),
+  )
+  for (const v of scene.voice) {
+    const buf = clips.get(v.say)
+    if (buf) speak(ctx, buf, v.time)
+  }
   const buf = await ctx.startRendering()
   const n = buf.length
   const out = new DataView(new ArrayBuffer(44 + n * 4))

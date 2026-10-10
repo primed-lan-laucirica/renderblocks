@@ -6,7 +6,7 @@
  */
 import { useLayoutEffect, useRef } from 'react'
 import { clamp, lerp, outBack, outCubic, p, rng, smooth, win } from '../engine/ease'
-import type { SceneDef, SceneEvent } from '../engine/scene'
+import type { SceneDef, SceneEvent, VoiceLine } from '../engine/scene'
 
 const DURATION = 54
 const W = 1920
@@ -32,6 +32,20 @@ const SANS = "Inter, system-ui, 'DejaVu Sans', sans-serif"
 // Timed events (also the soundtrack).
 const EVENTS: SceneEvent[] = []
 const ev = (time: number, kind: SceneEvent['kind'], n: number) => EVENTS.push({ time, kind, n })
+
+/** The narration: each caption, spoken as it appears. */
+const VOICE: VoiceLine[] = [
+  { time: 0.8, say: 'The Story of Numbers. One of the Great Lessons.' },
+  { time: 6.4, say: 'Long ago, a shepherd had no numbers.' },
+  { time: 8.95, say: 'For every sheep, one pebble.' },
+  { time: 16.6, say: 'People carved a mark for each thing they counted.' },
+  { time: 20.6, say: 'Every fifth mark crossed the others, to make counting faster.' },
+  { time: 25.4, say: 'Five.' },
+  { time: 26.6, say: 'People everywhere wrote five in their own way.' },
+  { time: 37.8, say: 'In India, people made a sign for nothing at all: zero.' },
+  { time: 41.7, say: 'Zero holds a place, so a few digits can make big numbers.' },
+  { time: 49.0, say: 'Ten digits, shared by the whole world.' },
+]
 
 const T = { title: [0, 6.2], sheep: [6, 16.4], bone: [16.2, 25.4], five: [25.2, 37.4], zero: [37.2, 46.4], today: [46.2, 54] } as const
 const SHEEP_T = [8.2, 9.6, 11.0, 12.4, 13.8]
@@ -249,8 +263,8 @@ export function draw(ctx: CanvasRenderingContext2D, tIn: number) {
         pebble(fx, fy, 22, [C.terra, C.ochre, C.sage, C.sky, C.plum][i], 1, 40 + i)
       }
     })
-    caption('Long ago, a shepherd had no numbers.', a0 + 0.4, 7.9, 180)
-    caption('For every sheep, one pebble.', 8.0, a1 - 0.2, 180)
+    caption('Long ago, a shepherd had no numbers.', a0 + 0.4, 8.85, 180)
+    caption('For every sheep, one pebble.', 8.9, a1 - 0.2, 180)
     ctx.restore()
   }
 
@@ -499,7 +513,7 @@ function Scene({ t }: { t: number }) {
     const ctx = canvas.current?.getContext('2d')
     if (ctx) draw(ctx, t)
   }, [t])
-  return <canvas ref={canvas} width={W} height={H} style={{ width: '100%', height: '100%', display: 'block' }} />
+  return <canvas ref={canvas} width={W} height={H} style={{ width: '100%', height: '100%', display: 'block', objectFit: 'contain' }} />
 }
 
 export const ep0: SceneDef = {
@@ -509,6 +523,7 @@ export const ep0: SceneDef = {
   duration: DURATION,
   events: EVENTS,
   beats: [],
+  voice: VOICE,
   render: 'canvas',
   Scene,
 }

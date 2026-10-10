@@ -7,13 +7,15 @@
  * Answers are built, never picked, except < / >, where a wrong pick locks
  * the signs for a moment and reshuffles them.
  */
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { record } from '../evidence'
 import { play as playCue } from '../engine/tones'
+import { say } from '../engine/voice'
 import { NumeralCard } from '../kit/kit'
 import { PLACE_COLOUR, SANS } from '../kit/sizes'
 import { Mat, Piece } from './Mat'
 import { PLACE_NAMES, value, type Counts } from './matLayout'
+import { LINES } from './lines'
 import { advanceQueue } from './queue'
 import type { GameServices } from '@renderblocks/kernel'
 
@@ -151,6 +153,20 @@ function prompt(c: Challenge, step: number) {
   }
 }
 
+/** The prompt, spoken (the numeral is left for him to read). */
+function spoken(c: Challenge, step: number) {
+  switch (c.kind) {
+    case 'build':
+      return LINES.build
+    case 'read':
+      return LINES.read
+    case 'twoWays':
+      return step === 0 ? LINES.build : LINES.anotherWay
+    case 'compare':
+      return LINES.compare
+  }
+}
+
 /** Card racks: tap a card to nest it; tap the nest to take a card back off. */
 function Composer({ cards, onChange }: { cards: Counts; onChange: (c: Counts) => void }) {
   return (
@@ -208,6 +224,15 @@ export function BeadBank({ services, onBack, onStar }: { services: GameServices;
 
   const onChange = useCallback((c: Counts) => setCounts(c), [])
   const current = queue[0]
+
+  // Each new challenge (or step, or the end of a run) is read aloud, after the answer's chime.
+  const line = mode !== 'mastery' ? null : runDone !== null ? (runDone ? LINES.clean : LINES.again) : current ? spoken(current, step) : null
+  const lineKey = `${line}|${current?.id}|${step}|${runDone}`
+  useEffect(() => {
+    if (!line) return
+    const id = window.setTimeout(() => void say(line), 500)
+    return () => window.clearTimeout(id)
+  }, [line, lineKey])
 
   const finish = (right: boolean) => {
     const c = current
@@ -344,7 +369,9 @@ export function BeadBank({ services, onBack, onStar }: { services: GameServices;
       <style>{`@keyframes bb-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }`}</style>
       <div className="flex items-center gap-3">
         <div key={shake} className="text-3xl font-black flex-1" style={shake ? { animation: 'bb-shake 0.3s 2' } : undefined}>
-          {prompt(c, step)}
+          <button type="button" onClick={() => void say(spoken(c, step))} className="text-left" aria-label="Say it again">
+            {prompt(c, step)}
+          </button>
         </div>
         <div className="text-lg font-bold text-slate-400 tabular-nums">{queue.length} left</div>
       </div>

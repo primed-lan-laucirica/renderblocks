@@ -7,8 +7,8 @@
 //
 // Adapted from Drive Story5/render.mjs. The page is render.html, served by Vite
 // from this package; each frame is window.seek(t) then a screenshot of #stage.
-// The soundtrack is the scene's cue list, rendered offline with the same tone
-// table the player uses, and muxed in by ffmpeg.
+// The soundtrack is the scene's cue list and narration, rendered offline with the
+// same tone table and clips the player uses, and muxed in by ffmpeg.
 // Check mode renders a few timestamps, then the same timestamps again in reverse
 // order, and fails unless every pair of frames is byte-for-byte identical.
 import { createServer } from 'vite'
@@ -34,7 +34,8 @@ const ALL = ['ep0', 'ep5', 'ep13', 'ep23']
 const named = args.filter((a, i) => /^ep\d+$/.test(a) && !['--fps', '--out', '--stills'].includes(args[i - 1]))
 const ids = check || args.includes('--all') || !named.length ? ALL : named
 
-const server = await createServer({ root, plugins: [react()], logLevel: 'error', server: { port: 0 } })
+// The app's public folder, for the narration clips.
+const server = await createServer({ root, publicDir: path.resolve(root, '../../app/public'), plugins: [react()], logLevel: 'error', server: { port: 0 } })
 await server.listen()
 const url = server.resolvedUrls.local[0]
 const browser = await chromium.launch({ channel: 'chrome', headless: true })

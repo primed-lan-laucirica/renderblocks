@@ -14,7 +14,7 @@ import { BEAD, GAP, TILE } from '../kit/sizes'
 import { Say, Stage, TitleCard } from './common'
 import { sceneAlpha } from './timing'
 
-const DURATION = 46
+const DURATION = 47
 const STEP = BEAD + GAP + 2
 
 // ——— Part one: golden beads ———
@@ -113,7 +113,7 @@ function Scene({ t, beat }: { t: number; beat?: string }) {
           <Notation text="38" x={420} y={640} size={84} o={smooth(p(t, 9.2, 9.8)) * (1 - push)} />
           <Notation text="+" x={960} y={640} size={84} o={smooth(p(t, 9.8, 10.3)) * (1 - push)} />
           <Notation text="25" x={1340} y={640} size={84} o={smooth(p(t, 9.8, 10.4)) * (1 - push)} />
-          <Say t={t} a={12.8} b={14.8} text="13 units. Too many for one place." />
+          <Say t={t} a={12.4} b={14.9} text="13 units. Too many for one place." />
           <NumeralCard value={60} right={1060} y={700} o={smooth(p(t, 20.8, 21.4))} />
           <NumeralCard value={3} right={1060} y={lerp(560, 700, smooth(p(t, 21.6, 22.2)))} o={smooth(p(t, 21.4, 21.8))} />
           <Notation text="38 + 25 = 63" y={900} o={smooth(p(t, 22.6, 23.2))} />
@@ -137,7 +137,7 @@ function Scene({ t, beat }: { t: number; beat?: string }) {
           <Notation text="38 + 25 = 63" y={900} o={smooth(p(t, 37.6, 38.2))} />
         </g>
 
-        <Say t={t} a={40.4} b={DURATION} text="52 − 27: only 2 units. How do we take away 7?" y={540} />
+        <Say t={t} a={40.3} b={DURATION} text="52 − 27: only 2 units. How do we take away 7?" y={540} />
       </g>
     </Stage>
   )
@@ -149,7 +149,16 @@ export const ep13: SceneDef = {
   title: 'Carrying',
   duration: DURATION,
   events: events.sort((x, y) => x.time - y.time),
-  beats: [{ id: 'gather', time: GATHER[0], resume: GATHER[1], pieces: UNITS.slice(0, 10), slots: SLOTS, piece: 'bead', prompt: 'Make a ten' }],
+  beats: [{ id: 'gather', time: GATHER[0], resume: GATHER[1], pieces: UNITS.slice(0, 10), slots: SLOTS, piece: 'bead', prompt: 'Make a ten', say: 'Make a ten.' }],
+  voice: [
+    { time: 0.5, say: 'Episode thirteen. Carrying.' },
+    { time: 9.4, say: 'Thirty-eight plus twenty-five.' },
+    { time: 12.4, say: 'Thirteen units. Too many for one place.' },
+    { time: 22.6, say: 'Thirty-eight plus twenty-five equals sixty-three.' },
+    { time: 25.4, say: 'Now with tiles.' },
+    { time: 37.6, say: 'Thirty-eight plus twenty-five equals sixty-three.' },
+    { time: 40.3, say: 'Fifty-two take away twenty-seven. Only two units. How do we take away seven?' },
+  ],
   render: 'svg',
   Scene,
 }

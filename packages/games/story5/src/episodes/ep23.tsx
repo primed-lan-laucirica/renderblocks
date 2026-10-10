@@ -71,13 +71,13 @@ function Scene({ t, beat }: { t: number; beat?: string }) {
         <Notation text="3/4" x={LEFT.x} y={720} size={84} o={smooth(p(t, 5.6, 6.2)) * (1 - group)} />
         <Notation text="+" x={960} y={720} size={84} o={smooth(p(t, 9.6, 10.1)) * (1 - group)} />
         <Notation text="2/4" x={RIGHT.x} y={720} size={84} o={smooth(p(t, 9.6, 10.2)) * (1 - group)} />
-        <Say t={t} a={13.6} b={15.0} text="Five quarters." />
+        <Say t={t} a={13.4} b={15.0} text="Five quarters." />
         <Notation text="1" x={FRAME.x} y={650} size={72} o={smooth(p(t, 20.4, 21.0))} colour={SOFT} />
         <Notation text="1/4" x={1360} y={650} size={72} o={smooth(p(t, 20.4, 21.0))} colour={SOFT} />
         {/* One equation, growing: … = 5/4, then … = 5/4 = 1 1/4. */}
         <Notation text="3/4 + 2/4 = 5/4" y={900} o={smooth(p(t, 22.0, 22.6)) * (1 - smooth(p(t, 23.6, 24.0)))} />
         <Notation text="3/4 + 2/4 = 5/4 = 1 1/4" y={900} o={smooth(p(t, 23.6, 24.2))} />
-        <Say t={t} a={26.4} b={DURATION} text="What is 3 groups of 1/4?" />
+        <Say t={t} a={26.6} b={DURATION} text="What is 3 groups of 1/4?" />
       </g>
     </Stage>
   )
@@ -89,7 +89,15 @@ export const ep23: SceneDef = {
   title: 'Adding fractions',
   duration: DURATION,
   events,
-  beats: [{ id: 'fill', time: FILL[0], resume: FILL[1], pieces: [0, 1, 2, 3].map((i) => ROW[i]), slots: [0, 1, 2, 3].map(() => FRAME), piece: 'quarter', prompt: 'Fill the circle' }],
+  beats: [{ id: 'fill', time: FILL[0], resume: FILL[1], pieces: [0, 1, 2, 3].map((i) => ROW[i]), slots: [0, 1, 2, 3].map(() => FRAME), piece: 'quarter', prompt: 'Fill the circle', say: 'Fill the circle.' }],
+  voice: [
+    { time: 0.5, say: 'Episode twenty-three. Adding fractions.' },
+    { time: 5.6, say: 'Three quarters.' },
+    { time: 9.6, say: 'Plus two quarters.' },
+    { time: 13.4, say: 'Five quarters.' },
+    { time: 22.0, say: 'Three quarters plus two quarters is five quarters: one and one quarter.' },
+    { time: 26.6, say: 'What is three groups of one quarter?' },
+  ],
   render: 'svg',
   Scene,
 }
