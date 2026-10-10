@@ -30,8 +30,11 @@ describe('scenes are pure functions of t', () => {
     for (const s of ALL_SCENES) {
       for (const e of s.events) expect(e.time).toBeLessThanOrEqual(s.duration)
       for (const b of s.beats) {
-        expect(b.resume).toBeGreaterThan(b.time)
-        expect(b.pieces.length).toBe(b.slots.length)
+        expect(b.resume, `${s.id}:${b.id}`).toBeGreaterThan(b.time)
+        expect(b.pieces.length, `${s.id}:${b.id} has no pieces`).toBeGreaterThan(0)
+        // Every piece needs somewhere to go: a slot each, or one shared slot (stacking); a tap beat needs none.
+        const stacks = b.stack || b.piece === 'quarter'
+        if (b.action !== 'tap') expect(stacks ? b.slots.length > 0 : b.slots.length >= b.pieces.length, `${s.id}:${b.id} slots`).toBe(true)
       }
     }
   })
@@ -80,12 +83,12 @@ describe('narration', () => {
   })
 
   for (const s of ALL_SCENES) {
-    it(`${s.id}: each line finishes before the next starts, and none is cut by a beat`, () => {
+    it(`${s.id}: each line finishes before the next starts (counting may run back to back), and none is cut by a beat`, () => {
       const v = [...s.voice].sort((a, b) => a.time - b.time)
       v.forEach((l, i) => {
         const end = l.time + spoken(l.say)
         const next = v[i + 1]?.time ?? s.duration
-        expect(end + 0.1, `"${l.say}" runs into the next line`).toBeLessThanOrEqual(next)
+        expect(end, `"${l.say}" runs into the next line`).toBeLessThanOrEqual(next)
         for (const b of s.beats) {
           // A line under way when the beat pauses keeps going while he works, so
           // it must be over by the time the scene resumes (or it's said twice).

@@ -161,7 +161,9 @@ export function Player({ scene, done, onBeatDone, onFinished, onBack }: Props) {
   useEffect(
     () => () => {
       cancelAnimationFrame(clock.current.raf)
-      void audio.current.ctx?.close()
+      const ctx = audio.current.ctx
+      audio.current.ctx = null
+      void ctx?.close().catch(() => {})
     },
     [],
   )

@@ -30,7 +30,9 @@ w.IDS = ALL_SCENES.map((s) => s.id)
 w.EVENTS = scene.events
 w.seek = (t) =>
   new Promise((done) => {
-    flushSync(() => root.render(<Scene t={t} />))
+    // A fresh tree every frame (keyed by t): Chrome then paints the whole frame, not just
+    // what changed, so a frame's pixels never depend on the frame drawn before it.
+    flushSync(() => root.render(<Scene key={t} t={t} />))
     requestAnimationFrame(() => requestAnimationFrame(() => done()))
   })
 
