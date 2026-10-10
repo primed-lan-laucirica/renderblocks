@@ -14,7 +14,7 @@ import { say } from '../engine/voice'
 import { NumeralCard } from '../kit/kit'
 import { PLACE_COLOUR, SANS } from '../kit/sizes'
 import { Mat, Piece } from './Mat'
-import { PLACE_NAMES, value, type Counts } from './matLayout'
+import { CUBE, CUBE_D, PLACE_NAMES, value, type Counts } from './matLayout'
 import { LINES } from './lines'
 import { advanceQueue } from './queue'
 import type { GameServices } from '@renderblocks/kernel'
@@ -89,7 +89,7 @@ function Tray({ counts, onChange }: { counts: Counts; onChange: (c: Counts) => v
           className="rounded-xl bg-slate-800 border-2 border-slate-600 active:bg-slate-700 flex flex-col items-center p-1"
           aria-label={`Add one of the ${PLACE_NAMES[p]}`}
         >
-          <svg viewBox={p === 3 ? '-10 -130 380 380' : p === 2 ? '-10 -10 260 260' : p === 1 ? '-20 -10 60 260' : '-4 -4 30 30'} className="h-12 w-12">
+          <svg viewBox={p === 3 ? `-4 ${-CUBE_D - 4} ${CUBE + 8} ${CUBE + 8}` : p === 2 ? '-10 -10 260 260' : p === 1 ? '-20 -10 60 260' : '-4 -4 30 30'} className="h-12 w-12">
             <Piece place={p} at={{ x: 0, y: 0 }} />
           </svg>
           <span className="text-sm font-bold" style={{ color: PLACE_COLOUR[p] }}>

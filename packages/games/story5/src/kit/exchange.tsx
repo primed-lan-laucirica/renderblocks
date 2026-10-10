@@ -67,9 +67,10 @@ const SPECS: Record<ExchangeKind, Spec> = {
  *   0.60–0.75  they glow, all together,
  *   0.75–1.00  the whole fades in over them as they fade out.
  * `reverse` plays a break: the whole fades into its pieces, which then
- * spread out to `from`.
+ * spread out to `from`. `scale` draws the whole smaller than its pieces
+ * (the mat's small thousand cubes): the pieces shrink as they glide in.
  */
-export function exchange(kind: ExchangeKind, from: Pt[], to: Pt, progress: number, reverse = false): ReactNode {
+export function exchange(kind: ExchangeKind, from: Pt[], to: Pt, progress: number, reverse = false, scale = 1): ReactNode {
   const spec = SPECS[kind]
   const k = reverse ? 1 - clamp(progress) : clamp(progress)
   const n = Math.min(spec.count, from.length)
@@ -78,11 +79,12 @@ export function exchange(kind: ExchangeKind, from: Pt[], to: Pt, progress: numbe
   const pieces = Array.from({ length: n }, (_, i) => {
     const start = (i / n) * 0.15
     const m = smooth(clamp((k - start) / (0.6 - 0.15)))
-    const target = { x: to.x + spec.slot(i).x, y: to.y + spec.slot(i).y }
+    const target = { x: to.x + spec.slot(i).x * scale, y: to.y + spec.slot(i).y * scale }
     const at = mix(from[i], target, m)
     if (kind === 'quarters→whole') return <FractionPiece key={i} d={4} k={i} cx={at.x} cy={at.y} o={1 - fade} />
+    const s = 1 + (scale - 1) * m
     return (
-      <g key={i} opacity={1 - fade}>
+      <g key={i} opacity={1 - fade} transform={s === 1 ? undefined : `translate(${at.x} ${at.y}) scale(${s}) translate(${-at.x} ${-at.y})`}>
         {spec.piece(at, glow)}
       </g>
     )
@@ -90,7 +92,7 @@ export function exchange(kind: ExchangeKind, from: Pt[], to: Pt, progress: numbe
   return (
     <g>
       {pieces}
-      {fade > 0 && spec.whole(to, fade)}
+      {fade > 0 && (scale === 1 ? spec.whole(to, fade) : <g transform={`translate(${to.x} ${to.y}) scale(${scale}) translate(${-to.x} ${-to.y})`}>{spec.whole(to, fade)}</g>)}
       {glow > 0 && kind === 'quarters→whole' && <circle cx={to.x} cy={to.y} r={FRAC_R + 6} fill="none" stroke="#fff6d5" strokeWidth={8} opacity={glow} />}
     </g>
   )

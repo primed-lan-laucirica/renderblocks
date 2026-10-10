@@ -12,7 +12,7 @@ import type { Pt } from '../engine/ease'
 import { exchange, type ExchangeKind } from '../kit/exchange'
 import { HundredSquare, TenBar, ThousandCube, UnitBead } from '../kit/kit'
 import { PLACE_COLOUR, SANS } from '../kit/sizes'
-import { COL, MAT_H, MAT_W, PLACE_NAMES, box, colX, layout, type Counts } from './matLayout'
+import { COL, MAT_H, MAT_W, PLACE_NAMES, THOUSAND_S, box, colX, layout, type Counts } from './matLayout'
 
 const KIND: ExchangeKind[] = ['units→ten', 'tens→hundred', 'hundreds→thousand']
 const ANIM_MS = 900
@@ -29,7 +29,7 @@ interface Anim {
 
 export function Piece({ place, at, glow = 0 }: { place: number; at: Pt; glow?: number }) {
   if (place === 0) return <UnitBead x={at.x} y={at.y} glow={glow} />
-  const p = place === 1 ? <TenBar x={at.x} y={at.y} /> : place === 2 ? <HundredSquare x={at.x} y={at.y} /> : <ThousandCube x={at.x} y={at.y} />
+  const p = place === 1 ? <TenBar x={at.x} y={at.y} /> : place === 2 ? <HundredSquare x={at.x} y={at.y} /> : <ThousandCube x={at.x} y={at.y} s={THOUSAND_S} />
   return glow > 0 ? <g opacity={0.75}>{p}</g> : p
 }
 
@@ -181,7 +181,7 @@ export function Mat({ counts, onChange, onExchange, className }: Props) {
         </text>
       )}
       {anims.map((a, k) => (
-        <g key={k}>{exchange(a.kind, a.from, a.to, Math.min(1, (now - a.start) / ANIM_MS), a.reverse)}</g>
+        <g key={k}>{exchange(a.kind, a.from, a.to, Math.min(1, (now - a.start) / ANIM_MS), a.reverse, a.kind === 'hundreds→thousand' ? THOUSAND_S : 1)}</g>
       ))}
     </svg>
   )
