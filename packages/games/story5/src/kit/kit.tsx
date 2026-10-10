@@ -140,20 +140,37 @@ export function ThousandCube({ x, y, s = 1, o = 1 }: At) {
 /**
  * A numeral card: its digits in its place's colour, as wide as its digits.
  * Cards for 1000, 300, 40 and 5 laid right-aligned on one spot nest into
- * 1345 (each covers the zeros of the one beneath).
+ * 1345 (each covers the zeros of the one beneath). Every digit sits centred
+ * in a fixed column DIGIT_W wide, counted from the right, and a card's left
+ * edge falls just past its own leftmost column; so a card covers exactly the
+ * columns of its own digits, whatever the font's widths.
  */
 export function NumeralCard({ value, right, y, s = 1, o = 1 }: { value: number; right: number; y: number; s?: number; o?: number }) {
   const digits = String(value)
-  const place = digits.length - 1
-  const w = digits.length * DIGIT_W + 16
+  const n = digits.length
+  const place = n - 1
+  const PAD = 8
+  const w = n * DIGIT_W + PAD + 2
   return g(
     { x: right, y, s, o },
     <>
       <rect x={-w + 3} y={4} width={w} height={CARD_H} rx={8} fill="rgba(60,40,20,0.15)" />
       <rect x={-w} y={0} width={w} height={CARD_H} rx={8} fill="#fbf6ea" stroke="#d8c8a6" strokeWidth={2} />
-      <text x={-8} y={CARD_H / 2 + 4} fontFamily={SANS} fontWeight={800} fontSize={78} fill={PLACE_COLOUR[place % 4]} textAnchor="end" dominantBaseline="middle" letterSpacing={6}>
-        {digits}
-      </text>
+      {[...digits].map((d, i) => (
+        <text
+          key={i}
+          x={-PAD - (n - 1 - i + 0.5) * DIGIT_W}
+          y={CARD_H / 2 + 4}
+          fontFamily={SANS}
+          fontWeight={800}
+          fontSize={76}
+          fill={PLACE_COLOUR[place % 4]}
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
+          {d}
+        </text>
+      ))}
     </>,
   )
 }
