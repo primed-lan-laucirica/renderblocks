@@ -7,39 +7,20 @@
  * Answers are built, never picked, except < / >, where a wrong pick locks
  * the signs for a moment and reshuffles them.
  */
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { record } from '../evidence'
-import { play as playCue } from '../engine/tones'
-import { say } from '../engine/voice'
 import { NumeralCard } from '../kit/kit'
 import { PLACE_COLOUR, SANS } from '../kit/sizes'
 import { Mat, Piece } from './Mat'
 import { CUBE, CUBE_D, PLACE_NAMES, value, type Counts } from './matLayout'
 import { LINES } from './lines'
 import { advanceQueue } from './queue'
-import type { GameServices } from '@renderblocks/kernel'
+import { cue, sfx } from './sound'
+import { LOCKOUT_MS, type WorkshopProps } from './types'
+import { CheckButton, Prompt, RunDone, WorkshopScreen, type Mode } from './ui'
 
 const ZERO: Counts = [0, 0, 0, 0]
 const fmt = (n: number) => n.toLocaleString('en-US')
-const LOCKOUT_MS = 1200
-
-// ——— sounds: the cue tones for exchanges, the shared chime/thunk for answers ———
-let ctx: AudioContext | null = null
-function cue(kind: 'fuse' | 'break') {
-  try {
-    ctx ??= new AudioContext()
-    if (ctx.state === 'suspended') void ctx.resume()
-    playCue(ctx, { time: 0, kind, n: 0 }, ctx.currentTime + 0.02)
-  } catch {
-    // no sound
-  }
-}
-function sfx(name: 'correct' | 'wrong' | 'celebrate') {
-  const a = new Audio(`/games/shared/sfx/${name}.mp3`)
-  a.volume = 0.7
-  void a.play().catch(() => {})
-}
-
 /** The standard notation for what's on the mat: nested numeral cards when every place holds 0–9; otherwise the sum by place. */
 function NotationPanel({ counts }: { counts: Counts }) {
   const v = value(counts)
@@ -204,8 +185,8 @@ function Composer({ cards, onChange }: { cards: Counts; onChange: (c: Counts) =>
   )
 }
 
-export function BeadBank({ services, onBack, onStar }: { services: GameServices; onBack: () => void; onStar: () => void }) {
-  const [mode, setMode] = useState<'explore' | 'mastery'>('explore')
+export function BeadBank({ services, onBack, onStar }: WorkshopProps) {
+  const [mode, setMode] = useState<Mode>('explore')
   const [counts, setCounts] = useState<Counts>(ZERO)
 
   // Mastery state.
@@ -225,14 +206,6 @@ export function BeadBank({ services, onBack, onStar }: { services: GameServices;
   const onChange = useCallback((c: Counts) => setCounts(c), [])
   const current = queue[0]
 
-  // Each new challenge (or step, or the end of a run) is read aloud, after the answer's chime.
-  const line = mode !== 'mastery' ? null : runDone !== null ? (runDone ? LINES.clean : LINES.again) : current ? spoken(current, step) : null
-  const lineKey = `${line}|${current?.id}|${step}|${runDone}`
-  useEffect(() => {
-    if (!line) return
-    const id = window.setTimeout(() => void say(line), 500)
-    return () => window.clearTimeout(id)
-  }, [line, lineKey])
 
   const finish = (right: boolean) => {
     const c = current
@@ -308,32 +281,23 @@ export function BeadBank({ services, onBack, onStar }: { services: GameServices;
     setCounts(ZERO)
   }
 
-  const header = (
-    <div className="flex items-center gap-2 w-full">
-      <button type="button" onClick={onBack} className="w-11 h-11 rounded-full bg-white/10 text-2xl font-bold" aria-label="Back">
-        ←
-      </button>
-      <h1 className="text-2xl font-black flex-1">Bead Bank</h1>
-      {(['explore', 'mastery'] as const).map((m) => (
-        <button
-          key={m}
-          type="button"
-          onClick={() => {
-            // Each mode starts on a clear mat (Explore's sandbox mustn't leak into a challenge).
-            setMode(m)
-            setCounts(ZERO)
-          }}
-          className={`rounded-lg px-4 py-2 font-black ${mode === m ? 'bg-amber-500 text-slate-900' : 'bg-white/10'}`}>
-          {m === 'explore' ? 'Explore' : 'Mastery'}
-        </button>
-      ))}
-    </div>
+  // Each mode starts on a clear mat (Explore's sandbox mustn't leak into a challenge).
+  const screen = (body: React.ReactNode) => (
+    <WorkshopScreen
+      title="Bead Bank"
+      mode={mode}
+      onMode={(m) => {
+        setMode(m)
+        setCounts(ZERO)
+      }}
+      onBack={onBack}
+    >
+      {body}
+    </WorkshopScreen>
   )
 
   if (mode === 'explore')
-    return (
-      <div className="h-dvh w-full flex flex-col gap-2 p-3 text-white select-none overflow-hidden" style={{ background: '#1d1813' }}>
-        {header}
+    return screen(
         <div className="flex-1 min-h-0 flex flex-col landscape:flex-row gap-3">
           <Mat counts={counts} onChange={onChange} onExchange={cue} className="flex-1 min-h-0 w-full rounded-2xl" />
           <div className="landscape:w-80 flex flex-col gap-3 items-center justify-center shrink-0">
@@ -343,38 +307,16 @@ export function BeadBank({ services, onBack, onStar }: { services: GameServices;
               clear the mat
             </button>
           </div>
-        </div>
-      </div>
+        </div>,
     )
 
   // ——— Mastery ———
-  if (runDone !== null || !current)
-    return (
-      <div className="h-dvh w-full flex flex-col gap-4 p-3 text-white items-center" style={{ background: '#1d1813' }}>
-        {header}
-        <div className="flex-1 flex flex-col items-center justify-center gap-4">
-          <div className="text-6xl">{runDone ? '⭐' : ''}</div>
-          <div className="text-3xl font-black">{runDone ? 'A clean run!' : `${missed.length} came back. Again for the star?`}</div>
-          <button type="button" onClick={restart} className="rounded-xl bg-amber-500 text-slate-900 px-6 py-3 text-2xl font-black">
-            New run
-          </button>
-        </div>
-      </div>
-    )
+  if (runDone !== null || !current) return screen(<RunDone star={!!runDone} missed={missed.length} onAgain={restart} />)
 
   const c = current
-  return (
-    <div className="h-dvh w-full flex flex-col gap-2 p-3 text-white select-none overflow-hidden" style={{ background: '#1d1813' }}>
-      {header}
-      <style>{`@keyframes bb-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)} }`}</style>
-      <div className="flex items-center gap-3">
-        <div key={shake} className="text-3xl font-black flex-1" style={shake ? { animation: 'bb-shake 0.3s 2' } : undefined}>
-          <button type="button" onClick={() => void say(spoken(c, step))} className="text-left" aria-label="Say it again">
-            {prompt(c, step)}
-          </button>
-        </div>
-        <div className="text-lg font-bold text-slate-400 tabular-nums">{queue.length} left</div>
-      </div>
+  return screen(
+    <>
+      <Prompt text={prompt(c, step)} line={spoken(c, step)} shake={shake} left={queue.length} sayKey={`${c.id}|${step}`} />
       {c.kind === 'compare' ? (
         <div className="flex-1 min-h-0 flex flex-col landscape:flex-row items-center gap-3">
           <Mat counts={c.a} className="flex-1 min-h-0 w-full rounded-2xl" />
@@ -398,13 +340,11 @@ export function BeadBank({ services, onBack, onStar }: { services: GameServices;
                 clear the mat
               </button>
             )}
-            <button type="button" onClick={check} className="rounded-full bg-emerald-500 w-24 h-24 text-5xl font-black shadow-xl" aria-label="Check">
-              ✓
-            </button>
+            <CheckButton onClick={check} />
           </div>
         </div>
       )}
-    </div>
+    </>,
   )
 }
 

@@ -3,6 +3,7 @@
  * t the export script asks for. Never part of the app.
  *   window.seek(t)       draw the frame at t (resolves once it's on screen)
  *   window.DURATION      the scene's length
+ *   window.IDS           every scene's id
  *   window.soundtrack()  the cues and narration rendered offline, as a base64 WAV
  *                        (watched straight through: no beat stops it)
  */
@@ -21,9 +22,11 @@ const w = window as unknown as {
   seek: (t: number) => Promise<void>
   DURATION: number
   EVENTS: unknown
+  IDS: string[]
   soundtrack: () => Promise<string>
 }
 w.DURATION = scene.duration
+w.IDS = ALL_SCENES.map((s) => s.id)
 w.EVENTS = scene.events
 w.seek = (t) =>
   new Promise((done) => {

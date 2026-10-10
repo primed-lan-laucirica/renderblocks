@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import type { Pt } from './ease'
 
 /**
@@ -23,16 +23,34 @@ export type CueKind = 'pebble' | 'notch' | 'card' | 'zero' | 'place' | 'digit' |
  * action; then it carries on from `resume` (skipping the scene's own
  * demonstration of that action, which plays when watched straight through
  * or exported).
+ *
+ * 'drag' (the default): drag each piece into a free slot (any order).
+ * 'tap': tap each piece (break a bar, pick the longer rod); `slots` is unused.
  */
 export interface Beat {
   id: string
   time: number
   resume: number
-  /** What the child does: drag these pieces into these slots. */
+  action?: 'drag' | 'tap'
+  /** The child's pieces, where they start (each piece's drawing origin). */
   pieces: Pt[]
   slots: Pt[]
-  /** How each piece is drawn while it's dragged. */
-  piece: 'bead' | 'quarter' | 'tile'
+  /**
+   * How each piece is drawn: the built-in bead, quarter or stamp tile, or
+   * 'custom' with `draw`.
+   */
+  piece: 'bead' | 'quarter' | 'tile' | 'custom'
+  /** Custom pieces: draw piece i at `at`; `done` once it's in a slot (or tapped). */
+  draw?: (at: Pt, i: number, done: boolean) => ReactNode
+  /** Custom slots: the empty slot's outline (default: none). */
+  drawSlot?: (at: Pt, k: number) => ReactNode
+  /** Custom pieces: from a piece's origin to its middle (for touch and snapping). */
+  centre?: Pt
+  /** Custom pieces: touch radius and snap distance, in scene pixels (default 50 and 70). */
+  reach?: number
+  snap?: number
+  /** Custom pieces: several pieces may share one slot (quarters into one circle). */
+  stack?: boolean
   /** The prompt shown while waiting (a few words). */
   prompt: string
   /** The prompt spoken (narrated when the beat begins, and on a tap). */

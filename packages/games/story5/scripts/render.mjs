@@ -30,9 +30,7 @@ const check = args.includes('--check')
 const fps = Number(flag('--fps', '30'))
 const stills = flag('--stills', null)
 const outDir = path.resolve(flag('--out', path.join(root, 'out')))
-const ALL = ['ep0', 'ep5', 'ep13', 'ep23']
 const named = args.filter((a, i) => /^ep\d+$/.test(a) && !['--fps', '--out', '--stills'].includes(args[i - 1]))
-const ids = check || args.includes('--all') || !named.length ? ALL : named
 
 // The app's public folder, for the narration clips.
 const server = await createServer({ root, publicDir: path.resolve(root, '../../app/public'), plugins: [react()], logLevel: 'error', server: { port: 0 } })
@@ -41,6 +39,12 @@ const url = server.resolvedUrls.local[0]
 const browser = await chromium.launch({ channel: 'chrome', headless: true })
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 })
 page.on('pageerror', (e) => console.error('PAGEERR', e.message))
+
+// Every scene's id, from the page itself.
+await page.goto(`${url}render.html`)
+await page.waitForFunction(() => Array.isArray(window.IDS))
+const ALL = await page.evaluate(() => window.IDS)
+const ids = check || args.includes('--all') || !named.length ? ALL : named
 
 let failed = 0
 for (const id of ids) {

@@ -11,12 +11,9 @@ import { EPISODES } from './episodes'
 import { record } from './evidence'
 import { Player } from './Player'
 import { load, save, type Progress } from './progress'
-import { BeadBank } from './workshops/BeadBank'
+import { WORKSHOPS } from './workshops'
 
 type View = { kind: 'home' } | { kind: 'episode'; n: number } | { kind: 'workshop'; part: number }
-
-/** Workshops built so far. */
-const WORKSHOPS: Record<number, true> = { 2: true }
 
 function App({ services }: GameProps) {
   const [view, setView] = useState<View>({ kind: 'home' })
@@ -51,14 +48,16 @@ function App({ services }: GameProps) {
     )
   }
 
-  if (view.kind === 'workshop')
+  if (view.kind === 'workshop') {
+    const { View } = WORKSHOPS[view.part]
     return (
-      <BeadBank
+      <View
         services={services}
         onBack={() => setView({ kind: 'home' })}
         onStar={() => update({ ...progress, stars: [...new Set([...progress.stars, view.part])] })}
       />
     )
+  }
 
   const watched = new Set(progress.watched)
   return (

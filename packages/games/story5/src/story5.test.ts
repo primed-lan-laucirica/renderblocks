@@ -71,6 +71,9 @@ describe('the workshop run rule', () => {
   })
 })
 
+/** A line's length: its clip's, or (before `pnpm voice` has made it) an estimate at this voice's pace. */
+const spoken = (say: string) => clip(say)?.dur ?? 0.32 * say.split(/\s+/).length + 0.2
+
 describe('narration', () => {
   it('every line has a clip (run `pnpm voice` after changing a line)', () => {
     for (const l of allLines()) expect(clip(l), l).toBeDefined()
@@ -80,7 +83,7 @@ describe('narration', () => {
     it(`${s.id}: each line finishes before the next starts, and none is cut by a beat`, () => {
       const v = [...s.voice].sort((a, b) => a.time - b.time)
       v.forEach((l, i) => {
-        const end = l.time + (clip(l.say)?.dur ?? 0)
+        const end = l.time + spoken(l.say)
         const next = v[i + 1]?.time ?? s.duration
         expect(end + 0.1, `"${l.say}" runs into the next line`).toBeLessThanOrEqual(next)
         for (const b of s.beats) {

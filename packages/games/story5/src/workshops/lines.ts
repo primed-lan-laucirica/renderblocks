@@ -7,6 +7,4 @@ export const LINES = {
   read: 'Make this number with cards.',
   anotherWay: 'Now build it another way.',
   compare: 'Which sign?',
-  clean: 'A clean run!',
-  again: 'Again, for the star?',
 } as const
