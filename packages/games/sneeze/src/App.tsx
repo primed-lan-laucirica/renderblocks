@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { numberToClips, playClips, type GameProps } from '@renderblocks/kernel'
+import { numberToClips, playClips, speakNumber, type GameProps } from '@renderblocks/kernel'
 import { bounds, featureUnit } from '@renderblocks/designer/draw'
 import { DEFAULT_LOOK, fromDesign, type Design, type Look } from '@renderblocks/designer/look'
 import { drawPiece, squareShape } from './draw'
 import { choices, fmt, ROUNDS, sneeze, sqrt, squaresAround, type Rule, type Sneeze } from './rules'
 import { initPhysics, Stage, STEP, type Piece } from './sim'
-import { blessYou, choo, correct, thud, wake, windup } from './sound'
+import { choo, correct, thud, wake, windup } from './sound'
 
 /** His Designer looks, by number (from the shared "designs" record): a square or ring wears the look he made for its number. */
 function looksFrom(raw: string | null): Map<string, Look> {
@@ -213,6 +213,8 @@ function Keypad({ onDone }: { onDone: (side: bigint | null) => void }) {
 
 /** How long the "ah… ah…" lasts before the CHOO (s). */
 const WINDUP = 0.75
+/** A shorter one when he tapped ahead (while the last was still flying). */
+const WINDUP_SOON = 0.3
 
 type Phase = 'ready' | 'windup' | 'guessing' | 'choo' | 'flying' | 'done'
 
@@ -258,13 +260,8 @@ function Play({
   useEffect(() => {
     live.current = { rule, guess, seeAll, lookFor }
   }, [rule, guess, seeAll, lookFor])
-  // The last sneeze, for the loop's "say it when it lands".
-  const lastRef = useRef(last)
-  useEffect(() => {
-    lastRef.current = last
-  }, [last])
   // Commands from the buttons to the loop.
-  const cmd = useRef<{ tickle: () => void; pick: (n: bigint) => void; ruleChanged: () => void } | null>(null)
+  const cmd = useRef<{ tickle: (soon?: boolean) => void; pick: (n: bigint) => void; ruleChanged: () => void } | null>(null)
 
   useEffect(() => {
     cmd.current?.ruleChanged()
@@ -283,6 +280,8 @@ function Play({
     let ph: Phase = 'ready'
     let phaseAt = 0
     let punch = 0
+    // A tap made while the last one was still flying.
+    let queued = false
     let picked: bigint | undefined
     const timers: number[] = []
     // Faces: squeezed during the wind-up, mid-sneeze on the ring for a moment after.
@@ -316,14 +315,18 @@ function Play({
         if (picked !== undefined && picked === r.s.ring) correct()
         setOptions([])
         setP('flying')
-        later(0.6, blessYou)
       })
     }
 
     cmd.current = {
-      tickle: () => {
+      tickle: (soon = false) => {
         wake()
         if (!stage) return
+        // He taps fast: a tap while one is on its way is kept, and it sneezes the moment it lands.
+        if (ph === 'flying' || ph === 'windup' || ph === 'choo') {
+          queued = true
+          return
+        }
         if (ph === 'ready' || ph === 'done') {
           if (!canSneeze()) {
             // Nothing left to sneeze: a little shake.
@@ -339,7 +342,7 @@ function Play({
             setP('guessing')
           } else {
             setP('windup')
-            later(WINDUP, doChoo)
+            later(soon ? WINDUP_SOON : WINDUP, doChoo)
           }
         }
       },
@@ -356,7 +359,21 @@ function Play({
       },
     }
 
-    const down = () => cmd.current?.tickle()
+    // Where each number is drawn (screen px), so a tap on one says it.
+    let hits: { x0: number; y0: number; x1: number; y1: number; n: bigint }[] = []
+    const down = (e: PointerEvent) => {
+      const box = el.getBoundingClientRect()
+      const x = e.clientX - box.left
+      const y = e.clientY - box.top
+      // Smallest (topmost-drawn last) first, so a little one's number wins over a big one's.
+      const hit = [...hits].reverse().find((r) => x >= r.x0 && x <= r.x1 && y >= r.y0 && y <= r.y1)
+      if (hit) {
+        wake()
+        speakNumber(hit.n)
+        return
+      }
+      cmd.current?.tickle()
+    }
     el.addEventListener('pointerdown', down)
 
     const frame = (now: number) => {
@@ -368,11 +385,13 @@ function Play({
         for (const th of stage.step()) thud(th.strength, Math.min(1, Math.log10(1 + th.size)))
         acc -= STEP
       }
-      // Landed: say the sum, then on to the next sneeze (or the end).
+      // Landed: on to the next sneeze (or the end). Nothing is said unless he taps a number or the sum.
       if (ph === 'flying' && stage.current.settled) {
-        const said = lastRef.current
-        if (said) playClips([...numberToClips(said.whole), 'minus', ...numberToClips(said.out), 'equals', ...numberToClips(said.ring)])
         setP(canSneeze() ? 'ready' : 'done')
+        if (queued) {
+          queued = false
+          cmd.current?.tickle(true)
+        }
       }
 
       const w = el.clientWidth
@@ -421,7 +440,7 @@ function Play({
       g.fillStyle = '#C9AE88'
       g.fillRect(0, floorY, w, 3)
 
-      const labels: { x: number; y: number; size: number; text: string }[] = []
+      const labels: { x: number; y: number; size: number; text: string; n: bigint }[] = []
       for (const p of stage.pieces) {
         const px = p.size * scale
         const cx = sx(p.cur.x)
@@ -455,15 +474,21 @@ function Play({
         g.scale(perBlock, -perBlock)
         g.translate(-side / 2, -side / 2)
         drawPiece(g, p.n, p.side, p.hole, look, perBlock)
-        if (px >= 14) labels.push({ x: cx, y: cy - px * 0.5 * (1 - 0.12 * squash) - (look.hat !== 'none' ? px * 0.25 : 0), size: Math.max(16, Math.min(48, 0.16 * px)), text: fmt(p.n) })
+        if (px >= 14) labels.push({ x: cx, y: cy - px * 0.5 * (1 - 0.12 * squash) - (look.hat !== 'none' ? px * 0.25 : 0), size: Math.max(16, Math.min(48, 0.16 * px)), text: fmt(p.n), n: p.n })
       }
       // Numberlings: plain bold black, upright, above each one.
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
       g.textAlign = 'center'
       g.fillStyle = '#000'
+      hits = []
+      ;(window as unknown as { __sneezeHits?: typeof hits }).__sneezeHits = hits
       for (const l of labels) {
         g.font = `800 ${Math.round(l.size)}px Nunito, system-ui, sans-serif`
-        g.fillText(l.text, l.x, l.y - l.size * 0.35)
+        const y = l.y - l.size * 0.35
+        g.fillText(l.text, l.x, y)
+        // A generous target round the number.
+        const half = g.measureText(l.text).width / 2 + 12
+        hits.push({ x0: l.x - half, x1: l.x + half, y0: y - l.size - 8, y1: y + 10, n: l.n })
       }
       raf = requestAnimationFrame(frame)
     }
@@ -493,6 +518,12 @@ function Play({
   const parts = [...rings, sneezer.n]
   const sum = parts.length > 7 ? `${parts.slice(0, 4).map(fmt).join(' + ')} + … + ${parts.slice(-2).map(fmt).join(' + ')}` : parts.map(fmt).join(' + ')
   const right = last && last.picked !== undefined && last.picked === last.ring
+  // The sum as shown, as number-voice clips (said only when he taps it).
+  const sumClips = !last
+    ? [...numberToClips(whole), 'equals', ...numberToClips(side), 'times', ...numberToClips(side)]
+    : flip
+      ? [...numberToClips(last.ring), 'plus', ...numberToClips(last.out), 'equals', ...numberToClips(last.whole)]
+      : [...numberToClips(last.whole), 'minus', ...numberToClips(last.out), 'equals', ...numberToClips(last.ring)]
 
   return (
     <div className="h-dvh w-full relative overflow-hidden select-none bg-orange-50">
@@ -515,11 +546,15 @@ function Play({
           ↺
         </button>
       </div>
-      {/* The sum: the last sneeze, which a tap turns round (100 − 64 = 36 ⇄ 36 + 64 = 100). */}
+      {/* The sum: the last sneeze. A tap says it; ⇄ turns it round (100 − 64 = 36 ⇄ 36 + 64 = 100). */}
+      <div className="absolute top-[4.25rem] inset-x-3 sm:inset-x-auto sm:top-3 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-[calc(100%-8.5rem)] flex gap-2">
       <button
         type="button"
-        onClick={() => last && setFlip((f) => !f)}
-        className="absolute top-[4.25rem] inset-x-3 sm:inset-x-auto sm:top-3 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-[calc(100%-8.5rem)] px-4 h-14 rounded-2xl bg-white/90 shadow font-black tabular-nums text-2xl sm:text-3xl text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis"
+        onClick={() => {
+          wake()
+          playClips(sumClips)
+        }}
+        className="flex-1 min-w-0 px-4 h-14 rounded-2xl bg-white/90 shadow font-black tabular-nums text-2xl sm:text-3xl text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis active:scale-95 transition-transform"
         aria-label="The sum"
       >
         {!last ? (
@@ -537,6 +572,12 @@ function Play({
           </>
         )}
       </button>
+      {last && (
+        <button type="button" onClick={() => setFlip((f) => !f)} className="shrink-0 w-14 h-14 rounded-2xl bg-white/90 shadow text-2xl font-black text-slate-600 active:scale-95 transition-transform" aria-label="Turn the sum round">
+          ⇄
+        </button>
+      )}
+      </div>
       {/* Guess first: what's left? Any answer plays the sneeze; the right one gets a chime. */}
       {phase === 'guessing' && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-max max-w-[calc(100%-1rem)] flex flex-col items-center gap-2" onPointerDown={(e) => e.stopPropagation()}>

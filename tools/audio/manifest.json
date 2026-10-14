@@ -2683,17 +2683,6 @@
           "seconds": 2.2
         }
       }
-    },
-    {
-      "dir": "sneeze/voice",
-      "pad": false,
-      "influence": 0.9,
-      "items": {
-        "blessyou": {
-          "text": "Bless you!",
-          "seconds": 1.6
-        }
-      }
     }
   ]
 }

@@ -1,7 +1,7 @@
 /**
  * Sneeze sounds (generated once with ElevenLabs, tools/audio/manifest.json):
- * the "ah… ah…" wind-up, the AH-CHOO, a chorus "Bless you!", and a
- * synthesised thud when something lands. Bigger squares sneeze deeper.
+ * the "ah… ah…" wind-up and the AH-CHOO, and a synthesised thud when
+ * something lands. (No voice: he sneezes them in quick succession.) Bigger squares sneeze deeper.
  */
 let ctx: AudioContext | null = null
 const buffers = new Map<string, AudioBuffer>()
@@ -14,7 +14,6 @@ const FILES = {
   choo1: '/games/sneeze/sfx/choo1.mp3',
   choo2: '/games/sneeze/sfx/choo2.mp3',
   choo3: '/games/sneeze/sfx/choo3.mp3',
-  blessyou: '/games/sneeze/voice/blessyou.mp3',
   correct: '/games/shared/sfx/correct.mp3',
 } as const
 type Name = keyof typeof FILES
@@ -85,10 +84,6 @@ export function choo(n: bigint): number {
   const name = pick(['choo1', 'choo2', 'choo3'] as const)
   const rate = pitchFor(n)
   return play(name, rate) ? BURST[name] / rate : 0.3
-}
-
-export function blessYou() {
-  play('blessyou', 1, 0.9)
 }
 
 export function correct() {
