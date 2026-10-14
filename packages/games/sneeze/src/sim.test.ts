@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { chain, type Rule } from './rules'
-import { initPhysics, overlap, Stage, STEP } from './sim'
+import { initPhysics, overlap, Stage, START, STEP } from './sim'
 
 beforeAll(async () => {
   await initPhysics()
@@ -42,6 +42,7 @@ describe('a sneeze', () => {
   for (const [side, rule, legs] of [
     [10n, 'ring', 0],
     [9n, 'ring', 0],
+    [2n, 'ring', 0.13],
     [2000n, 'big', 0],
     [100000n, 'big', 0],
     [10n, 'big', 0],
@@ -67,11 +68,15 @@ describe('a sneeze', () => {
     })
   }
 
-  it('a square that has nothing to sneeze stays put', () => {
-    const s = new Stage(2n)
-    expect(s.sneeze('ring')).toBeNull()
+  it('below 4 it sneezes on in tenths and hundredths, down to 0.0001, which stays put', () => {
+    const { s } = play(2n, 'big')
+    expect(s.current.k).toBe(2)
+    expect(s.current.n).toBe(1n) // 0.0001
+    expect(s.current.size).toBeCloseTo(START / 200)
     expect(s.sneeze('big')).toBeNull()
+    expect(s.sneeze('ring')).toBeNull()
+    const count = s.pieces.length
     run(s, 1)
-    expect(s.pieces).toHaveLength(1)
+    expect(s.pieces).toHaveLength(count)
   })
 })

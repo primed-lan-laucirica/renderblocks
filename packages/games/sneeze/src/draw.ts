@@ -7,7 +7,7 @@
  * the Designer's, so a square wears his design for its number.
  */
 import { drawBody, drawFeatures, PER_BLOCK } from '@renderblocks/designer/draw'
-import { bandColour, bands, type Band, type Shape } from '@renderblocks/designer/shapes'
+import { bandColour, bands, colourOf, type Band, type Shape } from '@renderblocks/designer/shapes'
 import type { Look } from '@renderblocks/designer/look'
 
 export const squareShape = (side: bigint): Shape => ({ kind: 'square', cols: side, rows: side, left: 0n })
@@ -135,6 +135,35 @@ export function drawRingBody(ctx: CanvasRenderingContext2D, n: bigint, side: num
   }
 }
 
+/** Arms and legs are this share of a square's side at every size (the Designer's share from 5 blocks across). */
+export const LIMB = 0.22
+
+/**
+ * Arms and legs in proportion: the Designer never makes them smaller than a
+ * block, so on One they were as long as One is wide (Lan, Oct 14). Drawn for
+ * a square at least 5 across, shrunk to fit, so they're LIMB of the side at
+ * any size. Only beside and below the square (not over it, or over the face).
+ */
+function drawLimbs(ctx: CanvasRenderingContext2D, n: bigint, a: number, look: Look, wave: number) {
+  const m = a >= 5 ? 1 : Math.ceil(5 / a)
+  ctx.save()
+  ctx.beginPath()
+  ctx.rect(-10 * a, -10 * a, 10 * a, 21 * a)
+  ctx.rect(a, -10 * a, 10 * a, 21 * a)
+  ctx.rect(0, -10 * a, a, 10 * a)
+  ctx.clip()
+  ctx.scale(1 / m, 1 / m)
+  drawFeatures(ctx, n, squareShape(BigInt(a * m)), [], { ...look, hat: 'none' }, wave)
+  ctx.restore()
+}
+
+/** A square's face, arms, legs and hat. */
+function drawSquareFeatures(ctx: CanvasRenderingContext2D, n: bigint, side: bigint, look: Look, wave: number) {
+  if (side >= 5n) return drawFeatures(ctx, n, squareShape(side), [], look, wave)
+  drawLimbs(ctx, n, Number(side), look, wave)
+  drawFeatures(ctx, n, squareShape(side), [], { ...look, arms: 'none', legs: 'none' }, wave)
+}
+
 /**
  * A ring's face, arms, legs and hat. The Designer puts a face as big as the
  * character on its top rows, which on a ring would sit over the hole; so the
@@ -144,15 +173,7 @@ export function drawRingBody(ctx: CanvasRenderingContext2D, n: bigint, side: num
 function drawRingFeatures(ctx: CanvasRenderingContext2D, n: bigint, side: bigint, hole: bigint, look: Look, wave: number) {
   const a = Number(side)
   const t = Number(side - hole) / 2
-  // Arms and legs: everything beside and below the square (not above it, where the whole square's face would peek out).
-  ctx.save()
-  ctx.beginPath()
-  ctx.rect(-10 * a, -10 * a, 10 * a, 21 * a)
-  ctx.rect(a, -10 * a, 10 * a, 21 * a)
-  ctx.rect(0, -10 * a, a, 10 * a)
-  ctx.clip()
-  drawFeatures(ctx, n, squareShape(side), [], { ...look, hat: 'none' }, wave)
-  ctx.restore()
+  drawLimbs(ctx, n, a, look, wave)
   // The face (and hat) at the top: sized for the top band, but never smaller than about a sixth of the
   // ring, so a thin ring's face still shows (peeking over into the hole).
   const rows = Math.max(1, Math.round(Math.max(t, 0.55 * a)))
@@ -162,8 +183,61 @@ function drawRingFeatures(ctx: CanvasRenderingContext2D, n: bigint, side: bigint
   ctx.restore()
 }
 
-/** A whole piece in cell units: a square or a ring, with its face. */
-export function drawPiece(ctx: CanvasRenderingContext2D, n: bigint, side: bigint, hole: bigint, look: Look, px: number, wave = 0) {
+/**
+ * A decimal piece (counted in tenths or hundredths, `k`), in its cells: it
+ * wears the colours of `n` (0.36 is a small 36; a ring of 3 in hundredths is
+ * 3, each of its blocks `per` cells), with a fine grid for the tenths and a
+ * firmer line every ten of them, so a whole block or a tenth still shows.
+ */
+function drawDecimal(ctx: CanvasRenderingContext2D, n: bigint, per: number, side: number, hole: number, look: Look, px: number, wave: number) {
+  const bs = bands(n)
+  for (let v = 0; v < Number(n); v++) {
+    const { fill } = colourOf(n, BigInt(v), bs)
+    ctx.fillStyle = fill
+    const rects = hole ? ringRects(side, hole, v * per, (v + 1) * per) : runRects(v * per, per, side)
+    for (const r of rects) ctx.fillRect(r.x, r.y, r.w, r.h)
+  }
+  ctx.save()
+  if (hole) {
+    ringPath(ctx, side, hole)
+    ctx.clip('evenodd')
+  }
+  const lines = (every: number, alpha: number, width: number) => {
+    if (alpha <= 0) return
+    ctx.lineWidth = width / px
+    ctx.strokeStyle = `rgba(0,0,0,${alpha})`
+    ctx.beginPath()
+    for (let x = every; x < side; x += every) {
+      ctx.moveTo(x, 0)
+      ctx.lineTo(x, side)
+    }
+    for (let y = every; y < side; y += every) {
+      ctx.moveTo(0, y)
+      ctx.lineTo(side, y)
+    }
+    ctx.stroke()
+  }
+  lines(1, Math.min(0.2, (px - 3) / 30), 1)
+  lines(10, 0.45, 2.5)
+  ctx.restore()
+  if (hole) ringPath(ctx, side, hole)
+  else {
+    ctx.beginPath()
+    ctx.rect(0, 0, side, side)
+  }
+  ctx.lineWidth = 2 / px
+  ctx.strokeStyle = 'rgba(0,0,0,0.45)'
+  ctx.stroke()
+  if (hole) drawRingFeatures(ctx, n, BigInt(side), BigInt(hole), look, wave)
+  else drawSquareFeatures(ctx, n, BigInt(side), look, wave)
+}
+
+/**
+ * A whole piece in its cell units: a square or a ring, with its face. `k`:
+ * counted in tenths or hundredths; `wears` is the number it looks like then.
+ */
+export function drawPiece(ctx: CanvasRenderingContext2D, n: bigint, side: bigint, hole: bigint, look: Look, px: number, wave = 0, k = 0, wears?: { n: bigint; per: number }) {
+  if (k > 0 && wears) return drawDecimal(ctx, wears.n, wears.per, Number(side), Number(hole), look, px, wave)
   const a = Number(side)
   if (hole === 0n) drawBody(ctx, n, squareShape(side), [], px)
   else drawRingBody(ctx, n, a, Number(hole), px)
@@ -177,6 +251,6 @@ export function drawPiece(ctx: CanvasRenderingContext2D, n: bigint, side: bigint
     ctx.strokeStyle = 'rgba(0,0,0,0.3)'
     ctx.stroke()
   }
-  if (hole === 0n) drawFeatures(ctx, n, squareShape(side), [], look, wave)
+  if (hole === 0n) drawSquareFeatures(ctx, n, side, look, wave)
   else drawRingFeatures(ctx, n, side, hole, look, wave)
 }

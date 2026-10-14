@@ -53,9 +53,10 @@ function groupClips(groups: number[]): string[] {
 /**
  * Clip names that read `value` aloud. Returns [] if it can't be spoken.
  * A bigint is read exactly, however long (Base 10's mats pass a quadrillion,
- * where a number starts dropping digits); a number may have decimals.
+ * where a number starts dropping digits); a number may have decimals, read
+ * digit by digit to `places` decimal places (Sneeze² goes down to 0.0001).
  */
-export function numberToClips(value: number | bigint): string[] {
+export function numberToClips(value: number | bigint, places = 2): string[] {
   if (typeof value === 'bigint') {
     const out = value < 0n ? ['negative'] : []
     let rest = value < 0n ? -value : value
@@ -94,8 +95,8 @@ export function numberToClips(value: number | bigint): string[] {
 
   if (frac > 0) {
     out.push('point')
-    // Up to two decimal places, digit by digit, without a trailing zero.
-    const digits = Math.round(frac * 100).toString().padStart(2, '0').replace(/0$/, '')
+    // Up to `places` decimal places, digit by digit, without trailing zeros.
+    const digits = Math.round(frac * 10 ** places).toString().padStart(places, '0').replace(/0+$/, '')
     for (const d of digits) out.push(ONES[Number(d)])
   }
   return out

@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier2d-compat'
-import { sneeze, type Rule, type Sneeze } from './rules'
+import { norm, sneeze, type Rule, type Sneeze } from './rules'
 
 let ready: Promise<void> | null = null
 /** Load the physics engine (once). */
@@ -32,10 +32,13 @@ export interface Pose {
 /** A square, or a square with a hole (a ring). Poses are in stage units, y up, the floor at 0. */
 export interface Piece {
   id: number
+  /** Its number, in cells (100^-k blocks). */
   n: bigint
-  /** Its side and its hole's side, in blocks (hole 0: a solid square). */
+  /** Its side and its hole's side, in 10^-k blocks (hole 0: a solid square). */
   side: bigint
   hole: bigint
+  /** Counted in tenths (1) or hundredths (2) of a block, or whole blocks (0). */
+  k: number
   /** Its side in stage units. */
   size: number
   /** How far its legs reach below it (stage units): it stands on them. */
@@ -92,7 +95,7 @@ export function overlap(p: Pose, s: number, q: Pose, t: number): boolean {
  * square for a ring and a smaller square in its middle, launches the small
  * one up and away to the right, and kicks the ring back.
  *
- * Chains run from ten billion down to four, a size range no physics engine
+ * Chains run from ten billion down to 0.0001, a size range no physics engine
  * holds at once. So at each sneeze the physics world is rebuilt around the
  * sneezer, scaled so it is always START across: every sneeze is the same
  * sneeze to the engine. The poses kept here are in stage units (doubles).
@@ -109,14 +112,14 @@ export class Stage {
   private ox = 0
   private nextId = 1
   private readonly startSide: bigint
-  private readonly legsFor: (n: bigint, side: bigint) => number
+  private readonly legsFor: (n: bigint, side: bigint, k: number) => number
   private byBody = new Map<number, Piece>()
   private byCollider = new Map<number, Piece>()
   private events = new RAPIER.EventQueue(true)
   private readonly hooks: RAPIER.PhysicsHooks
 
   /** `legs`: how long a piece's legs are, as a share of its side (from the look it wears). */
-  constructor(side: bigint, legsFor: (n: bigint, side: bigint) => number = () => 0) {
+  constructor(side: bigint, legsFor: (n: bigint, side: bigint, k: number) => number = () => 0) {
     this.startSide = side
     this.legsFor = legsFor
     // A sneezed-out square passes through the ring it came from until it's out.
@@ -129,25 +132,26 @@ export class Stage {
       },
       filterIntersectionPair: () => true,
     }
-    this.current = this.piece(side, 0n, { x: 0, y: START / 2, a: 0 })
+    this.current = this.piece(side, 0n, 0, { x: 0, y: START / 2, a: 0 })
     this.current.cur = this.current.prev = { x: 0, y: START / 2 + this.current.legs, a: 0 }
     this.world = this.rebuild()
   }
 
-  /** A side in blocks, in stage units. */
-  sizeOf(side: bigint): number {
-    return (START * Number(side)) / Number(this.startSide)
+  /** A side in 10^-k blocks, in stage units. */
+  sizeOf(side: bigint, k = 0): number {
+    return (START * Number(side)) / 10 ** k / Number(this.startSide)
   }
 
-  private piece(side: bigint, hole: bigint, pose: Pose, from: Piece | null = null): Piece {
+  private piece(side: bigint, hole: bigint, k: number, pose: Pose, from: Piece | null = null): Piece {
     const n = side * side - hole * hole
     const p: Piece = {
       id: this.nextId++,
       n,
       side,
       hole,
-      size: this.sizeOf(side),
-      legs: this.legsFor(n, side) * this.sizeOf(side),
+      k,
+      size: this.sizeOf(side, k),
+      legs: this.legsFor(n, side, k) * this.sizeOf(side, k),
       rb: null,
       prev: pose,
       cur: pose,
@@ -229,7 +233,7 @@ export class Stage {
 
   /** What the current square would sneeze, under a rule (null: it can't). */
   peek(rule: Rule): Sneeze | null {
-    return this.current.hole === 0n ? sneeze(this.current.side, rule) : null
+    return this.current.hole === 0n ? sneeze(this.current.side, rule, this.current.k) : null
   }
 
   /** AH-CHOO: the current square becomes a ring, and the square from its middle flies out. */
@@ -243,8 +247,10 @@ export class Stage {
       p.vel = { x: v.x / this.f, y: v.y / this.f, w: p.rb.angvel() }
     }
     this.pieces.splice(this.pieces.indexOf(p), 1)
-    const ring = this.piece(s.side, s.outSide, { ...p.cur })
-    const out = this.piece(s.outSide, 0n, { ...p.cur }, ring)
+    const ring = this.piece(s.side, s.outSide, s.k, { ...p.cur })
+    // (Ten tenths flies out as one whole block.)
+    const o = norm(s.outSide, s.k)
+    const out = this.piece(o.side, 0n, o.k, { ...p.cur }, ring)
     ring.vel = { ...p.vel }
     out.vel = { ...p.vel }
     // Stage units around the sneezer that is now `ring` (same size as p).

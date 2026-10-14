@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { numberToClips, playClips, speakNumber, type GameProps } from '@renderblocks/kernel'
-import { bounds, featureUnit } from '@renderblocks/designer/draw'
+import { numberToClips, playClips, type GameProps } from '@renderblocks/kernel'
+import { bounds } from '@renderblocks/designer/draw'
 import { DEFAULT_LOOK, fromDesign, type Design, type Look } from '@renderblocks/designer/look'
-import { drawPiece, squareShape } from './draw'
-import { choices, fmt, ROUNDS, sneeze, sqrt, squaresAround, type Rule, type Sneeze } from './rules'
+import { drawPiece, LIMB, squareShape } from './draw'
+import { choices, fmt, ROUNDS, show, sneeze, sqrt, squaresAround, value, wears, type Rule, type Sneeze } from './rules'
 import { initPhysics, Stage, STEP, type Piece } from './sim'
 import { choo, correct, squarePower, thud, wake, windup } from './sound'
 
@@ -21,12 +21,14 @@ function looksFrom(raw: string | null): Map<string, Look> {
   return out
 }
 
-/** How far a look's legs reach below the body, as a share of its side (it stands on them). */
-function legsShare(side: bigint, look: Look): number {
+/** How far a look's legs reach below the body, as a share of its side (it stands on them; legs are in proportion at every size). */
+function legsShare(look: Look): number {
   if (look.legs === 'none') return 0
-  const u = featureUnit(squareShape(side))
-  return ((look.legs === 'long' ? 0.85 : 0.45) * u + 0.14 * u) / Number(side)
+  return ((look.legs === 'long' ? 0.85 : 0.45) + 0.14) * LIMB
 }
+
+/** A number of cells (100^-k blocks) as number-voice clips: 0.0036 is "zero point zero zero three six". */
+const clipsOf = (cells: bigint, k: number) => numberToClips(value(cells, k), 2 * k)
 
 /** The Square Club starts: 4 to 400. */
 const SQUARES = Array.from({ length: 19 }, (_, i) => BigInt(i + 2))
@@ -54,8 +56,9 @@ function Portrait({ side, look }: { side: bigint; look: Look }) {
 /**
  * Sneeze² ("sneeze squared"; Lan, Oct 13 2026; research report in Drive SneezeBlocks/):
  * a square sneezes out the square from its middle and keeps a ring, and the
- * square that flew out sneezes in turn, all the way down. Two rules — the
- * show's ring (100 → 36 + 64) and RATOT's big sneeze (64 → 48 + 16).
+ * square that flew out sneezes in turn, all the way down (below 4, in tenths
+ * and hundredths, to 0.0001). Two rules — the show's ring (100 → 36 + 64) and
+ * the big sneeze, half the side at every size (64 → 48 + 16).
  */
 function App({ services }: GameProps) {
   const looks = useMemo(() => looksFrom(services.shared.get('designs')), [services])
@@ -255,9 +258,9 @@ function Play({
   const [flip, setFlip] = useState(false)
   const [options, setOptions] = useState<bigint[]>([])
   const [seeAll, setSeeAll] = useState(false)
-  const [rings, setRings] = useState<bigint[]>([])
+  const [rings, setRings] = useState<{ n: bigint; k: number }[]>([])
   // The square that sneezes next.
-  const [sneezer, setSneezer] = useState({ n: side * side, side })
+  const [sneezer, setSneezer] = useState({ n: side * side, side, k: 0 })
   // The loop reads these through a ref (they change without restarting it).
   const live = useRef({ rule, guess, seeAll, lookFor })
   useEffect(() => {
@@ -299,7 +302,7 @@ function Play({
       ph = p
       phaseAt = performance.now() / 1000
       setPhase(p)
-      if (stage) setSneezer({ n: stage.current.n, side: stage.current.side })
+      if (stage) setSneezer({ n: stage.current.n, side: stage.current.side, k: stage.current.k })
     }
     const canSneeze = () => !!stage?.peek(live.current.rule)
 
@@ -317,7 +320,7 @@ function Play({
         sneezedAt = performance.now() / 1000
         setLast({ ...r.s, picked })
         setFlip(false)
-        setRings((x) => [...x, r.s.ring])
+        setRings((x) => [...x, { n: r.s.ring, k: r.s.k }])
         if (picked !== undefined && picked === r.s.ring) correct()
         setOptions([])
         setP('flying')
@@ -344,7 +347,7 @@ function Play({
           picked = undefined
           windup(stage.current.n)
           if (live.current.guess) {
-            setOptions(choices(stage.current.side, live.current.rule, stage.sneezes + Number(stage.current.side % 97n)))
+            setOptions(choices(stage.current.side, live.current.rule, stage.sneezes + Number(stage.current.side % 97n), stage.current.k))
             setP('guessing')
           } else {
             setP('windup')
@@ -361,12 +364,12 @@ function Play({
         if (!stage) return
         if (ph === 'done' && canSneeze()) setP('ready')
         else if (ph === 'ready' && !canSneeze() && stage.current.settled) setP('done')
-        else if (ph === 'guessing') setOptions(choices(stage.current.side, live.current.rule, stage.sneezes))
+        else if (ph === 'guessing') setOptions(choices(stage.current.side, live.current.rule, stage.sneezes, stage.current.k))
       },
     }
 
     // Where each number is drawn (screen px), so a tap on one says it.
-    let hits: { x0: number; y0: number; x1: number; y1: number; n: bigint }[] = []
+    let hits: { x0: number; y0: number; x1: number; y1: number; n: bigint; k: number }[] = []
     const down = (e: PointerEvent) => {
       const box = el.getBoundingClientRect()
       const x = e.clientX - box.left
@@ -375,7 +378,7 @@ function Play({
       const hit = [...hits].reverse().find((r) => x >= r.x0 && x <= r.x1 && y >= r.y0 && y <= r.y1)
       if (hit) {
         wake()
-        speakNumber(hit.n)
+        playClips(clipsOf(hit.n, hit.k))
         return
       }
       cmd.current?.tickle()
@@ -450,7 +453,7 @@ function Play({
       g.fillStyle = '#C9AE88'
       g.fillRect(0, floorY, w, 3)
 
-      const labels: { x: number; y: number; size: number; text: string; n: bigint }[] = []
+      const labels: { x: number; y: number; size: number; text: string; n: bigint; k: number }[] = []
       for (const p of stage.pieces) {
         const px = p.size * scale
         const cx = sx(p.cur.x)
@@ -467,7 +470,9 @@ function Play({
         if (isCur && ph === 'choo') squash = 1
         if (isCur && t < wiggleUntil) angle += Math.sin(t * 40) * 0.05
         if (isCur && ph === 'ready' && p.settled && since > 2.5) angle += Math.sin(t * 9) * 0.015 * Math.max(0, Math.sin(t * 1.3))
-        const base = live.current.lookFor(p.n)
+        // A decimal wears the look of the number with its digits (0.36: 36's).
+        const like = wears(p.n, p.k)
+        const base = live.current.lookFor(like.n)
         const look: Look =
           isCur && (ph === 'windup' || ph === 'guessing' || ph === 'choo')
             ? { ...base, eyes: 'sleepy', mouth: 'o' }
@@ -483,8 +488,8 @@ function Play({
         g.translate(0, -px / 2)
         g.scale(perBlock, -perBlock)
         g.translate(-side / 2, -side / 2)
-        drawPiece(g, p.n, p.side, p.hole, look, perBlock)
-        if (px >= 14) labels.push({ x: cx, y: cy - px * 0.5 * (1 - 0.12 * squash) - (look.hat !== 'none' ? px * 0.25 : 0), size: Math.max(16, Math.min(48, 0.16 * px)), text: fmt(p.n), n: p.n })
+        drawPiece(g, p.n, p.side, p.hole, look, perBlock, 0, p.k, like)
+        if (px >= 14) labels.push({ x: cx, y: cy - px * 0.5 * (1 - 0.12 * squash) - (look.hat !== 'none' ? px * 0.25 : 0), size: Math.max(16, Math.min(48, 0.16 * px)), text: show(p.n, p.k), n: p.n, k: p.k })
       }
       // Numberlings: plain bold black, upright, above each one.
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -498,7 +503,7 @@ function Play({
         g.fillText(l.text, l.x, y)
         // A generous target round the number.
         const half = g.measureText(l.text).width / 2 + 12
-        hits.push({ x0: l.x - half, x1: l.x + half, y0: y - l.size - 8, y1: y + 10, n: l.n })
+        hits.push({ x0: l.x - half, x1: l.x + half, y0: y - l.size - 8, y1: y + 10, n: l.n, k: l.k })
       }
       raf = requestAnimationFrame(frame)
     }
@@ -506,7 +511,7 @@ function Play({
     void initPhysics().then(() => {
       if (!alive) return
       // Each one stands on the legs of the look it wears.
-      stage = new Stage(side, (n, of) => legsShare(of, live.current.lookFor(n)))
+      stage = new Stage(side, (n, _side, k) => legsShare(live.current.lookFor(wears(n, k).n)))
       stageRef.current = stage
       ;(window as unknown as { __sneeze?: () => Stage | null }).__sneeze = () => stageRef.current
       prevNow = performance.now()
@@ -525,15 +530,19 @@ function Play({
   }, [side])
 
   const whole = side * side
-  const parts = [...rings, sneezer.n]
-  const sum = parts.length > 7 ? `${parts.slice(0, 4).map(fmt).join(' + ')} + … + ${parts.slice(-2).map(fmt).join(' + ')}` : parts.map(fmt).join(' + ')
+  // What the sneezer would sneeze now (for the guesses).
+  const next = sneeze(sneezer.side, rule, sneezer.k)
+  const parts = [...rings, sneezer].map((p) => show(p.n, p.k))
+  const sum = parts.length > 7 ? `${parts.slice(0, 4).join(' + ')} + … + ${parts.slice(-2).join(' + ')}` : parts.join(' + ')
   const right = last && last.picked !== undefined && last.picked === last.ring
+  // Decimal sums are long (0.0036 − 0.0016 = 0.0020): smaller, so a phone shows it all.
+  const long = !!last && (show(last.whole, last.k) + show(last.out, last.k) + show(last.ring, last.k)).length > 15
   // The sum as shown, as number-voice clips (said only when he taps it).
   const sumClips = !last
     ? [...numberToClips(whole), 'equals', ...numberToClips(side), 'times', ...numberToClips(side)]
     : flip
-      ? [...numberToClips(last.ring), 'plus', ...numberToClips(last.out), 'equals', ...numberToClips(last.whole)]
-      : [...numberToClips(last.whole), 'minus', ...numberToClips(last.out), 'equals', ...numberToClips(last.ring)]
+      ? [...clipsOf(last.ring, last.k), 'plus', ...clipsOf(last.out, last.k), 'equals', ...clipsOf(last.whole, last.k)]
+      : [...clipsOf(last.whole, last.k), 'minus', ...clipsOf(last.out, last.k), 'equals', ...clipsOf(last.ring, last.k)]
 
   return (
     <div className="h-dvh w-full relative overflow-hidden select-none bg-orange-50">
@@ -564,7 +573,7 @@ function Play({
           wake()
           playClips(sumClips)
         }}
-        className="flex-1 min-w-0 px-4 h-14 rounded-2xl bg-white/90 shadow font-black tabular-nums text-2xl sm:text-3xl text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis active:scale-95 transition-transform"
+        className={`flex-1 min-w-0 h-14 rounded-2xl bg-white/90 shadow font-black tabular-nums sm:text-3xl ${long ? 'px-2 text-lg' : 'px-4 text-2xl'} text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis active:scale-95 transition-transform`}
         aria-label="The sum"
       >
         {!last ? (
@@ -573,11 +582,11 @@ function Play({
           </>
         ) : flip ? (
           <>
-            <span className={right ? 'text-emerald-600' : ''}>{fmt(last.ring)}</span> + {fmt(last.out)} = {fmt(last.whole)}
+            <span className={right ? 'text-emerald-600' : ''}>{show(last.ring, last.k)}</span> + {show(last.out, last.k)} = {show(last.whole, last.k)}
           </>
         ) : (
           <>
-            {fmt(last.whole)} − {fmt(last.out)} = <span className={right ? 'text-emerald-600' : ''}>{fmt(last.ring)}</span>
+            {show(last.whole, last.k)} − {show(last.out, last.k)} = <span className={right ? 'text-emerald-600' : ''}>{show(last.ring, last.k)}</span>
             {right && ' ✓'}
           </>
         )}
@@ -592,12 +601,12 @@ function Play({
       {phase === 'guessing' && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-max max-w-[calc(100%-1rem)] flex flex-col items-center gap-2" onPointerDown={(e) => e.stopPropagation()}>
           <div className="px-4 py-1 rounded-2xl bg-white/90 shadow font-black tabular-nums text-xl sm:text-2xl text-slate-700 whitespace-nowrap">
-            {fmt(sneezer.n)} − {fmt(sneeze(sneezer.side, rule)?.out ?? 0n)} = ?
+            {show(sneezer.n, sneezer.k)} − {next ? show(next.out, next.k) : ''} = ?
           </div>
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             {options.map((o) => (
               <button key={String(o)} type="button" onClick={() => cmd.current?.pick(o)} className="min-w-24 h-16 sm:h-20 px-3 sm:px-4 rounded-2xl bg-orange-500 text-white shadow-lg font-black tabular-nums text-2xl sm:text-3xl active:scale-95 transition-transform">
-                {fmt(o)}
+                {show(o, next?.k ?? 0)}
               </button>
             ))}
           </div>
