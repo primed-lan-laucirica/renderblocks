@@ -2683,6 +2683,17 @@
           "seconds": 2.2
         }
       }
+    },
+    {
+      "dir": "sneeze/voice",
+      "pad": false,
+      "influence": 0.9,
+      "items": {
+        "squarepower": {
+          "text": "Square power!",
+          "seconds": 1.8
+        }
+      }
     }
   ]
 }

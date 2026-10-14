@@ -15,6 +15,7 @@ const FILES = {
   choo2: '/games/sneeze/sfx/choo2.mp3',
   choo3: '/games/sneeze/sfx/choo3.mp3',
   correct: '/games/shared/sfx/correct.mp3',
+  squarepower: '/games/sneeze/voice/squarepower.mp3',
 } as const
 type Name = keyof typeof FILES
 
@@ -84,6 +85,11 @@ export function choo(n: bigint): number {
   const name = pick(['choo1', 'choo2', 'choo3'] as const)
   const rate = pitchFor(n)
   return play(name, rate) ? BURST[name] / rate : 0.3
+}
+
+/** "Square power!" (the chorus voice), now and then. */
+export function squarePower() {
+  play('squarepower', 1, 0.9)
 }
 
 export function correct() {

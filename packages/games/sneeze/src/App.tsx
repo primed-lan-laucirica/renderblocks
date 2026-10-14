@@ -5,7 +5,7 @@ import { DEFAULT_LOOK, fromDesign, type Design, type Look } from '@renderblocks/
 import { drawPiece, squareShape } from './draw'
 import { choices, fmt, ROUNDS, sneeze, sqrt, squaresAround, type Rule, type Sneeze } from './rules'
 import { initPhysics, Stage, STEP, type Piece } from './sim'
-import { choo, correct, thud, wake, windup } from './sound'
+import { choo, correct, squarePower, thud, wake, windup } from './sound'
 
 /** His Designer looks, by number (from the shared "designs" record): a square or ring wears the look he made for its number. */
 function looksFrom(raw: string | null): Map<string, Look> {
@@ -60,11 +60,12 @@ function Portrait({ side, look }: { side: bigint; look: Look }) {
 function App({ services }: GameProps) {
   const looks = useMemo(() => looksFrom(services.shared.get('designs')), [services])
   const storage = services.storage
-  const [rule, setRule] = useState<Rule>(() => (storage.get('rule') === 'big' ? 'big' : 'ring'))
+  // Big sneeze by default (Lan, Oct 13). A new key, so the ring that v1.78 saved as its default doesn't stick.
+  const [rule, setRule] = useState<Rule>(() => (storage.get('rule2') === 'ring' ? 'ring' : 'big'))
   const [guess, setGuess] = useState(() => storage.get('guess') === 'on')
   const [start, setStart] = useState<{ side: bigint; key: number } | null>(null)
   const [keypad, setKeypad] = useState(false)
-  useEffect(() => storage.set('rule', rule), [storage, rule])
+  useEffect(() => storage.set('rule2', rule), [storage, rule])
   useEffect(() => storage.set('guess', guess ? 'on' : 'off'), [storage, guess])
   const lookFor = (n: bigint) => looks.get(n.toString()) ?? DEFAULT_LOOK
   const go = (side: bigint) => {
@@ -282,6 +283,9 @@ function Play({
     let punch = 0
     // A tap made while the last one was still flying.
     let queued = false
+    // "Square power!" every so often: after a random 1–10 sneezes, then another random count.
+    const roll = () => 1 + Math.floor(Math.random() * 10)
+    let untilPower = roll()
     let picked: bigint | undefined
     const timers: number[] = []
     // Faces: squeezed during the wind-up, mid-sneeze on the ring for a moment after.
@@ -387,6 +391,10 @@ function Play({
       }
       // Landed: on to the next sneeze (or the end). Nothing is said unless he taps a number or the sum.
       if (ph === 'flying' && stage.current.settled) {
+        if (--untilPower <= 0) {
+          untilPower = roll()
+          squarePower()
+        }
         setP(canSneeze() ? 'ready' : 'done')
         if (queued) {
           queued = false
