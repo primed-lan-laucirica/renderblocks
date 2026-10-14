@@ -52,7 +52,7 @@ function Portrait({ side, look }: { side: bigint; look: Look }) {
 }
 
 /**
- * SneezeBlocks (Lan, Oct 13 2026; research report in Drive SneezeBlocks/):
+ * Sneeze (Lan, Oct 13 2026; research report in Drive SneezeBlocks/):
  * a square sneezes out the square from its middle and keeps a ring, and the
  * square that flew out sneezes in turn, all the way down. Two rules — the
  * show's ring (100 → 36 + 64) and RATOT's big sneeze (64 → 48 + 16).
@@ -105,7 +105,7 @@ function App({ services }: GameProps) {
         <button type="button" onClick={services.exitToHome} className="w-12 h-12 rounded-full bg-white shadow text-2xl font-bold shrink-0" aria-label="Home">
           ←
         </button>
-        <div className="flex-1 text-center text-2xl font-black text-slate-700">SneezeBlocks 🤧</div>
+        <div className="flex-1 text-center text-2xl font-black text-slate-700">Sneeze 🤧</div>
       </div>
       <div className="px-3 pb-2 flex flex-wrap items-center gap-2">
         <RulePicker rule={rule} onRule={setRule} />
