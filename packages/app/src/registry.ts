@@ -19,6 +19,7 @@ import { sortModule } from '@renderblocks/sort/module'
 import { story5Module } from '@renderblocks/story5/module'
 import { designerModule } from '@renderblocks/designer/module'
 import { windyModule } from '@renderblocks/windy/module'
+import { sneezeModule } from '@renderblocks/sneeze/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
 
 export const games: GameModule[] = [
@@ -43,6 +44,7 @@ export const games: GameModule[] = [
   story5Module,
   designerModule,
   windyModule,
+  sneezeModule,
 ]
 
 export const upcoming: UpcomingGame[] = []

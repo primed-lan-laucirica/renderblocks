@@ -555,6 +555,37 @@
           "seconds": 0.6
         }
       }
+    },
+    {
+      "dir": "sneeze/sfx",
+      "normalize": true,
+      "items": {
+        "windup1": {
+          "prompt": "a young child's voice building up to a big sneeze, \"ah... ahh... ahhh...\", breathy rising inhales, cartoon, stops just before the sneeze",
+          "seconds": 1.6,
+          "influence": 0.6
+        },
+        "windup2": {
+          "prompt": "a young child's voice building up to a big sneeze, \"ah... ahh... ahhh...\", breathy rising inhales, cartoon, stops just before the sneeze",
+          "seconds": 1.6,
+          "influence": 0.6
+        },
+        "choo1": {
+          "prompt": "a young child's voice doing one big funny cartoon sneeze, \"AH-CHOO!\", short and loud, then silence",
+          "seconds": 1.2,
+          "influence": 0.6
+        },
+        "choo2": {
+          "prompt": "a young child's voice doing one big funny cartoon sneeze, \"AH-CHOO!\", short and loud, then silence",
+          "seconds": 1.2,
+          "influence": 0.6
+        },
+        "choo3": {
+          "prompt": "a young child's voice doing one big funny cartoon sneeze, \"AH-CHOO!\", short and loud, then silence",
+          "seconds": 1.2,
+          "influence": 0.6
+        }
+      }
     }
   ],
   "chorus": [
@@ -2650,6 +2681,17 @@
         "14": {
           "text": "one hundred trillion",
           "seconds": 2.2
+        }
+      }
+    },
+    {
+      "dir": "sneeze/voice",
+      "pad": false,
+      "influence": 0.9,
+      "items": {
+        "blessyou": {
+          "text": "Bless you!",
+          "seconds": 1.6
         }
       }
     }
