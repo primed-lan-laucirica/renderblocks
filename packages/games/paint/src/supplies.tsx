@@ -5,7 +5,7 @@
  */
 import { memo, useMemo, type ReactNode } from 'react'
 import rough from 'roughjs'
-import { rng, type Fill, type ShapeKind, type Tool } from './model'
+import { regular, rng, type Fill, type ShapeKind, type Tool } from './model'
 
 const gen = rough.generator()
 const INK = '#3B3030'
@@ -210,12 +210,17 @@ export const ICONS = {
   no: [{ d: 'M13 13 L27 27 M27 13 L13 27' }],
 } satisfies Record<string, Part[]>
 
+const polyD = (pts: [number, number][]) => 'M' + pts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L') + ' Z'
+
 /** A shape to draw, as a little doodle. */
 export const ShapeChip = memo(function ShapeChip({ kind, colour, picked, onPick }: { kind: ShapeKind; colour: string; picked: boolean; onPick: () => void }) {
   const d = {
     rect: 'M8 10 L32 10 L32 30 L8 30 Z',
     ellipse: 'M20 9 A12 11 0 1 0 20.1 9',
     triangle: 'M20 8 L33 31 L7 31 Z',
+    pentagon: polyD(regular(5, -90, 8, 8, 32, 31)),
+    hexagon: polyD(regular(6, 0, 7, 9, 33, 31)),
+    octagon: polyD(regular(8, 22.5, 8, 8, 32, 32)),
     line: 'M8 31 L32 9',
     arrow: 'M8 31 L32 9 M22 10 L32 9 L31 19',
   }[kind]

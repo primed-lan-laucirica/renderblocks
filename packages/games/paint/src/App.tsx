@@ -639,9 +639,9 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
       </div>
       <div className="absolute bottom-0 inset-x-0 flex flex-col items-center pointer-events-none">
         {(prefs.tool === 'shape' || prefs.tool === 'bucket') && (
-          <div className="pointer-events-auto mb-2 mx-3 max-w-[calc(100%-1.5rem)] overflow-x-auto rounded-2xl bg-[#FFFDF7]/95 shadow px-2 py-1 flex gap-1">
+          <div className="pointer-events-auto mb-2 mx-3 max-w-[calc(100%-1.5rem)] rounded-2xl bg-[#FFFDF7]/95 shadow px-2 py-1 flex flex-wrap justify-center gap-1">
             {prefs.tool === 'shape' && SHAPES.map((k) => <ShapeChip key={k} kind={k} colour={prefs.colour} picked={prefs.shape === k} onPick={() => set({ shape: k })} />)}
-            {prefs.tool === 'shape' && <div className="w-px bg-stone-300 mx-1 shrink-0" />}
+            {prefs.tool === 'shape' && <div className="w-px bg-stone-300 mx-1 shrink-0 hidden sm:block" />}
             {(prefs.tool === 'shape' ? (['none', 'scribble', 'solid', 'wash'] as const) : (['scribble', 'solid', 'wash'] as const)).map((f) => (
               <FillChip
                 key={f}

@@ -423,7 +423,7 @@ function shapeDrawables(s: Shape): Drawable[] {
   const h = Math.abs(s.y2 - s.y1)
   if (s.kind === 'rect') d = [gen.rectangle(x, y, w, h, o)]
   else if (s.kind === 'ellipse') d = [gen.ellipse(x + w / 2, y + h / 2, w, h, o)]
-  else if (s.kind === 'triangle') d = [gen.polygon(shapeOutline(s)!, o)]
+  else if (s.kind !== 'line' && s.kind !== 'arrow') d = [gen.polygon(shapeOutline(s)!, o)]
   else
     d = [
       gen.line(s.x1, s.y1, s.x2, s.y2, o),

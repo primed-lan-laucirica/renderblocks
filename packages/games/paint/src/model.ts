@@ -8,7 +8,7 @@
 
 export const TOOLS = ['pencil', 'marker', 'brush', 'crayon', 'water', 'spray', 'highlighter'] as const
 export type Tool = (typeof TOOLS)[number]
-export const SHAPES = ['rect', 'ellipse', 'triangle', 'line', 'arrow'] as const
+export const SHAPES = ['rect', 'ellipse', 'triangle', 'pentagon', 'hexagon', 'octagon', 'line', 'arrow'] as const
 export type ShapeKind = (typeof SHAPES)[number]
 export const FILLS = ['scribble', 'solid', 'wash'] as const
 export type Fill = (typeof FILLS)[number]
@@ -137,6 +137,22 @@ export function union(boxes: Box[]): Box | null {
   return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 }
 }
 
+/** Corners and where the first one sits (degrees, 0 = right, -90 = top): a pentagon point up, a hexagon and an octagon flat on top. */
+const POLYGONS: Partial<Record<ShapeKind, [number, number]>> = { pentagon: [5, -90], hexagon: [6, 0], octagon: [8, 22.5] }
+
+/** A regular polygon stretched to fill the box x0, y0 – x1, y1 (corner to corner, as he drags it). */
+export function regular(n: number, start: number, x0: number, y0: number, x1: number, y1: number): [number, number][] {
+  const unit = Array.from({ length: n }, (_, i) => {
+    const a = ((start + (360 * i) / n) * Math.PI) / 180
+    return [Math.cos(a), Math.sin(a)]
+  })
+  const ux0 = Math.min(...unit.map((p) => p[0]))
+  const ux1 = Math.max(...unit.map((p) => p[0]))
+  const uy0 = Math.min(...unit.map((p) => p[1]))
+  const uy1 = Math.max(...unit.map((p) => p[1]))
+  return unit.map(([x, y]) => [x0 + ((x - ux0) / (ux1 - ux0)) * (x1 - x0), y0 + ((y - uy0) / (uy1 - uy0)) * (y1 - y0)])
+}
+
 /** A shape's corners or curve, as a closed polygon (null for lines and arrows). */
 export function shapeOutline(s: Shape): [number, number][] | null {
   const x0 = Math.min(s.x1, s.x2)
@@ -145,6 +161,8 @@ export function shapeOutline(s: Shape): [number, number][] | null {
   const y1 = Math.max(s.y1, s.y2)
   if (s.kind === 'rect') return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]
   if (s.kind === 'triangle') return [[(x0 + x1) / 2, y0], [x1, y1], [x0, y1]]
+  const poly = POLYGONS[s.kind]
+  if (poly) return regular(poly[0], poly[1], x0, y0, x1, y1)
   if (s.kind === 'ellipse') {
     const cx = (x0 + x1) / 2
     const cy = (y0 + y1) / 2

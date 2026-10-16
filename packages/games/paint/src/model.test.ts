@@ -32,6 +32,9 @@ describe('closed things (for the paint pot)', () => {
     expect(outline(shape('rect', 0, 0, 100, 50))).toHaveLength(4)
     expect(outline(shape('ellipse', 0, 0, 100, 50))!.length).toBeGreaterThan(20)
     expect(outline(shape('triangle', 0, 0, 100, 50))).toHaveLength(3)
+    expect(outline(shape('pentagon', 0, 0, 100, 50))).toHaveLength(5)
+    expect(outline(shape('hexagon', 0, 0, 100, 50))).toHaveLength(6)
+    expect(outline(shape('octagon', 0, 0, 100, 50))).toHaveLength(8)
     expect(outline(shape('line', 0, 0, 100, 50))).toBeNull()
     expect(outline(shape('arrow', 0, 0, 100, 50))).toBeNull()
   })
@@ -43,6 +46,23 @@ describe('closed things (for the paint pot)', () => {
     expect(fillTarget([sq, c], 30, 30)).toBe(sq)
     expect(fillTarget([sq, c], 500, 500)).toBeNull()
   })
+})
+
+it('pentagons, hexagons and octagons fill the box he dragged, every corner on its edge or inside', () => {
+  for (const [kind, n] of [['pentagon', 5], ['hexagon', 6], ['octagon', 8]] as const) {
+    const o = outline(shape(kind, 300, 200, 100, 50))!
+    const xs = o.map((p) => p[0])
+    const ys = o.map((p) => p[1])
+    expect([Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)].map((v) => Math.round(v * 1e6) / 1e6)).toEqual([100, 300, 50, 200])
+    expect(o).toHaveLength(n)
+  }
+  // An octagon dragged square has equal sides (a stop sign); a pentagon stands on a flat bottom, point up.
+  const oct = outline(shape('octagon', 0, 0, 100, 100))!
+  const sides = oct.map((p, i) => Math.hypot(p[0] - oct[(i + 1) % 8][0], p[1] - oct[(i + 1) % 8][1]))
+  for (const s of sides) expect(s).toBeCloseTo(sides[0], 6)
+  const pent = outline(shape('pentagon', 0, 0, 100, 100))!
+  expect(pent[0][0]).toBeCloseTo(50, 6)
+  expect(pent[0][1]).toBeCloseTo(0, 6)
 })
 
 describe('touching things', () => {
