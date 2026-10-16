@@ -1,0 +1,26 @@
+{
+  "name": "@renderblocks/paint",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./module": "./src/module.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/filesystem": "^8.0.0",
+    "@capacitor/share": "^8.0.0",
+    "@renderblocks/kernel": "workspace:*",
+    "perfect-freehand": "1.2.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "roughjs": "4.6.6"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.1"
+  }
+}
