@@ -400,9 +400,9 @@ function Play({
         playClips(clipsOf(hit.n, hit.k))
         return
       }
-      // On the square that's waiting: it might be picked up (to put back in its ring).
+      // On the square that's waiting (or one he dropped, even still falling): it might be picked up (to put back in its ring).
       const cur = stage?.current
-      if (cur && (ph === 'ready' || ph === 'done') && cur.settled) {
+      if (cur && (((ph === 'ready' || ph === 'done') && cur.settled) || (ph === 'flying' && cur.dropped))) {
         const at = toStage(x, y)
         const c = Math.cos(-cur.cur.a)
         const sn = Math.sin(-cur.cur.a)

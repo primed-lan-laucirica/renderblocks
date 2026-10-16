@@ -22,6 +22,8 @@ const STICK = 0.7
 /** Pieces this many times bigger than the sneezer, or this many of its sizes away, are done moving: they leave the physics. */
 const TOO_BIG = 8
 const TOO_FAR = 60
+/** Nothing waits longer than this to count as landed (s), so a square wedged somewhere never holds up the game. */
+const FOREVER = 6
 
 export interface Pose {
   x: number
@@ -59,6 +61,10 @@ export interface Piece {
   still: number
   /** Hops it has made to stand up. */
   hops: number
+  /** Dropped by him (not sneezed): it may come to rest still partly in its ring. */
+  dropped: boolean
+  /** How long it has been moving since it was let go (s): after FOREVER it counts as landed, wherever it is. */
+  airborne: number
   /** Touched down after its flight. */
   landed: boolean
   lastThud: number
@@ -166,6 +172,8 @@ export class Stage {
       settled: !from,
       still: 0,
       hops: 0,
+      dropped: false,
+      airborne: 0,
       landed: !from,
       lastThud: -1,
       vel: { x: 0, y: 0, w: 0 },
@@ -306,11 +314,20 @@ export class Stage {
     this.held.to = { x, y: Math.max(y, p.size / 2 + p.legs), a }
   }
 
-  /** Is it over its ring, to go back in? */
+  /**
+   * Is it over its ring, to go back in? Generously: its middle anywhere over
+   * the ring's whole square (turned as the ring is), or a little outside it.
+   */
   fits(): boolean {
     const p = this.current
     const r = p.from
-    return !!r && r.hole > 0n && Math.hypot(p.cur.x - r.cur.x, p.cur.y - r.cur.y) < 0.5 * r.size
+    if (!r || r.hole === 0n) return false
+    const c = Math.cos(-r.cur.a)
+    const s = Math.sin(-r.cur.a)
+    const dx = p.cur.x - r.cur.x
+    const dy = p.cur.y - r.cur.y
+    const reach = r.size / 2 + 0.25 * p.size
+    return Math.abs(dx * c - dy * s) < reach && Math.abs(dx * s + dy * c) < reach
   }
 
   /** He lets go: it drops (flung as his finger was moving, stage units/s) and lands as after a sneeze. */
@@ -326,7 +343,7 @@ export class Stage {
     const k = speed > cap ? cap / speed : 1
     p.rb.setLinvel({ x: v.x * k * this.f, y: v.y * k * this.f }, true)
     p.rb.setAngvel(0, true)
-    Object.assign(p, { settled: false, landed: false, still: 0, hops: 0 })
+    Object.assign(p, { settled: false, landed: false, still: 0, hops: 0, dropped: true, airborne: 0 })
   }
 
   /**
@@ -402,9 +419,12 @@ export class Stage {
       }
       if (!p.settled && !(held && p === this.current)) {
         const v = p.rb.linvel()
-        const resting = !p.ghost && Math.hypot(v.x, v.y) < 0.15 * p.size * this.f && Math.abs(p.rb.angvel()) < 0.6
+        p.airborne += STEP
+        // (A sneezed-out square isn't down till it's out of its ring; one he dropped may rest half in it.)
+        const resting = (!p.ghost || p.dropped) && Math.hypot(v.x, v.y) < 0.15 * p.size * this.f && Math.abs(p.rb.angvel()) < 0.6
         p.still = resting ? p.still + STEP : 0
-        if (p.still > 0.25) {
+        if (p.airborne > FOREVER) p.settled = true
+        else if (p.still > 0.25) {
           // Landed on its side or its head: it hops up and turns itself the right way up, onto its feet.
           const tilt = Math.atan2(Math.sin(p.cur.a), Math.cos(p.cur.a))
           if (Math.abs(tilt) < 0.3 || p.hops >= 3) {

@@ -120,6 +120,50 @@ describe('a sneeze', () => {
     expect(s.current).toBe(r.out)
   })
 
+  it('dropped half in its ring, it still comes to rest, and can be picked up and put back', () => {
+    const s = new Stage(50n)
+    const r = s.sneeze('big')!
+    run(s, 4)
+    // Let go low over the ring's corner, just outside where it counts as over the ring (Lan's photo: 676 on 1,824).
+    s.grab()
+    const reach = r.ring.size / 2 + 0.25 * r.out.size
+    for (let t = 0; t < 30; t++) {
+      s.holdAt(r.ring.cur.x - reach - 0.05 * r.out.size, r.out.size / 2)
+      s.step()
+    }
+    expect(s.fits()).toBe(false)
+    s.release()
+    let t = 0
+    while (!r.out.settled && t < 12) {
+      s.step()
+      t += STEP
+    }
+    expect(t).toBeLessThan(6.5)
+    // Picked up again and put in the hole: unsneezed.
+    expect(s.grab()).toBe(true)
+    for (let i = 0; i < 30; i++) {
+      s.holdAt(r.ring.cur.x, r.ring.cur.y)
+      s.step()
+    }
+    expect(s.fits()).toBe(true)
+    expect(s.unsneeze()!.n).toBe(2500n)
+  })
+
+  it('a square that never comes to rest counts as landed after a while', () => {
+    const s = new Stage(10n)
+    const r = s.sneeze('big')!
+    // Held up in the air by nothing: it keeps spinning on the spot.
+    let t = 0
+    while (!r.out.settled && t < 8) {
+      r.out.rb!.setLinvel({ x: 0, y: 0 }, true)
+      r.out.rb!.setAngvel(3, true)
+      s.step()
+      t += STEP
+    }
+    expect(r.out.settled).toBe(true)
+    expect(t).toBeLessThan(6.5)
+  })
+
   it('below 4 it sneezes on in tenths and hundredths, down to 0.0001, which stays put', () => {
     const { s } = play(2n, 'big')
     expect(s.current.k).toBe(2)
