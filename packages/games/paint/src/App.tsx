@@ -11,6 +11,7 @@ import {
   newId,
   newSeed,
   PAPER,
+  paperBase,
   scaled,
   SHAPES,
   topAt,
@@ -94,7 +95,7 @@ function Gallery({ onOpen, onHome }: { onOpen: (d: Drawing) => void; onHome: () 
         </button>
         {list?.map((d, i) => (
           <div key={d.id} className="relative aspect-[4/3]" style={{ transform: `rotate(${(i % 3) - 1}deg)` }}>
-            <button type="button" onClick={() => onOpen(d)} aria-label="Open painting" className="absolute inset-0 shadow-md overflow-hidden" style={{ background: d.paper }}>
+            <button type="button" onClick={() => onOpen(d)} aria-label="Open painting" className="absolute inset-0 shadow-md overflow-hidden" style={{ background: paperBase(d) }}>
               {d.thumb && <img src={d.thumb} alt="" className="w-full h-full object-contain" draggable={false} />}
               <Doodle parts={[{ d: 'M2 2 L118 2 L118 88 L2 88 Z' }]} box="0 0 120 90" width={0.9} seed={i + 5} className="absolute inset-0 w-full h-full" />
             </button>
@@ -153,7 +154,7 @@ function picture(page: Page, w: number, h: number, maxScale: number, fallback: B
   c.height = Math.max(1, Math.round((box.h + 2 * pad) * k))
   const g = c.getContext('2d')!
   g.setTransform(k, 0, 0, k, -(box.x - pad) * k, -(box.y - pad) * k)
-  drawAll(g, page.paper, page.things, { x: box.x - pad, y: box.y - pad, w: box.w + 2 * pad, h: box.h + 2 * pad })
+  drawAll(g, page, page.things, { x: box.x - pad, y: box.y - pad, w: box.w + 2 * pad, h: box.h + 2 * pad })
   return c
 }
 
@@ -162,7 +163,7 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
   const [selected, setSelected] = useState<string | null>(null)
   const [, setTick] = useState(0)
   const canvas = useRef<HTMLCanvasElement>(null)
-  const hist = useRef(new History<Page>({ paper: drawing.paper, things: drawing.things }))
+  const hist = useRef(new History<Page>({ paper: drawing.paper, paperFill: drawing.paperFill, things: drawing.things }))
   const view = useRef<View>(drawing.view ?? { x: 0, y: 0, z: 1 })
   // What the event handlers (set up once) read: the latest choices.
   const cfg = useRef({ prefs, selected })
@@ -180,9 +181,9 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
   const save = () => {
     window.clearTimeout(saveTimer.current)
     const page = hist.current.now
-    if (!page.things.length && page.paper === PAPER) return deleteDrawing(drawing.id)
+    if (!page.things.length && paperBase(page) === PAPER && !page.paperFill) return deleteDrawing(drawing.id)
     const thumb = picture(page, 360, 270, 1, engine.current?.visible() ?? { x: 0, y: 0, w: 400, h: 300 }).toDataURL('image/jpeg', 0.8)
-    return saveDrawing({ ...drawing, paper: page.paper, things: page.things, view: { ...view.current }, updated: Date.now(), thumb })
+    return saveDrawing({ ...drawing, paper: page.paper, paperFill: page.paperFill, things: page.things, view: { ...view.current }, updated: Date.now(), thumb })
   }
 
   /** After every change: redraw, keep the buttons right, and save a moment later. */
@@ -253,7 +254,7 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
       }
       toWorld(bg)
       const hide = hidden()
-      drawAll(bg, page().paper, hide.size ? page().things.filter((t) => !hide.has(t.id)) : page().things, visible())
+      drawAll(bg, page(), hide.size ? page().things.filter((t) => !hide.has(t.id)) : page().things, visible())
       baseView = { ...view.current }
       baseFresh = true
     }
@@ -307,7 +308,7 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
         g.drawImage(base, 0, 0)
       } else {
         // Mid-gesture: the last picture, moved and zoomed to follow his fingers.
-        g.fillStyle = page().paper
+        g.fillStyle = paperBase(page())
         g.fillRect(0, 0, el.width, el.height)
         if (baseView) {
           const k = v.z / baseView.z
@@ -492,7 +493,7 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
         const { prefs } = cfg.current
         const t = fillTarget(p.things, w.x, w.y)
         if (t) commit({ ...p, things: p.things.map((x) => (x === t ? { ...t, fill: { style: prefs.fill, colour: prefs.colour } } : x)) })
-        else if (p.paper !== prefs.colour) commit({ ...p, paper: prefs.colour })
+        else if (p.paper !== prefs.colour || (p.paperFill ?? 'solid') !== prefs.fill) commit({ ...p, paper: prefs.colour, paperFill: prefs.fill })
       }
       dirty = true
     }
@@ -617,7 +618,7 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
   }
 
   return (
-    <div className="h-dvh w-full relative overflow-hidden select-none" style={{ background: h.now.paper }}>
+    <div className="h-dvh w-full relative overflow-hidden select-none" style={{ background: paperBase(h.now) }}>
       <canvas ref={canvas} className="absolute inset-0 w-full h-full touch-none" />
       <div className="absolute top-3 left-3 flex gap-2">
         <Knob label="Back to my paintings" parts={ICONS.home} onPress={() => void close()} />

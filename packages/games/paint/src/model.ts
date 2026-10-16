@@ -60,6 +60,8 @@ export interface Drawing {
   updated: number
   /** The paper's colour (the bucket on empty paper paints it). */
   paper: string
+  /** How the paper was painted (none: solid, or plain paper). */
+  paperFill?: Fill
   things: Thing[]
   /** A small picture for the gallery (a data URL). */
   thumb?: string
@@ -81,6 +83,10 @@ export interface Box {
 }
 
 export const PAPER = '#FFFDF7'
+
+/** The colour under everything: the paint, if the paper was painted solid; plain paper under scribbles or a wash. */
+export const paperBase = (p: { paper: string; paperFill?: Fill }) => (p.paperFill && p.paperFill !== 'solid' ? PAPER : p.paper)
+
 
 export const newId = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36)
 export const newSeed = () => Math.floor(Math.random() * 2 ** 31)
@@ -305,6 +311,7 @@ export function scaled<T extends Thing>(t: T, k: number, ax: number, ay: number)
 /** What undo goes back through: the paper and the things on it. */
 export interface Page {
   paper: string
+  paperFill?: Fill
   things: Thing[]
 }
 

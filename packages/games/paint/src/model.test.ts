@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bounds, fillTarget, hits, History, moved, outline, rng, scaled, topAt, type Page, type Shape, type Stroke } from './model'
+import { bounds, fillTarget, hits, History, moved, outline, PAPER, paperBase, rng, scaled, topAt, type Page, type Shape, type Stroke } from './model'
 
 const stroke = (pts: [number, number][], tool: Stroke['tool'] = 'brush', size = 10): Stroke => ({
   id: Math.random().toString(),
@@ -126,4 +126,12 @@ it('the same seed gives the same texture', () => {
   const b = rng(42)
   for (let i = 0; i < 10; i++) expect(a()).toBe(b())
   expect(rng(43)()).not.toBe(rng(42)())
+})
+
+it('paper painted solid is that colour underneath; scribbled or washed, plain paper shows between', () => {
+  expect(paperBase({ paper: PAPER })).toBe(PAPER)
+  expect(paperBase({ paper: '#E53935' })).toBe('#E53935')
+  expect(paperBase({ paper: '#E53935', paperFill: 'solid' })).toBe('#E53935')
+  expect(paperBase({ paper: '#E53935', paperFill: 'scribble' })).toBe(PAPER)
+  expect(paperBase({ paper: '#E53935', paperFill: 'wash' })).toBe(PAPER)
 })

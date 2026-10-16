@@ -9,7 +9,7 @@
 import { getStroke } from 'perfect-freehand'
 import rough from 'roughjs'
 import type { Drawable } from 'roughjs/bin/core'
-import { arrowHead, bounds, outline, rng, shapeOutline, type Box, type Shape, type Stroke, type Thing } from './model'
+import { arrowHead, bounds, outline, paperBase, rng, shapeOutline, type Box, type Page, type Shape, type Stroke, type Thing } from './model'
 
 // --- Layers: some paint is drawn on its own sheet first, then laid on (see-through, blurred, multiplied).
 
@@ -459,10 +459,70 @@ export function drawThing(ctx: CanvasRenderingContext2D, t: Thing, done = true) 
   }
 }
 
+/** Scribbles across the paper: hand-drawn hatching, every line's wobble from its own number, so it stays put as he pans. */
+function scribblePaper(ctx: CanvasRenderingContext2D, colour: string, view: Box) {
+  const GAP = 16
+  const SEG = 60
+  // Lines along (1, -t): x + y·t = k·GAP.
+  const t = Math.tan((41 * Math.PI) / 180)
+  const len = Math.hypot(1, t)
+  const k0 = Math.floor(Math.min(view.x + view.y * t, view.x + (view.y + view.h) * t) / GAP) - 1
+  const k1 = Math.ceil((view.x + view.w + (view.y + view.h) * t) / GAP) + 1
+  ctx.save()
+  ctx.strokeStyle = colour
+  ctx.lineWidth = 3.2
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  ctx.globalAlpha = 0.85
+  ctx.beginPath()
+  for (let k = k0; k <= k1; k++) {
+    // Walk the line down the view from top to bottom, in steps of SEG along y.
+    const j0 = Math.floor(view.y / SEG) - 1
+    const j1 = Math.ceil((view.y + view.h) / SEG) + 1
+    for (let j = j0; j <= j1; j++) {
+      const r = rng((k * 73856093) ^ (j * 19349663))
+      const y = j * SEG
+      const wob = (r() - 0.5) * 3
+      const x = k * GAP - y * t + wob * (t / len)
+      if (j === j0) ctx.moveTo(x, y + wob / len)
+      else ctx.lineTo(x, y + wob / len)
+    }
+  }
+  ctx.stroke()
+  ctx.restore()
+}
+
+/** A watercolour wash over the whole paper: blotchy, darker in places, the paper's grain showing. */
+function washPaper(ctx: CanvasRenderingContext2D, colour: string, view: Box) {
+  layer(
+    ctx,
+    view,
+    (l) => {
+      l.fillStyle = colour
+      l.fillRect(view.x, view.y, view.w, view.h)
+      // Blotches: the grain blown up big, rubbed out softly.
+      const p = l.createPattern(grain(), 'repeat')
+      if (p) {
+        p.setTransform(new DOMMatrix([9, 0, 0, 9, 0, 0]))
+        l.globalCompositeOperation = 'destination-out'
+        l.globalAlpha = 0.35
+        l.fillStyle = p
+        l.fillRect(view.x, view.y, view.w, view.h)
+        l.globalAlpha = 1
+        l.globalCompositeOperation = 'source-over'
+      }
+      tooth(l, view, 0.7, 0.3)
+    },
+    [{ alpha: 0.45, op: 'multiply' }],
+  )
+}
+
 /** The paper and everything on it, the part `view` shows (world units). */
-export function drawAll(ctx: CanvasRenderingContext2D, paper: string, things: Thing[], view: Box) {
-  ctx.fillStyle = paper
+export function drawAll(ctx: CanvasRenderingContext2D, page: Page, things: Thing[], view: Box) {
+  ctx.fillStyle = paperBase(page)
   ctx.fillRect(view.x, view.y, view.w, view.h)
+  if (page.paperFill === 'scribble') scribblePaper(ctx, page.paper, view)
+  else if (page.paperFill === 'wash') washPaper(ctx, page.paper, view)
   paperGrain(ctx, view)
   for (const t of things) {
     const b = bounds(t)
