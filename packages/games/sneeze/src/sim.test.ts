@@ -68,6 +68,58 @@ describe('a sneeze', () => {
     })
   }
 
+  for (const [side, rule] of [[10n, 'big'], [10n, 'ring'], [2n, 'big']] as [bigint, Rule][]) {
+    it(`${side * side} (${rule}): unsneezed all the way back, each square put back in its ring`, () => {
+      const { s } = play(side, rule)
+      const sneezes = chain(side, rule).length
+      for (let i = 0; i < sneezes; i++) {
+        const p = s.current
+        expect(s.grab()).toBe(true)
+        // Carried over to its ring, through the ring's side, and held in the middle.
+        for (let t = 0; t < 30; t++) {
+          const f = (t + 1) / 30
+          s.holdAt(p.cur.x + (p.from!.cur.x - p.cur.x) * f, p.cur.y + (p.from!.cur.y - p.cur.y) * f)
+          s.step()
+        }
+        expect(s.fits()).toBe(true)
+        const whole = s.unsneeze()!
+        expect(whole.hole).toBe(0n)
+        run(s, 2)
+      }
+      expect(s.pieces).toHaveLength(1)
+      expect(s.current.side).toBe(side)
+      expect(s.current.k).toBe(0)
+      expect(s.current.n).toBe(side * side)
+      expect(s.current.from).toBeNull()
+      expect(s.unsneeze()).toBeNull()
+      // And it sneezes again, the same as the first time.
+      expect(s.sneeze(rule)!.s.ring).toBe(chain(side, rule)[0].ring)
+    })
+  }
+
+  it('dropped anywhere but its ring, it lands again and nothing changes', () => {
+    const s = new Stage(10n)
+    const r = s.sneeze('big')!
+    run(s, 4)
+    s.grab()
+    expect(s.fits()).toBe(false)
+    for (let t = 0; t < 20; t++) {
+      s.holdAt(r.out.cur.x + 5, 12)
+      s.step()
+    }
+    expect(s.fits()).toBe(false)
+    s.release({ x: 4, y: 0 })
+    let t = 0
+    while (!r.out.settled && t < 12) {
+      s.step()
+      t += STEP
+    }
+    expect(r.out.settled).toBe(true)
+    expect(r.out.cur.y / r.out.size).toBeLessThan(1.2)
+    expect(s.pieces).toHaveLength(2)
+    expect(s.current).toBe(r.out)
+  })
+
   it('below 4 it sneezes on in tenths and hundredths, down to 0.0001, which stays put', () => {
     const { s } = play(2n, 'big')
     expect(s.current.k).toBe(2)

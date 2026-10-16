@@ -5,7 +5,7 @@ import { DEFAULT_LOOK, fromDesign, type Design, type Look } from '@renderblocks/
 import { drawPiece, LIMB, squareShape } from './draw'
 import { choices, fmt, ROUNDS, show, sneeze, sqrt, squaresAround, value, wears, type Rule, type Sneeze } from './rules'
 import { initPhysics, Stage, STEP, type Piece } from './sim'
-import { choo, correct, squarePower, thud, wake, windup } from './sound'
+import { choo, correct, pop, sniff, squarePower, thud, wake, windup } from './sound'
 
 /** His Designer looks, by number (from the shared "designs" record): a square or ring wears the look he made for its number. */
 function looksFrom(raw: string | null): Map<string, Look> {
@@ -222,7 +222,13 @@ const WINDUP = 0.75
 /** A shorter one when he tapped ahead (while the last was still flying). */
 const WINDUP_SOON = 0.3
 
-type Phase = 'ready' | 'windup' | 'guessing' | 'choo' | 'flying' | 'done'
+/** How long a square put back takes to slide into its hole (s). */
+const SNAP = 0.3
+/** A press that moves this far (px) is a drag, not a tap. */
+const DRAG_PX = 10
+
+/** `held`: he's carrying the square; `snapping`: it's going back into its ring (an unsneeze). */
+type Phase = 'ready' | 'windup' | 'guessing' | 'choo' | 'flying' | 'done' | 'held' | 'snapping'
 
 interface Camera {
   x: number
@@ -232,7 +238,11 @@ interface Camera {
   logScale: number
 }
 
-/** The stage: tap to tickle the square; it sneezes; the one that flies out sneezes next. */
+/**
+ * The stage: tap to tickle the square; it sneezes; the one that flies out
+ * sneezes next. Drag it back into the ring it came out of to unsneeze (Render's
+ * idea, Oct 16): the ring closes up round it, the whole square again.
+ */
 function Play({
   side,
   rule,
@@ -254,7 +264,7 @@ function Play({
   const stageRef = useRef<Stage | null>(null)
   // What's on screen, mirrored from the animation loop.
   const [phase, setPhase] = useState<Phase>('ready')
-  const [last, setLast] = useState<(Sneeze & { picked?: bigint }) | null>(null)
+  const [last, setLast] = useState<(Sneeze & { picked?: bigint; back?: boolean }) | null>(null)
   const [flip, setFlip] = useState(false)
   const [options, setOptions] = useState<bigint[]>([])
   const [seeAll, setSeeAll] = useState(false)
@@ -292,6 +302,15 @@ function Play({
     const roll = () => 1 + Math.floor(Math.random() * 10)
     let untilPower = roll()
     let picked: bigint | undefined
+    // A landing after he dropped it somewhere (not a sneeze): no "Square power!".
+    let dropped = false
+    // A press on the square: a tap (sneeze) unless it moves, then a drag.
+    let press: { id: number; x: number; y: number; dx: number; dy: number; drag: boolean; v: { x: number; y: number }; at: number; sx: number; sy: number } | null = null
+    // Sliding into its hole: from where he let go, over SNAP seconds.
+    let snap: { at: number; from: { x: number; y: number; a: number } } | null = null
+    // Screen ↔ stage, as drawn last frame.
+    const view = { scale: 1, x: 0, w: 1, floorY: 0 }
+    const toStage = (px: number, py: number) => ({ x: view.x + (px - view.w / 2) / view.scale, y: (view.floorY - py) / view.scale })
     const timers: number[] = []
     // Faces: squeezed during the wind-up, mid-sneeze on the ring for a moment after.
     let sneezedRing: Piece | null = null
@@ -381,9 +400,67 @@ function Play({
         playClips(clipsOf(hit.n, hit.k))
         return
       }
+      // On the square that's waiting: it might be picked up (to put back in its ring).
+      const cur = stage?.current
+      if (cur && (ph === 'ready' || ph === 'done') && cur.settled) {
+        const at = toStage(x, y)
+        const c = Math.cos(-cur.cur.a)
+        const sn = Math.sin(-cur.cur.a)
+        const lx = (at.x - cur.cur.x) * c - (at.y - cur.cur.y) * sn
+        const ly = (at.x - cur.cur.x) * sn + (at.y - cur.cur.y) * c
+        // Generous: a little more than the square, and never less than a fingertip.
+        const reach = Math.max((cur.size / 2) * 1.15, 32 / view.scale)
+        if (Math.abs(lx) < reach && Math.abs(ly) < reach) {
+          wake()
+          el.setPointerCapture(e.pointerId)
+          press = { id: e.pointerId, x, y, dx: cur.cur.x - at.x, dy: cur.cur.y - at.y, drag: false, v: { x: 0, y: 0 }, at: performance.now(), sx: at.x, sy: at.y }
+          return
+        }
+      }
       cmd.current?.tickle()
     }
+    const move = (e: PointerEvent) => {
+      if (!press || e.pointerId !== press.id || !stage) return
+      const box = el.getBoundingClientRect()
+      const x = e.clientX - box.left
+      const y = e.clientY - box.top
+      if (!press.drag) {
+        if (Math.hypot(x - press.x, y - press.y) < DRAG_PX) return
+        if (!stage.grab()) return
+        press.drag = true
+        setP('held')
+      }
+      const at = toStage(x, y)
+      // His finger's speed (stage units/s, smoothed), for a fling when he lets go.
+      const now = performance.now()
+      const dt = Math.max(1, now - press.at) / 1000
+      const k = Math.min(1, dt / 0.08)
+      press.v = { x: press.v.x + ((at.x - press.sx) / dt - press.v.x) * k, y: press.v.y + ((at.y - press.sy) / dt - press.v.y) * k }
+      press.at = now
+      press.sx = at.x
+      press.sy = at.y
+      stage.holdAt(at.x + press.dx, at.y + press.dy, 0)
+    }
+    const up = (e: PointerEvent) => {
+      if (!press || e.pointerId !== press.id || !stage) return
+      const p = press
+      press = null
+      if (!p.drag) return cmd.current?.tickle()
+      // Let go over its ring: sniffed back in. Anywhere else: it drops and lands.
+      if (e.type === 'pointerup' && stage.fits()) {
+        sniff(stage.current.n)
+        snap = { at: performance.now() / 1000, from: { ...stage.current.cur } }
+        setP('snapping')
+      } else {
+        stage.release(performance.now() - p.at < 100 ? p.v : { x: 0, y: 0 })
+        dropped = true
+        setP('flying')
+      }
+    }
     el.addEventListener('pointerdown', down)
+    el.addEventListener('pointermove', move)
+    el.addEventListener('pointerup', up)
+    el.addEventListener('pointercancel', up)
 
     const frame = (now: number) => {
       if (!alive || !stage) return
@@ -396,7 +473,8 @@ function Play({
       }
       // Landed: on to the next sneeze (or the end). Nothing is said unless he taps a number or the sum.
       if (ph === 'flying' && stage.current.settled) {
-        if (--untilPower <= 0) {
+        if (dropped) dropped = false
+        else if (--untilPower <= 0) {
           untilPower = roll()
           squarePower()
         }
@@ -404,6 +482,30 @@ function Play({
         if (queued) {
           queued = false
           cmd.current?.tickle(true)
+        }
+      }
+
+      // Going back in: it slides into the middle of its ring, turned to match it; then the ring closes up.
+      if (ph === 'snapping' && snap && stage.current.from) {
+        const ring = stage.current.from
+        const f = Math.min(1, (t - snap.at) / SNAP)
+        const e = 1 - (1 - f) ** 3
+        // The nearest way round to the ring's angle (a square looks the same every quarter turn).
+        const q = Math.PI / 2
+        const target = ring.cur.a + Math.round((snap.from.a - ring.cur.a) / q) * q
+        stage.holdAt(snap.from.x + (ring.cur.x - snap.from.x) * e, snap.from.y + (ring.cur.y - snap.from.y) * e, snap.from.a + (target - snap.from.a) * e)
+        if (f >= 1) {
+          const whole = stage.unsneeze()
+          snap = null
+          if (whole) {
+            pop(Math.min(1, Math.log10(1 + whole.size) / 2))
+            setLast({ whole: ring.side * ring.side, out: ring.hole * ring.hole, ring: ring.n, side: ring.side, outSide: ring.hole, k: ring.k, back: true })
+            setFlip(true)
+            setRings((x) => x.slice(0, -1))
+            sneezedRing = whole
+            sneezedAt = t
+          } else stage.release()
+          setP(canSneeze() ? 'ready' : 'done')
         }
       }
 
@@ -431,7 +533,9 @@ function Play({
       const low = ph === 'guessing' ? Math.min(0.42, 190 / h) : 0.12
       const want: Camera = { x: (x0 + x1) / 2, low, logScale: Math.log(Math.min(w / needW, (h * (0.92 - low)) / needH)) }
       if (!cam) cam = want
-      else {
+      else if (ph === 'held' || ph === 'snapping') {
+        // Still while he carries it, so the ring doesn't move away from his finger.
+      } else {
         const k = 1 - Math.exp(-STEP * 60 * 0.06)
         cam = { x: cam.x + (want.x - cam.x) * k, low: cam.low + (want.low - cam.low) * k, logScale: cam.logScale + (want.logScale - cam.logScale) * k }
       }
@@ -440,6 +544,8 @@ function Play({
       // Screen from stage (computed in doubles, so a ten-billionth of the screen is still exact).
       const sx = (x: number) => w / 2 + (x - cam!.x) * scale
       const floorY = h - cam.low * h
+      Object.assign(view, { scale, x: cam.x, w, floorY })
+      ;(window as unknown as { __sneezeView?: typeof view }).__sneezeView = view
       const sy = (y: number) => floorY - y * scale
 
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -523,6 +629,9 @@ function Play({
       cancelAnimationFrame(raf)
       for (const id of timers) clearTimeout(id)
       el.removeEventListener('pointerdown', down)
+      el.removeEventListener('pointermove', move)
+      el.removeEventListener('pointerup', up)
+      el.removeEventListener('pointercancel', up)
       stage?.free()
       stageRef.current = null
       cmd.current = null

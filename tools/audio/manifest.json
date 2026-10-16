@@ -584,6 +584,16 @@
           "prompt": "a young child's voice doing one big funny cartoon sneeze, \"AH-CHOO!\", short and loud, then silence",
           "seconds": 1.2,
           "influence": 0.6
+        },
+        "sniff1": {
+          "prompt": "a young child doing one quick loud cartoon sniff, sucking air in through the nose, short, then silence",
+          "seconds": 0.8,
+          "influence": 0.6
+        },
+        "sniff2": {
+          "prompt": "a young child doing one quick loud cartoon sniff, sucking air in through the nose, short, then silence",
+          "seconds": 0.8,
+          "influence": 0.6
         }
       }
     }

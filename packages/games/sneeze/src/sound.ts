@@ -1,7 +1,7 @@
 /**
  * Sneeze sounds (generated once with ElevenLabs, tools/audio/manifest.json):
- * the "ah… ah…" wind-up and the AH-CHOO, and a synthesised thud when
- * something lands. (No voice: he sneezes them in quick succession.) Bigger squares sneeze deeper.
+ * the "ah… ah…" wind-up and the AH-CHOO, the sniff of an unsneeze, and a
+ * synthesised thud when something lands and pop when a ring closes up. (No voice: he sneezes them in quick succession.) Bigger squares sneeze deeper.
  */
 let ctx: AudioContext | null = null
 const buffers = new Map<string, AudioBuffer>()
@@ -14,6 +14,8 @@ const FILES = {
   choo1: '/games/sneeze/sfx/choo1.mp3',
   choo2: '/games/sneeze/sfx/choo2.mp3',
   choo3: '/games/sneeze/sfx/choo3.mp3',
+  sniff1: '/games/sneeze/sfx/sniff1.mp3',
+  sniff2: '/games/sneeze/sfx/sniff2.mp3',
   correct: '/games/shared/sfx/correct.mp3',
   squarepower: '/games/sneeze/voice/squarepower.mp3',
 } as const
@@ -85,6 +87,27 @@ export function choo(n: bigint): number {
   const name = pick(['choo1', 'choo2', 'choo3'] as const)
   const rate = pitchFor(n)
   return play(name, rate) ? BURST[name] / rate : 0.3
+}
+
+/** An unsneeze: the square is sniffed back in. */
+export function sniff(n: bigint) {
+  play(pick(['sniff1', 'sniff2'] as const), pitchFor(n), 0.9)
+}
+
+/** The ring closing up round it: a soft pop, lower the bigger (0–1). */
+export function pop(big: number) {
+  const a = audio()
+  if (!a) return
+  const osc = a.createOscillator()
+  const f = 520 - 300 * big
+  osc.frequency.setValueAtTime(f, a.currentTime)
+  osc.frequency.exponentialRampToValueAtTime(f * 2.2, a.currentTime + 0.08)
+  const gain = a.createGain()
+  gain.gain.setValueAtTime(0.35, a.currentTime)
+  gain.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 0.12)
+  osc.connect(gain).connect(a.destination)
+  osc.start()
+  osc.stop(a.currentTime + 0.13)
 }
 
 /** "Square power!" (the chorus voice), now and then. */

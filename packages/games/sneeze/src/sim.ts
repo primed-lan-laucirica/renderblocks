@@ -47,7 +47,11 @@ export interface Piece {
   rb: RAPIER.RigidBody | null
   prev: Pose
   cur: Pose
-  /** The ring it was sneezed out of (it passes through that ring until it's clear of it). */
+  /**
+   * The ring it was sneezed out of (it passes through that ring until it's
+   * clear of it). A ring keeps its square's: where it goes back to when it's
+   * whole again.
+   */
   from: Piece | null
   ghost: boolean
   /** Come to rest after its flight, standing the right way up. */
@@ -117,6 +121,8 @@ export class Stage {
   private byCollider = new Map<number, Piece>()
   private events = new RAPIER.EventQueue(true)
   private readonly hooks: RAPIER.PhysicsHooks
+  /** Where the square he's holding is to be (stage units). */
+  private held: { to: Pose } | null = null
 
   /** `legs`: how long a piece's legs are, as a share of its side (from the look it wears). */
   constructor(side: bigint, legsFor: (n: bigint, side: bigint, k: number) => number = () => 0) {
@@ -248,6 +254,7 @@ export class Stage {
     }
     this.pieces.splice(this.pieces.indexOf(p), 1)
     const ring = this.piece(s.side, s.outSide, s.k, { ...p.cur })
+    ring.from = p.from
     // (Ten tenths flies out as one whole block.)
     const o = norm(s.outSide, s.k)
     const out = this.piece(o.side, 0n, o.k, { ...p.cur }, ring)
@@ -277,9 +284,87 @@ export class Stage {
     return { s, ring, out }
   }
 
+  /** He picks up the current square: it goes where his finger does, through its own ring. */
+  grab(): boolean {
+    const p = this.current
+    if (!p.rb || p.hole !== 0n) return false
+    p.rb.setBodyType(RAPIER.RigidBodyType.KinematicPositionBased, true)
+    p.ghost = !!p.from
+    p.settled = false
+    this.held = { to: { ...p.cur } }
+    return true
+  }
+
+  get holding(): boolean {
+    return !!this.held
+  }
+
+  /** Where he's holding it (stage units; never below standing on the floor). */
+  holdAt(x: number, y: number, a = this.held?.to.a ?? 0): void {
+    if (!this.held) return
+    const p = this.current
+    this.held.to = { x, y: Math.max(y, p.size / 2 + p.legs), a }
+  }
+
+  /** Is it over its ring, to go back in? */
+  fits(): boolean {
+    const p = this.current
+    const r = p.from
+    return !!r && r.hole > 0n && Math.hypot(p.cur.x - r.cur.x, p.cur.y - r.cur.y) < 0.5 * r.size
+  }
+
+  /** He lets go: it drops (flung as his finger was moving, stage units/s) and lands as after a sneeze. */
+  release(v = { x: 0, y: 0 }): void {
+    const p = this.current
+    const h = this.held
+    this.held = null
+    if (!p.rb || !h) return
+    p.rb.setBodyType(RAPIER.RigidBodyType.Dynamic, true)
+    // (No faster than three sneezes' worth.)
+    const cap = (3 * Math.sqrt(GRAVITY * START)) / this.f
+    const speed = Math.hypot(v.x, v.y)
+    const k = speed > cap ? cap / speed : 1
+    p.rb.setLinvel({ x: v.x * k * this.f, y: v.y * k * this.f }, true)
+    p.rb.setAngvel(0, true)
+    Object.assign(p, { settled: false, landed: false, still: 0, hops: 0 })
+  }
+
+  /**
+   * Unsneeze: the square he put back in its ring and the ring become the
+   * whole square again, where the ring is. It's the one to sneeze next (or to
+   * go back into its own ring).
+   */
+  unsneeze(): Piece | null {
+    const p = this.current
+    const ring = p.from
+    if (!ring || ring.hole === 0n || p.hole !== 0n) return null
+    this.held = null
+    const at = this.pieces.indexOf(ring)
+    this.pieces.splice(this.pieces.indexOf(p), 1)
+    this.pieces.splice(this.pieces.indexOf(ring), 1)
+    const o = norm(ring.side, ring.k)
+    const whole = this.piece(o.side, 0n, o.k, { ...ring.cur })
+    // Drawn where the ring was, behind anything that came later.
+    this.pieces.splice(this.pieces.indexOf(whole), 1)
+    this.pieces.splice(at, 0, whole)
+    whole.from = ring.from
+    // It rights itself if the ring had tipped over.
+    Object.assign(whole, { ghost: false, settled: false, landed: true })
+    this.current = whole
+    this.world = this.rebuild()
+    this.sneezes = Math.max(0, this.sneezes - 1)
+    return whole
+  }
+
   /** One step. Returns how hard anything landed (0–1 each, for thuds), with the size that landed. */
   step(): { strength: number; size: number }[] {
     for (const p of this.pieces) p.prev = p.cur
+    const held = this.held
+    if (held && this.current.rb) {
+      const rb = this.current.rb
+      rb.setNextKinematicTranslation({ x: (held.to.x - this.ox) * this.f, y: held.to.y * this.f })
+      rb.setNextKinematicRotation(held.to.a)
+    }
     this.world.step(this.events, this.hooks)
     this.time += STEP
     const thuds: { strength: number; size: number }[] = []
@@ -301,10 +386,10 @@ export class Stage {
       if (!p.rb) continue
       const t = p.rb.translation()
       p.cur = { x: this.ox + t.x / this.f, y: t.y / this.f, a: p.rb.rotation() }
-      // Out of its ring (legs and all).
-      if (p.ghost && p.from && !overlap(p.cur, p.size + 2 * p.legs, p.from.cur, p.from.size + 2 * p.from.legs)) p.ghost = false
+      // Out of its ring (legs and all); while he's holding it, it can always go through.
+      if (p.ghost && p.from && !(held && p === this.current) && !overlap(p.cur, p.size + 2 * p.legs, p.from.cur, p.from.size + 2 * p.from.legs)) p.ghost = false
       // Touching down nearly upright, it sticks the landing, as a gymnast does.
-      if (touched.has(p)) {
+      if (touched.has(p) && !(held && p === this.current)) {
         p.landed = true
         const tilt = Math.atan2(Math.sin(p.cur.a), Math.cos(p.cur.a))
         if (Math.abs(tilt) < STICK) {
@@ -315,7 +400,7 @@ export class Stage {
           p.cur = { ...p.cur, a: p.cur.a - tilt }
         }
       }
-      if (!p.settled) {
+      if (!p.settled && !(held && p === this.current)) {
         const v = p.rb.linvel()
         const resting = !p.ghost && Math.hypot(v.x, v.y) < 0.15 * p.size * this.f && Math.abs(p.rb.angvel()) < 0.6
         p.still = resting ? p.still + STEP : 0
