@@ -23,6 +23,7 @@
     "@renderblocks/base10": "workspace:*",
     "@renderblocks/trace": "workspace:*",
     "@renderblocks/skate": "workspace:*",
+    "@renderblocks/progress": "workspace:*",
     "@renderblocks/sort": "workspace:*",
     "@renderblocks/story5": "workspace:*",
     "@renderblocks/designer": "workspace:*",

@@ -55,6 +55,8 @@ export interface DrillConfig {
   audioBase: string
   /** How FactReveal draws this operation as cube groups. */
   reveal: RevealKind
+  /** The Common Core concept the facts are evidence for, in the progress log. */
+  concept: string
 }
 
 interface DrillGameProps {
@@ -210,6 +212,12 @@ export function DrillGame({ services, config }: DrillGameProps) {
     return () => window.clearTimeout(timer)
   }, [celebrating])
 
+  // When this problem appeared, for how long he took.
+  const shownAt = useRef(Date.now())
+  useEffect(() => {
+    shownAt.current = Date.now()
+  }, [run.key, factIndex, encounter])
+
   // Synchronous guard so tap-to-skip and the timer can't both advance.
   const solvedRef = useRef(false)
 
@@ -257,6 +265,14 @@ export function DrillGame({ services, config }: DrillGameProps) {
     // buttons (and the number pad) are display-only until all three are back.
     if (celebrating || solved || shakeValue !== null || enabledCount < 3) return
     if (value === problem.answer) {
+      // One record per problem: right first time, or after a miss.
+      services.progress.record({
+        concept: config.concept,
+        item: `${problem.a}${config.symbol}${problem.b}`,
+        ok: !encounterDirty,
+        how: inputMode,
+        ms: Date.now() - shownAt.current,
+      })
       setAttempt(0)
       setEnabledCount(3)
       effects.play('yes')

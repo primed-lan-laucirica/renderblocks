@@ -168,9 +168,22 @@ function App({ services }: GameProps) {
 
   const s = scaleFor(range)
 
+  // For the progress log: when this target appeared, and whether he's missed it.
+  const targetShown = useRef({ at: Date.now(), missed: false })
+  useEffect(() => {
+    targetShown.current = { at: Date.now(), missed: false }
+  }, [target])
+
   const plotFind = () => {
     if (hit) return
     if (x === target.x && y === target.y) {
+      services.progress.record({
+        // The first quadrant is grade 5's plane; the other three are grade 6's.
+        concept: target.x >= 0 && target.y >= 0 ? '5.G.A.1' : '6.NS.C.8',
+        item: fmt(target),
+        ok: !targetShown.current.missed,
+        ms: Date.now() - targetShown.current.at,
+      })
       playEffect('yes')
       setHit(true)
       setFound((f) => f + 1)
@@ -183,6 +196,7 @@ function App({ services }: GameProps) {
       }, 1800)
     } else {
       playEffect('no', 0.55)
+      targetShown.current.missed = true
       setWrong({ x, y })
     }
   }

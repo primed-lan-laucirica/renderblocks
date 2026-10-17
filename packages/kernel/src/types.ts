@@ -41,6 +41,33 @@ export interface NamespacedStorage {
   remove(key: string): void
 }
 
+/**
+ * One thing he did that shows what he knows: an answer (`ok` says whether it
+ * was right first time) or something he explored (no `ok`).
+ */
+export interface ProgressEvent {
+  /** When, ms since 1970. */
+  t: number
+  /** The app it happened in (filled in by the kernel). */
+  app: string
+  /** The concept it's evidence for: a Common Core code such as '3.OA.C.7'. */
+  concept: string
+  /** The item within it, e.g. '7×8' or '(-3,4)'. */
+  item: string
+  /** Right first time (true), needed another go (false); absent when nothing was asked. */
+  ok?: boolean
+  /** How he answered, e.g. 'type' (recall) or 'choose' (recognition). */
+  how?: string
+  /** How long he took, ms. */
+  ms?: number
+}
+
+/** The shared progress log (the Progress tile reads it back). */
+export interface ProgressLog {
+  record(e: Omit<ProgressEvent, 't' | 'app'>): void
+  all(): Promise<ProgressEvent[]>
+}
+
 /** Services the kernel injects into each game. Grows in later phases. */
 export interface GameServices {
   storage: NamespacedStorage
@@ -50,6 +77,8 @@ export interface GameServices {
    * used by Windy and, later, LavaBlocks.
    */
   shared: NamespacedStorage
+  /** Where answers go, for the Progress tile. */
+  progress: ProgressLog
   /** Return to the game-select home screen. */
   exitToHome: () => void
   /**

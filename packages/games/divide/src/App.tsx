@@ -16,6 +16,7 @@ const config: DrillConfig = {
   nextMessage: (nextKey) =>
     nextKey === 1 ? 'Starting over from 1…' : `Now dividing by ${nextKey}…`,
   palette: 'rose',
+  concept: '3.OA.C.7',
   reveal: 'share',
   audioBase: '/games/divide/audio',
 }

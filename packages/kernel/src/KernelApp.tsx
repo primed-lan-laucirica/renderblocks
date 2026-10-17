@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { App as CapacitorApp } from '@capacitor/app'
 import { HomeScreen } from './HomeScreen'
+import { createProgressLog } from './services/progress'
 import { createNamespacedStorage } from './services/storage'
 import type { GameModule, GameServices, UpcomingGame } from './types'
 
@@ -38,6 +39,7 @@ export function KernelApp({ games, upcoming = [] }: KernelAppProps) {
         ? {
             storage: createNamespacedStorage(active.id),
             shared: createNamespacedStorage('shared'),
+            progress: createProgressLog(active.id),
             exitToHome: () => setActiveId(null),
             onBack: (handler) => {
               gameBackHandler.current = handler

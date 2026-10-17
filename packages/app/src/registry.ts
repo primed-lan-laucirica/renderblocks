@@ -16,6 +16,7 @@ import { magcubesModule } from '@renderblocks/magcubes/module'
 import { traceModule } from '@renderblocks/trace/module'
 import { skateModule } from '@renderblocks/skate/module'
 import { sortModule } from '@renderblocks/sort/module'
+import { progressModule } from '@renderblocks/progress/module'
 import { story5Module } from '@renderblocks/story5/module'
 import { designerModule } from '@renderblocks/designer/module'
 import { windyModule } from '@renderblocks/windy/module'
@@ -47,6 +48,7 @@ export const games: GameModule[] = [
   windyModule,
   sneezeModule,
   paintModule,
+  progressModule,
 ]
 
 export const upcoming: UpcomingGame[] = []

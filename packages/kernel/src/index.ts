@@ -1,5 +1,6 @@
 export { KernelApp } from './KernelApp'
 export { createNamespacedStorage } from './services/storage'
+export { createProgressLog } from './services/progress'
 export type {
   GameCapability,
   GameModule,
@@ -7,6 +8,8 @@ export type {
   GameServices,
   GameTile,
   NamespacedStorage,
+  ProgressEvent,
+  ProgressLog,
   UpcomingGame,
 } from './types'
 export {

@@ -16,6 +16,8 @@ interface Round {
   wrong: Set<string> | null
   /** Everything checked right. */
   done: boolean
+  /** Checked at least once (only the first check goes in the progress log). */
+  checked?: boolean
 }
 
 interface Drag {
@@ -66,14 +68,16 @@ function App({ services }: GameProps) {
   const check = () => {
     const wrong = new Set<string>()
     r.placed.forEach((p, b) => p.forEach((c) => rightBin(r.deck, c, r.second) !== b && wrong.add(c.emoji)))
+    // A deck sorted all right at the first check is evidence he can classify.
+    if (!r.checked) services.progress.record({ concept: 'K.MD.B.3', item: r.second ? `${r.deck.id}:then` : r.deck.id, ok: wrong.size === 0 })
     if (wrong.size === 0) {
       effect('celebrate', 0.7)
       chorus('yes')
-      setRound({ ...r, wrong: null, done: true })
+      setRound({ ...r, wrong: null, done: true, checked: true })
     } else {
       effect('wrong', 0.7)
       chorus('no')
-      setRound({ ...r, wrong })
+      setRound({ ...r, wrong, checked: true })
     }
   }
 
