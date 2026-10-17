@@ -32,7 +32,7 @@ import {
 import { deleteDrawing, listDrawings, saveDrawing } from './store'
 import { addDab, mixed, remember, type Dabs } from './mix'
 import { COLOURS } from './palette'
-import { Blob, Cup, Doodle, FillChip, ICONS, Knob, ShapeChip, Supply, Width, type Holding } from './supplies'
+import { Blob, Dish, Doodle, FillChip, ICONS, Knob, PaletteKnob, Recipe, ShapeChip, Supply, Width, type Holding, type Landing } from './supplies'
 
 const NAMES: Record<Holding, string> = {
   brush: 'Paintbrush',
@@ -57,14 +57,14 @@ interface Prefs {
   shape: ShapeKind
   fill: Fill
   shapeFill: Fill | 'none'
-  /** What's in the mixing cup. */
+  /** What's in the mixing dish. */
   cup: Dabs
-  /** Holding the cup: a tap on a colour puts a dab in it, and he paints with what's in it. */
-  mixing: boolean
+  /** The mixing shelf is out. */
+  mixer: boolean
   /** Colours he's mixed, newest first. */
   mine: string[]
 }
-const PREFS: Prefs = { tool: 'brush', colour: COLOURS[0], width: 1, shape: 'rect', fill: 'scribble', shapeFill: 'none', cup: [], mixing: false, mine: [] }
+const PREFS: Prefs = { tool: 'brush', colour: COLOURS[0], width: 1, shape: 'rect', fill: 'scribble', shapeFill: 'none', cup: [], mixer: false, mine: [] }
 /** How many of his own colours the palette keeps. */
 const MINE = 6
 
@@ -177,12 +177,13 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
   cfg.current = { prefs, selected }
   const engine = useRef<{ redraw: (full: boolean) => void; visible: () => Box } | null>(null)
   const saveTimer = useRef<number | undefined>(undefined)
-  const cupRef = useRef<HTMLButtonElement>(null)
-  // A blob of paint being dragged towards the cup.
+  const dishRef = useRef<HTMLButtonElement>(null)
+  // A blob of paint being dragged towards the dish.
   const press = useRef<{ colour: string; id: number; x0: number; y0: number; on: boolean } | null>(null)
   const dragged = useRef(false)
-  const [carried, setCarried] = useState<{ colour: string; x: number; y: number } | null>(null)
-  const dabRef = useRef<(c: string) => void>(() => {})
+  const [carried, setCarried] = useState<{ colour: string; x: number; y: number; hot: boolean } | null>(null)
+  const [landing, setLanding] = useState<Landing | null>(null)
+  const dabRef = useRef<(c: string, x: number, y: number) => void>(() => {})
 
   const set = (p: Partial<Prefs>) =>
     setPrefs((old) => {
@@ -609,13 +610,20 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
     }
   }, [])
 
-  // Dragging a blob of paint into the cup. A press that doesn't move is a tap.
+  // Dragging a blob of paint into the dish. A press that doesn't move is a tap.
   useEffect(() => {
+    // Where (x, y) is in the dish, as fractions of it, if it's over it.
+    const over = (x: number, y: number) => {
+      const r = dishRef.current?.getBoundingClientRect()
+      if (!r || x < r.left - 16 || x > r.right + 16 || y < r.top - 24 || y > r.bottom + 16) return null
+      const f = (v: number) => Math.min(1, Math.max(0, v))
+      return { x: f((x - r.left) / r.width), y: f((y - r.top) / r.height) }
+    }
     const move = (e: PointerEvent) => {
       const p = press.current
       if (!p || e.pointerId !== p.id) return
       if (!p.on && Math.hypot(e.clientX - p.x0, e.clientY - p.y0) > 10) p.on = true
-      if (p.on) setCarried({ colour: p.colour, x: e.clientX, y: e.clientY })
+      if (p.on) setCarried({ colour: p.colour, x: e.clientX, y: e.clientY, hot: !!over(e.clientX, e.clientY) })
     }
     const up = (e: PointerEvent) => {
       const p = press.current
@@ -626,8 +634,8 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
       // The click that follows a drag isn't a tap.
       dragged.current = true
       window.setTimeout(() => (dragged.current = false))
-      const r = cupRef.current?.getBoundingClientRect()
-      if (e.type === 'pointerup' && r && e.clientX > r.left - 16 && e.clientX < r.right + 16 && e.clientY > r.top - 24 && e.clientY < r.bottom + 16) dabRef.current(p.colour)
+      const at = e.type === 'pointerup' && over(e.clientX, e.clientY)
+      if (at) dabRef.current(p.colour, at.x, at.y)
     }
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
@@ -653,29 +661,31 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
     if (sel) commit({ ...h.now, things: h.now.things.map((t) => (t === sel ? { ...t, colour: c, ...(t.fill ? { fill: { ...t.fill, colour: c } } : {}) } : t)) })
   }
 
-  // The mixing cup. Holding it, a tap on a colour (or dragging one into it)
-  // puts a dab in, and he paints with whatever's in the cup.
+  // The mixing dish, on a shelf above the colours. He drags colours into it a
+  // dab at a time, and paints with whatever's in it.
   const mix = mixed(prefs.cup)
-  const dab = (c: string) => {
+  const dab = (c: string, x: number, y: number) => {
     const cup = addDab(prefs.cup, c)
-    set({ cup, mixing: true })
+    set({ cup })
+    setLanding((l) => ({ colour: c, x, y, n: (l?.n ?? 0) + 1 }))
     pickColour(mixed(cup)!)
   }
   const tapColour = (c: string) => {
     if (dragged.current) return
-    if (prefs.mixing) dab(c)
-    else pickColour(c)
+    pickColour(c)
   }
-  const tapCup = () => {
-    if (prefs.mixing) {
-      // Putting it down: he keeps painting with the mix, and it joins his colours.
-      set({ mixing: false, ...(mix ? { mine: remember(prefs.mine, mix, MINE) } : {}) })
-    } else {
-      set({ mixing: true })
-      if (mix) pickColour(mix)
-    }
+  // Painting with the mix makes it one of his colours.
+  const keepMix = () => (mix ? { mine: remember(prefs.mine, mix, MINE) } : {})
+  const tapDish = () => {
+    if (!mix) return
+    set(keepMix())
+    pickColour(mix)
   }
-  const rinse = () => set({ cup: [], ...(mix ? { mine: remember(prefs.mine, mix, MINE) } : {}) })
+  const toggleMixer = () => set({ mixer: !prefs.mixer, ...(prefs.mixer && prefs.colour === mix ? keepMix() : {}) })
+  const rinse = () => {
+    set({ cup: [], ...keepMix() })
+    setLanding(null)
+  }
   const keep = () => {
     const page = h.now
     const box = engine.current?.visible() ?? { x: 0, y: 0, w: 800, h: 600 }
@@ -711,7 +721,7 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
         <Knob label="Keep as a picture" parts={ICONS.keep} onPress={keep} />
       </div>
       {carried && (
-        <div className="fixed z-50 w-12 h-12 -ml-6 -mt-6 pointer-events-none drop-shadow-lg" style={{ left: carried.x, top: carried.y }}>
+        <div className="fixed z-50 w-12 h-12 -ml-6 -mt-6 pointer-events-none drop-shadow-lg transition-transform" style={{ left: carried.x, top: carried.y, transform: carried.hot ? 'scale(1.3)' : undefined }}>
           <Blob colour={carried.colour} seed={5} picked={false} onPick={() => {}} />
         </div>
       )}
@@ -731,21 +741,27 @@ function Easel({ drawing, services, onClose }: { drawing: Drawing; services: Gam
             ))}
           </div>
         )}
+        {prefs.mixer && (
+          <div className="pointer-events-auto mb-1 mx-3 max-w-[calc(100%-1.5rem)] rounded-3xl shadow px-3 py-1.5 flex justify-center items-center gap-3" style={{ background: '#E8D2A8' }}>
+            <Dish colour={mix} dabs={prefs.cup} picked={!!mix && prefs.colour === mix} hot={!!carried?.hot} landing={landing} onPick={tapDish} dishRef={dishRef} />
+            {prefs.cup.length > 0 && <Recipe dabs={prefs.cup} />}
+            {prefs.cup.length > 0 && (
+              <button type="button" onClick={rinse} aria-label="Rinse the dish" className="shrink-0 w-10 h-10">
+                <Doodle parts={ICONS.rinse} box="0 0 40 40" seed={21} className="w-full h-full" />
+              </button>
+            )}
+          </div>
+        )}
         <div className="pointer-events-auto mb-1 mx-3 max-w-[calc(100%-1.5rem)] rounded-3xl shadow px-3 py-1 flex flex-wrap justify-center items-center gap-x-1" style={{ background: '#F3E3C3' }}>
           {COLOURS.map((c, i) => (
-            <Blob key={c} colour={c} seed={i * 13 + 1} picked={!prefs.mixing && prefs.colour === c} onPick={() => tapColour(c)} onPress={pressColour(c)} />
+            <Blob key={c} colour={c} seed={i * 13 + 1} picked={prefs.colour === c} onPick={() => tapColour(c)} onPress={pressColour(c)} />
           ))}
           {prefs.mine.length > 0 && <div className="w-px h-8 bg-stone-400/60 mx-1 shrink-0 hidden sm:block" />}
           {prefs.mine.map((c, i) => (
-            <Blob key={c} colour={c} seed={i * 7 + 90} picked={!prefs.mixing && prefs.colour === c} onPick={() => tapColour(c)} onPress={pressColour(c)} />
+            <Blob key={c} colour={c} seed={i * 7 + 90} picked={prefs.colour === c} onPick={() => tapColour(c)} onPress={pressColour(c)} />
           ))}
           <div className="w-px h-8 bg-stone-400/60 mx-1 shrink-0 hidden sm:block" />
-          <Cup colour={mix} dabs={prefs.cup} held={prefs.mixing} onPick={tapCup} cupRef={cupRef} />
-          {prefs.cup.length > 0 && (
-            <button type="button" onClick={rinse} aria-label="Rinse the cup" className="shrink-0 w-8 h-8">
-              <Doodle parts={ICONS.rinse} box="0 0 40 40" seed={21} className="w-full h-full" />
-            </button>
-          )}
+          <PaletteKnob open={prefs.mixer} colour={mix} onPick={toggleMixer} />
           <div className="w-px h-8 bg-stone-400/60 mx-1 shrink-0 hidden sm:block" />
           {[0, 1, 2].map((i) => (
             <Width key={i} i={i} colour={prefs.colour === '#FFFFFF' ? '#DDDDDD' : prefs.colour} picked={prefs.width === i} onPick={() => set({ width: i })} />

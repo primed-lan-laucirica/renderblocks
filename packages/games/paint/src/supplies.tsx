@@ -258,59 +258,164 @@ export const FillChip = memo(function FillChip({ fill, colour, picked, onPick }:
   )
 })
 
-/**
- * The mixing cup: a jar of the paint he's mixed, fuller with every dab, with
- * a dot for each dab on its label so he can see what went in. Held, it lifts
- * like a supply from the tray; a new dab swirls it.
- */
-export function Cup({ colour, dabs, held, onPick, cupRef }: { colour: string | null; dabs: [string, number][]; held: boolean; onPick: () => void; cupRef: React.Ref<HTMLButtonElement> }) {
-  const n = dabs.reduce((s, [, k]) => s + k, 0)
-  // The jar's walls run from (9,10) and (31,10) down to (11,35) and (29,35).
-  const top = 35 - 21 * Math.min(1, 0.3 + 0.09 * n)
-  const wall = (y: number) => (2 * (y - 10)) / 25
+const ellipse = (cx: number, cy: number, rx: number, ry: number) => `M${cx - rx} ${cy} a${rx} ${ry} 0 1 0 ${2 * rx} 0 a${rx} ${ry} 0 1 0 ${-2 * rx} 0`
+
+/** The palette that opens the mixing shelf, with a dab of whatever's in the dish. */
+export function PaletteKnob({ open, colour, onPick }: { open: boolean; colour: string | null; onPick: () => void }) {
   const parts = useMemo<Part[]>(
     () => [
-      ...(held ? [{ d: 'M20 0.5 A19.5 19.5 0 1 0 20.1 0.5', fill: '#FFF3C4' } as Part] : []),
-      ...(colour ? [{ d: `M${9 + wall(top)} ${top} L${31 - wall(top)} ${top} L29 35 Q20 38 11 35 Z`, fill: colour } as Part] : []),
-      { d: 'M9 10 L11 35 Q20 38 29 35 L31 10', fill: 'none' },
-      { d: 'M20 7.5 A11 2.5 0 1 0 20.1 7.5', fill: 'none', opacity: 0.8 },
+      ...(open ? [{ d: 'M20 0.5 A19.5 19.5 0 1 0 20.1 0.5', fill: '#FFF3C4' } as Part] : []),
+      { d: 'M20 6 C31 6 37 13 35 21 C34 26 28 25 27 29 C26 34 29 35 21 35 C11 35 5 28 5 20 C5 12 12 6 20 6 Z', fill: '#E9C99A' },
+      { d: 'M23 28 A2.5 2.5 0 1 0 23.1 28', fill: '#FFFDF7' },
+      { d: 'M12 15 A2.6 2.6 0 1 0 12.1 15', fill: '#E01848' },
+      { d: 'M19 11 A2.6 2.6 0 1 0 19.1 11', fill: '#FDD835' },
+      { d: 'M27 13 A2.6 2.6 0 1 0 27.1 13', fill: '#1976D2' },
+      { d: 'M13 24 A4 4 0 1 0 13.1 24', fill: colour ?? '#FFFDF7' },
     ],
-    [colour, held, top],
+    [open, colour],
   )
-  const dots = dabs.flatMap(([c, k]) => Array<string>(k).fill(c)).slice(0, 10)
-  const swirl = useRef<SVGGElement>(null)
-  const jar = useRef<HTMLDivElement>(null)
-  const seen = useRef(n)
-  useEffect(() => {
-    if (n > seen.current) {
-      swirl.current?.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(540deg)' }], { duration: 700, easing: 'ease-out' })
-      jar.current?.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-8deg)' }, { transform: 'rotate(6deg)' }, { transform: 'rotate(0)' }], { duration: 450 })
-    }
-    seen.current = n
-  }, [n])
   return (
     <button
-      ref={cupRef}
       type="button"
       onClick={onPick}
-      aria-label={colour ? 'Mixing cup' : 'Empty mixing cup'}
-      aria-pressed={held}
+      aria-label={open ? 'Put the mixing dish away' : 'Mix colours'}
+      aria-pressed={open}
       className="shrink-0 w-11 h-11 transition-transform"
-      style={{ transform: held ? 'translateY(-4px) rotate(-6deg) scale(1.1)' : undefined }}
+      style={{ transform: open ? 'translateY(-4px) rotate(-6deg) scale(1.1)' : undefined }}
     >
-      <div ref={jar} className="relative w-full h-full">
-        <Doodle parts={parts} box="0 0 40 40" seed={7} width={held ? 2 : 1.4} className="w-full h-full" />
-        <svg viewBox="0 0 40 40" className="absolute inset-0 w-full h-full" aria-hidden="true">
+      <Doodle parts={parts} box="0 0 40 40" seed={7} width={open ? 2 : 1.4} className="w-full h-full" />
+    </button>
+  )
+}
+
+/** Where a dab landed in the dish, as a fraction of its width and height. */
+export interface Landing {
+  colour: string
+  x: number
+  y: number
+  /** Counts up with every dab, so each one splashes. */
+  n: number
+}
+
+// The dish, in its 160 × 96 box: a rim, and a well the paint sits in.
+const W = { cx: 80, cy: 50, rx: 62, ry: 32 }
+
+/**
+ * The mixing dish: a big shallow dish of the paint he's mixed, big enough to
+ * see the colour change. A dab dropped in splashes where it landed and swirls
+ * into the middle as the paint turns; a finger dragged round it stirs.
+ */
+export function Dish({ colour, dabs, picked, hot, landing, onPick, dishRef }: { colour: string | null; dabs: [string, number][]; picked: boolean; hot: boolean; landing: Landing | null; onPick: () => void; dishRef: React.Ref<HTMLButtonElement> }) {
+  const n = dabs.reduce((s, [, k]) => s + k, 0)
+  const rim = useMemo<Part[]>(() => [...(picked ? [{ d: ellipse(80, 48, 79, 46), fill: '#FFF3C4' } as Part] : []), { d: ellipse(80, 48, 75, 41), fill: '#FFFDF7' }], [picked])
+  const well = useMemo<Part[]>(() => [{ d: ellipse(W.cx, W.cy, W.rx, W.ry), fill: 'none', opacity: 0.7 }], [])
+  // More dabs, more paint: it spreads towards the edge of the well.
+  const fill = Math.min(1, 0.62 + 0.06 * n)
+
+  const swirl = useRef<SVGGElement>(null)
+  // The newest dab: from where it landed, round and into the middle.
+  const spin = useRef<SVGGElement>(null)
+  const drop = useRef<SVGCircleElement>(null)
+  const at = landing && { x: W.cx + (landing.x - 0.5) * 2 * W.rx * 0.7, y: W.cy + (landing.y - 0.5) * 2 * W.ry * 0.7 }
+  useEffect(() => {
+    if (!landing || !at) return
+    const t = { duration: 750, easing: 'ease-in', fill: 'forwards' as const }
+    spin.current?.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(320deg)' }], t)
+    drop.current?.animate(
+      [
+        { transform: 'translate(0px, 0px) scale(1)', opacity: 1 },
+        { transform: `translate(${(W.cx - at.x) * 0.5}px, ${(W.cy - at.y) * 0.5}px) scale(0.8)`, opacity: 1 },
+        { transform: `translate(${W.cx - at.x}px, ${W.cy - at.y}px) scale(0.2)`, opacity: 0 },
+      ],
+      t,
+    )
+    swirl.current?.animate([{ opacity: 0.2 }, { opacity: 0.7 }, { opacity: 0.5 }], { duration: 900 })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [landing?.n])
+
+  // Stirring: the swirl follows his finger round the dish. A stir isn't a tap.
+  const stir = useRef<{ id: number; a: number; turned: number; moved: boolean; x0: number; y0: number } | null>(null)
+  const angle = (e: React.PointerEvent) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    return Math.atan2((e.clientY - r.top) / r.height - 0.5, (e.clientX - r.left) / r.width - 0.5)
+  }
+  const turned = useRef(0)
+  return (
+    <button
+      ref={dishRef}
+      type="button"
+      onClick={() => {
+        if (stir.current?.moved) return
+        onPick()
+      }}
+      onPointerDown={(e) => {
+        if (!colour) return
+        e.currentTarget.setPointerCapture(e.pointerId)
+        stir.current = { id: e.pointerId, a: angle(e), turned: 0, moved: false, x0: e.clientX, y0: e.clientY }
+      }}
+      onPointerMove={(e) => {
+        const s = stir.current
+        if (!s || s.id !== e.pointerId) return
+        if (!s.moved && Math.hypot(e.clientX - s.x0, e.clientY - s.y0) < 10) return
+        s.moved = true
+        const a = angle(e)
+        let d = a - s.a
+        if (d > Math.PI) d -= 2 * Math.PI
+        if (d < -Math.PI) d += 2 * Math.PI
+        s.a = a
+        turned.current += (d * 180) / Math.PI
+        swirl.current?.setAttribute('transform', `rotate(${turned.current.toFixed(1)} ${W.cx} ${W.cy})`)
+      }}
+      onPointerUp={() => window.setTimeout(() => (stir.current = null))}
+      onPointerCancel={() => (stir.current = null)}
+      aria-label={colour ? 'Paint with the mixed colour' : 'Empty mixing dish'}
+      aria-pressed={picked}
+      className="shrink-0 w-44 h-[106px] sm:w-56 sm:h-[134px] touch-none transition-transform duration-150"
+      style={{ transform: hot ? 'scale(1.06)' : undefined }}
+    >
+      <div className="relative w-full h-full">
+        <Doodle parts={rim} box="0 0 160 96" seed={31} width={picked ? 2.2 : 1.4} className="absolute inset-0 w-full h-full drop-shadow" />
+        <svg viewBox="0 0 160 96" className="absolute inset-0 w-full h-full" aria-hidden="true">
+          <ellipse cx={W.cx} cy={W.cy} rx={W.rx} ry={W.ry} fill="#000" fillOpacity={0.04} />
           {colour && (
-            <g ref={swirl} style={{ transformOrigin: `20px ${(top + 35) / 2}px`, transformBox: 'view-box' }}>
-              <path d={`M20 ${(top + 35) / 2} q3 -2 5 0 q1 3 -4 4 q-6 0 -6 -4 q1 -5 8 -4`} fill="none" stroke="#FFFFFF" strokeOpacity="0.55" strokeWidth="1.3" strokeLinecap="round" />
+            <ellipse
+              cx={W.cx}
+              cy={W.cy}
+              rx={W.rx}
+              ry={W.ry}
+              style={{ fill: colour, transform: `scale(${fill})`, transformOrigin: `${W.cx}px ${W.cy}px`, transition: 'fill 650ms ease 250ms, transform 400ms ease-out' }}
+            />
+          )}
+          {colour && (
+            <g ref={swirl} opacity={0.5}>
+              <path d={`M80 50 q8 -6 16 0 q4 9 -12 12 q-20 0 -20 -12 q3 -15 26 -13 q22 3 22 15`} fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
             </g>
           )}
-          {dots.map((c, i) => (
-            <circle key={i} cx={20 + (i - (dots.length - 1) / 2) * 3.4} cy={4} r={1.5} fill={c} stroke={INK} strokeWidth={0.5} />
-          ))}
+          {landing && at && (
+            <g key={landing.n} ref={spin} style={{ transformOrigin: `${W.cx}px ${W.cy}px` }}>
+              <circle ref={drop} cx={at.x} cy={at.y} r={11} fill={landing.colour} stroke={INK} strokeWidth={0.8} style={{ transformOrigin: `${at.x}px ${at.y}px`, opacity: 0 }} />
+            </g>
+          )}
         </svg>
+        <Doodle parts={well} box="0 0 160 96" seed={33} width={1.2} className="absolute inset-0 w-full h-full pointer-events-none" />
       </div>
     </button>
+  )
+}
+
+/** What went into the dish: a row of dots for each colour, one dot a dab. */
+export function Recipe({ dabs }: { dabs: [string, number][] }) {
+  return (
+    <div className="flex flex-col justify-center gap-1 max-w-28 sm:max-w-40" aria-label="What's in the dish">
+      {dabs.map(([c, k]) => (
+        <div key={c} className="flex flex-wrap gap-0.5">
+          {Array.from({ length: k }, (_, i) => (
+            <svg key={i} viewBox="0 0 20 20" className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true">
+              <circle cx={10} cy={10} r={8} fill={c} stroke={INK} strokeWidth={1.2} />
+            </svg>
+          ))}
+        </div>
+      ))}
+    </div>
   )
 }
