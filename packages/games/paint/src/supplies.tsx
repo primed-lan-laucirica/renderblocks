@@ -3,7 +3,7 @@
  * standing in a tray, paint blobs on a palette, and doodled buttons. The
  * supply he's holding lifts out of the tray, its tip in the colour he picked.
  */
-import { memo, useMemo, type ReactNode } from 'react'
+import { memo, useEffect, useMemo, useRef, type ReactNode } from 'react'
 import rough from 'roughjs'
 import { regular, rng, type Fill, type ShapeKind, type Tool } from './model'
 
@@ -162,7 +162,7 @@ function blobPath(seed: number, r = 15, cx = 20, cy = 20) {
   return d + ' Z'
 }
 
-export const Blob = memo(function Blob({ colour, seed, picked, onPick }: { colour: string; seed: number; picked: boolean; onPick: () => void }) {
+export const Blob = memo(function Blob({ colour, seed, picked, onPick, onPress }: { colour: string; seed: number; picked: boolean; onPick: () => void; onPress?: (e: React.PointerEvent) => void }) {
   const parts = useMemo<Part[]>(
     () => [
       ...(picked ? [{ d: 'M20 1 A19 19 0 1 0 20.1 1', fill: 'none' } as Part] : []),
@@ -172,7 +172,15 @@ export const Blob = memo(function Blob({ colour, seed, picked, onPick }: { colou
     [colour, seed, picked],
   )
   return (
-    <button type="button" onClick={onPick} aria-label={`Paint colour ${colour}`} aria-pressed={picked} className="shrink-0 w-10 h-10 transition-transform" style={{ transform: picked ? 'scale(1.15)' : undefined }}>
+    <button
+      type="button"
+      onClick={onPick}
+      onPointerDown={onPress}
+      aria-label={`Paint colour ${colour}`}
+      aria-pressed={picked}
+      className="shrink-0 w-10 h-10 transition-transform touch-none"
+      style={{ transform: picked ? 'scale(1.15)' : undefined }}
+    >
       <Doodle parts={parts} box="0 0 40 40" seed={seed} width={picked ? 2 : 1.2} className="w-full h-full" />
     </button>
   )
@@ -208,6 +216,7 @@ export const ICONS = {
   bin: [{ d: 'M11 13 L29 13 M17 13 L18 9 L22 9 L23 13 M13 13 L15 31 L25 31 L27 13 M18 17 L18 27 M22 17 L22 27' }],
   yes: [{ d: 'M11 21 L17 27 L29 13' }],
   no: [{ d: 'M13 13 L27 27 M27 13 L13 27' }],
+  rinse: [{ d: 'M20 8 Q28 19 28 24 A8 8 0 1 1 12 24 Q12 19 20 8 Z', fill: '#B3E5FC' }, { d: 'M16 24 Q16 28 20 29', opacity: 0.6 }],
 } satisfies Record<string, Part[]>
 
 const polyD = (pts: [number, number][]) => 'M' + pts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L') + ' Z'
@@ -248,3 +257,60 @@ export const FillChip = memo(function FillChip({ fill, colour, picked, onPick }:
     </button>
   )
 })
+
+/**
+ * The mixing cup: a jar of the paint he's mixed, fuller with every dab, with
+ * a dot for each dab on its label so he can see what went in. Held, it lifts
+ * like a supply from the tray; a new dab swirls it.
+ */
+export function Cup({ colour, dabs, held, onPick, cupRef }: { colour: string | null; dabs: [string, number][]; held: boolean; onPick: () => void; cupRef: React.Ref<HTMLButtonElement> }) {
+  const n = dabs.reduce((s, [, k]) => s + k, 0)
+  // The jar's walls run from (9,10) and (31,10) down to (11,35) and (29,35).
+  const top = 35 - 21 * Math.min(1, 0.3 + 0.09 * n)
+  const wall = (y: number) => (2 * (y - 10)) / 25
+  const parts = useMemo<Part[]>(
+    () => [
+      ...(held ? [{ d: 'M20 0.5 A19.5 19.5 0 1 0 20.1 0.5', fill: '#FFF3C4' } as Part] : []),
+      ...(colour ? [{ d: `M${9 + wall(top)} ${top} L${31 - wall(top)} ${top} L29 35 Q20 38 11 35 Z`, fill: colour } as Part] : []),
+      { d: 'M9 10 L11 35 Q20 38 29 35 L31 10', fill: 'none' },
+      { d: 'M20 7.5 A11 2.5 0 1 0 20.1 7.5', fill: 'none', opacity: 0.8 },
+    ],
+    [colour, held, top],
+  )
+  const dots = dabs.flatMap(([c, k]) => Array<string>(k).fill(c)).slice(0, 10)
+  const swirl = useRef<SVGGElement>(null)
+  const jar = useRef<HTMLDivElement>(null)
+  const seen = useRef(n)
+  useEffect(() => {
+    if (n > seen.current) {
+      swirl.current?.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(540deg)' }], { duration: 700, easing: 'ease-out' })
+      jar.current?.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-8deg)' }, { transform: 'rotate(6deg)' }, { transform: 'rotate(0)' }], { duration: 450 })
+    }
+    seen.current = n
+  }, [n])
+  return (
+    <button
+      ref={cupRef}
+      type="button"
+      onClick={onPick}
+      aria-label={colour ? 'Mixing cup' : 'Empty mixing cup'}
+      aria-pressed={held}
+      className="shrink-0 w-11 h-11 transition-transform"
+      style={{ transform: held ? 'translateY(-4px) rotate(-6deg) scale(1.1)' : undefined }}
+    >
+      <div ref={jar} className="relative w-full h-full">
+        <Doodle parts={parts} box="0 0 40 40" seed={7} width={held ? 2 : 1.4} className="w-full h-full" />
+        <svg viewBox="0 0 40 40" className="absolute inset-0 w-full h-full" aria-hidden="true">
+          {colour && (
+            <g ref={swirl} style={{ transformOrigin: `20px ${(top + 35) / 2}px`, transformBox: 'view-box' }}>
+              <path d={`M20 ${(top + 35) / 2} q3 -2 5 0 q1 3 -4 4 q-6 0 -6 -4 q1 -5 8 -4`} fill="none" stroke="#FFFFFF" strokeOpacity="0.55" strokeWidth="1.3" strokeLinecap="round" />
+            </g>
+          )}
+          {dots.map((c, i) => (
+            <circle key={i} cx={20 + (i - (dots.length - 1) / 2) * 3.4} cy={4} r={1.5} fill={c} stroke={INK} strokeWidth={0.5} />
+          ))}
+        </svg>
+      </div>
+    </button>
+  )
+}

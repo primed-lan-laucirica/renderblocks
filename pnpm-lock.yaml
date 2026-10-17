@@ -433,6 +433,9 @@ importers:
       roughjs:
         specifier: 4.6.6
         version: 4.6.6
+      spectral.js:
+        specifier: 3.0.0
+        version: 3.0.0
     devDependencies:
       vitest:
         specifier: ^5.0.1
@@ -3158,6 +3161,9 @@ packages:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
     deprecated: The work that was done in this beta branch won't be included in future versions
+
+  spectral.js@3.0.0:
+    resolution: {integrity: sha512-vIvoUfuB0jrj8bdCXvKks5nmp4Zx1DeKhSojJxN8Pk7jIpH2KMwF8cAhDPto0dEwk0/0qa06eL0owRZ2tAJB5w==}
 
   split2@4.2.0:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
@@ -6251,6 +6257,8 @@ snapshots:
   source-map@0.8.0-beta.0:
     dependencies:
       whatwg-url: 7.1.0
+
+  spectral.js@3.0.0: {}
 
   split2@4.2.0: {}
 
