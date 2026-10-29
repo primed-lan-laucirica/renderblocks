@@ -17,6 +17,7 @@ const FILES = {
   sniff1: '/games/sneeze/sfx/sniff1.mp3',
   sniff2: '/games/sneeze/sfx/sniff2.mp3',
   correct: '/games/shared/sfx/correct.mp3',
+  wrong: '/games/shared/sfx/wrong.mp3',
   squarepower: '/games/sneeze/voice/squarepower.mp3',
 } as const
 type Name = keyof typeof FILES
@@ -117,6 +118,11 @@ export function squarePower() {
 
 export function correct() {
   play('correct', 1, 0.7)
+}
+
+/** A wrong guess: the suite's "not that one". */
+export function wrong() {
+  play('wrong', 1, 0.7)
 }
 
 function noise(a: AudioContext, seconds: number) {

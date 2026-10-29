@@ -5,7 +5,7 @@ import { DEFAULT_LOOK, fromDesign, type Design, type Look } from '@renderblocks/
 import { drawPiece, LIMB, squareShape } from './draw'
 import { choices, fmt, ROUNDS, show, sneeze, sqrt, squaresAround, value, wears, type Rule, type Sneeze } from './rules'
 import { initPhysics, Stage, STEP, type Piece } from './sim'
-import { choo, correct, pop, sniff, squarePower, thud, wake, windup } from './sound'
+import { choo, correct, pop, sniff, squarePower, thud, wake, windup, wrong } from './sound'
 
 /** His Designer looks, by number (from the shared "designs" record): a square or ring wears the look he made for its number. */
 function looksFrom(raw: string | null): Map<string, Look> {
@@ -264,9 +264,11 @@ function Play({
   const stageRef = useRef<Stage | null>(null)
   // What's on screen, mirrored from the animation loop.
   const [phase, setPhase] = useState<Phase>('ready')
-  const [last, setLast] = useState<(Sneeze & { picked?: bigint; back?: boolean }) | null>(null)
+  const [last, setLast] = useState<(Sneeze & { picked?: bigint; missed?: boolean; back?: boolean }) | null>(null)
   const [flip, setFlip] = useState(false)
   const [options, setOptions] = useState<bigint[]>([])
+  // Guesses he's tried that were wrong: greyed out until the sneeze.
+  const [ruledOut, setRuledOut] = useState<bigint[]>([])
   const [seeAll, setSeeAll] = useState(false)
   const [rings, setRings] = useState<{ n: bigint; k: number }[]>([])
   // The square that sneezes next.
@@ -302,6 +304,7 @@ function Play({
     const roll = () => 1 + Math.floor(Math.random() * 10)
     let untilPower = roll()
     let picked: bigint | undefined
+    let missed = false
     // A landing after he dropped it somewhere (not a sneeze): no "Square power!".
     let dropped = false
     // A press on the square: a tap (sneeze) unless it moves, then a drag.
@@ -337,11 +340,12 @@ function Play({
         if (!r) return setP('ready')
         sneezedRing = r.ring
         sneezedAt = performance.now() / 1000
-        setLast({ ...r.s, picked })
+        setLast({ ...r.s, picked, missed })
         setFlip(false)
         setRings((x) => [...x, { n: r.s.ring, k: r.s.k }])
         if (picked !== undefined && picked === r.s.ring) correct()
         setOptions([])
+        setRuledOut([])
         setP('flying')
       })
     }
@@ -364,6 +368,8 @@ function Play({
             return
           }
           picked = undefined
+          missed = false
+          setRuledOut([])
           windup(stage.current.n)
           if (live.current.guess) {
             setOptions(choices(stage.current.side, live.current.rule, stage.sneezes + Number(stage.current.side % 97n), stage.current.k))
@@ -375,7 +381,15 @@ function Play({
         }
       },
       pick: (n) => {
-        if (ph !== 'guessing') return
+        if (ph !== 'guessing' || !stage) return
+        // A wrong guess won't make it sneeze: a buzz, a shake of the head, and he guesses again.
+        if (n !== sneeze(stage.current.side, live.current.rule, stage.current.k)?.ring) {
+          wrong()
+          missed = true
+          wiggleUntil = performance.now() / 1000 + 0.5
+          setRuledOut((x) => [...x, n])
+          return
+        }
         picked = n
         doChoo()
       },
@@ -383,7 +397,10 @@ function Play({
         if (!stage) return
         if (ph === 'done' && canSneeze()) setP('ready')
         else if (ph === 'ready' && !canSneeze() && stage.current.settled) setP('done')
-        else if (ph === 'guessing') setOptions(choices(stage.current.side, live.current.rule, stage.sneezes, stage.current.k))
+        else if (ph === 'guessing') {
+          setOptions(choices(stage.current.side, live.current.rule, stage.sneezes, stage.current.k))
+          setRuledOut([])
+        }
       },
     }
 
@@ -643,7 +660,8 @@ function Play({
   const next = sneeze(sneezer.side, rule, sneezer.k)
   const parts = [...rings, sneezer].map((p) => show(p.n, p.k))
   const sum = parts.length > 7 ? `${parts.slice(0, 4).join(' + ')} + … + ${parts.slice(-2).join(' + ')}` : parts.join(' + ')
-  const right = last && last.picked !== undefined && last.picked === last.ring
+  // Right first time gets the tick.
+  const right = last && last.picked !== undefined && last.picked === last.ring && !last.missed
   // Decimal sums are long (0.0036 − 0.0016 = 0.0020): smaller, so a phone shows it all.
   const long = !!last && (show(last.whole, last.k) + show(last.out, last.k) + show(last.ring, last.k)).length > 15
   // The sum as shown, as number-voice clips (said only when he taps it).
@@ -706,7 +724,7 @@ function Play({
         </button>
       )}
       </div>
-      {/* Guess first: what's left? Any answer plays the sneeze; the right one gets a chime. */}
+      {/* Guess first: what's left? Only the right answer sneezes (with a chime); a wrong one buzzes and greys out. */}
       {phase === 'guessing' && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-max max-w-[calc(100%-1rem)] flex flex-col items-center gap-2" onPointerDown={(e) => e.stopPropagation()}>
           <div className="px-4 py-1 rounded-2xl bg-white/90 shadow font-black tabular-nums text-xl sm:text-2xl text-slate-700 whitespace-nowrap">
@@ -714,7 +732,13 @@ function Play({
           </div>
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             {options.map((o) => (
-              <button key={String(o)} type="button" onClick={() => cmd.current?.pick(o)} className="min-w-24 h-16 sm:h-20 px-3 sm:px-4 rounded-2xl bg-orange-500 text-white shadow-lg font-black tabular-nums text-2xl sm:text-3xl active:scale-95 transition-transform">
+              <button
+                key={String(o)}
+                type="button"
+                disabled={ruledOut.includes(o)}
+                onClick={() => cmd.current?.pick(o)}
+                className="min-w-24 h-16 sm:h-20 px-3 sm:px-4 rounded-2xl bg-orange-500 text-white shadow-lg font-black tabular-nums text-2xl sm:text-3xl active:scale-95 transition-transform disabled:bg-slate-300 disabled:text-slate-400 disabled:shadow-none"
+              >
                 {show(o, next?.k ?? 0)}
               </button>
             ))}
