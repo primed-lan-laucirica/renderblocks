@@ -74,6 +74,8 @@ function App({ services }: GameProps) {
       return []
     }
   })
+  /** Types whose explainer has played (or been skipped) since he opened this puzzle type, or Mixed practice. */
+  const [watched, setWatched] = useState<SubtestId[]>([])
   /** An explainer asked for again (▶), and how many times (each is a fresh play). */
   const [replay, setReplay] = useState<SubtestId | null>(null)
   const [replays, setReplays] = useState(0)
@@ -119,8 +121,9 @@ function App({ services }: GameProps) {
   }, [])
 
 
-  // The explainer on screen: one asked for again, or the first time he meets a type that has one.
-  const explaining = replay ?? (mode !== null && EXPLAINERS[item.sub] && !explained.includes(item.sub) ? item.sub : null)
+  // The explainer on screen: one asked for again, or the one for the type he's just opened.
+  // Every time he opens a type (in Mixed practice, the first time each type comes up); Skip is at the top.
+  const explaining = replay ?? (mode !== null && EXPLAINERS[item.sub] && !watched.includes(item.sub) ? item.sub : null)
 
   // What glows on the islands: the newest type while it's still new, else Mixed practice.
   const next: Target = (() => {
@@ -165,13 +168,15 @@ function App({ services }: GameProps) {
 
   /** The explainer's last frame dissolves into the puzzle it was leading to. */
   const [handing, setHanding] = useState(false)
-  const finishExplainer = () => {
+  const finishExplainer = (skipped = false) => {
     const sub = explaining
-    if (!sub) return
+    if (!sub || handing) return
+    if (skipped) stopVoice()
     setHanding(true)
     window.setTimeout(() => {
-      // It has just said the instruction; the puzzle needn't say it again.
-      lastSaid.current = sub
+      // Watched to the end, it has just said the instruction; the puzzle needn't say it again (skipped, the puzzle says it).
+      if (!skipped) lastSaid.current = sub
+      setWatched((w) => (w.includes(sub) ? w : [...w, sub]))
       if (!explained.includes(sub)) {
         const e = [...explained, sub]
         setExplained(e)
@@ -298,6 +303,7 @@ function App({ services }: GameProps) {
     setRevealed(false)
     setBanner(null)
     setStudied(false)
+    setWatched([])
     setMode(m)
   }
 
@@ -633,19 +639,18 @@ function App({ services }: GameProps) {
           <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wide truncate text-violet-400">
             {SUBTEST_NAME[item.sub]}
             {/* Watch how it works again. */}
-            {EXPLAINERS[item.sub] && (
+            {EXPLAINERS[item.sub] && !explaining && (
               <button
                 type="button"
                 onPointerDown={() => {
                   stopVoice()
-                  if (explaining) return finishExplainer()
                   setReplays((n) => n + 1)
                   setReplay(item.sub)
                 }}
                 className="w-6 h-6 rounded-full bg-violet-500 text-white text-[11px] leading-none flex items-center justify-center"
-                aria-label={explaining ? 'Stop watching' : 'Watch how it works'}
+                aria-label="Watch how it works"
               >
-                {explaining ? '■' : '▶'}
+                ▶
               </button>
             )}
           </div>
@@ -662,6 +667,17 @@ function App({ services }: GameProps) {
           </button>
         </div>
         <div className="flex items-center gap-3 shrink-0">
+          {/* Already seen it? Straight to the puzzle. */}
+          {explaining && (
+            <button
+              type="button"
+              onPointerDown={() => finishExplainer(true)}
+              className="px-4 py-2 rounded-full bg-violet-500 text-white text-base font-extrabold shadow-playful active:scale-95"
+              aria-label="Skip"
+            >
+              Skip ⏭
+            </button>
+          )}
           <div className="flex gap-1" aria-label={`Level ${level}`}>
             {Array.from({ length: MAX_LEVEL }, (_, i) => (
               <div
