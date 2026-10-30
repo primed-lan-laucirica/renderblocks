@@ -30,12 +30,12 @@ const TWO: FrameSpec[] = [
 const ONE: FrameSpec[] = [{ x: 500, y: 260 }]
 /** Where a piece from the box lands: the first free spot on the table. */
 const SPOTS = [
-  { x: 180, y: 680 },
-  { x: 500, y: 680 },
-  { x: 820, y: 680 },
-  { x: 180, y: 860 },
-  { x: 500, y: 860 },
-  { x: 820, y: 860 },
+  { x: 180, y: 660 },
+  { x: 500, y: 660 },
+  { x: 820, y: 660 },
+  { x: 1110, y: 260 },
+  { x: 340, y: 828 },
+  { x: 660, y: 828 },
 ]
 
 function addFromBox(pieces: Piece[], d: number): Piece[] {
