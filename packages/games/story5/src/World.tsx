@@ -268,7 +268,7 @@ export const World = forwardRef<WorldHandle, Props>(function World({ watched, st
                   height: p.h,
                   background: s.kind === 'workshop' ? beadColour(s.part) : PAPER,
                   boxShadow: glow ? undefined : '0 4px 14px rgba(59,47,37,0.25)',
-                  outline: `${s.kind === 'workshop' ? 4 : 2}px solid ${s.kind === 'workshop' ? INK : '#b9a98f'}`,
+                  outline: `${s.kind === 'workshop' ? 4 : 2}px solid ${s.kind === 'workshop' ? beadColour(s.part) : '#b9a98f'}`,
                   animation: glow ? 'story5-glow 1.6s ease-in-out infinite' : undefined,
                 }}
               >
@@ -277,10 +277,13 @@ export const World = forwardRef<WorldHandle, Props>(function World({ watched, st
                     <Still scene={scene} />
                   </div>
                 ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ color: s.part === 4 || s.part === 3 ? INK : '#fff', fontFamily: SERIF }}>
-                    <div style={{ fontSize: p.h * 0.32 }}>🛠</div>
-                    <div style={{ fontWeight: 700, fontSize: p.h * 0.15 }}>{title}</div>
-                  </div>
+                  <>
+                    {/* A picture of the workshop itself, so the zoom opens onto what it shows. */}
+                    <img src={`/games/story5/workshops/ws${s.part}.webp`} alt="" draggable={false} className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+                    <div className="absolute bottom-1.5 left-1.5 w-8 h-8 rounded-full flex items-center justify-center text-base pointer-events-none" style={{ background: beadColour(s.part), boxShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+                      🛠
+                    </div>
+                  </>
                 )}
                 {done && (
                   <div className="absolute top-1.5 right-1.5 w-7 h-7 rounded-full flex items-center justify-center text-sm font-black pointer-events-none" style={{ background: GOLD, color: INK, boxShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>

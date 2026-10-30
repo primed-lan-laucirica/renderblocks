@@ -5,7 +5,9 @@
  *   - drag across ten of a kind to gather them: they fuse into one of the next kind;
  *   - tap a ten, hundred or thousand: it breaks into ten of the kind below;
  *   - drag pieces off the mat (onto the tray) to put them back.
- * Nothing is ever carried or broken for them.
+ * Nothing is ever carried or broken for them. Columns may pile up past
+ * nine; a column holding ten or more shows a carry arrow, and one tap sends
+ * every full ten across (for when he's been adding by the handful).
  */
 import { useEffect, useRef, useState } from 'react'
 import type { Pt } from '../engine/ease'
@@ -75,6 +77,26 @@ export function Mat({ counts, onChange, onExchange, className }: Props) {
     return () => cancelAnimationFrame(raf)
   }, [anims, onChange])
 
+  // Ten of a kind fuse into one of the next. `slot` spaces out several fusing at once.
+  const fuse = (place: number, picked: number[], t0: number, slot = 0) => {
+    const c = [...pending.current] as Counts
+    const from = picked.map((i) => layout(place, i))
+    c[place] -= 10
+    const to = layout(place + 1, c[place + 1] + slot)
+    pending.current = c
+    onChange?.(c)
+    setAnims((old) => [...old, { kind: KIND[place], from, to, start: t0, reverse: false, add: [place + 1, 1] }])
+  }
+  // The carry arrow: every full ten in the column goes across at once.
+  const carry = (e: React.PointerEvent, place: number) => {
+    e.stopPropagation()
+    const n = pending.current[place]
+    const tens = Math.floor(n / 10)
+    if (!tens) return
+    for (let g = 0; g < tens; g++) fuse(place, Array.from({ length: 10 }, (_, k) => n - 10 * (g + 1) + k), e.timeStamp, g)
+    onExchange?.('fuse')
+  }
+
   const toMat = (e: React.PointerEvent): Pt => {
     const m = svg.current?.getScreenCTM()
     if (!m) return { x: 0, y: 0 }
@@ -135,13 +157,8 @@ export function Mat({ counts, onChange, onExchange, className }: Props) {
     }
     // Ten gathered: they fuse into one of the next kind.
     if (picked.length === 10 && place < 3) {
-      const from = picked.map((i) => layout(place, i))
-      c[place] -= 10
-      const to = layout(place + 1, c[place + 1])
-      pending.current = c
-      onChange(c)
+      fuse(place, picked, t0)
       onExchange?.('fuse')
-      setAnims((old) => [...old, { kind: KIND[place], from, to, start: t0, reverse: false, add: [place + 1, 1] }])
     }
   }
 
@@ -172,6 +189,7 @@ export function Mat({ counts, onChange, onExchange, className }: Props) {
           <text x={colX(place) + COL / 2} y={MAT_H - 30} fontFamily={SANS} fontWeight={900} fontSize={64} fill={PLACE_COLOUR[place]} textAnchor="middle">
             {counts[place]}
           </text>
+          {live && place < 3 && counts[place] >= 10 && <CarryArrow place={place} onDown={(e) => carry(e, place)} />}
         </g>
       ))}
       {/* Gathered so far: a count by the finger. */}
@@ -184,5 +202,22 @@ export function Mat({ counts, onChange, onExchange, className }: Props) {
         <g key={k}>{exchange(a.kind, a.from, a.to, Math.min(1, (now - a.start) / ANIM_MS), a.reverse, a.kind === 'hundreds→thousand' ? THOUSAND_S : 1)}</g>
       ))}
     </svg>
+  )
+}
+
+/** A big arrow at the foot of an overfull column, pointing at the next place. */
+function CarryArrow({ place, onDown }: { place: number; onDown: (e: React.PointerEvent) => void }) {
+  const x = colX(place) + 20
+  const y = MAT_H - 200
+  return (
+    <g onPointerDown={onDown} style={{ cursor: 'pointer' }} role="button" aria-label={`Carry the ${PLACE_NAMES[place]}`}>
+      <rect x={x} y={y} width={COL - 40} height={84} rx={42} fill={PLACE_COLOUR[place + 1]} opacity={0.92}>
+        <animate attributeName="opacity" values="0.92;0.6;0.92" dur="1.6s" repeatCount="indefinite" />
+      </rect>
+      <path d={`M ${x + 30} ${y + 42} l 44 -30 v 18 h 60 v 24 h -60 v 18 z`} fill="#fff" />
+      <text x={x + 150} y={y + 58} fontFamily={SANS} fontWeight={900} fontSize={44} fill="#fff">
+        10
+      </text>
+    </g>
   )
 }
