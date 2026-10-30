@@ -10,6 +10,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
+import { ZOOM_MS, zoomIn, zoomOut } from '@renderblocks/scene/zoom'
 import { EPISODES } from './episodes'
 import { record } from './evidence'
 import { PAPER } from './kit/sizes'
@@ -18,9 +19,6 @@ import { load, save, type Progress } from './progress'
 import { WORKSHOPS } from './workshops'
 import { posterT, STOPS, type Stop } from './stops'
 import { World, type WorldHandle } from './World'
-
-const ZOOM_MS = 650
-const EASE = 'cubic-bezier(0.65, 0, 0.35, 1)'
 
 /** What comes after this stop along the chain. */
 const after = (id: string) => STOPS[STOPS.findIndex((s) => s.id === id) + 1]?.id ?? null
@@ -34,9 +32,6 @@ function firstNext(p: Progress) {
   })
   return STOPS[last + 1]?.id ?? STOPS[0]?.id ?? null
 }
-
-/** The transform that puts `to` exactly over `from`. */
-const over = (from: DOMRect, to: DOMRect) => `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})`
 
 function App({ services }: GameProps) {
   const [progress, setProgress] = useState<Progress>(() => load(services.storage))
@@ -63,10 +58,7 @@ function App({ services }: GameProps) {
     const el = zoomed()
     if (!from || !el) return setOpen({ ...open, ready: true })
     closing.current = false
-    const to = el.getBoundingClientRect()
-    el.style.transformOrigin = '0 0'
-    el.animate([{ transform: over(from, to) }, { transform: 'none' }], { duration: ZOOM_MS, easing: EASE })
-    paper.current?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: ZOOM_MS, easing: EASE })
+    zoomIn(el, from, paper.current)
     const id = window.setTimeout(() => setOpen((o) => o && { ...o, ready: true }), ZOOM_MS)
     return () => window.clearTimeout(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,11 +79,7 @@ function App({ services }: GameProps) {
       }
     }
     if (!from || !el) return done()
-    const to = el.getBoundingClientRect()
-    el.style.transformOrigin = '0 0'
-    const a = el.animate([{ transform: 'none' }, { transform: over(from, to) }], { duration: ZOOM_MS, easing: EASE, fill: 'forwards' })
-    paper.current?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: ZOOM_MS, easing: EASE, fill: 'forwards' })
-    a.onfinish = done
+    zoomOut(el, from, paper.current, done)
   }
 
   // Android back: out of an episode or workshop to the chain; from the chain, out of the tile.

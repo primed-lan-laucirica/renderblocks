@@ -16,7 +16,8 @@
   "dependencies": {
     "@renderblocks/kernel": "workspace:*",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "@renderblocks/scene": "workspace:*"
   },
   "devDependencies": {
     "playwright-core": "^1.55.0",

@@ -7,6 +7,7 @@
  * taps a window to go in.
  */
 import { forwardRef, memo, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { usePan } from '@renderblocks/scene/usePan'
 import { PARTS } from './curriculum'
 import type { SceneDef } from './engine/scene'
 import { EPISODES } from './episodes'
@@ -115,36 +116,22 @@ export const World = forwardRef<WorldHandle, Props>(function World({ watched, st
     return () => window.removeEventListener('resize', on)
   }, [])
   const { placed, width, chainY, titleW } = useMemo(() => layout(size.w, size.h), [size])
-  const maxCam = Math.max(0, width - size.w)
 
-  // The camera: how far along the chain. Moved directly (every frame while flung); React hears about it only to choose which windows to draw.
-  const track = useRef<HTMLDivElement>(null)
-  const cam = useRef(0)
-  const [seen, setSeen] = useState({ from: 0, to: size.w })
-  const anim = useRef(0)
-  const place = (x: number) => {
-    cam.current = Math.min(maxCam, Math.max(0, x))
-    if (track.current) track.current.style.transform = `translateX(${-cam.current}px)`
-    const from = Math.floor((cam.current - size.w * 0.5) / 400) * 400
-    setSeen((s) => (s.from === from ? s : { from, to: from + size.w * 2 + 400 }))
-  }
+  // The camera: how far along the chain. A tap on a window opens it.
+  const { track, cam, seen, place, glide, stop, handlers } = usePan({
+    width,
+    viewW: size.w,
+    disabled: covered,
+    onTap: (target) => {
+      const id = target.closest('[data-stop]')?.getAttribute('data-stop')
+      const hit = id && placed.find((q) => q.stop.id === id)
+      if (hit) onOpen(hit.stop)
+    },
+  })
   const centreOf = (id: string) => {
     const p = placed.find((q) => q.stop.id === id)
     return p ? p.ax - size.w / 2 : cam.current
   }
-  const glide = (to: number) => {
-    cancelAnimationFrame(anim.current)
-    const from = cam.current
-    const t0 = performance.now()
-    const dur = Math.min(1400, 400 + Math.abs(to - from) * 0.4)
-    const tick = (now: number) => {
-      const k = Math.min(1, (now - t0) / dur)
-      place(from + (to - from) * (k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2))
-      if (k < 1) anim.current = requestAnimationFrame(tick)
-    }
-    anim.current = requestAnimationFrame(tick)
-  }
-
   // Opening: straight to what's next.
   const placedOnce = useRef(false)
   useEffect(() => {
@@ -156,7 +143,7 @@ export const World = forwardRef<WorldHandle, Props>(function World({ watched, st
 
   useImperativeHandle(ref, () => ({
     rectOf: (id) => {
-      cancelAnimationFrame(anim.current)
+      stop()
       const p = placed.find((q) => q.stop.id === id)
       if (!p) return null
       if (p.x - cam.current < 0 || p.x + p.w - cam.current > size.w) place(centreOf(id))
@@ -165,63 +152,11 @@ export const World = forwardRef<WorldHandle, Props>(function World({ watched, st
     glideTo: (id) => glide(centreOf(id)),
   }))
 
-  // Dragging and flinging. A press that hardly moves is a tap on whatever's under it.
-  const press = useRef<{ id: number; x0: number; c0: number; moved: boolean; v: number; lx: number; lt: number } | null>(null)
-  const down = (e: React.PointerEvent) => {
-    if (covered) return
-    cancelAnimationFrame(anim.current)
-    press.current = { id: e.pointerId, x0: e.clientX, c0: cam.current, moved: false, v: 0, lx: e.clientX, lt: performance.now() }
-  }
-  const move = (e: React.PointerEvent) => {
-    const p = press.current
-    if (!p || p.id !== e.pointerId) return
-    if (!p.moved && Math.abs(e.clientX - p.x0) > 8) {
-      p.moved = true
-      e.currentTarget.setPointerCapture(e.pointerId)
-    }
-    if (!p.moved) return
-    const now = performance.now()
-    p.v = (p.lx - e.clientX) / Math.max(1, now - p.lt)
-    p.lx = e.clientX
-    p.lt = now
-    place(p.c0 - (e.clientX - p.x0))
-  }
-  const up = (e: React.PointerEvent) => {
-    const p = press.current
-    if (!p || p.id !== e.pointerId) return
-    press.current = null
-    if (!p.moved) {
-      const stop = (e.target as Element).closest('[data-stop]')?.getAttribute('data-stop')
-      const hit = stop && placed.find((q) => q.stop.id === stop)
-      if (hit) onOpen(hit.stop)
-      return
-    }
-    // A fling carries on and slows down.
-    let v = p.v * 16
-    let last = performance.now()
-    const tick = (now: number) => {
-      const dt = (now - last) / 16
-      last = now
-      v *= 0.95 ** dt
-      place(cam.current + v * dt)
-      if (Math.abs(v) > 0.3 && cam.current > 0 && cam.current < maxCam) anim.current = requestAnimationFrame(tick)
-    }
-    anim.current = requestAnimationFrame(tick)
-  }
-  const wheel = (e: React.WheelEvent) => {
-    cancelAnimationFrame(anim.current)
-    place(cam.current + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY))
-  }
-
   return (
     <div
       className="h-dvh w-full relative overflow-hidden select-none touch-none"
       style={{ background: `radial-gradient(ellipse at center, ${PAPER} 55%, #e2d5bc)` }}
-      onPointerDown={down}
-      onPointerMove={move}
-      onPointerUp={up}
-      onPointerCancel={() => (press.current = null)}
-      onWheel={wheel}
+      {...handlers}
     >
       <style>{`@keyframes story5-glow { 0%, 100% { box-shadow: 0 0 0 4px ${GOLD}, 0 0 18px 4px ${GOLD}88 } 50% { box-shadow: 0 0 0 4px ${GOLD}, 0 0 34px 12px ${GOLD}aa } }`}</style>
       <div ref={track} className="absolute left-0 top-0 h-full" style={{ width }}>

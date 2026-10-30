@@ -11,7 +11,8 @@
     "@renderblocks/kernel": "workspace:*",
     "framer-motion": "^12.23.26",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "@renderblocks/scene": "workspace:*"
   },
   "devDependencies": {
     "vitest": "^5.0.1"

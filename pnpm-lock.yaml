@@ -325,6 +325,9 @@ importers:
       '@renderblocks/kernel':
         specifier: workspace:*
         version: link:../../kernel
+      '@renderblocks/scene':
+        specifier: workspace:*
+        version: link:../../scene
       framer-motion:
         specifier: ^12.23.26
         version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -534,6 +537,9 @@ importers:
       '@renderblocks/kernel':
         specifier: workspace:*
         version: link:../../kernel
+      '@renderblocks/scene':
+        specifier: workspace:*
+        version: link:../../scene
       react:
         specifier: ^19.2.0
         version: 19.2.7
@@ -670,6 +676,15 @@ importers:
       framer-motion:
         specifier: ^12.23.26
         version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+
+  packages/scene:
+    dependencies:
       react:
         specifier: ^19.2.0
         version: 19.2.7
