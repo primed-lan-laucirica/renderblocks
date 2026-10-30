@@ -116,10 +116,14 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
     <svg viewBox="0 0 1920 1080" className="absolute inset-0 w-full h-full touch-none" onPointerMove={move} onPointerUp={up} onPointerCancel={up}>
       {/* The slots, outlined, until they're filled. */}
       {!tap && kind.slot && beat.slots.map((s, k) => (slot.includes(k) && !kind.stack ? null : kind.slot!(s, k)))}
+      {/* The pieces still to do bob a little, so he can see they're his to move. */}
+      <style>{`@keyframes beat-bob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }`}</style>
       {at.map((p, i) => (
         <g key={i} onPointerDown={(e) => down(e, i)} style={{ cursor: tap ? 'pointer' : 'grab' }}>
-          <circle cx={p.x + kind.centre.x} cy={p.y + kind.centre.y} r={kind.reach} fill="transparent" />
-          {kind.draw(p, i, slot[i] !== null)}
+          <g style={slot[i] === null && drag?.i !== i ? { animation: `beat-bob 1.4s ease-in-out ${(i % 5) * 0.15}s infinite` } : undefined}>
+            <circle cx={p.x + kind.centre.x} cy={p.y + kind.centre.y} r={kind.reach} fill="transparent" />
+            {kind.draw(p, i, slot[i] !== null)}
+          </g>
         </g>
       ))}
     </svg>

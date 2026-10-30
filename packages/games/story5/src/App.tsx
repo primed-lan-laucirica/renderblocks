@@ -3,119 +3,156 @@
  * tour of K–4 arithmetic in six parts, shown entirely through manipulatives.
  * Episodes are the instruction; each part's workshop is where understanding
  * shows. Workshops are always open, never locked behind episodes.
+ *
+ * Home is a place, not a list: the bead chain (World). A tap on a window
+ * zooms into it and the episode plays; at the end it zooms back out to the
+ * chain, which glides on to what's next.
  */
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
-import { PARTS } from './curriculum'
 import { EPISODES } from './episodes'
 import { record } from './evidence'
+import { PAPER } from './kit/sizes'
 import { Player } from './Player'
 import { load, save, type Progress } from './progress'
 import { WORKSHOPS } from './workshops'
+import { posterT, STOPS, type Stop } from './stops'
+import { World, type WorldHandle } from './World'
 
-type View = { kind: 'home' } | { kind: 'episode'; n: number } | { kind: 'workshop'; part: number }
+const ZOOM_MS = 650
+const EASE = 'cubic-bezier(0.65, 0, 0.35, 1)'
+
+/** What comes after this stop along the chain. */
+const after = (id: string) => STOPS[STOPS.findIndex((s) => s.id === id) + 1]?.id ?? null
+
+/** The first episode not yet watched (or the start). */
+function firstNext(p: Progress) {
+  const watched = new Set(p.watched)
+  let last = -1
+  STOPS.forEach((s, i) => {
+    if (s.kind === 'episode' && watched.has(s.id)) last = i
+  })
+  return STOPS[last + 1]?.id ?? STOPS[0]?.id ?? null
+}
+
+/** The transform that puts `to` exactly over `from`. */
+const over = (from: DOMRect, to: DOMRect) => `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})`
 
 function App({ services }: GameProps) {
-  const [view, setView] = useState<View>({ kind: 'home' })
   const [progress, setProgress] = useState<Progress>(() => load(services.storage))
+  const [open, setOpen] = useState<{ stop: Stop; ready: boolean } | null>(null)
+  const [next, setNext] = useState<string | null>(() => firstNext(load(services.storage)))
+  const world = useRef<WorldHandle>(null)
+  const layer = useRef<HTMLDivElement>(null)
+  const paper = useRef<HTMLDivElement>(null)
+  const stage = useRef<HTMLDivElement>(null)
+  const closing = useRef(false)
 
   const update = (p: Progress) => {
     setProgress(p)
     save(services.storage, p)
   }
 
-  // Android back: from an episode or workshop, back to the parts; from the parts, out of the tile.
-  useEffect(() => services.onBack(() => (view.kind === 'home' ? false : (setView({ kind: 'home' }), true))), [services, view.kind])
+  // What zooms: an episode's stage (it lands exactly on the window it came from), or a whole workshop.
+  const zoomed = () => (open?.stop.kind === 'episode' ? stage.current : layer.current)
 
-  if (view.kind === 'episode') {
-    const scene = EPISODES[view.n]
-    const partOf = PARTS.find((p) => p.episodes.some((e) => e.n === view.n))?.n ?? 0
-    return (
-      <Player
-        key={scene.id}
-        scene={scene}
-        done={progress.beats.filter((b) => b.startsWith(`${scene.id}:`)).map((b) => b.split(':')[1])}
-        onBeatDone={(id) => {
-          update({ ...progress, beats: [...new Set([...progress.beats, `${scene.id}:${id}`])] })
-          record(services.shared, { stream: 'watched', part: partOf, item: `${scene.id}:${id}` })
-        }}
-        onFinished={() => {
-          update({ ...load(services.storage), watched: [...new Set([...progress.watched, scene.id])] })
-          record(services.shared, { stream: 'watched', part: partOf, item: scene.id })
-        }}
-        onBack={() => setView({ kind: 'home' })}
-      />
-    )
+  // Going in: from the window to the whole screen, the paper filling in round it.
+  useLayoutEffect(() => {
+    if (!open || open.ready) return
+    const from = world.current?.rectOf(open.stop.id)
+    const el = zoomed()
+    if (!from || !el) return setOpen({ ...open, ready: true })
+    closing.current = false
+    const to = el.getBoundingClientRect()
+    el.style.transformOrigin = '0 0'
+    el.animate([{ transform: over(from, to) }, { transform: 'none' }], { duration: ZOOM_MS, easing: EASE })
+    paper.current?.animate([{ opacity: 0 }, { opacity: 1 }], { duration: ZOOM_MS, easing: EASE })
+    const id = window.setTimeout(() => setOpen((o) => o && { ...o, ready: true }), ZOOM_MS)
+    return () => window.clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open?.stop.id])
+
+  // Coming out: back into its window, then along the chain to what's next.
+  const close = (then: string | null) => {
+    if (!open || closing.current) return
+    closing.current = true
+    const id = open.stop.id
+    const from = world.current?.rectOf(id)
+    const el = zoomed()
+    const done = () => {
+      setOpen(null)
+      if (then) {
+        setNext(then)
+        window.setTimeout(() => world.current?.glideTo(then), 250)
+      }
+    }
+    if (!from || !el) return done()
+    const to = el.getBoundingClientRect()
+    el.style.transformOrigin = '0 0'
+    const a = el.animate([{ transform: 'none' }, { transform: over(from, to) }], { duration: ZOOM_MS, easing: EASE, fill: 'forwards' })
+    paper.current?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: ZOOM_MS, easing: EASE, fill: 'forwards' })
+    a.onfinish = done
   }
 
-  if (view.kind === 'workshop') {
-    const { View } = WORKSHOPS[view.part]
-    return (
-      <View
-        services={services}
-        onBack={() => setView({ kind: 'home' })}
-        onStar={() => update({ ...progress, stars: [...new Set([...progress.stars, view.part])] })}
-      />
-    )
-  }
+  // Android back: out of an episode or workshop to the chain; from the chain, out of the tile.
+  const closeRef = useRef(close)
+  useLayoutEffect(() => {
+    closeRef.current = close
+  })
+  useEffect(() => services.onBack(() => (open ? (closeRef.current(null), true) : false)), [services, open])
 
-  const watched = new Set(progress.watched)
+  const stop = open?.stop
+  const scene = stop?.kind === 'episode' ? EPISODES[stop.n] : null
+  const Workshop = stop?.kind === 'workshop' ? WORKSHOPS[stop.part]?.View : null
+  const partOf = stop?.part ?? 0
+
   return (
-    <div className="h-dvh w-full overflow-y-auto p-3 select-none" style={{ background: '#1d1813', color: '#efe6d4' }}>
-      <div className="flex items-center gap-3 mb-3">
-        <button type="button" onClick={services.exitToHome} className="w-11 h-11 rounded-full bg-white/10 text-2xl font-bold" aria-label="Home">
-          ←
-        </button>
-        <h1 className="text-3xl font-black" style={{ fontFamily: "Georgia, 'DejaVu Serif', serif" }}>
-          The Story of Numbers
-        </h1>
-      </div>
-      <button
-        type="button"
-        onClick={() => setView({ kind: 'episode', n: 0 })}
-        className="w-full rounded-2xl p-4 mb-3 text-left font-black text-2xl"
-        style={{ background: '#c8643b', color: '#fff' }}
-      >
-        0 · The Story of Numbers {watched.has('ep0') ? '✓' : ''}
-      </button>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {PARTS.map((part) => (
-          <div key={part.n} className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: '#2a231c' }}>
-            <div className="flex items-baseline gap-2">
-              <span className="text-xl font-black">
-                Part {part.n}: {part.title}
-              </span>
-              <span className="text-sm font-bold opacity-60">{part.grades}</span>
-              {progress.stars.includes(part.n) && <span className="ml-auto text-2xl">⭐</span>}
-            </div>
-            <div className="flex flex-col gap-1">
-              {part.episodes.map((e) => {
-                const built = !!EPISODES[e.n]
-                return (
-                  <button
-                    key={e.n}
-                    type="button"
-                    disabled={!built}
-                    onClick={() => setView({ kind: 'episode', n: e.n })}
-                    className={`text-left rounded-lg px-3 py-1.5 font-bold ${built ? 'bg-white/10 active:bg-white/20' : 'opacity-35'}`}
-                  >
-                    <span className="tabular-nums opacity-70 mr-2">{e.n}</span>
-                    {e.title} {watched.has(`ep${e.n}`) ? '✓' : ''}
-                  </button>
-                )
-              })}
-            </div>
-            <button
-              type="button"
-              disabled={!WORKSHOPS[part.n]}
-              onClick={() => setView({ kind: 'workshop', part: part.n })}
-              className={`rounded-lg px-3 py-2 font-black text-left ${WORKSHOPS[part.n] ? 'bg-amber-500 text-slate-900' : 'bg-white/5 opacity-40'}`}
-            >
-              🛠 {part.workshop}
-            </button>
-          </div>
-        ))}
-      </div>
+    <div className="h-dvh w-full relative overflow-hidden">
+      <World
+        ref={world}
+        watched={new Set(progress.watched)}
+        stars={progress.stars}
+        next={next}
+        covered={!!open}
+        onOpen={(s) => {
+          setNext(null)
+          setOpen({ stop: s, ready: false })
+        }}
+        onExit={services.exitToHome}
+      />
+      {stop && (
+        <div ref={layer} className="absolute inset-0 z-10">
+          {/* What fills in round it: the episode's paper, or the workshop's own dark table. */}
+          <div ref={paper} className="absolute inset-0" style={{ background: stop.kind === 'episode' ? PAPER : '#1d1813' }} />
+          {scene && (
+            <Player
+              key={scene.id}
+              scene={scene}
+              go={!!open?.ready}
+              still={posterT(scene)}
+              stageRef={stage}
+              onBeatDone={(id) => {
+                update({ ...progress, beats: [...new Set([...progress.beats, `${scene.id}:${id}`])] })
+                record(services.shared, { stream: 'watched', part: partOf, item: `${scene.id}:${id}` })
+              }}
+              onFinished={() => {
+                const p = load(services.storage)
+                update({ ...p, watched: [...new Set([...p.watched, scene.id])] })
+                record(services.shared, { stream: 'watched', part: partOf, item: scene.id })
+                close(after(scene.id))
+              }}
+              onBack={() => close(null)}
+            />
+          )}
+          {Workshop && stop.kind === 'workshop' && (
+            <Workshop
+              services={services}
+              onBack={() => close(null)}
+              onStar={() => update({ ...progress, stars: [...new Set([...progress.stars, stop.part])] })}
+            />
+          )}
+        </div>
+      )}
     </div>
   )
 }
