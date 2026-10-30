@@ -52,6 +52,12 @@ export interface Beat {
   /** Custom pieces: several pieces may share one slot (quarters into one circle). */
   stack?: boolean
   /**
+   * Stacked pieces that build up rather than pile on one spot: where the
+   * n-th piece in the stack sits, from the slot (0 = the first one in, at
+   * the front; later ones go behind it, so the stack grows as they come).
+   */
+  stackAt?: (n: number) => Pt
+  /**
    * More pieces than slots (six pebbles, four sheep): done once every slot
    * is filled, and the spare pieces can be moved anywhere. Stacked slots
    * (one circle) hold one piece per slot listed, and no more.

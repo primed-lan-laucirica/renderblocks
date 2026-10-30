@@ -12,7 +12,7 @@ import type { SceneDef, SceneEvent } from '../engine/scene'
 import { exchange } from '../kit/exchange'
 import { HundredSquare, NumeralCard, TenBar, ThousandCube, UnitBead } from '../kit/kit'
 import { Material } from '../kit/part2'
-import { BAR, BEAD, GAP } from '../kit/sizes'
+import { BAR, BEAD, GAP, GOLD_EDGE } from '../kit/sizes'
 import { Say, Stage, TitleCard } from './common'
 import { sceneAlpha } from './timing'
 
@@ -74,6 +74,22 @@ function CubeOutline({ x, y, s }: { x: number; y: number; s: number }) {
       <rect x={x} y={y} width={b} height={b} />
       <polyline points={`${x},${y} ${x + d},${y - d} ${x + b + d},${y - d} ${x + b + d},${y + b - d} ${x + b},${y + b}`} />
       <line x1={x + b} y1={y} x2={x + b + d} y2={y - d} />
+    </g>
+  )
+}
+
+/** How deep one hundred is in the cube (at half size): a tenth of its depth. */
+const PLATE = (BAR * 0.5 * K) / 10
+
+/** A hundred in the stack: its face, with a tenth-deep top and side behind it. */
+function Plate({ x, y }: { x: number; y: number }) {
+  const b = BAR * K
+  const d = PLATE
+  return (
+    <g>
+      <polygon points={`${x},${y} ${x + d},${y - d} ${x + b + d},${y - d} ${x + b},${y}`} fill="#efc35a" stroke={GOLD_EDGE} strokeWidth={1} />
+      <polygon points={`${x + b},${y} ${x + b + d},${y - d} ${x + b + d},${y + b - d} ${x + b},${y + b}`} fill="#c38d1f" stroke={GOLD_EDGE} strokeWidth={1} />
+      <HundredSquare x={x} y={y} s={K} />
     </g>
   )
 }
@@ -184,8 +200,10 @@ export const ep6: SceneDef = {
       // One spot, shared: each square stacks onto the cube (one slot per piece, all the same).
       slots: GRID.map(() => stackSlot),
       piece: 'custom',
-      draw: (at) => <HundredSquare x={at.x} y={at.y} s={K} />,
+      // In the stack, each hundred is a plate a tenth of the cube deep, so the cube grows with every one.
+      draw: (at, _i, done) => (done ? <Plate x={at.x} y={at.y} /> : <HundredSquare x={at.x} y={at.y} s={K} />),
       drawSlot: (at, k) => <CubeOutline key={k} x={at.x} y={at.y} s={K} />,
+      stackAt: (n) => ({ x: n * PLATE, y: -n * PLATE }),
       centre: { x: (BAR * K) / 2, y: (BAR * K) / 2 },
       reach: 70,
       snap: 140,

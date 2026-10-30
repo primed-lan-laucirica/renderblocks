@@ -60,6 +60,16 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
   const [slot, setSlot] = useState<(number | null)[]>(() => beat.pieces.map(() => null))
   const [drag, setDrag] = useState<{ i: number; dx: number; dy: number } | null>(null)
   const [finished, setFinished] = useState(false)
+  // A stack that builds up: the pieces in it, in the order they went in.
+  const [order, setOrder] = useState<number[]>([])
+  const built = !!(kind.stack && beat.stackAt)
+  /** Where piece i is drawn: in a building stack, its place in it. */
+  const pos = (i: number): Pt => {
+    const k = slot[i]
+    if (!built || k === null || k === undefined || k < 0 || drag?.i === i) return at[i]
+    const off = beat.stackAt!(order.indexOf(i))
+    return { x: beat.slots[k].x + off.x, y: beat.slots[k].y + off.y }
+  }
   // Pieces he's moved stop bobbing (a spare one put down anywhere too).
   const [touched, setTouched] = useState<Set<number>>(() => new Set())
 
@@ -90,7 +100,9 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
     ;(e.currentTarget as Element).setPointerCapture?.(e.pointerId)
     setTouched((s) => new Set(s).add(i))
     const q = toScene(e)
-    setDrag({ i, dx: at[i].x - q.x, dy: at[i].y - q.y })
+    const from = pos(i)
+    setAt((old) => old.map((p, j) => (j === i ? from : p)))
+    setDrag({ i, dx: from.x - q.x, dy: from.y - q.y })
   }
   const move = (e: React.PointerEvent) => {
     if (!drag) return
@@ -116,17 +128,21 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
       }
     })
     setAt(at.map((p, j) => (j === i && best >= 0 ? { ...beat.slots[best] } : p)))
+    // Into the stack at the back (it grows); out of it, the rest close up.
+    if (built) setOrder((o) => [...o.filter((j) => j !== i), ...(best >= 0 ? [i] : [])])
     settle(slot.map((v, j) => (j === i ? (best >= 0 ? best : null) : v)))
   }
 
   return (
-    <svg viewBox="0 0 1920 1080" className="absolute inset-0 w-full h-full touch-none" onPointerMove={move} onPointerUp={up} onPointerCancel={up}>
+    // Only the pieces catch a touch: the rest of the layer lets taps through (to the prompt under it).
+    <svg viewBox="0 0 1920 1080" className="absolute inset-0 w-full h-full touch-none" style={{ pointerEvents: 'none' }} onPointerMove={move} onPointerUp={up} onPointerCancel={up}>
       {/* The slots, outlined, until they're filled. */}
       {!tap && kind.slot && beat.slots.map((s, k) => (slot.includes(k) && !kind.stack ? null : kind.slot!(s, k)))}
       {/* The pieces still to do bob a little, so he can see they're his to move. */}
       <style>{`@keyframes beat-bob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }`}</style>
-      {at.map((p, i) => (
-        <g key={i} onPointerDown={(e) => down(e, i)} style={{ cursor: tap ? 'pointer' : 'grab' }}>
+      {/* Drawn back to front: the stack's last-in first (it's furthest back), then the loose pieces, the one in his hand on top. */}
+      {[...[...order].reverse().filter((i) => i !== drag?.i), ...at.map((_, i) => i).filter((i) => !order.includes(i) && i !== drag?.i), ...(drag ? [drag.i] : [])].map((i) => [pos(i), i] as const).map(([p, i]) => (
+        <g key={i} onPointerDown={(e) => down(e, i)} style={{ cursor: tap ? 'pointer' : 'grab', pointerEvents: 'all' }}>
           <g style={slot[i] === null && !touched.has(i) ? { animation: `beat-bob 1.4s ease-in-out ${(i % 5) * 0.15}s infinite` } : undefined}>
             <circle cx={p.x + kind.centre.x} cy={p.y + kind.centre.y} r={kind.reach} fill="transparent" />
             {kind.draw(p, i, slot[i] !== null)}

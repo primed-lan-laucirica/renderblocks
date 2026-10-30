@@ -144,12 +144,15 @@ function App({ services }: GameProps) {
               onBack={() => close(null)}
             />
           )}
+          {/* Positioned, so it sits above the fill (a workshop's own screen may not be). */}
           {Workshop && stop.kind === 'workshop' && (
+            <div className="relative h-full w-full">
             <Workshop
               services={services}
               onBack={() => close(null)}
               onStar={() => update({ ...progress, stars: [...new Set([...progress.stars, stop.part])] })}
             />
+            </div>
           )}
         </div>
       )}

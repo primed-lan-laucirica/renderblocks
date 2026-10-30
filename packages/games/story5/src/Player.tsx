@@ -207,26 +207,26 @@ export function Player({ scene, go, still = 0, onBeatDone, onFinished, onBack, s
     <div className="h-dvh w-full relative overflow-hidden select-none">
       {/* The stage: 16:9, as large as the screen allows, on paper to the edges. */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div ref={stageRef} className="relative" style={{ aspectRatio: '16 / 9', width: 'min(100vw, calc(100dvh * 16 / 9))' }}>
+        <div ref={stageRef} className="relative" style={{ aspectRatio: '16 / 9', width: 'min(100vw, calc(100dvh * 16 / 9))', containerType: 'inline-size' }}>
           <div ref={sceneEl} className="absolute inset-0">
             <Scene t={t} beat={beat?.id} />
           </div>
-          {beat && <BeatOverlay beat={beat} onDone={finishBeat} />}
-          {/* His turn: the prompt as the scene's own words; a tap says it again. */}
+          {/* His turn: the prompt as the scene's own words, on one line; a tap says it again. It sits under his pieces, so it never covers one. */}
           {beat && (
             <button
               type="button"
               onClick={() => sayPrompt(beat)}
-              className="absolute left-1/2 -translate-x-1/2 top-[3%] max-w-[90%] text-center"
-              style={{ fontFamily: SANS, fontWeight: 700, color: INK, fontSize: 'min(3.4vw, 6dvh)', animation: 'story5-rise 600ms ease-out' }}
+              className="absolute left-1/2 -translate-x-1/2 top-[2.5%] whitespace-nowrap text-center"
+              style={{ fontFamily: SANS, fontWeight: 700, color: INK, fontSize: '2.6cqw', lineHeight: 1.1, animation: 'story5-rise 600ms ease-out' }}
               aria-label={`Say it again: ${beat.prompt}`}
             >
               {beat.prompt}
             </button>
           )}
+          {beat && <BeatOverlay beat={beat} onDone={finishBeat} />}
         </div>
       </div>
-      <style>{`@keyframes story5-rise { from { opacity: 0; transform: translate(-50%, 12px) } to { opacity: 1; transform: translate(-50%, 0) } }`}</style>
+      <style>{`@keyframes story5-rise { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }`}</style>
       {/* The only way out, faint in the corner (and Android back). */}
       <button type="button" onClick={onBack} className="absolute top-3 left-3 w-11 h-11 rounded-full text-2xl font-bold opacity-30 active:opacity-70" style={{ color: INK }} aria-label="Back">
         ←
