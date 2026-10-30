@@ -48,7 +48,6 @@ function MemoryStudy({ cells, ms, dark, onDone }: { cells: Item['stimulus']; ms:
 }
 
 const STORAGE_KEY = 'progress'
-const HEARD_KEY = 'heardInstructions'
 /** Long enough to see the answer land and hear the "yes", short enough not to drag. */
 const ADVANCE_MS = 1700
 
@@ -78,15 +77,6 @@ function App({ services }: GameProps) {
   const [banner, setBanner] = useState<string | null>(null)
   /** Picture Memory: has the study phase finished for this item? */
   const [studied, setStudied] = useState(false)
-  /** Subtests whose spoken instruction he has already heard. */
-  const [heard, setHeard] = useState<SubtestId[]>(() => {
-    try {
-      const raw = services.storage.get(HEARD_KEY)
-      return raw ? (JSON.parse(raw) as SubtestId[]) : []
-    } catch {
-      return []
-    }
-  })
   const slotRef = useRef<HTMLDivElement>(null)
   /** Cells are sized to fit the screen — a fixed size overflows in portrait. */
   const [vw, setVw] = useState(() => (typeof window === 'undefined' ? 390 : window.innerWidth))
@@ -100,9 +90,6 @@ function App({ services }: GameProps) {
     }
   }, [])
 
-  useEffect(() => {
-    services.storage.set(HEARD_KEY, JSON.stringify(heard))
-  }, [services, heard])
 
   useEffect(() => {
     return services.onBack(() => {
@@ -119,14 +106,18 @@ function App({ services }: GameProps) {
     services.storage.set(STORAGE_KEY, JSON.stringify(progress))
   }, [services, progress])
 
-  // Minimal voicing: a real battery gives an instruction once at the start of
-  // a section, then the child works in silence. So speak a subtest's
-  // instruction only the FIRST time it is ever seen; after that the format is
-  // self-evident and the 🔊 button is there if he wants it again.
+  // The instruction printed at the top is spoken whenever it changes, and at
+  // least once each time Gifted is opened (Lan, Oct 2026: it used to speak
+  // only the first time a puzzle type was ever seen). The same instruction
+  // screen after screen isn't repeated; 🔊 says it again.
+  const lastSaid = useRef<SubtestId | null>(null)
+  const sayInstruction = () =>
+    item.speak ? playAural(item.speak.clip) : item.touch?.clip ? playDirection(item.touch.clip) : playVoice(item.sub)
   useEffect(() => {
-    // Following Directions: the spoken sentence IS the item, so it plays for
-    // every puzzle. Everything else follows the minimal-voicing rule below.
-    // Aural Reasoning: likewise, the spoken question is the item.
+    // Following Directions and Aural Reasoning: the spoken sentence IS the item.
+    // Only once a puzzle is on screen (the menu has one ready behind it).
+    if (!mode) return
+    if (item.speak || item.touch?.clip) lastSaid.current = item.sub
     if (item.speak) {
       const t = window.setTimeout(() => playAural(item.speak!.clip), 250)
       return () => {
@@ -141,14 +132,16 @@ function App({ services }: GameProps) {
         stopVoice()
       }
     }
-    if (heard.includes(item.sub)) return
-    const t = window.setTimeout(() => playVoice(item.sub), 250)
-    setHeard((h) => (h.includes(item.sub) ? h : [...h, item.sub]))
+    if (lastSaid.current === item.sub) return
+    const t = window.setTimeout(() => {
+      lastSaid.current = item.sub
+      playVoice(item.sub)
+    }, 250)
     return () => {
       window.clearTimeout(t)
       stopVoice()
     }
-  }, [item, heard])
+  }, [item, mode])
 
   const nextItem = (p: Progress) => {
     const sub = mode && mode !== 'mixed' ? mode : chooseGen(p, recent.current)
@@ -664,13 +657,17 @@ function App({ services }: GameProps) {
           <div className="text-[10px] font-extrabold uppercase tracking-wide truncate text-violet-400">
             {SUBTEST_NAME[item.sub]}
           </div>
-          <div
-            className={`text-base sm:text-xl font-extrabold leading-tight ${
+          {/* A tap on the instruction says it (the same as 🔊). */}
+          <button
+            type="button"
+            onPointerDown={sayInstruction}
+            className={`block text-left text-base sm:text-xl font-extrabold leading-tight ${
               isDark ? 'text-slate-200' : 'text-slate-700'
             }`}
+            aria-label={`Say it: ${SUBTEST_HINT[item.sub]}`}
           >
             {SUBTEST_HINT[item.sub]}
-          </div>
+          </button>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <div className="flex gap-1" aria-label={`Level ${level}`}>
@@ -693,13 +690,7 @@ function App({ services }: GameProps) {
           </span>
           <button
             type="button"
-            onPointerDown={() =>
-              item.speak
-                ? playAural(item.speak.clip)
-                : item.touch?.clip
-                  ? playDirection(item.touch.clip)
-                  : playVoice(item.sub)
-            }
+            onPointerDown={sayInstruction}
             className={`p-2 rounded-full ${isDark ? 'bg-gray-700 text-violet-300' : 'bg-gray-200 text-violet-600'}`}
             aria-label="Say the instruction again"
           >
