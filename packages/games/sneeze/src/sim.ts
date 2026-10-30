@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier2d-compat'
-import { norm, sneeze, type Rule, type Sneeze } from './rules'
+import { norm, sneeze, type Choice, type Sneeze } from './rules'
 
 let ready: Promise<void> | null = null
 /** Load the physics engine (once). */
@@ -246,12 +246,12 @@ export class Stage {
   }
 
   /** What the current square would sneeze, under a rule (null: it can't). */
-  peek(rule: Rule): Sneeze | null {
+  peek(rule: Choice): Sneeze | null {
     return this.current.hole === 0n ? sneeze(this.current.side, rule, this.current.k) : null
   }
 
   /** AH-CHOO: the current square becomes a ring, and the square from its middle flies out. */
-  sneeze(rule: Rule): { s: Sneeze; ring: Piece; out: Piece } | null {
+  sneeze(rule: Choice): { s: Sneeze; ring: Piece; out: Piece } | null {
     const p = this.current
     const s = this.peek(rule)
     if (!s) return null

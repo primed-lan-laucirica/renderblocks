@@ -3,7 +3,7 @@ import { numberToClips, playClips, type GameProps } from '@renderblocks/kernel'
 import { bounds } from '@renderblocks/designer/draw'
 import { DEFAULT_LOOK, fromDesign, type Design, type Look } from '@renderblocks/designer/look'
 import { drawPiece, LIMB, squareShape } from './draw'
-import { choices, fmt, ROUNDS, show, sneeze, sqrt, squaresAround, value, wears, type Rule, type Sneeze } from './rules'
+import { choices, fmt, ROUNDS, show, sizesOf, sneeze, sqrt, squaresAround, stopsOf, value, wears, type Choice, type Rule, type Sneeze } from './rules'
 import { initPhysics, Stage, STEP, type Piece } from './sim'
 import { choo, correct, pop, sniff, squarePower, thud, wake, windup, wrong } from './sound'
 
@@ -170,6 +170,108 @@ function RulePicker({ rule, onRule, small }: { rule: Rule; onRule: (r: Rule) => 
   )
 }
 
+/**
+ * The slider: every square the waiting one can sneeze out, smallest to the
+ * left, the ring sneeze at the right end. The thumb snaps to round sides (the
+ * outs he knows: 100, 400, 2,500 …), with Ring and Big marked on the track;
+ * − and + step one size at a time, to every one. Sliding previews the hole on
+ * the square; a tap on the square sneezes it. Numbers hide while he's guessing.
+ */
+function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: bigint; k: number; choice: Choice; guess: boolean; onChoice: (c: Choice) => void; onSliding: (on: boolean) => void }) {
+  const track = useRef<HTMLDivElement>(null)
+  const [w, setW] = useState(600)
+  useEffect(() => {
+    const el = track.current
+    if (!el) return
+    const ro = new ResizeObserver(() => setW(el.clientWidth))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+  const z = useMemo(() => sizesOf(side, k), [side, k])
+  const stops = useMemo(() => (z ? stopsOf(z, Math.max(5, Math.min(40, Math.floor(w / 34)))) : []), [z, w])
+  if (!z || z.count < 2n) return null
+  // The side the thumb is on: the one picked, or the rule's.
+  const s = sneeze(side, choice, k)
+  const b = s && s.k === z.K ? s.outSide : (z.big ?? z.max)
+  const span = Number(z.max - z.min)
+  const xOf = (v: bigint) => (span ? Number(v - z.min) / span : 0.5) * w
+  const as = (v: bigint): Choice => (v === z.ring && (choice === 'ring' || v !== z.big) ? 'ring' : v === z.big ? 'big' : { b: v, k: z.K })
+  const nearest = (x: number) => stops.reduce((m, v) => (Math.abs(xOf(v) - x) < Math.abs(xOf(m) - x) ? v : m), stops[0])
+  const at = (e: React.PointerEvent) => e.clientX - track.current!.getBoundingClientRect().left
+  // Labels: the roundest first, where they don't crowd one another.
+  const round = (v: bigint) => {
+    let t = 0
+    for (let x = v; x > 0n && x % 10n === 0n; x /= 10n) t++
+    return t
+  }
+  const labels: bigint[] = []
+  // The one he's on first, always shown.
+  for (const v of [b, ...[...stops].sort((p, q) => round(q) - round(p) || Number(q - p)).filter((v) => v !== b)]) {
+    const text = show(v * v, z.K)
+    const half = text.length * 4.5 + 6
+    if (labels.every((u) => Math.abs(xOf(u) - xOf(v)) > half + show(u * u, z.K).length * 4.5 + 6)) labels.push(v)
+  }
+  const nudge = (d: bigint) => {
+    const v = b + d * z.step
+    if (v >= z.min && v <= z.max) onChoice(as(v))
+  }
+  const mark = (v: bigint | null, label: string, r: Rule) =>
+    v !== null && (
+      <button
+        type="button"
+        onClick={() => onChoice(r)}
+        className={`absolute -top-9 -translate-x-1/2 h-7 px-2 rounded-full text-xs font-black whitespace-nowrap shadow ${choice === r ? 'bg-orange-500 text-white' : 'bg-white text-slate-600'}`}
+        style={{ left: xOf(v) }}
+      >
+        {label}
+      </button>
+    )
+  return (
+    <div className="absolute inset-x-3 bottom-3 flex items-center gap-3" onPointerDown={(e) => e.stopPropagation()}>
+      <button type="button" onClick={() => nudge(-1n)} disabled={b <= z.min} className="shrink-0 w-12 h-12 rounded-full bg-white/90 shadow text-2xl font-black text-slate-600 disabled:opacity-30" aria-label="A smaller one">
+        −
+      </button>
+      <div className="relative flex-1 h-20 mt-8 mx-4">
+        {mark(z.big, '🔲 Big', 'big')}
+        {mark(z.ring, '⬜ Ring', 'ring')}
+        <div
+          ref={track}
+          className="absolute inset-x-0 top-0 h-12 touch-none"
+          onPointerDown={(e) => {
+            e.currentTarget.setPointerCapture(e.pointerId)
+            onSliding(true)
+            onChoice(as(nearest(at(e))))
+          }}
+          onPointerMove={(e) => {
+            if (!e.currentTarget.hasPointerCapture(e.pointerId)) return
+            const v = nearest(at(e))
+            if (v !== b) onChoice(as(v))
+          }}
+          onPointerUp={() => onSliding(false)}
+          onPointerCancel={() => onSliding(false)}
+        >
+          <div className="absolute inset-x-0 top-5 h-2 rounded-full bg-orange-200" />
+          {stops.map((v) => (
+            <div key={String(v)} className="absolute top-4 w-1 h-4 -ml-0.5 rounded bg-orange-300" style={{ left: xOf(v) }} />
+          ))}
+          <div className="absolute top-0 w-12 h-12 -ml-6 rounded-xl bg-orange-500 shadow-lg border-4 border-white flex items-center justify-center" style={{ left: xOf(b) }}>
+            <div className="border-2 border-dashed border-white" style={{ width: `${8 + (24 * Number(b)) / Number(z.max + z.step)}px`, height: `${8 + (24 * Number(b)) / Number(z.max + z.step)}px` }} />
+          </div>
+        </div>
+        {!guess &&
+          labels.map((v) => (
+            <span key={String(v)} className={`absolute top-12 -translate-x-1/2 text-xs sm:text-sm font-black tabular-nums whitespace-nowrap ${v === b ? 'text-orange-600' : 'text-slate-500'}`} style={{ left: xOf(v) }}>
+              {show(v * v, z.K)}
+            </span>
+          ))}
+      </div>
+      <button type="button" onClick={() => nudge(1n)} disabled={b >= z.max} className="shrink-0 w-12 h-12 rounded-full bg-white/90 shadow text-2xl font-black text-slate-600 disabled:opacity-30" aria-label="A bigger one">
+        +
+      </button>
+    </div>
+  )
+}
+
 /** Type any square (any size): the two squares either side are offered if it isn't one. */
 function Keypad({ onDone }: { onDone: (side: bigint | null) => void }) {
   const [typed, setTyped] = useState('')
@@ -273,17 +375,21 @@ function Play({
   const [rings, setRings] = useState<{ n: bigint; k: number }[]>([])
   // The square that sneezes next.
   const [sneezer, setSneezer] = useState({ n: side * side, side, k: 0 })
+  // What sneezes next: the rule, or one square picked on the slider (for one sneeze; then the rule again).
+  const [choice, setChoice] = useState<Choice>(rule)
+  // The slider's thumb is held: the hole and the sum are previewed.
+  const [sliding, setSliding] = useState(false)
   // The loop reads these through a ref (they change without restarting it).
-  const live = useRef({ rule, guess, seeAll, lookFor })
+  const live = useRef({ rule, choice, guess, seeAll, lookFor, sliding })
   useEffect(() => {
-    live.current = { rule, guess, seeAll, lookFor }
-  }, [rule, guess, seeAll, lookFor])
+    live.current = { rule, choice, guess, seeAll, lookFor, sliding }
+  }, [rule, choice, guess, seeAll, lookFor, sliding])
   // Commands from the buttons to the loop.
   const cmd = useRef<{ tickle: (soon?: boolean) => void; pick: (n: bigint) => void; ruleChanged: () => void } | null>(null)
 
   useEffect(() => {
     cmd.current?.ruleChanged()
-  }, [rule])
+  }, [choice])
 
   useEffect(() => {
     const el = canvas.current
@@ -326,7 +432,7 @@ function Play({
       setPhase(p)
       if (stage) setSneezer({ n: stage.current.n, side: stage.current.side, k: stage.current.k })
     }
-    const canSneeze = () => !!stage?.peek(live.current.rule)
+    const canSneeze = () => !!stage?.peek(live.current.choice)
 
     const doChoo = () => {
       if (!stage) return
@@ -336,8 +442,13 @@ function Play({
       punch = 1
       later(d, () => {
         if (!stage) return
-        const r = stage.sneeze(live.current.rule)
+        const r = stage.sneeze(live.current.choice)
         if (!r) return setP('ready')
+        // One picked on the slider is for this sneeze; the next goes by the rule again.
+        if (typeof live.current.choice === 'object') {
+          live.current = { ...live.current, choice: live.current.rule }
+          setChoice(live.current.rule)
+        }
         sneezedRing = r.ring
         sneezedAt = performance.now() / 1000
         setLast({ ...r.s, picked, missed })
@@ -372,7 +483,7 @@ function Play({
           setRuledOut([])
           windup(stage.current.n)
           if (live.current.guess) {
-            setOptions(choices(stage.current.side, live.current.rule, stage.sneezes + Number(stage.current.side % 97n), stage.current.k))
+            setOptions(choices(stage.current.side, live.current.choice, stage.sneezes + Number(stage.current.side % 97n), stage.current.k))
             setP('guessing')
           } else {
             setP('windup')
@@ -383,7 +494,7 @@ function Play({
       pick: (n) => {
         if (ph !== 'guessing' || !stage) return
         // A wrong guess won't make it sneeze: a buzz, a shake of the head, and he guesses again.
-        if (n !== sneeze(stage.current.side, live.current.rule, stage.current.k)?.out) {
+        if (n !== sneeze(stage.current.side, live.current.choice, stage.current.k)?.out) {
           wrong()
           missed = true
           wiggleUntil = performance.now() / 1000 + 0.5
@@ -398,7 +509,7 @@ function Play({
         if (ph === 'done' && canSneeze()) setP('ready')
         else if (ph === 'ready' && !canSneeze() && stage.current.settled) setP('done')
         else if (ph === 'guessing') {
-          setOptions(choices(stage.current.side, live.current.rule, stage.sneezes, stage.current.k))
+          setOptions(choices(stage.current.side, live.current.choice, stage.sneezes, stage.current.k))
           setRuledOut([])
         }
       },
@@ -547,7 +658,7 @@ function Play({
       const needW = (x1 - x0) * 1.25
       const needH = top * 1.5
       // Room at the top for the buttons and the sum, at the bottom for the floor.
-      const low = ph === 'guessing' ? Math.min(0.42, 190 / h) : 0.12
+      const low = ph === 'guessing' ? Math.min(0.42, 190 / h) : Math.max(0.12, Math.min(0.3, 150 / h))
       const want: Camera = { x: (x0 + x1) / 2, low, logScale: Math.log(Math.min(w / needW, (h * (0.92 - low)) / needH)) }
       if (!cam) cam = want
       else if (ph === 'held' || ph === 'snapping') {
@@ -577,6 +688,7 @@ function Play({
       g.fillRect(0, floorY, w, 3)
 
       const labels: { x: number; y: number; size: number; text: string; n: bigint; k: number }[] = []
+      let preview: { x: number; y: number; size: number; text: string } | null = null
       for (const p of stage.pieces) {
         const px = p.size * scale
         const cx = sx(p.cur.x)
@@ -612,10 +724,39 @@ function Play({
         g.scale(perBlock, -perBlock)
         g.translate(-side / 2, -side / 2)
         drawPiece(g, p.n, p.side, p.hole, look, perBlock, 0, p.k, like)
+        // The square picked on the slider (or while he slides): a dashed hole where it would come out, and what it is.
+        const c = live.current.choice
+        if (isCur && (typeof c === 'object' || live.current.sliding) && (ph === 'ready' || ph === 'done')) {
+          const s = stage.peek(c)
+          if (s) {
+            const hs = Number(s.outSide) / 10 ** (s.k - p.k)
+            const o = (side - hs) / 2
+            g.save()
+            g.lineWidth = 4 / perBlock
+            g.setLineDash([10 / perBlock, 7 / perBlock])
+            g.fillStyle = 'rgba(249,115,22,0.18)'
+            g.fillRect(o, o, hs, hs)
+            g.strokeStyle = '#ea580c'
+            g.strokeRect(o, o, hs, hs)
+            g.restore()
+            preview = { x: cx, y: cy, size: Math.max(18, Math.min(56, hs * perBlock * 0.3)), text: live.current.guess ? '?' : show(s.out, s.k) }
+          }
+        }
         if (px >= 14) labels.push({ x: cx, y: cy - px * 0.5 * (1 - 0.12 * squash) - (look.hat !== 'none' ? px * 0.25 : 0), size: Math.max(16, Math.min(48, 0.16 * px)), text: show(p.n, p.k), n: p.n, k: p.k })
       }
       // Numberlings: plain bold black, upright, above each one.
       g.setTransform(dpr, 0, 0, dpr, 0, 0)
+      if (preview) {
+        g.textAlign = 'center'
+        g.textBaseline = 'middle'
+        g.font = `900 ${Math.round(preview.size)}px Nunito, system-ui, sans-serif`
+        g.lineWidth = Math.max(3, preview.size / 8)
+        g.strokeStyle = '#fff'
+        g.strokeText(preview.text, preview.x, preview.y)
+        g.fillStyle = '#c2410c'
+        g.fillText(preview.text, preview.x, preview.y)
+        g.textBaseline = 'alphabetic'
+      }
       g.textAlign = 'center'
       g.fillStyle = '#000'
       hits = []
@@ -638,7 +779,7 @@ function Play({
       stageRef.current = stage
       ;(window as unknown as { __sneeze?: () => Stage | null }).__sneeze = () => stageRef.current
       prevNow = performance.now()
-      if (!stage.peek(live.current.rule)) setP('done')
+      if (!stage.peek(live.current.choice)) setP('done')
       raf = requestAnimationFrame(frame)
     })
     return () => {
@@ -657,7 +798,7 @@ function Play({
 
   const whole = side * side
   // What the sneezer would sneeze now (for the guesses).
-  const next = sneeze(sneezer.side, rule, sneezer.k)
+  const next = sneeze(sneezer.side, choice, sneezer.k)
   const parts = [...rings, sneezer].map((p) => show(p.n, p.k))
   const sum = parts.length > 7 ? `${parts.slice(0, 4).join(' + ')} + … + ${parts.slice(-2).join(' + ')}` : parts.join(' + ')
   // Right first time gets the tick.
@@ -703,7 +844,11 @@ function Play({
         className={`flex-1 min-w-0 h-14 rounded-2xl bg-white/90 shadow font-black tabular-nums sm:text-3xl ${long ? 'px-2 text-lg' : 'px-4 text-2xl'} text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis active:scale-95 transition-transform`}
         aria-label="The sum"
       >
-        {!last ? (
+        {sliding && next ? (
+          <span className="text-orange-600">
+            {show(next.whole, next.k)} − {show(next.ring, next.k)} = {guess ? '?' : show(next.out, next.k)}
+          </span>
+        ) : !last ? (
           <>
             {fmt(whole)} = {fmt(side)} × {fmt(side)}
           </>
@@ -752,9 +897,19 @@ function Play({
           {parts.length > 7 && <span className="block text-sm text-slate-400">{parts.length} numbers</span>}
         </div>
       )}
-      <div className={`absolute left-3 ${phase === 'guessing' ? 'top-36 sm:top-20' : 'bottom-4'}`} onPointerDown={(e) => e.stopPropagation()}>
-        <RulePicker rule={rule} onRule={onRule} small />
-      </div>
+      {phase !== 'guessing' && (
+        <SizeSlider
+          side={sneezer.side}
+          k={sneezer.k}
+          choice={choice}
+          guess={guess}
+          onChoice={(c) => {
+            if (typeof c === 'string') onRule(c)
+            setChoice(c)
+          }}
+          onSliding={setSliding}
+        />
+      )}
     </div>
   )
 }

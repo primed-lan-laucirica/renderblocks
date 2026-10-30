@@ -21,6 +21,8 @@
  */
 
 export type Rule = 'ring' | 'big'
+/** What to sneeze: by a rule, or one particular square out (its side b, in 10^-k blocks: the slider). */
+export type Choice = Rule | { b: bigint; k: number }
 
 /** RATOT's ladder of sides: round r's square is LADDER[r] squared (round 1 = 16 = 4², round 18 = 10,000,000,000). */
 export const LADDER = [2n, 4n, 8n, 16n, 32n, 64n, 100n, 200n, 400n, 600n, 800n, 1000n, 2000n, 4000n, 8000n, 16000n, 32000n, 64000n, 100000n]
@@ -57,7 +59,17 @@ export interface Sneeze {
  * decimal places (0.0004 → 0.0003 + 0.0001 is the last: its ring is a
  * thousandth of a block thick, but 0.0003 all the same).
  */
-export function sneeze(a: bigint, rule: Rule, k = 0): Sneeze | null {
+export function sneeze(a: bigint, rule: Choice, k = 0): Sneeze | null {
+  if (typeof rule === 'object') {
+    // One particular square: in its units, the hole in the middle.
+    if (rule.k < k) return null
+    const A = a * 10n ** BigInt(rule.k - k)
+    const b = rule.b
+    if (b < 1n || b > A - 2n || (A - b) % 2n !== 0n) return null
+    const s = { whole: A * A, out: b * b, ring: A * A - b * b, side: A, outSide: b, k: rule.k }
+    const finest = 100n ** BigInt(Math.max(0, rule.k - MAX_K))
+    return s.out % finest === 0n && s.ring % finest === 0n ? s : null
+  }
   let b = innerSide(a, rule)
   while (b === null && k <= MAX_K) {
     a *= 10n
@@ -147,11 +159,13 @@ export function squaresAround(n: bigint): [bigint, bigint] {
  * sneeze and the smaller in a big one). Shuffled by a seed so it's the same
  * each time. In the sneeze's cells (its k).
  */
-export function choices(a: bigint, rule: Rule, seed: number, k = 0): bigint[] {
+export function choices(a: bigint, rule: Choice, seed: number, k = 0): bigint[] {
   const s = sneeze(a, rule, k)
   if (!s) return []
   const set = new Set<bigint>([s.out])
-  const other = sneeze(a, rule === 'ring' ? 'big' : 'ring', k)
+  // The other rule's (for one picked on the slider: the ring's, or the big sneeze's if that's the one).
+  const ringOut = sneeze(a, 'ring', k)?.out
+  const other = sneeze(a, rule === 'ring' || (typeof rule === 'object' && ringOut === s.out) ? 'big' : 'ring', k)
   if (other && other.k <= s.k) {
     const out = other.out * 100n ** BigInt(s.k - other.k)
     if (out !== s.out) set.add(out)
@@ -178,3 +192,62 @@ export function choices(a: bigint, rule: Rule, seed: number, k = 0): bigint[] {
 }
 
 export const fmt = (n: bigint) => n.toLocaleString('en-US')
+
+/**
+ * Every square a square of side a (in 10^-k blocks) can sneeze out, for the
+ * slider: sides min, min + step … max (max is the ring sneeze), in 10^-K
+ * blocks (tenths or hundredths if it can't in what it's counted in, as
+ * sneeze does). Null if it can't sneeze at all.
+ */
+export function sizesOf(a: bigint, k = 0): { K: number; min: bigint; max: bigint; step: bigint; count: bigint; ring: bigint | null; big: bigint | null } | null {
+  let A = a
+  let K = k
+  while (A < 3n && K <= MAX_K) {
+    A *= 10n
+    K++
+  }
+  if (A < 3n) return null
+  // Past hundredths, only what's a whole number of hundredths of hundredths.
+  const u = K > MAX_K ? 10n ** BigInt(K - MAX_K) : 1n
+  const step = 2n * u
+  const max = A - step
+  let min = A % step
+  if (min === 0n) min = step
+  if (min > max) return null
+  const at = (r: Rule) => {
+    const s = sneeze(a, r, k)
+    return s && s.k === K ? s.outSide : null
+  }
+  return { K, min, max, step, count: (max - min) / step + 1n, ring: at('ring'), big: at('big') }
+}
+
+/**
+ * Where the slider's thumb can come to rest (ascending sides), at most n of
+ * them: all of them if they fit, else the ring, the big sneeze, the smallest,
+ * and round sides, the roundest first (he picks by what he wants out: 100,
+ * 400, 2,500 …), spread evenly where a level has too many to fit.
+ */
+export function stopsOf(z: NonNullable<ReturnType<typeof sizesOf>>, n: number): bigint[] {
+  const { min, max, step } = z
+  if (z.count <= BigInt(n)) return Array.from({ length: Number(z.count) }, (_, i) => min + BigInt(i) * step)
+  const ok = (b: bigint) => b >= min && b <= max && (b - min) % step === 0n
+  const set = new Set<bigint>([min, max, ...(z.big !== null && ok(z.big) ? [z.big] : [])])
+  // Round sides, a level at a time: m × 10^j, nudged by one to the right evenness.
+  const digits = max.toString().length
+  for (let j = digits - 1; j >= 0 && set.size < n; j--) {
+    const level: bigint[] = []
+    for (let m = 1n; m <= 9n; m++) {
+      const t = m * 10n ** BigInt(j)
+      for (const b of [t, t - 1n, t + 1n, t - step / 2n, t + step / 2n]) {
+        if (ok(b) && !set.has(b) && !level.includes(b)) {
+          level.push(b)
+          break
+        }
+      }
+    }
+    const room = n - set.size
+    if (level.length <= room) level.forEach((b) => set.add(b))
+    else for (let i = 0; i < room; i++) set.add(level[Math.floor(((i + 0.5) * level.length) / room)])
+  }
+  return [...set].sort((x, y) => (x < y ? -1 : x > y ? 1 : 0))
+}
