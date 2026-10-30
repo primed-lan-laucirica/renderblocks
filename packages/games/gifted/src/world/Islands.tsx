@@ -155,9 +155,11 @@ interface Props {
   onOpen: (id: Target) => void
   /** Things that stay put in the corner (the score, the light switch). */
   corner: React.ReactNode
+  /** Out of Gifted, back to the tiles. */
+  onExit: () => void
 }
 
-export const Islands = forwardRef<IslandsHandle, Props>(function Islands({ progress, dark, next, covered, onOpen, corner }, ref) {
+export const Islands = forwardRef<IslandsHandle, Props>(function Islands({ progress, dark, next, covered, onOpen, corner, onExit }, ref) {
   const [size, setSize] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }))
   useEffect(() => {
     const on = () => setSize({ w: window.innerWidth, h: window.innerHeight })
@@ -279,6 +281,15 @@ export const Islands = forwardRef<IslandsHandle, Props>(function Islands({ progr
           )
         })}
       </div>
+      <button
+        type="button"
+        onClick={onExit}
+        onPointerDown={(e) => e.stopPropagation()}
+        className={`absolute top-3 left-3 w-11 h-11 rounded-full text-2xl font-bold opacity-50 active:opacity-90 ${dark ? 'text-slate-100' : 'text-slate-700'}`}
+        aria-label="Home"
+      >
+        ←
+      </button>
       <div className="absolute top-3 right-3 flex items-center gap-3" onPointerDown={(e) => e.stopPropagation()}>
         {corner}
       </div>

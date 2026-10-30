@@ -853,7 +853,7 @@ function App({ services }: GameProps) {
 
   return (
     <div className="h-dvh w-full relative overflow-hidden">
-      <Islands ref={islands} progress={progress} dark={isDark} next={next} covered={mode !== null} onOpen={open} corner={corner} />
+      <Islands ref={islands} progress={progress} dark={isDark} next={next} covered={mode !== null} onOpen={open} corner={corner} onExit={services.exitToHome} />
       {mode !== null && (
         <div ref={layer} className="absolute inset-0 z-10">
           {/* What fills in round it as it grows out of its window. */}
