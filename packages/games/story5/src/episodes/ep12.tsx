@@ -69,8 +69,9 @@ function Scene({ t, beat }: { t: number; beat?: string }) {
             {NINE.map((b, i) => {
               const k = outBack(p(t, IN(i), IN(i) + 0.4))
               if (k <= 0) return null
-              if (i < 5) return <UnitBead key={i} x={b.x} y={b.y} s={S * Math.min(1, k)} />
+              // The child takes away any four: every bead is theirs at the beat.
               if (beat === 'away') return null
+              if (i < 5) return <UnitBead key={i} x={b.x} y={b.y} s={S * Math.min(1, k)} />
               const j = i - 5
               const m = smooth(p(take, j * 0.1, 0.7 + j * 0.1))
               const to = AWAY[j]
@@ -146,8 +147,9 @@ export const ep12: SceneDef = {
       id: 'away',
       time: TAKE[0],
       resume: TAKE[1],
-      pieces: NINE.slice(5),
+      pieces: [...NINE],
       slots: AWAY,
+      spare: true,
       piece: 'custom',
       draw: (at, _i, done) => <UnitBead x={at.x} y={at.y} s={S} glow={done ? 0.7 : 0} />,
       drawSlot: (at, k) => <Gap key={k} x={at.x} y={at.y} w={BIG} h={BIG} />,

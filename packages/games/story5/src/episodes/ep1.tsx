@@ -62,8 +62,8 @@ function Act({ t, k, beat }: { t: number; k: number; beat?: string }) {
         return <Sheep key={i} x={x} y={SHEEP_Y} s={1.5} step={k2 < 1 ? t * 12 + i : 0} />
       })}
       {Array.from({ length: a.pebbles }, (_, i) => {
-        // The child moves the first ones at the beat: the scene leaves them out.
-        if (k === 1 && beat === 'match' && i < matched) return null
+        // The child moves them all at the beat (spares too): the scene leaves them out.
+        if (k === 1 && beat === 'match') return null
         // The first act's first pebble is the hero, walking over from the middle.
         const start = k === 0 && i === 0 ? mix(HERO_AT, a.pile[0], smooth(p(t, 6.0, 7.0))) : a.pile[i]
         const pop = k === 0 && i === 0 ? 1 : outBack(p(t, a.from + 0.3 + i * 0.12, a.from + 0.7 + i * 0.12))
@@ -127,8 +127,10 @@ export const ep1: SceneDef = {
       id: 'match',
       time: BEAT[0],
       resume: BEAT[1],
-      pieces: B.pile.slice(0, 4),
+      // All six pebbles move; it carries on once each of the four sheep has one.
+      pieces: [...B.pile],
       slots: Array.from({ length: 4 }, (_, i) => under(i, 4)),
+      spare: true,
       piece: 'custom',
       draw: (at, i) => <PilePebble x={at.x} y={at.y} i={i} />,
       drawSlot: (at, k) => <ellipse key={k} cx={at.x} cy={at.y} rx={HERO.r * 1.3} ry={HERO.r} fill="none" stroke="#a7771a" strokeWidth={3} strokeDasharray="6 5" />,

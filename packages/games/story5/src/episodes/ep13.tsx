@@ -102,7 +102,7 @@ function Scene({ t, beat }: { t: number; beat?: string }) {
           {beadUnits.map((u, j) => {
             const at = j < 8 ? BUILD_A(3) + 0.2 + j * 0.22 : BUILD_B(2) + 0.2 + (j - 8) * 0.22
             const k = outBack(p(t, at, at + 0.35))
-            if (k <= 0 || (progress >= 0 && j < 10) || (beat === 'gather' && j < 10)) return null
+            if (k <= 0 || (progress >= 0 && j < 10) || beat === 'gather') return null
             // The three left over slide up to the top of the units column once the ten has gone.
             const to = UNITS[j - 10] ?? u
             const at2 = j >= 10 ? mix(u, to, smooth(p(t, 19.0, 20.0))) : u
@@ -149,7 +149,7 @@ export const ep13: SceneDef = {
   title: 'Carrying',
   duration: DURATION,
   events: events.sort((x, y) => x.time - y.time),
-  beats: [{ id: 'gather', time: GATHER[0], resume: GATHER[1], pieces: UNITS.slice(0, 10), slots: SLOTS, piece: 'bead', prompt: 'Make a ten', say: 'Make a ten.' }],
+  beats: [{ id: 'gather', time: GATHER[0], resume: GATHER[1], pieces: [...UNITS], slots: SLOTS, spare: true, piece: 'bead', prompt: 'Make a ten', say: 'Make a ten.' }],
   voice: [
     { time: 0.5, say: 'Episode thirteen. Carrying.' },
     { time: 9.4, say: 'Thirty-eight plus twenty-five.' },

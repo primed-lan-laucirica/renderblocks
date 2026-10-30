@@ -58,8 +58,8 @@ function Scene({ t, beat }: { t: number; beat?: string }) {
         {PILE.map((b, i) => {
           const k = outBack(p(t, APPEAR(i), APPEAR(i) + 0.35))
           if (k <= 0) return null
-          // The child deals the first round themselves.
-          if (beat === 'deal' && i < SHARES) return null
+          // The child deals the first round themselves, from the whole pile.
+          if (beat === 'deal') return null
           const to = i < 12 ? SPOT(i % SHARES, Math.floor(i / SHARES)) : LEFTOVER
           const m = i < 12 ? smooth(p(t, MOVE(i), MOVE(i) + 0.5)) : smooth(p(t, ...LEFT_MOVE))
           const at = mix(b, to, m)
@@ -89,7 +89,8 @@ export const ep18: SceneDef = {
       id: 'deal',
       time: DEAL[0],
       resume: DEAL[1],
-      pieces: PILE.slice(0, SHARES),
+      pieces: [...PILE],
+      spare: true,
       slots: SKITTLE_X.map((_, s) => SPOT(s, 0)),
       piece: 'bead',
       prompt: 'One to each skittle',

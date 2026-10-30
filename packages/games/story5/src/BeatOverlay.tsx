@@ -60,6 +60,8 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
   const [slot, setSlot] = useState<(number | null)[]>(() => beat.pieces.map(() => null))
   const [drag, setDrag] = useState<{ i: number; dx: number; dy: number } | null>(null)
   const [finished, setFinished] = useState(false)
+  // Pieces he's moved stop bobbing (a spare one put down anywhere too).
+  const [touched, setTouched] = useState<Set<number>>(() => new Set())
 
   const toScene = (e: React.PointerEvent): Pt => {
     const svg = (e.currentTarget as SVGElement).ownerSVGElement ?? (e.currentTarget as SVGSVGElement)
@@ -71,7 +73,9 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
 
   const settle = (next: (number | null)[]) => {
     setSlot(next)
-    if (next.every((v) => v !== null)) {
+    const placed = next.filter((v) => v !== null).length
+    const full = beat.spare && !tap ? (kind.stack ? placed >= beat.slots.length : beat.slots.every((_, k) => next.includes(k))) : next.every((v) => v !== null)
+    if (full) {
       setFinished(true)
       setTimeout(onDone, 350)
     }
@@ -84,6 +88,7 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
       return
     }
     ;(e.currentTarget as Element).setPointerCapture?.(e.pointerId)
+    setTouched((s) => new Set(s).add(i))
     const q = toScene(e)
     setDrag({ i, dx: at[i].x - q.x, dy: at[i].y - q.y })
   }
@@ -100,7 +105,9 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
     const here = { x: at[i].x + kind.centre.x, y: at[i].y + kind.centre.y }
     let best = -1
     let bestD = kind.snap
-    beat.slots.forEach((s, k) => {
+    // A stack that's full (with spares) takes no more: the fifth quarter stays out of the circle.
+    const room = !(beat.spare && kind.stack) || slot.filter((v, j) => v !== null && j !== i).length < beat.slots.length
+    if (room) beat.slots.forEach((s, k) => {
       const free = kind.stack || !slot.some((v, j) => v === k && j !== i)
       const d = Math.hypot(s.x + kind.centre.x - here.x, s.y + kind.centre.y - here.y)
       if (free && d < bestD) {
@@ -120,7 +127,7 @@ export function BeatOverlay({ beat, onDone }: { beat: Beat; onDone: () => void }
       <style>{`@keyframes beat-bob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }`}</style>
       {at.map((p, i) => (
         <g key={i} onPointerDown={(e) => down(e, i)} style={{ cursor: tap ? 'pointer' : 'grab' }}>
-          <g style={slot[i] === null && drag?.i !== i ? { animation: `beat-bob 1.4s ease-in-out ${(i % 5) * 0.15}s infinite` } : undefined}>
+          <g style={slot[i] === null && !touched.has(i) ? { animation: `beat-bob 1.4s ease-in-out ${(i % 5) * 0.15}s infinite` } : undefined}>
             <circle cx={p.x + kind.centre.x} cy={p.y + kind.centre.y} r={kind.reach} fill="transparent" />
             {kind.draw(p, i, slot[i] !== null)}
           </g>

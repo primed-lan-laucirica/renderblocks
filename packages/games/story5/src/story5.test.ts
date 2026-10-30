@@ -33,8 +33,10 @@ describe('scenes are pure functions of t', () => {
         expect(b.resume, `${s.id}:${b.id}`).toBeGreaterThan(b.time)
         expect(b.pieces.length, `${s.id}:${b.id} has no pieces`).toBeGreaterThan(0)
         // Every piece needs somewhere to go: a slot each, or one shared slot (stacking); a tap beat needs none.
+        // With spares, there are more pieces than slots (on purpose) and it's done when the slots are full.
         const stacks = b.stack || b.piece === 'quarter'
-        if (b.action !== 'tap') expect(stacks ? b.slots.length > 0 : b.slots.length >= b.pieces.length, `${s.id}:${b.id} slots`).toBe(true)
+        if (b.action !== 'tap' && !b.spare) expect(stacks ? b.slots.length > 0 : b.slots.length >= b.pieces.length, `${s.id}:${b.id} slots`).toBe(true)
+        if (b.spare) expect(b.slots.length > 0 && b.slots.length < b.pieces.length, `${s.id}:${b.id} spares`).toBe(true)
       }
     }
   })

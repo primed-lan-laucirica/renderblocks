@@ -51,6 +51,12 @@ export interface Beat {
   snap?: number
   /** Custom pieces: several pieces may share one slot (quarters into one circle). */
   stack?: boolean
+  /**
+   * More pieces than slots (six pebbles, four sheep): done once every slot
+   * is filled, and the spare pieces can be moved anywhere. Stacked slots
+   * (one circle) hold one piece per slot listed, and no more.
+   */
+  spare?: boolean
   /** The prompt shown while waiting (a few words). */
   prompt: string
   /** The prompt spoken (narrated when the beat begins, and on a tap). */

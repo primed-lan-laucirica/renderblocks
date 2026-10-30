@@ -80,7 +80,7 @@ function Scene({ t, beat }: { t: number; beat?: string }) {
           <g opacity={out1}>
             {ROW.map((b, i) => {
               const k = outBack(p(t, APPEAR(i), APPEAR(i) + 0.35))
-              if (k <= 0 || (beat === 'group' && i < 3)) return null
+              if (k <= 0 || beat === 'group') return null
               const at = mix(b, GROUP_AT(i), smooth(p(t, MOVE(i), MOVE(i) + 0.45)))
               return <UnitBead key={i} x={at.x} y={at.y} s={k} />
             })}
@@ -163,7 +163,8 @@ export const ep19: SceneDef = {
       id: 'group',
       time: GROUP[0],
       resume: GROUP[1],
-      pieces: ROW.slice(0, 3),
+      pieces: [...ROW],
+      spare: true,
       slots: [0, 1, 2].map(GROUP_AT),
       piece: 'bead',
       prompt: 'Make a group of three',

@@ -62,7 +62,7 @@ function Scene({ t, beat }: { t: number; beat?: string }) {
         {[0, 1, 2, 3, 4].map((i) => {
           const k = outBack(p(t, IN[i], IN[i] + 0.45))
           if (k <= 0) return null
-          if ((progress >= 0 || beat === 'fill') && i < 4) return null
+          if ((progress >= 0 && i < 4) || beat === 'fill') return null
           // The fifth piece, left over, moves to sit beside the whole.
           const at = i === 4 ? mix(pos(4), { x: 1360, y: FRAME.y }, smooth(p(t, 19.4, 20.4))) : pos(i)
           return <FractionPiece key={i} d={4} k={kOf(i)} cx={at.x} cy={at.y} r={R * Math.min(1, k)} />
@@ -89,7 +89,7 @@ export const ep23: SceneDef = {
   title: 'Adding fractions',
   duration: DURATION,
   events,
-  beats: [{ id: 'fill', time: FILL[0], resume: FILL[1], pieces: [0, 1, 2, 3].map((i) => ROW[i]), slots: [0, 1, 2, 3].map(() => FRAME), piece: 'quarter', prompt: 'Fill the circle', say: 'Fill the circle.' }],
+  beats: [{ id: 'fill', time: FILL[0], resume: FILL[1], pieces: [...ROW], slots: [0, 1, 2, 3].map(() => FRAME), spare: true, piece: 'quarter', prompt: 'Fill the circle', say: 'Fill the circle.' }],
   voice: [
     { time: 0.5, say: 'Episode twenty-three. Adding fractions.' },
     { time: 5.6, say: 'Three quarters.' },
