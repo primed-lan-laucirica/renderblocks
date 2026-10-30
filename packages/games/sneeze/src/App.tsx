@@ -178,6 +178,9 @@ function RulePicker({ rule, onRule, small }: { rule: Rule; onRule: (r: Rule) => 
  * − and + step one size at a time, to every one. Sliding previews the hole on
  * the square; a tap on the square sneezes it. Numbers hide while he's guessing.
  */
+/** Room a slider label needs (px): its text at the label size, and a gap. */
+const labelW = (text: string) => text.length * 8.6 + 12
+
 function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: bigint; k: number; choice: Choice; guess: boolean; onChoice: (c: Choice) => void; onSliding: (on: boolean) => void }) {
   const track = useRef<HTMLDivElement>(null)
   const [w, setW] = useState(600)
@@ -189,29 +192,34 @@ function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: big
     return () => ro.disconnect()
   }, [])
   const z = useMemo(() => sizesOf(side, k), [side, k])
-  const stops = useMemo(() => (z ? stopsOf(z, Math.max(5, Math.min(40, Math.floor(w / 34)))) : []), [z, w])
+  // As many stops as fit with every one labelled (the longest label sets the room each needs).
+  const room = z ? labelW(show(z.max * z.max, z.K)) : 40
+  const stops = useMemo(() => (z ? stopsOf(z, Math.max(3, Math.min(40, Math.floor(w / room) + 1))) : []), [z, w, room])
   if (!z || z.count < 2n) return null
   // The side the thumb is on: the one picked, or the rule's.
   const s = sneeze(side, choice, k)
   const b = s && s.k === z.K ? s.outSide : (z.big ?? z.max)
-  const span = Number(z.max - z.min)
-  const xOf = (v: bigint) => (span ? Number(z.max - v) / span : 0.5) * w
+  // The stops are evenly spaced, the largest at the left, whatever their values (Lan, Oct 30: no odd gaps);
+  // a size between two stops (from − and +) sits between them in proportion.
+  const last = stops.length - 1
+  const xOf = (v: bigint) => {
+    if (last < 1) return w / 2
+    let i = 0
+    while (i < last - 1 && stops[i + 1] <= v) i++
+    const lo = stops[i]
+    const hi = stops[i + 1]
+    const f = hi > lo ? Math.min(1, Math.max(0, Number(v - lo) / Number(hi - lo))) : 0
+    return (1 - (i + f) / last) * w
+  }
   // Sliding (or − and +) picks for one sneeze; only the Ring and Big tags change the default.
   const as = (v: bigint): Choice => ({ b: v, k: z.K })
-  const nearest = (x: number) => stops.reduce((m, v) => (Math.abs(xOf(v) - x) < Math.abs(xOf(m) - x) ? v : m), stops[0])
+  const nearest = (x: number) => stops[Math.min(last, Math.max(0, Math.round((1 - x / w) * last)))]
   const at = (e: React.PointerEvent) => e.clientX - track.current!.getBoundingClientRect().left
-  // Labels: the roundest first, where they don't crowd one another.
-  const round = (v: bigint) => {
-    let t = 0
-    for (let x = v; x > 0n && x % 10n === 0n; x /= 10n) t++
-    return t
-  }
+  // Labels: the one he's on first, then every stop that doesn't crowd it (between stops, it hides its neighbours).
   const labels: bigint[] = []
-  // The one he's on first, always shown.
-  for (const v of [b, ...[...stops].sort((p, q) => round(q) - round(p) || Number(q - p)).filter((v) => v !== b)]) {
-    const text = show(v * v, z.K)
-    const half = text.length * 4.5 + 6
-    if (labels.every((u) => Math.abs(xOf(u) - xOf(v)) > half + show(u * u, z.K).length * 4.5 + 6)) labels.push(v)
+  for (const v of [b, ...stops.filter((v) => v !== b)]) {
+    const wv = labelW(show(v * v, z.K))
+    if (labels.every((u) => Math.abs(xOf(u) - xOf(v)) >= (wv + labelW(show(u * u, z.K))) / 2 - 1)) labels.push(v)
   }
   const nudge = (d: bigint) => {
     const v = b + d * z.step
