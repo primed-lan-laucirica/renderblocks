@@ -2,17 +2,36 @@
 import type { SceneDef } from '@renderblocks/scene'
 import type { SubtestId } from '../types'
 import type { Puzzle } from '../world/Thumb'
-import { example as figureExample, figureClassify } from './figureClassify'
-import { example as numberExample, numberSeries } from './numberSeries'
-import { example as pictureExample, pictureClassify } from './pictureClassify'
+import type { Explained } from './define'
+import { numberAnalogy, numberPuzzle, numberSeries } from './numbers'
+import { figureClassify, figureMatrix, figureSeries, paperFolding, patternCompletion } from './shapes'
+import { auralReasoning, followDirections, oddOneOut, pictureAnalogy, pictureClassify, pictureMemory, pictureSeries } from './words'
 
-export const EXPLAINERS: Partial<Record<SubtestId, SceneDef>> = { figureClassify, pictureClassify, numberSeries }
+const ALL: Record<SubtestId, Explained> = {
+  figureClassify,
+  figureSeries,
+  figureMatrix,
+  patternCompletion,
+  paperFolding,
+  pictureClassify,
+  pictureAnalogy,
+  pictureSeries,
+  oddOneOut,
+  pictureMemory,
+  auralReasoning,
+  followDirections,
+  numberSeries,
+  numberAnalogy,
+  numberPuzzle,
+}
+
+export const EXPLAINERS: Partial<Record<SubtestId, SceneDef>> = Object.fromEntries(Object.entries(ALL).map(([k, v]) => [k, v.scene]))
 
 /** Each explainer's worked example (its window shows it solved). */
-export const EXAMPLES: Partial<Record<SubtestId, Puzzle>> = { figureClassify: figureExample, pictureClassify: pictureExample, numberSeries: numberExample }
+export const EXAMPLES: Partial<Record<SubtestId, Puzzle>> = Object.fromEntries(Object.entries(ALL).map(([k, v]) => [k, v.example]))
 
 /** The frame a window shows: the worked example, solved. */
 export const posterT = (s: SceneDef) => s.duration - 0.5
 
 /** Every narrated line (for scripts/voice.mjs). */
-export const allLines = () => [...new Set(Object.values(EXPLAINERS).flatMap((s) => s!.voice.map((v) => v.say)))]
+export const allLines = () => [...new Set(Object.values(ALL).flatMap((e) => e.scene.voice.map((v) => v.say)))]

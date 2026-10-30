@@ -92,7 +92,7 @@ export const Thumb = memo(function Thumb({ puzzle, dark, solved = false }: { puz
         {rs.map((r, k) => (
           <Row key={k} parts={r} x={left / 2 - rowW(r, s) / 2} y={top + k * (s + GAP)} s={s} answer={answer} dark={dark} />
         ))}
-        {choices.map((c, i) => (
+        {choices.map((c, i) => (i === puzzle.answer && solved ? null :
           <CellBox key={i} cell={c} x={left + (i % 2) * (cs + GAP) + (W - left - PAD - 2 * cs - GAP) / 2} y={ctop + Math.floor(i / 2) * (cs + GAP)} s={cs} />
         ))}
       </>

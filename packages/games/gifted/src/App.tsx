@@ -525,6 +525,8 @@ function App({ services }: GameProps) {
 
       case 'touchGrid': {
         if (item.memory && !studied) {
+          // Not while its explainer plays over it: the time to look starts when he can see it.
+          if (explaining) return null
           return <MemoryStudy cells={item.memory.study} ms={item.memory.ms} dark={isDark} onDone={() => setStudied(true)} />
         }
         const cols = item.stimulus.length <= 6 ? 3 : item.stimulus.length <= 9 ? 3 : 4
@@ -620,7 +622,7 @@ function App({ services }: GameProps) {
         )
       }
     }
-  }, [item, isDark, solved, dragging, rejecting, answerCell, cellPx, hit, studied])
+  }, [item, isDark, solved, dragging, rejecting, answerCell, cellPx, hit, studied, explaining])
 
   const level = progress.levels[item.sub]
   const accuracy = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : 0

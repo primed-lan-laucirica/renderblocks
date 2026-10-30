@@ -20,6 +20,8 @@ export interface Stage {
   h: number
   vw: number
   dark: boolean
+  /** Drawn in real screen pixels (an explainer): borders are the puzzle's 4 px, not scaled with the box. */
+  px?: boolean
 }
 const StageContext = createContext<Stage>({ w: 740, h: 560, vw: 1280, dark: false })
 export const StageProvider = StageContext.Provider
@@ -85,14 +87,15 @@ export function Paper({ children, w, h }: { children: ReactNode; w?: number; h?:
 
 /** A puzzle box (rounded-2xl, border-4, p-1) with a cell in it; `ring` lights its border. Everything scales with s (88 px is the puzzle's). */
 export function CellBox({ cell, x, y, s, o = 1, ring, scale = 1 }: { cell?: Cell; x: number; y: number; s: number; o?: number; ring?: string; scale?: number }) {
-  const { dark } = useStage()
+  const { dark, px } = useStage()
   const c = palette(dark)
   if (o <= 0) return null
-  const b = s * 0.045
+  const b = px ? 4 : s * 0.045
+  const pad = px ? 8 : s * 0.09
   return (
     <g opacity={o} transform={`translate(${x + s / 2} ${y + s / 2}) scale(${scale}) translate(${-s / 2} ${-s / 2})`}>
-      <rect x={b / 2} y={b / 2} width={s - b} height={s - b} rx={s * 0.17} fill={c.box} stroke={ring ?? c.edge} strokeWidth={b} />
-      <svg x={s * 0.09} y={s * 0.09} width={s * 0.82} height={s * 0.82}>
+      <rect x={b / 2} y={b / 2} width={s - b} height={s - b} rx={px ? 16 : s * 0.17} fill={c.box} stroke={ring ?? c.edge} strokeWidth={b} />
+      <svg x={pad} y={pad} width={s - 2 * pad} height={s - 2 * pad}>
         <CellView cell={cell} dark={dark} />
       </svg>
     </g>
@@ -101,15 +104,16 @@ export function CellBox({ cell, x, y, s, o = 1, ring, scale = 1 }: { cell?: Cell
 
 /** The answer slot: dashed with a "?"; once `cell` is in it, green with the answer inside (as when he answers). */
 export function Slot({ x, y, s, o = 1, cell, done = 0 }: { x: number; y: number; s: number; o?: number; cell?: Cell; done?: number }) {
-  const { dark } = useStage()
+  const { dark, px } = useStage()
   const c = palette(dark)
   if (o <= 0) return null
-  const b = s * 0.045
+  const b = px ? 4 : s * 0.045
+  const pad = px ? 8 : s * 0.09
   return (
     <g opacity={o}>
-      <rect x={x + b / 2} y={y + b / 2} width={s - b} height={s - b} rx={s * 0.17} fill={done > 0.5 ? (dark ? 'rgba(52,211,153,0.14)' : GREEN_FILL) : c.slotFill} stroke={done > 0.5 ? GREEN : c.slot} strokeWidth={b} strokeDasharray={`${s * 0.1} ${s * 0.07}`} />
+      <rect x={x + b / 2} y={y + b / 2} width={s - b} height={s - b} rx={px ? 16 : s * 0.17} fill={done > 0.5 ? (dark ? 'rgba(52,211,153,0.14)' : GREEN_FILL) : c.slotFill} stroke={done > 0.5 ? GREEN : c.slot} strokeWidth={b} strokeDasharray={px ? '9 6' : `${s * 0.1} ${s * 0.07}`} />
       {done > 0 && cell ? (
-        <svg x={x + s * 0.09} y={y + s * 0.09} width={s * 0.82} height={s * 0.82} opacity={done}>
+        <svg x={x + pad} y={y + pad} width={s - 2 * pad} height={s - 2 * pad} opacity={done}>
           <CellView cell={cell} dark={dark} />
         </svg>
       ) : (

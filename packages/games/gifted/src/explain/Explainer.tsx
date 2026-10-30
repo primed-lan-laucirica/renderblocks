@@ -54,7 +54,7 @@ export function Explainer({ scene, go, still = 0, dark, vw, onFinished }: Props)
     <div ref={box} className="absolute inset-0 select-none" data-explainer={scene.id}>
       <div ref={sceneEl} className="absolute inset-0">
         {size && (
-          <StageProvider value={{ ...size, vw, dark }}>
+          <StageProvider value={{ ...size, vw, dark, px: true }}>
             <Scene t={t} />
           </StageProvider>
         )}
