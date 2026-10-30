@@ -61,7 +61,7 @@ function PlusTwo({ g, t, from }: { g: Geo; t: number; from: number }) {
       {g.glue.map((gl, k) => {
         const a = smooth(p(t, from + k * 0.35, from + k * 0.35 + 0.35))
         return a > 0 ? (
-          <text key={k} x={gl.x} y={gl.y - 22} textAnchor="middle" fontWeight={900} fontSize={18} fill={c} opacity={a}>
+          <text key={k} x={gl.x} y={gl.y - Math.min(22, g.s * 0.32)} textAnchor="middle" fontWeight={900} fontSize={Math.min(18, g.s * 0.36)} fill={c} opacity={a}>
             +2
           </text>
         ) : null

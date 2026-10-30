@@ -11,6 +11,7 @@ import type { ReactNode } from 'react'
 import { outBack, p, smooth } from '@renderblocks/scene'
 import { CellView } from '../Figure'
 import type { Cell } from '../types'
+import { cellPx, fieldBoard } from '../sizing'
 import type { Puzzle } from '../world/Thumb'
 import { CellBox, GREEN, Note, Paper, Slot, palette, useStage } from './kit'
 
@@ -38,6 +39,8 @@ export interface Geo {
   /** Picture Memory: where the pictures to remember sit while he studies them. */
   study: Box[]
   top: number
+  /** The bottom of the choices row (taller than the stage on a very short screen). */
+  bottom: number
   /** Where the puzzle prints its explanation. */
   note: number
   s: number
@@ -45,39 +48,6 @@ export interface Geo {
 
 const isQ = (c: Cell) => c.kind === 'text' && c.text === '?'
 const isBlank = (q: Puzzle, c: Cell, i: number) => i === q.blankIndex || isQ(c) || (c.kind === 'glyphs' && c.glyphs.length === 0)
-
-/** The puzzle screen's cell size for this layout (App.tsx, cellPx). */
-function cellPx(q: Puzzle, vw: number) {
-  const fit = (count: number, extra = 0) => Math.floor((Math.min(vw, 760) - 28 - extra - (count - 1) * 8) / count)
-  const cap = (desired: number, count: number, extra = 0) => Math.max(44, Math.min(desired, fit(count, extra)))
-  switch (q.layout) {
-    case 'classify':
-      return cap(88, 4, 30)
-    case 'row':
-      return cap(88, Math.max(q.stimulus.length, 4))
-    case 'matrix3':
-      return cap(76, 3)
-    case 'matrix2':
-      return cap(88, 2)
-    case 'pairs':
-      return cap(68, 2, 30)
-    case 'equation':
-      return cap(68, q.stimulus.length, 20)
-    case 'fold':
-      return cap(136, 2, 30)
-    case 'touchGrid':
-      return cap(84, 3)
-    case 'lone':
-      return cap(120, 3)
-    case 'field': {
-      const f = q.stimulus[0]
-      if (f.kind === 'field' && f.hole) return Math.round((f.hole.n / f.grid.length) * Math.min(240, vw - 40))
-      return cap(88, 3)
-    }
-    default:
-      return cap(88, 4)
-  }
-}
 
 /** Lay out a run of items (boxes and glue) centred on cx, `gap` apart; returns each item's left edge. */
 function run(widths: number[], cx: number, gap: number) {
@@ -90,9 +60,9 @@ function run(widths: number[], cx: number, gap: number) {
   })
 }
 
-export function geometry(q: Puzzle, w: number, h: number, vw: number, dark: boolean, study: Cell[] = []): Geo {
+export function geometry(q: Puzzle, w: number, h: number, vw: number, vh: number, dark: boolean, study: Cell[] = []): Geo {
   const c = palette(dark)
-  const s = cellPx(q, vw)
+  const s = cellPx(q, vw, vh)
   const cs = Math.min(s, Math.floor((Math.min(vw, 760) - 28 - 16) / 3))
   const choiceCount = q.touch ? 0 : q.choices.length
   const cells: Box[] = []
@@ -141,7 +111,7 @@ export function geometry(q: Puzzle, w: number, h: number, vw: number, dark: bool
       lineOf([{ cell: 0 }, { glue: '→', w: 30, size: 30, fill: dark ? '#64748b' : '#94a3b8' }, { slot: true }], 0, 12)
       break
     case 'field': {
-      const B = Math.min(240, vw - 40)
+      const B = fieldBoard(q, vw, vh)
       const f = st[0]
       const n = f.kind === 'field' ? f.grid.length : 8
       const hole = f.kind === 'field' && f.hole ? f.hole : { r: 0, c: 0, n: 1 }
@@ -169,23 +139,32 @@ export function geometry(q: Puzzle, w: number, h: number, vw: number, dark: bool
       break
     }
   }
-  const total = stimH + 12 + 48 + 12 + 36 + 12 + (choiceCount ? cs : 0)
+  // The choices wrap onto more rows when they don't fit across (flex-wrap, 12 apart), as on a phone held upright.
+  const perRow = Math.max(1, Math.min(choiceCount, Math.floor((w + 12) / (cs + 12))))
+  const choiceRows = choiceCount ? Math.ceil(choiceCount / perRow) : 0
+  const choicesH = choiceRows ? choiceRows * cs + (choiceRows - 1) * 12 : 0
+  const total = stimH + 12 + 48 + 12 + 36 + 12 + choicesH
   const top = Math.max(8, (h - total) / 2)
   const down = (b: Box) => ({ ...b, y: b.y + top })
   const low = top + stimH + 120
-  const cxs = run(Array(choiceCount).fill(cs), cx, 12)
+  const choiceBoxes: Box[] = []
+  for (let r = 0; r < choiceRows; r++) {
+    const inRow = Math.min(perRow, choiceCount - r * perRow)
+    run(Array(inRow).fill(cs), cx, 12).forEach((x) => choiceBoxes.push({ x, y: low + r * (cs + 12), s: cs }))
+  }
   // Picture Memory's study: the pictures at 104 px, 12 apart, centred.
   const sxs = run(Array(study.length).fill(104), cx, 12)
   return {
     cells: cells.map(down),
     slot: slot ? down(slot) : null,
     glue: glue.map((g) => ({ ...g, y: g.y + top })),
-    choices: cxs.map((x) => ({ x, y: low, s: cs })),
+    choices: choiceBoxes,
     field: field ? { box: down(field.box), hole: down(field.hole) } : undefined,
     study: sxs.map((x) => ({ x, y: h / 2 - 52 - 20, s: 104 })),
     top,
     note: top + stimH + 12 + 24,
     s,
+    bottom: top + total,
   }
 }
 
@@ -224,7 +203,7 @@ export function Board({ t, script }: { t: number; script: Script }) {
   const st = useStage()
   const c = palette(st.dark)
   const q = script.puzzle
-  const g = geometry(q, st.w, st.h, st.vw, st.dark, script.memory?.cells)
+  const g = geometry(q, st.w, st.h, st.vw, st.vh ?? 800, st.dark, script.memory?.cells)
   const step = script.step ?? 0.4
   const appearAt = (i: number) => script.appear + i * step
   const pop = (i: number) => outBack(p(t, appearAt(i), appearAt(i) + 0.4))
@@ -336,8 +315,10 @@ export function Board({ t, script }: { t: number; script: Script }) {
       if (o > 0) out.push(<path key={`x${i}`} d={`M ${b.x + b.s * 0.25} ${b.y + b.s * 0.25} L ${b.x + b.s * 0.75} ${b.y + b.s * 0.75}`} stroke="#94a3b8" strokeWidth={5} strokeLinecap="round" opacity={o * 0.8} />)
     })
   }
+  // If it still doesn't fit (a very short screen), the whole drawing shrinks to fit, rather than running off the edge.
+  const need = Math.max(st.h, g.bottom + 8)
   return (
-    <Paper>
+    <Paper h={need}>
       {out}
       {script.over?.(g, t)}
     </Paper>

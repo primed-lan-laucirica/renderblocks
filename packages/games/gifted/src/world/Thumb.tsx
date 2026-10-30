@@ -121,7 +121,7 @@ export const Thumb = memo(function Thumb({ puzzle, dark, solved = false }: { puz
         </linearGradient>
       </defs>
       <rect width={W} height={H} fill={`url(#thumb-bg-${dark ? 'd' : 'l'})`} />
-      <StageProvider value={{ w: W, h: H, vw: 760, dark }}>{body}</StageProvider>
+      <StageProvider value={{ w: W, h: H, vw: 760, vh: 800, dark }}>{body}</StageProvider>
       {(puzzle.speak || puzzle.touch?.clip) && (
         <text x={16} y={50} fontSize={40}>
           🔊

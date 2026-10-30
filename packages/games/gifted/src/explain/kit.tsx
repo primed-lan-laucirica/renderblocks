@@ -19,6 +19,8 @@ export interface Stage {
   w: number
   h: number
   vw: number
+  /** The screen's height (cells shrink to fit a short screen, as the puzzle's do). */
+  vh?: number
   dark: boolean
   /** Drawn in real screen pixels (an explainer): borders are the puzzle's 4 px, not scaled with the box. */
   px?: boolean

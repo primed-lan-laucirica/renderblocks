@@ -17,10 +17,11 @@ interface Props {
   dark: boolean
   /** The screen's width (cells are sized from it, as the puzzle's are). */
   vw: number
+  vh: number
   onFinished: () => void
 }
 
-export function Explainer({ scene, go, still = 0, dark, vw, onFinished }: Props) {
+export function Explainer({ scene, go, still = 0, dark, vw, vh, onFinished }: Props) {
   const { t, loaded, start } = useScenePlayer(scene, VOICE, { still, onFinished })
   const box = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState<{ w: number; h: number } | null>(null)
@@ -54,7 +55,7 @@ export function Explainer({ scene, go, still = 0, dark, vw, onFinished }: Props)
     <div ref={box} className="absolute inset-0 select-none" data-explainer={scene.id}>
       <div ref={sceneEl} className="absolute inset-0">
         {size && (
-          <StageProvider value={{ ...size, vw, dark, px: true }}>
+          <StageProvider value={{ ...size, vw, vh, dark, px: true }}>
             <Scene t={t} />
           </StageProvider>
         )}

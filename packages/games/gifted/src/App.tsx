@@ -10,6 +10,7 @@ import { MAX_LEVEL, generate } from './generators'
 import { chooseGen, loadProgress, record, type Progress } from './adaptive'
 import { playAural, playEffect, playFeedback, playVoice, playDirection, stopVoice } from './sounds'
 import { useDarkMode } from './useDarkMode'
+import { cellPx as cellPxFor, fieldBoard } from './sizing'
 import { SUBTESTS, SUBTEST_HINT, SUBTEST_NAME, type Item, type SubtestId } from './types'
 
 /**
@@ -103,8 +104,12 @@ function App({ services }: GameProps) {
   const slotRef = useRef<HTMLDivElement>(null)
   /** Cells are sized to fit the screen — a fixed size overflows in portrait. */
   const [vw, setVw] = useState(() => (typeof window === 'undefined' ? 390 : window.innerWidth))
+  const [vh, setVh] = useState(() => (typeof window === 'undefined' ? 800 : window.innerHeight))
   useEffect(() => {
-    const onResize = () => setVw(window.innerWidth)
+    const onResize = () => {
+      setVw(window.innerWidth)
+      setVh(window.innerHeight)
+    }
     window.addEventListener('resize', onResize)
     window.addEventListener('orientationchange', onResize)
     return () => {
@@ -374,48 +379,8 @@ function App({ services }: GameProps) {
    * otherwise a figure at the same logical size looks bigger in the answer
    * row and "which is the same size" becomes unanswerable.
    */
-  const cellPx = (() => {
-    // Largest cell that lets `count` of them (plus any glue glyph) fit the
-    // width we actually have, capped at the size the layout would like.
-    const GAP = 8
-    const PAD = 28
-    const fit = (count: number, extra = 0) =>
-      Math.floor((Math.min(vw, 760) - PAD - extra - (count - 1) * GAP) / count)
-    const cap = (desired: number, count: number, extra = 0) =>
-      Math.max(44, Math.min(desired, fit(count, extra)))
-
-    switch (item.layout) {
-      case 'classify':
-        // three stimuli + the "+" glyph + the answer slot
-        return cap(88, 4, 30)
-      case 'row':
-        return cap(88, Math.max(item.stimulus.length, 4))
-      case 'matrix3':
-        return cap(76, 3)
-      case 'matrix2':
-        return cap(88, 2)
-      case 'pairs':
-        return cap(68, 2, 30)
-      case 'equation':
-        return cap(68, item.stimulus.length, 20)
-      case 'fold':
-        return cap(136, 2, 30)
-      case 'touchGrid':
-        return cap(84, 3)
-      case 'lone':
-        return cap(120, 3)
-      case 'field': {
-        const f = item.stimulus[0]
-        if (f.kind === 'field' && f.hole) {
-          const board = Math.min(240, vw - 40)
-          return Math.round((f.hole.n / f.grid.length) * board)
-        }
-        return cap(88, 3)
-      }
-      default:
-        return cap(88, 4)
-    }
-  })()
+  // Sized to fit the screen's width and height (sizing.ts; the explainers use the same rule).
+  const cellPx = cellPxFor(item, vw, vh)
   const px = { width: cellPx, height: cellPx }
 
   const frame = (extra = '') =>
@@ -565,7 +530,7 @@ function App({ services }: GameProps) {
         return (
           <div
             className={`${frame()} relative`}
-            style={{ width: Math.min(240, vw - 40), height: Math.min(240, vw - 40) }}
+            style={{ width: fieldBoard(item, vw, vh), height: fieldBoard(item, vw, vh) }}
           >
             <CellView cell={f} dark={isDark} className="w-full h-full" />
             {hole && (
@@ -737,7 +702,7 @@ function App({ services }: GameProps) {
       {/* The body: the puzzle, or its explainer over it (the explainer draws in the same boxes, then hands over). */}
       <div className="relative flex-1 min-h-0 w-full max-w-3xl flex flex-col">
       <div
-        className="flex-1 min-h-0 w-full flex flex-col items-center justify-center gap-3 overflow-y-auto py-1"
+        className="flex-1 min-h-0 w-full flex flex-col items-center justify-center-safe gap-3 overflow-y-auto py-1"
         style={{ opacity: explaining && !handing ? 0 : 1, transition: 'opacity 450ms', pointerEvents: explaining ? 'none' : undefined }}
       >
         <AnimatePresence mode="wait">
@@ -849,6 +814,7 @@ function App({ services }: GameProps) {
             still={replay ? 0 : posterT(EXPLAINERS[explaining]!)}
             dark={isDark}
             vw={vw}
+            vh={vh}
             onFinished={finishExplainer}
           />
         </div>
