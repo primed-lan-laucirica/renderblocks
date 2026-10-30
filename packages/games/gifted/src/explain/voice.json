@@ -55,29 +55,33 @@
     "file": "what-comes-next-28aeb7.mp3",
     "dur": 1.06
   },
-  "Look across the top row.": {
-    "file": "look-across-the-top-row-f659d1.mp3",
-    "dur": 1.37
+  "Look at the box above the empty one.": {
+    "file": "look-at-the-box-above-the-empty-one-c9b855.mp3",
+    "dur": 1.78
   },
-  "The big square turns small.": {
-    "file": "the-big-square-turns-small-fa4e11.mp3",
-    "dur": 1.44
+  "Up and down, the shape stays the same. A triangle.": {
+    "file": "up-and-down-the-shape-stays-the-same-a-t-336594.mp3",
+    "dur": 3.67
   },
   "Now look across the bottom row.": {
     "file": "now-look-across-the-bottom-row-71e034.mp3",
     "dur": 2.04
   },
-  "The big red square turns small too.": {
-    "file": "the-big-red-square-turns-small-too-3c4c29.mp3",
+  "Across, the color stays the same. Red.": {
+    "file": "across-the-color-stays-the-same-red-2b5397.mp3",
+    "dur": 2.38
+  },
+  "So the empty box needs a red triangle.": {
+    "file": "so-the-empty-box-needs-a-red-triangle-f9e36d.mp3",
     "dur": 2.11
   },
-  "Which one fills the empty box?": {
-    "file": "which-one-fills-the-empty-box-f33da1.mp3",
-    "dur": 1.46
-  },
-  "The small red square!": {
-    "file": "the-small-red-square-f3aa30.mp3",
+  "Which one is a red triangle?": {
+    "file": "which-one-is-a-red-triangle-bb9492.mp3",
     "dur": 1.37
+  },
+  "This one!": {
+    "file": "this-one-5630ab.mp3",
+    "dur": 0.82
   },
   "Fill the empty box.": {
     "file": "fill-the-empty-box-46fb6e.mp3",

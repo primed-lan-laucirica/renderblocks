@@ -40,21 +40,34 @@ export const figureSeries = explainer(
   }),
 )
 
+// As the real puzzles are made: down each column the shape stays the same, across each row the color does.
 export const figureMatrix = explainer(
   'figureMatrix',
   'Figure Matrices',
-  ['Look across the top row.', 'The big square turns small.', 'Now look across the bottom row.', 'The big red square turns small too.', 'Which one fills the empty box?', 'The small red square!', { say: 'Now you try.', pause: 0.6 }, 'Fill the empty box.'],
+  [
+    'Look at the box above the empty one.',
+    'Up and down, the shape stays the same. A triangle.',
+    'Now look across the bottom row.',
+    'Across, the color stays the same. Red.',
+    'So the empty box needs a red triangle.',
+    'Which one is a red triangle?',
+    'This one!',
+    { say: 'Now you try.', pause: 0.6 },
+    'Fill the empty box.',
+  ],
   (L) => ({
-    puzzle: { layout: 'matrix2', stimulus: [shape('square', BLUE), shape('square', BLUE, 1, 'solid', 0.5), shape('square', RED), Q], blankIndex: 3, choices: [shape('square', RED), shape('square', RED, 1, 'solid', 0.5), shape('square', BLUE, 1, 'solid', 0.5)], answer: 1 },
+    puzzle: { layout: 'matrix2', stimulus: [shape('circle', BLUE), shape('triangle', BLUE), shape('circle', RED), Q], blankIndex: 3, choices: [shape('circle', RED), shape('triangle', RED), shape('triangle', BLUE)], answer: 1 },
     appear: 0.2,
     step: 0.3,
     marks: [
-      { cells: [0, 1], from: L[0].time, to: L[2].time },
-      { cells: [2, 3], from: L[2].time, to: L[5].end },
+      { cells: [1, 3], from: L[0].time, to: L[2].time },
+      { cells: [2, 3], from: L[2].time, to: L[4].time },
+      { cells: [1, 3], from: L[4].time, to: L[6].end },
+      { cells: [2, 3], from: L[4].time, to: L[6].end },
     ],
-    note: { text: 'big → small', from: L[1].time + 0.2 },
-    choices: L[4].time,
-    answer: [L[5].time + 0.1, L[5].time + 1.1],
+    note: { text: 'red triangle', from: L[4].time + 0.3 },
+    choices: L[5].time,
+    answer: [L[6].time + 0.1, L[6].time + 1.1],
   }),
 )
 
