@@ -16,5 +16,8 @@
   },
   "devDependencies": {
     "vitest": "^5.0.1"
+  },
+  "scripts": {
+    "voice": "node scripts/voice.mjs"
   }
 }

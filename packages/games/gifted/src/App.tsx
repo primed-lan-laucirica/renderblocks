@@ -1,6 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
 import type { GameProps } from '@renderblocks/kernel'
+import { ZOOM_MS, zoomIn, zoomOut } from '@renderblocks/scene'
+import { EXPLAINERS, posterT } from './explain'
+import { Explainer } from './explain/Explainer'
+import { Islands, type IslandsHandle, type Target } from './world/Islands'
 import { CellView } from './Figure'
 import { MAX_LEVEL, generate } from './generators'
 import { chooseGen, loadProgress, record, type Progress } from './adaptive'
@@ -48,6 +52,8 @@ function MemoryStudy({ cells, ms, dark, onDone }: { cells: Item['stimulus']; ms:
 }
 
 const STORAGE_KEY = 'progress'
+/** The puzzle types whose explainer he has watched to the end. */
+const EXPLAINED_KEY = 'explained'
 /** Long enough to see the answer land and hear the "yes", short enough not to drag. */
 const ADVANCE_MS = 1700
 
@@ -59,6 +65,24 @@ function App({ services }: GameProps) {
   const recent = useRef<SubtestId[]>([])
   /** null = menu; 'mixed' = adaptive mix; otherwise practise one subtest. */
   const [mode, setMode] = useState<SubtestId | 'mixed' | null>(null)
+  const [explained, setExplained] = useState<SubtestId[]>(() => {
+    try {
+      const v = JSON.parse(services.storage.get(EXPLAINED_KEY) ?? '[]')
+      return Array.isArray(v) ? v : []
+    } catch {
+      return []
+    }
+  })
+  /** An explainer asked for again (▶), and how many times (each is a fresh play). */
+  const [replay, setReplay] = useState<SubtestId | null>(null)
+  const [replays, setReplays] = useState(0)
+  /** The zoom in has landed. */
+  const [ready, setReady] = useState(false)
+  const islands = useRef<IslandsHandle>(null)
+  const layer = useRef<HTMLDivElement>(null)
+  const fill = useRef<HTMLDivElement>(null)
+  const explainWrap = useRef<HTMLDivElement>(null)
+  const closing = useRef(false)
   const [item, setItem] = useState<Item>(() => {
     const p = loadProgress(services.storage.get(STORAGE_KEY))
     const sub = chooseGen(p, [])
@@ -91,11 +115,73 @@ function App({ services }: GameProps) {
   }, [])
 
 
+  // The explainer on screen: one asked for again, or the first time he meets a type that has one.
+  const explaining = replay ?? (mode !== null && EXPLAINERS[item.sub] && !explained.includes(item.sub) ? item.sub : null)
+
+  // What glows on the islands: the newest type while it's still new, else Mixed practice.
+  const next: Target = (() => {
+    const newest = [...SUBTESTS].reverse().find((s) => progress.unlocked.includes(s))
+    return newest && progress.levels[newest] < 3 && !explained.includes(newest) ? newest : 'mixed'
+  })()
+
+  const open = (id: Target) => {
+    setReady(false)
+    start(id)
+  }
+  // Going in: from its window to the whole screen.
+  useLayoutEffect(() => {
+    if (mode === null) return
+    const from = islands.current?.rectOf(mode)
+    const el = layer.current
+    closing.current = false
+    if (!from || !el) return setReady(true)
+    zoomIn(el, from, fill.current)
+    const id = window.setTimeout(() => setReady(true), ZOOM_MS)
+    return () => window.clearTimeout(id)
+  }, [mode])
+  // Coming out: back into its window.
+  const close = () => {
+    if (mode === null || closing.current) return
+    closing.current = true
+    stopVoice()
+    const done = () => {
+      setMode(null)
+      setReplay(null)
+      setReady(false)
+    }
+    const from = islands.current?.rectOf(mode)
+    const el = layer.current
+    if (!from || !el) return done()
+    zoomOut(el, from, fill.current, done)
+  }
+  const closeRef = useRef(close)
+  useLayoutEffect(() => {
+    closeRef.current = close
+  })
+
+  /** The explainer's last frame dissolves into the puzzle it was leading to. */
+  const finishExplainer = () => {
+    const sub = explaining
+    if (!sub) return
+    const done = () => {
+      // It has just said the instruction; the puzzle needn't say it again.
+      lastSaid.current = sub
+      if (!explained.includes(sub)) {
+        const e = [...explained, sub]
+        setExplained(e)
+        services.storage.set(EXPLAINED_KEY, JSON.stringify(e))
+      }
+      setReplay(null)
+    }
+    const el = explainWrap.current
+    if (!el) return done()
+    el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, fill: 'forwards' }).onfinish = done
+  }
+
   useEffect(() => {
     return services.onBack(() => {
       if (mode !== null) {
-        stopVoice()
-        setMode(null)
+        closeRef.current()
         return true
       }
       return false
@@ -116,7 +202,7 @@ function App({ services }: GameProps) {
   useEffect(() => {
     // Following Directions and Aural Reasoning: the spoken sentence IS the item.
     // Only once a puzzle is on screen (the menu has one ready behind it).
-    if (!mode) return
+    if (!mode || explaining) return
     if (item.speak || item.touch?.clip) lastSaid.current = item.sub
     if (item.speak) {
       const t = window.setTimeout(() => playAural(item.speak!.clip), 250)
@@ -141,7 +227,7 @@ function App({ services }: GameProps) {
       window.clearTimeout(t)
       stopVoice()
     }
-  }, [item, mode])
+  }, [item, mode, explaining])
 
   const nextItem = (p: Progress) => {
     const sub = mode && mode !== 'mixed' ? mode : chooseGen(p, recent.current)
@@ -540,98 +626,25 @@ function App({ services }: GameProps) {
   const level = progress.levels[item.sub]
   const accuracy = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : 0
 
-  /* ---------- subtest menu ---------- */
-  if (mode === null) {
-    return (
-      <div
-        className={`h-dvh overflow-y-auto flex flex-col items-center p-4 gap-4 select-none ${
-          isDark
-            ? 'bg-linear-to-b from-slate-800 via-slate-900 to-slate-950'
-            : 'bg-linear-to-b from-violet-50 via-cloud to-cloud-lavender'
-        }`}
+  // The score and the light switch, top right (on the islands; the puzzle screen has its own).
+  const corner = (
+    <>
+      <span className={`text-lg font-extrabold ${isDark ? 'text-violet-200' : 'text-white'}`} style={{ textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+        {progress.correct}
+        {progress.seen >= 5 && <span className="ml-1 text-sm opacity-80">{accuracy}%</span>}
+      </span>
+      <button
+        type="button"
+        onClick={toggleDarkMode}
+        className={`p-2 rounded-full ${isDark ? 'bg-gray-700 text-yellow-300' : 'bg-white/80 text-gray-700'}`}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       >
-        <div className="w-full max-w-3xl flex items-center justify-between shrink-0">
-          <h1 className={`text-2xl font-extrabold ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
-            Gifted
-          </h1>
-          <div className="flex items-center gap-3">
-            <span className={`text-lg font-extrabold ${isDark ? 'text-violet-300' : 'text-violet-500'}`}>
-              {progress.correct}
-              {progress.seen >= 5 && (
-                <span className={`ml-1 text-sm ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                  {accuracy}%
-                </span>
-              )}
-            </span>
-            <button
-              type="button"
-              onClick={toggleDarkMode}
-              className={`p-2 rounded-full ${isDark ? 'bg-gray-700 text-yellow-300' : 'bg-gray-200 text-gray-700'}`}
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {isDark ? '☀️' : '🌙'}
-            </button>
-          </div>
-        </div>
+        {isDark ? '☀️' : '🌙'}
+      </button>
+    </>
+  )
 
-        <div className="w-full max-w-3xl grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <motion.button
-            type="button"
-            onPointerDown={() => start('mixed')}
-            whileTap={{ scale: 0.95 }}
-            className="col-span-2 sm:col-span-3 rounded-3xl bg-violet-500 text-white p-4 shadow-playful flex items-center justify-between"
-          >
-            <span className="text-2xl font-extrabold">🎲 Mixed practice</span>
-            <span className="text-sm font-bold opacity-90">
-              {progress.unlocked.length} of {SUBTESTS.length} unlocked
-            </span>
-          </motion.button>
-
-          {SUBTESTS.map((sub) => {
-            const lv = progress.levels[sub]
-            const unlocked = progress.unlocked.includes(sub)
-            return (
-              <motion.button
-                key={sub}
-                type="button"
-                onPointerDown={() => start(sub)}
-                whileTap={{ scale: 0.95 }}
-                className={`rounded-3xl p-3 border-4 text-left flex flex-col gap-1 ${
-                  isDark
-                    ? 'bg-slate-800 border-slate-700'
-                    : 'bg-white border-slate-200 shadow-playful'
-                } ${unlocked ? '' : 'opacity-70'}`}
-              >
-                <span className={`text-base font-extrabold leading-tight ${isDark ? 'text-slate-100' : 'text-slate-700'}`}>
-                  {SUBTEST_NAME[sub]}
-                </span>
-                <span className={`text-xs font-bold ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                  {SUBTEST_HINT[sub]}
-                </span>
-                <span className="flex gap-1 mt-1">
-                  {Array.from({ length: MAX_LEVEL }, (_, i) => (
-                    <span
-                      key={i}
-                      className={`w-2 h-2 rounded-full ${
-                        i < lv ? 'bg-violet-500' : isDark ? 'bg-slate-700' : 'bg-slate-300'
-                      }`}
-                    />
-                  ))}
-                  {!unlocked && (
-                    <span className={`ml-1 text-[10px] font-extrabold ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
-                      not yet in mix
-                    </span>
-                  )}
-                </span>
-              </motion.button>
-            )
-          })}
-        </div>
-      </div>
-    )
-  }
-
-  return (
+  const puzzle = mode !== null && (
     <div
       className={`h-dvh overflow-hidden flex flex-col items-center p-3 gap-2 select-none ${
         isDark
@@ -642,10 +655,7 @@ function App({ services }: GameProps) {
       <div className="w-full max-w-3xl flex items-center justify-between gap-1.5 shrink-0">
         <button
           type="button"
-          onPointerDown={() => {
-            stopVoice()
-            setMode(null)
-          }}
+          onPointerDown={close}
           className={`w-9 h-9 shrink-0 rounded-full text-lg font-extrabold ${
             isDark ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
           }`}
@@ -654,8 +664,23 @@ function App({ services }: GameProps) {
           ←
         </button>
         <div className="min-w-0">
-          <div className="text-[10px] font-extrabold uppercase tracking-wide truncate text-violet-400">
+          <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wide truncate text-violet-400">
             {SUBTEST_NAME[item.sub]}
+            {/* Watch how it works again. */}
+            {EXPLAINERS[item.sub] && (
+              <button
+                type="button"
+                onPointerDown={() => {
+                  stopVoice()
+                  setReplays((n) => n + 1)
+                  setReplay(item.sub)
+                }}
+                className="w-6 h-6 rounded-full bg-violet-500 text-white text-[11px] leading-none flex items-center justify-center"
+                aria-label="Watch how it works"
+              >
+                ▶
+              </button>
+            )}
           </div>
           {/* A tap on the instruction says it (the same as 🔊). */}
           <button
@@ -821,6 +846,31 @@ function App({ services }: GameProps) {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  )
+
+  return (
+    <div className="h-dvh w-full relative overflow-hidden">
+      <Islands ref={islands} progress={progress} dark={isDark} next={next} covered={mode !== null} onOpen={open} corner={corner} />
+      {mode !== null && (
+        <div ref={layer} className="absolute inset-0 z-10">
+          {/* What fills in round it as it grows out of its window. */}
+          <div ref={fill} className={`absolute inset-0 ${isDark ? 'bg-slate-900' : 'bg-violet-50'}`} />
+          <div className="relative h-full w-full">{puzzle}</div>
+          {explaining && EXPLAINERS[explaining] && (
+            <div ref={explainWrap} className="absolute inset-0">
+              <Explainer
+                key={`${explaining}-${replays}`}
+                scene={EXPLAINERS[explaining]!}
+                go={ready}
+                still={replay ? 0 : posterT(EXPLAINERS[explaining]!)}
+                onFinished={finishExplainer}
+                onBack={replay ? () => setReplay(null) : close}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
