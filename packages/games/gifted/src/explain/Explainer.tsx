@@ -1,8 +1,8 @@
 /**
  * An explainer, with no player around it: it plays in the puzzle screen's
  * body, under the puzzle's own header, drawn in the puzzle's own boxes and
- * colours, starts by itself, and at the end dissolves into the real puzzle
- * underneath (the caller fades one out and the other in).
+ * colours, starts by itself, and on "Now you try." switches straight to the
+ * real puzzle underneath (the caller swaps them in a quick fade).
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useScenePlayer, type SceneDef } from '@renderblocks/scene'
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export function Explainer({ scene, go, still = 0, dark, vw, vh, onFinished }: Props) {
-  const { t, loaded, start } = useScenePlayer(scene, VOICE, { still, onFinished })
+  const { t, loaded, start } = useScenePlayer(scene, VOICE, { still, onFinished, holdMs: 0 })
   const box = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState<{ w: number; h: number } | null>(null)
   useLayoutEffect(() => {

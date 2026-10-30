@@ -14,7 +14,7 @@ const each = (cells: number[], from: number, to: number, until?: number) =>
 export const figureClassify = explainer(
   'figureClassify',
   'Figure Classification',
-  ['Look at these three shapes.', 'They are all different shapes.', 'But they are all blue.', 'Which one is blue too?', 'The blue star!', 'Find what is the same about all three.', { say: 'Now you try.', pause: 0.6 }, 'Which one goes with these?'],
+  ['Look at these three shapes.', 'They are all different shapes.', 'But they are all blue.', 'Which one is blue too?', 'The blue star!', 'Find what is the same about all three.', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'classify', stimulus: [shape('circle', BLUE, 1, 'outline', 0.8), shape('triangle', BLUE, 2), shape('square', BLUE, 3, 'outline')], blankIndex: -1, choices: [shape('triangle', RED, 2), shape('star', BLUE), shape('square', YELLOW)], answer: 1 },
     appear: L[0].time + 0.2,
@@ -29,7 +29,7 @@ export const figureClassify = explainer(
 export const figureSeries = explainer(
   'figureSeries',
   'Figure Series',
-  ['Look at these shapes in a row.', 'Red, blue, red.', 'The colors take turns.', 'So what comes next?', 'Blue comes next!', { say: 'Now you try.', pause: 0.6 }, 'What comes next?'],
+  ['Look at these shapes in a row.', 'Red, blue, red.', 'The colors take turns.', 'So what comes next?', 'Blue comes next!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'row', stimulus: [shape('square', RED), shape('square', BLUE), shape('square', RED), Q], blankIndex: 3, choices: [shape('square', BLUE, 2), shape('square', BLUE), shape('square', YELLOW)], answer: 1 },
     appear: L[0].time + 0.2,
@@ -52,8 +52,7 @@ export const figureMatrix = explainer(
     'So the empty box needs a red triangle.',
     'Which one is a red triangle?',
     'This one!',
-    { say: 'Now you try.', pause: 0.6 },
-    'Fill the empty box.',
+    { say: 'Now you try.', pause: 0.3 }
   ],
   (L) => ({
     puzzle: { layout: 'matrix2', stimulus: [shape('circle', BLUE), shape('triangle', BLUE), shape('circle', RED), Q], blankIndex: 3, choices: [shape('circle', RED), shape('triangle', RED), shape('triangle', BLUE)], answer: 1 },
@@ -78,7 +77,7 @@ const FIELD: Cell = { kind: 'field', grid: Array.from({ length: 8 }, () => Array
 export const patternCompletion = explainer(
   'patternCompletion',
   'Pattern Completion',
-  ['Here is a pattern with a hole in it.', 'The stripes go up and down.', 'Which piece fits the hole?', 'This one has the stripes in the wrong places.', 'This one breaks the stripes.', 'This one keeps the stripes going!', { say: 'Now you try.', pause: 0.6 }, 'Which piece fits the hole?'],
+  ['Here is a pattern with a hole in it.', 'The stripes go up and down.', 'Which piece fits the hole?', 'This one has the stripes in the wrong places.', 'This one breaks the stripes.', 'This one keeps the stripes going!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: {
       layout: 'field',
@@ -126,7 +125,7 @@ const sheet = (holes: [number, number][]): Cell => ({ kind: 'sheet', size: 4, ho
 export const paperFolding = explainer(
   'paperFolding',
   'Paper Folding',
-  ['This paper is folded in half.', 'A hole is punched through both layers.', 'Now open it up.', 'There is a hole on each side of the fold.', 'Which one shows that?', 'This one, with two holes!', { say: 'Now you try.', pause: 0.6 }, 'Which one is it when it opens up?'],
+  ['This paper is folded in half.', 'A hole is punched through both layers.', 'Now open it up.', 'There is a hole on each side of the fold.', 'Which one shows that?', 'This one, with two holes!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'fold', stimulus: [{ kind: 'fold', axis: 'h', size: 4, punches: [[1, 1]] }], blankIndex: -1, choices: [sheet([[1, 1]]), sheet([[1, 1], [2, 1]]), sheet([[1, 1], [1, 2]])], answer: 1 },
     appear: L[0].time + 0.2,

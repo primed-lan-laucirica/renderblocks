@@ -37,7 +37,7 @@ function Hops({ g, t, at }: { g: Geo; t: number; at: number[] }) {
 export const numberSeries = explainer(
   'numberSeries',
   'Number Series',
-  ['Here are some numbers in a row.', 'Each one is two more than the one before.', { say: 'Two, four, six.', pause: 0.2 }, 'So what comes next?', 'Two more than six is eight.', { say: 'Now you try.', pause: 0.6 }, 'What number comes next?'],
+  ['Here are some numbers in a row.', 'Each one is two more than the one before.', { say: 'Two, four, six.', pause: 0.2 }, 'So what comes next?', 'Two more than six is eight.', { say: 'Now you try.', pause: 0.3 }],
   (L) => {
     const count = (i: number) => L[2].time + (i * (L[2].end - L[2].time)) / 3
     return {
@@ -73,7 +73,7 @@ function PlusTwo({ g, t, from }: { g: Geo; t: number; from: number }) {
 export const numberAnalogy = explainer(
   'numberAnalogy',
   'Number Analogies',
-  ['Three goes to five.', 'Six goes to eight.', 'Each time, it goes up by two.', 'So what does four go to?', 'Two more than four is six!', { say: 'Now you try.', pause: 0.6 }, 'Finish the pair.'],
+  ['Three goes to five.', 'Six goes to eight.', 'Each time, it goes up by two.', 'So what does four go to?', 'Two more than four is six!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'pairs', stimulus: [num(3), num(5), num(6), num(8), num(4), Q], blankIndex: 5, choices: [num(5), num(6), num(7)], answer: 1 },
     appear: 0.2,
@@ -93,7 +93,7 @@ export const numberAnalogy = explainer(
 export const numberPuzzle = explainer(
   'numberPuzzle',
   'Number Puzzles',
-  ['Here is a number sentence.', 'Five is the same as three and some more.', 'What do you add to three to make five?', 'Three and two make five!', { say: 'Now you try.', pause: 0.6 }, 'What is missing?'],
+  ['Here is a number sentence.', 'Five is the same as three and some more.', 'What do you add to three to make five?', 'Three and two make five!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'equation', stimulus: [num(5), text('='), num(3), text('+'), Q], blankIndex: -1, choices: [num(1), num(2), num(4)], answer: 1 },
     appear: L[0].time + 0.2,

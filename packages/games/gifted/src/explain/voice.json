@@ -27,10 +27,6 @@
     "file": "now-you-try-10e874.mp3",
     "dur": 0.91
   },
-  "Which one goes with these?": {
-    "file": "which-one-goes-with-these-49dd43.mp3",
-    "dur": 1.34
-  },
   "Look at these shapes in a row.": {
     "file": "look-at-these-shapes-in-a-row-c072fd.mp3",
     "dur": 1.54
@@ -50,10 +46,6 @@
   "Blue comes next!": {
     "file": "blue-comes-next-35e7a8.mp3",
     "dur": 1.15
-  },
-  "What comes next?": {
-    "file": "what-comes-next-28aeb7.mp3",
-    "dur": 1.06
   },
   "Look at the box above the empty one.": {
     "file": "look-at-the-box-above-the-empty-one-c9b855.mp3",
@@ -82,10 +74,6 @@
   "This one!": {
     "file": "this-one-5630ab.mp3",
     "dur": 0.82
-  },
-  "Fill the empty box.": {
-    "file": "fill-the-empty-box-46fb6e.mp3",
-    "dur": 1.27
   },
   "Here is a pattern with a hole in it.": {
     "file": "here-is-a-pattern-with-a-hole-in-it-e541b7.mp3",
@@ -135,10 +123,6 @@
     "file": "this-one-with-two-holes-5321ee.mp3",
     "dur": 1.39
   },
-  "Which one is it when it opens up?": {
-    "file": "which-one-is-it-when-it-opens-up-36a271.mp3",
-    "dur": 1.61
-  },
   "Look at these three pictures.": {
     "file": "look-at-these-three-pictures-1940f2.mp3",
     "dur": 1.44
@@ -187,10 +171,6 @@
     "file": "a-bird-eats-a-worm-cd89b7.mp3",
     "dur": 1.39
   },
-  "Finish the pair.": {
-    "file": "finish-the-pair-e116a7.mp3",
-    "dur": 1.08
-  },
   "Look at the apples.": {
     "file": "look-at-the-apples-962254.mp3",
     "dur": 1.2
@@ -227,10 +207,6 @@
     "file": "so-the-car-does-not-belong-257c45.mp3",
     "dur": 1.46
   },
-  "Which one does not belong?": {
-    "file": "which-one-does-not-belong-cf5266.mp3",
-    "dur": 1.42
-  },
   "Look at these two pictures.": {
     "file": "look-at-these-two-pictures-102d81.mp3",
     "dur": 1.42
@@ -259,10 +235,6 @@
     "file": "the-paintbrush-b089f6.mp3",
     "dur": 1.13
   },
-  "Look, then find them.": {
-    "file": "look-then-find-them-bb08d0.mp3",
-    "dur": 1.34
-  },
   "Listen to the question.": {
     "file": "listen-to-the-question-075ce1.mp3",
     "dur": 1.27
@@ -278,10 +250,6 @@
   "You can eat pancakes!": {
     "file": "you-can-eat-pancakes-62096a.mp3",
     "dur": 1.49
-  },
-  "Listen, then choose.": {
-    "file": "listen-then-choose-b8e5cf.mp3",
-    "dur": 1.44
   },
   "Listen carefully, then touch.": {
     "file": "listen-carefully-then-touch-3fe807.mp3",
@@ -307,10 +275,6 @@
     "file": "touch-the-shape-between-the-two-stars-3b0995.mp3",
     "dur": 1.97
   },
-  "Listen, then touch.": {
-    "file": "listen-then-touch-b2377e.mp3",
-    "dur": 1.63
-  },
   "Here are some numbers in a row.": {
     "file": "here-are-some-numbers-in-a-row-c34d05.mp3",
     "dur": 1.73
@@ -326,10 +290,6 @@
   "Two more than six is eight.": {
     "file": "two-more-than-six-is-eight-2abeb3.mp3",
     "dur": 1.25
-  },
-  "What number comes next?": {
-    "file": "what-number-comes-next-8bcdb0.mp3",
-    "dur": 1.34
   },
   "Three goes to five.": {
     "file": "three-goes-to-five-ba0e06.mp3",
@@ -366,9 +326,5 @@
   "Three and two make five!": {
     "file": "three-and-two-make-five-e6920e.mp3",
     "dur": 1.54
-  },
-  "What is missing?": {
-    "file": "what-is-missing-177af3.mp3",
-    "dur": 0.89
   }
 }

@@ -18,9 +18,11 @@ interface Options {
   still?: number
   /** The last frame has been held a moment. */
   onFinished: () => void
+  /** How long the last frame is held before onFinished (default HOLD_MS). */
+  holdMs?: number
 }
 
-export function useScenePlayer(scene: SceneDef, voice: VoiceBank, { still = 0, onFinished }: Options) {
+export function useScenePlayer(scene: SceneDef, voice: VoiceBank, { still = 0, onFinished, holdMs = HOLD_MS }: Options) {
   const [t, setT] = useState(still)
   // The narration is loaded before it starts, so the first line isn't lost.
   const [loaded, setLoaded] = useState(false)
@@ -148,7 +150,7 @@ export function useScenePlayer(scene: SceneDef, voice: VoiceBank, { still = 0, o
         setT(scene.duration)
         if (!finishedRef.current) {
           finishedRef.current = true
-          window.setTimeout(() => onFinishedRef.current(), HOLD_MS)
+          window.setTimeout(() => onFinishedRef.current(), holdMs)
         }
         return
       }

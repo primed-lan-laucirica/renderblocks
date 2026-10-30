@@ -169,13 +169,12 @@ function App({ services }: GameProps) {
   /** The explainer's last frame dissolves into the puzzle it was leading to. */
   const [handing, setHanding] = useState(false)
   const finishExplainer = (skipped = false) => {
+    // Either way the puzzle then says its own instruction (the explainer ends on "Now you try.").
     const sub = explaining
     if (!sub || handing) return
     if (skipped) stopVoice()
     setHanding(true)
     window.setTimeout(() => {
-      // Watched to the end, it has just said the instruction; the puzzle needn't say it again (skipped, the puzzle says it).
-      if (!skipped) lastSaid.current = sub
       setWatched((w) => (w.includes(sub) ? w : [...w, sub]))
       if (!explained.includes(sub)) {
         const e = [...explained, sub]
@@ -184,7 +183,7 @@ function App({ services }: GameProps) {
       }
       setReplay(null)
       setHanding(false)
-    }, 450)
+    }, 200)
   }
 
   useEffect(() => {
@@ -719,7 +718,7 @@ function App({ services }: GameProps) {
       <div className="relative flex-1 min-h-0 w-full max-w-3xl flex flex-col">
       <div
         className="flex-1 min-h-0 w-full flex flex-col items-center justify-center-safe gap-3 overflow-y-auto py-1"
-        style={{ opacity: explaining && !handing ? 0 : 1, transition: 'opacity 450ms', pointerEvents: explaining ? 'none' : undefined }}
+        style={{ opacity: explaining && !handing ? 0 : 1, transition: 'opacity 200ms', pointerEvents: explaining ? 'none' : undefined }}
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -822,7 +821,7 @@ function App({ services }: GameProps) {
         </div>
       </div>
       {explaining && EXPLAINERS[explaining] && (
-        <div className="absolute inset-0" style={{ opacity: handing ? 0 : 1, transition: 'opacity 450ms' }}>
+        <div className="absolute inset-0" style={{ opacity: handing ? 0 : 1, transition: 'opacity 200ms' }}>
           <Explainer
             key={`${explaining}-${replays}`}
             scene={EXPLAINERS[explaining]!}

@@ -1,7 +1,7 @@
 /**
  * An explainer from a script: its narration (timed by the clips), what the
- * board does when, and its sounds. The narration's last two lines are always
- * "Now you try." and the puzzle's own instruction.
+ * board does when, and its sounds. The narration always ends "Now you try.",
+ * and the real puzzle appears straight after (it says its own instruction).
  */
 import { createElement } from 'react'
 import type { SceneDef, SceneEvent, VoiceLine } from '@renderblocks/scene'
@@ -29,7 +29,7 @@ export function explainer(id: SubtestId, title: string, lines: Line[], build: (L
   ]
   const Scene = ({ t }: { t: number }) => createElement(Board, { t, script })
   return {
-    scene: { id, number: 0, title, duration: L[L.length - 1].end + 1.2, events, beats: [], voice: L.map(({ time, say }) => ({ time, say })), render: 'svg', Scene },
+    scene: { id, number: 0, title, duration: L[L.length - 1].end + 0.1, events, beats: [], voice: L.map(({ time, say }) => ({ time, say })), render: 'svg', Scene },
     example: script.puzzle,
   }
 }

@@ -9,7 +9,7 @@ const each = (cells: number[], from: number, to: number, until?: number, choice 
 export const pictureClassify = explainer(
   'pictureClassify',
   'Picture Classification',
-  ['Look at these three pictures.', 'A shirt, pants, and shoes.', 'How are they the same?', 'They are all clothes.', 'Which one is clothes too?', 'Not the bear. Not the fox.', 'The glove! A glove is clothes too.', { say: 'Now you try.', pause: 0.6 }, 'Which one goes with these?'],
+  ['Look at these three pictures.', 'A shirt, pants, and shoes.', 'How are they the same?', 'They are all clothes.', 'Which one is clothes too?', 'Not the bear. Not the fox.', 'The glove! A glove is clothes too.', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'classify', stimulus: [pic('👕'), pic('👖'), pic('👟')], blankIndex: -1, choices: [pic('🐻'), pic('🧤'), pic('🦊')], answer: 1 },
     appear: L[0].time + 0.2,
@@ -28,7 +28,7 @@ export const pictureClassify = explainer(
 export const pictureAnalogy = explainer(
   'pictureAnalogy',
   'Picture Analogies',
-  ['A monkey eats a banana.', 'A bird eats something too.', 'Which one does a bird eat?', 'Not a wrench. Not a house.', 'A bird eats a worm!', { say: 'Now you try.', pause: 0.6 }, 'Finish the pair.'],
+  ['A monkey eats a banana.', 'A bird eats something too.', 'Which one does a bird eat?', 'Not a wrench. Not a house.', 'A bird eats a worm!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'pairs', stimulus: [pic('🐒'), pic('🍌'), pic('🐦'), Q], blankIndex: 3, choices: [pic('🔧'), pic('🪱'), pic('🏠')], answer: 1 },
     appear: 0.2,
@@ -50,7 +50,7 @@ export const pictureAnalogy = explainer(
 export const pictureSeries = explainer(
   'pictureSeries',
   'Picture Series',
-  ['Look at the apples.', 'One apple. Two apples. Three apples.', 'One more each time.', 'So what comes next?', 'Four apples!', { say: 'Now you try.', pause: 0.6 }, 'What comes next?'],
+  ['Look at the apples.', 'One apple. Two apples. Three apples.', 'One more each time.', 'So what comes next?', 'Four apples!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'row', stimulus: [pic('🍎', 1), pic('🍎', 2), pic('🍎', 3), Q], blankIndex: 3, choices: [pic('🍎', 3), pic('🍎', 4), pic('🍎', 5)], answer: 1 },
     appear: L[0].time + 0.2,
@@ -64,7 +64,7 @@ export const pictureSeries = explainer(
 export const oddOneOut = explainer(
   'oddOneOut',
   'Odd One Out',
-  ['Look at these four pictures.', 'An apple, a banana, a car, and grapes.', 'Three of them are fruit.', 'The car is not a fruit.', 'So the car does not belong.', { say: 'Now you try.', pause: 0.6 }, 'Which one does not belong?'],
+  ['Look at these four pictures.', 'An apple, a banana, a car, and grapes.', 'Three of them are fruit.', 'The car is not a fruit.', 'So the car does not belong.', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'lone', stimulus: [], blankIndex: -1, choices: [pic('🍎'), pic('🍌'), pic('🚗'), pic('🍇')], answer: 2 },
     appear: 0.3,
@@ -79,7 +79,7 @@ export const oddOneOut = explainer(
 export const auralReasoning = explainer(
   'auralReasoning',
   'Aural Reasoning',
-  ['Listen to the question.', 'Which one can you eat for breakfast?', "You can't eat a teddy bear, a hammer, or a shoe.", 'You can eat pancakes!', { say: 'Now you try.', pause: 0.6 }, 'Listen, then choose.'],
+  ['Listen to the question.', 'Which one can you eat for breakfast?', "You can't eat a teddy bear, a hammer, or a shoe.", 'You can eat pancakes!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'lone', stimulus: [], blankIndex: -1, choices: [pic('🥞'), pic('🧸'), pic('🔨'), pic('👟')], answer: 0, speak: { clip: '', text: '' } },
     appear: 0.3,
@@ -92,7 +92,7 @@ export const auralReasoning = explainer(
 export const pictureMemory = explainer(
   'pictureMemory',
   'Picture Memory',
-  ['Look at these two pictures.', 'A lion and a paintbrush.', 'Remember them!', 'Now they are hiding with other pictures.', 'Find the ones you saw.', 'The lion!', 'The paintbrush!', { say: 'Now you try.', pause: 0.6 }, 'Look, then find them.'],
+  ['Look at these two pictures.', 'A lion and a paintbrush.', 'Remember them!', 'Now they are hiding with other pictures.', 'Find the ones you saw.', 'The lion!', 'The paintbrush!', { say: 'Now you try.', pause: 0.3 }],
   (L) => ({
     puzzle: { layout: 'touchGrid', stimulus: [pic('🖌️'), pic('🦁'), pic('✂️'), pic('🐔'), pic('👮'), pic('🌷')], blankIndex: -1, choices: [], answer: -1, touch: { targets: [1, 0], ordered: false, text: '' } },
     memory: { cells: [pic('🦁'), pic('🖌️')], from: 0.4, to: L[2].end + 0.6 },
@@ -117,8 +117,7 @@ export const followDirections = explainer(
     'The blue circle is both!',
     'Touch the shape between the two stars.',
     'This one!',
-    { say: 'Now you try.', pause: 0.6 },
-    'Listen, then touch.',
+    { say: 'Now you try.', pause: 0.3 }
   ],
   (L) => ({
     puzzle: {
