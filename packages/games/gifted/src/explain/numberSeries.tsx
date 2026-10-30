@@ -2,6 +2,7 @@
 /** Number Series: 2, 4, 6, ? — each is two more, so eight comes next. Laid out as the puzzle screen lays out a series. */
 import { outBack, p, smooth, type SceneDef, type SceneEvent } from '@renderblocks/scene'
 import type { Cell } from '../types'
+import type { Puzzle } from '../world/Thumb'
 import { CellBox, Paper, Slot, bodyRows, cellSize, choiceSize, narrate, palette, row, useStage } from './kit'
 
 const L = narrate([
@@ -83,3 +84,6 @@ const events: SceneEvent[] = [
 ]
 
 export const numberSeries: SceneDef = { id: 'numberSeries', number: 0, title: 'Number Series', duration: DURATION, events, beats: [], voice: L.map(({ time, say }) => ({ time, say })), render: 'svg', Scene }
+
+/** The worked example, for its window on the islands. */
+export const example: Puzzle = { layout: 'row', stimulus: [...NUMS.map(num), { kind: 'text', text: '?' }], blankIndex: 3, choices: CHOICES.map(num), answer: ANSWER }

@@ -107,7 +107,7 @@ export function Slot({ x, y, s, o = 1, cell, done = 0 }: { x: number; y: number;
   const b = s * 0.045
   return (
     <g opacity={o}>
-      <rect x={x + b / 2} y={y + b / 2} width={s - b} height={s - b} rx={s * 0.17} fill={done > 0.5 ? GREEN_FILL : c.slotFill} stroke={done > 0.5 ? GREEN : c.slot} strokeWidth={b} strokeDasharray={`${s * 0.1} ${s * 0.07}`} />
+      <rect x={x + b / 2} y={y + b / 2} width={s - b} height={s - b} rx={s * 0.17} fill={done > 0.5 ? (dark ? 'rgba(52,211,153,0.14)' : GREEN_FILL) : c.slotFill} stroke={done > 0.5 ? GREEN : c.slot} strokeWidth={b} strokeDasharray={`${s * 0.1} ${s * 0.07}`} />
       {done > 0 && cell ? (
         <svg x={x + s * 0.09} y={y + s * 0.09} width={s * 0.82} height={s * 0.82} opacity={done}>
           <CellView cell={cell} dark={dark} />

@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- by the scene contract, a scene module exports its component together with its duration and timeline */
 /** Figure Classification: three different shapes, all blue; the blue star goes with them. */
 import type { SceneDef, SceneEvent } from '@renderblocks/scene'
+import type { Puzzle } from '../world/Thumb'
 import type { Cell, Glyph } from '../types'
 import { ClassifyScene } from './classify'
 import { narrate } from './kit'
@@ -39,3 +40,6 @@ const events: SceneEvent[] = [
 ]
 
 export const figureClassify: SceneDef = { id: 'figureClassify', number: 0, title: 'Figure Classification', duration: L[7].end + 1.2, events, beats: [], voice: L.map(({ time, say }) => ({ time, say })), render: 'svg', Scene }
+
+/** The worked example, for its window on the islands. */
+export const example: Puzzle = { layout: 'classify', stimulus: THREE, blankIndex: -1, choices: CHOICES, answer: 1 }
