@@ -164,8 +164,8 @@ function RulePicker({ rule, onRule, small }: { rule: Rule; onRule: (r: Rule) => 
   )
   return (
     <div className="flex gap-2">
-      {b('ring', '⬜ Ring', '64 − 36 = 28')}
-      {b('big', '🔲 Big sneeze', '64 − 16 = 48')}
+      {b('ring', '⬜ Ring', '64 − 28 = 36')}
+      {b('big', '🔲 Big sneeze', '64 − 48 = 16')}
     </div>
   )
 }
@@ -343,7 +343,7 @@ function Play({
         setLast({ ...r.s, picked, missed })
         setFlip(false)
         setRings((x) => [...x, { n: r.s.ring, k: r.s.k }])
-        if (picked !== undefined && picked === r.s.ring) correct()
+        if (picked !== undefined && picked === r.s.out) correct()
         setOptions([])
         setRuledOut([])
         setP('flying')
@@ -383,7 +383,7 @@ function Play({
       pick: (n) => {
         if (ph !== 'guessing' || !stage) return
         // A wrong guess won't make it sneeze: a buzz, a shake of the head, and he guesses again.
-        if (n !== sneeze(stage.current.side, live.current.rule, stage.current.k)?.ring) {
+        if (n !== sneeze(stage.current.side, live.current.rule, stage.current.k)?.out) {
           wrong()
           missed = true
           wiggleUntil = performance.now() / 1000 + 0.5
@@ -661,15 +661,15 @@ function Play({
   const parts = [...rings, sneezer].map((p) => show(p.n, p.k))
   const sum = parts.length > 7 ? `${parts.slice(0, 4).join(' + ')} + … + ${parts.slice(-2).join(' + ')}` : parts.join(' + ')
   // Right first time gets the tick.
-  const right = last && last.picked !== undefined && last.picked === last.ring && !last.missed
+  const right = last && last.picked !== undefined && last.picked === last.out && !last.missed
   // Decimal sums are long (0.0036 − 0.0016 = 0.0020): smaller, so a phone shows it all.
   const long = !!last && (show(last.whole, last.k) + show(last.out, last.k) + show(last.ring, last.k)).length > 15
   // The sum as shown, as number-voice clips (said only when he taps it).
   const sumClips = !last
     ? [...numberToClips(whole), 'equals', ...numberToClips(side), 'times', ...numberToClips(side)]
     : flip
-      ? [...clipsOf(last.ring, last.k), 'plus', ...clipsOf(last.out, last.k), 'equals', ...clipsOf(last.whole, last.k)]
-      : [...clipsOf(last.whole, last.k), 'minus', ...clipsOf(last.out, last.k), 'equals', ...clipsOf(last.ring, last.k)]
+      ? [...clipsOf(last.out, last.k), 'plus', ...clipsOf(last.ring, last.k), 'equals', ...clipsOf(last.whole, last.k)]
+      : [...clipsOf(last.whole, last.k), 'minus', ...clipsOf(last.ring, last.k), 'equals', ...clipsOf(last.out, last.k)]
 
   return (
     <div className="h-dvh w-full relative overflow-hidden select-none bg-orange-50">
@@ -692,7 +692,7 @@ function Play({
           ↺
         </button>
       </div>
-      {/* The sum: the last sneeze. A tap says it; ⇄ turns it round (100 − 64 = 36 ⇄ 36 + 64 = 100). */}
+      {/* The sum: the last sneeze. A tap says it; ⇄ turns it round (100 − 36 = 64 ⇄ 64 + 36 = 100: it lands on the square that came out). */}
       <div className="absolute top-[4.25rem] inset-x-3 sm:inset-x-auto sm:top-3 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-[calc(100%-8.5rem)] flex gap-2">
       <button
         type="button"
@@ -709,11 +709,11 @@ function Play({
           </>
         ) : flip ? (
           <>
-            <span className={right ? 'text-emerald-600' : ''}>{show(last.ring, last.k)}</span> + {show(last.out, last.k)} = {show(last.whole, last.k)}
+            <span className={right ? 'text-emerald-600' : ''}>{show(last.out, last.k)}</span> + {show(last.ring, last.k)} = {show(last.whole, last.k)}
           </>
         ) : (
           <>
-            {show(last.whole, last.k)} − {show(last.out, last.k)} = <span className={right ? 'text-emerald-600' : ''}>{show(last.ring, last.k)}</span>
+            {show(last.whole, last.k)} − {show(last.ring, last.k)} = <span className={right ? 'text-emerald-600' : ''}>{show(last.out, last.k)}</span>
             {right && ' ✓'}
           </>
         )}
@@ -724,11 +724,11 @@ function Play({
         </button>
       )}
       </div>
-      {/* Guess first: what's left? Only the right answer sneezes (with a chime); a wrong one buzzes and greys out. */}
+      {/* Guess first: what comes out? Only the right answer sneezes (with a chime); a wrong one buzzes and greys out. */}
       {phase === 'guessing' && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-max max-w-[calc(100%-1rem)] flex flex-col items-center gap-2" onPointerDown={(e) => e.stopPropagation()}>
           <div className="px-4 py-1 rounded-2xl bg-white/90 shadow font-black tabular-nums text-xl sm:text-2xl text-slate-700 whitespace-nowrap">
-            {show(sneezer.n, sneezer.k)} − {next ? show(next.out, next.k) : ''} = ?
+            {show(sneezer.n, sneezer.k)} − {next ? show(next.ring, next.k) : ''} = ?
           </div>
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             {options.map((o) => (

@@ -115,15 +115,15 @@ describe('numbers', () => {
         const c = choices(a, rule, 3)
         const s = sneeze(a, rule)
         if (!s) continue
-        expect(c).toContain(s.ring)
+        expect(c).toContain(s.out)
         expect(new Set(c).size).toBe(c.length)
         expect(c.length).toBe(3)
         expect(c.every((x) => x > 0n)).toBe(true)
       }
     }
-    // Decimals: in the sneeze's hundredths.
-    expect(choices(1n, 'big', 2)).toContain(64n)
-    // 64: the argument in the comments.
-    expect(choices(8n, 'big', 1)).toEqual(expect.arrayContaining([48n, 28n]))
+    // Decimals: in the sneeze's hundredths (1 → 0.64 + 0.36: 0.36 comes out).
+    expect(choices(1n, 'big', 2)).toContain(36n)
+    // 64: the argument in the comments, turned round (what comes out: 16 or 36).
+    expect(choices(8n, 'big', 1)).toEqual(expect.arrayContaining([16n, 36n]))
   })
 })

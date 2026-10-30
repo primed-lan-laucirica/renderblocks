@@ -139,29 +139,32 @@ export function squaresAround(n: bigint): [bigint, bigint] {
 }
 
 /**
- * Guess first (when it's on): three answers to "What's left?" — the right one,
- * the other rule's ring (the argument in the comments: "it's not meant to be
- * 48 it's 28"), and a near miss. Shuffled by a seed so it's the same each time.
- * In the sneeze's cells (its k).
+ * Guess first (when it's on): three answers to "What comes out?" — the right
+ * one, what the other rule sneezes out (the argument in the comments: "it's
+ * not meant to be 48 it's 28", turned round: 16 or 36), and a near miss.
+ * The sum reads whole − ring = out (Lan, Oct 30: it lands on the square that
+ * came out, the one he follows next; that's the bigger number in a ring
+ * sneeze and the smaller in a big one). Shuffled by a seed so it's the same
+ * each time. In the sneeze's cells (its k).
  */
 export function choices(a: bigint, rule: Rule, seed: number, k = 0): bigint[] {
   const s = sneeze(a, rule, k)
   if (!s) return []
-  const set = new Set<bigint>([s.ring])
+  const set = new Set<bigint>([s.out])
   const other = sneeze(a, rule === 'ring' ? 'big' : 'ring', k)
   if (other && other.k <= s.k) {
-    const ring = other.ring * 100n ** BigInt(s.k - other.k)
-    if (ring !== s.ring) set.add(ring)
+    const out = other.out * 100n ** BigInt(s.k - other.k)
+    if (out !== s.out) set.add(out)
   }
-  // Near misses: what's left if a neighbouring square came out instead, then the ring ± 4.
+  // Near misses: a neighbouring square, then the right one ± 4.
   for (const d of [2n, -2n, 4n, -4n]) {
     if (set.size >= 3) break
     const b = s.outSide + d
-    if (b >= 1n && b < a) set.add(a * a - b * b)
+    if (b >= 1n && b < a) set.add(b * b)
   }
   for (const d of [4n, -4n, 8n]) {
     if (set.size >= 3) break
-    if (s.ring + d > 0n) set.add(s.ring + d)
+    if (s.out + d > 0n) set.add(s.out + d)
   }
   const out = [...set].slice(0, 3)
   // A seeded shuffle.
