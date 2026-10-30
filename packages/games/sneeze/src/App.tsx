@@ -63,12 +63,13 @@ function Portrait({ side, look }: { side: bigint; look: Look }) {
 function App({ services }: GameProps) {
   const looks = useMemo(() => looksFrom(services.shared.get('designs')), [services])
   const storage = services.storage
-  // Big sneeze by default (Lan, Oct 13). A new key, so the ring that v1.78 saved as its default doesn't stick.
-  const [rule, setRule] = useState<Rule>(() => (storage.get('rule2') === 'ring' ? 'ring' : 'big'))
+  // The ring sneeze by default: the slider starts on the largest (Lan, Oct 30; Oct 13 it was the big sneeze).
+  // A new key, so the big sneeze saved as the default before doesn't stick.
+  const [rule, setRule] = useState<Rule>(() => (storage.get('rule3') === 'big' ? 'big' : 'ring'))
   const [guess, setGuess] = useState(() => storage.get('guess') === 'on')
   const [start, setStart] = useState<{ side: bigint; key: number } | null>(null)
   const [keypad, setKeypad] = useState(false)
-  useEffect(() => storage.set('rule2', rule), [storage, rule])
+  useEffect(() => storage.set('rule3', rule), [storage, rule])
   useEffect(() => storage.set('guess', guess ? 'on' : 'off'), [storage, guess])
   const lookFor = (n: bigint) => looks.get(n.toString()) ?? DEFAULT_LOOK
   const go = (side: bigint) => {
@@ -171,8 +172,8 @@ function RulePicker({ rule, onRule, small }: { rule: Rule; onRule: (r: Rule) => 
 }
 
 /**
- * The slider: every square the waiting one can sneeze out, smallest to the
- * left, the ring sneeze at the right end. The thumb snaps to round sides (the
+ * The slider: every square the waiting one can sneeze out, the largest (the
+ * ring sneeze) at the left end, the smallest at the right (Lan, Oct 30). The thumb snaps to round sides (the
  * outs he knows: 100, 400, 2,500 …), with Ring and Big marked on the track;
  * − and + step one size at a time, to every one. Sliding previews the hole on
  * the square; a tap on the square sneezes it. Numbers hide while he's guessing.
@@ -194,8 +195,9 @@ function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: big
   const s = sneeze(side, choice, k)
   const b = s && s.k === z.K ? s.outSide : (z.big ?? z.max)
   const span = Number(z.max - z.min)
-  const xOf = (v: bigint) => (span ? Number(v - z.min) / span : 0.5) * w
-  const as = (v: bigint): Choice => (v === z.ring && (choice === 'ring' || v !== z.big) ? 'ring' : v === z.big ? 'big' : { b: v, k: z.K })
+  const xOf = (v: bigint) => (span ? Number(z.max - v) / span : 0.5) * w
+  // Sliding (or − and +) picks for one sneeze; only the Ring and Big tags change the default.
+  const as = (v: bigint): Choice => ({ b: v, k: z.K })
   const nearest = (x: number) => stops.reduce((m, v) => (Math.abs(xOf(v) - x) < Math.abs(xOf(m) - x) ? v : m), stops[0])
   const at = (e: React.PointerEvent) => e.clientX - track.current!.getBoundingClientRect().left
   // Labels: the roundest first, where they don't crowd one another.
@@ -228,8 +230,8 @@ function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: big
     )
   return (
     <div className="absolute inset-x-3 bottom-3 flex items-center gap-3" onPointerDown={(e) => e.stopPropagation()}>
-      <button type="button" onClick={() => nudge(-1n)} disabled={b <= z.min} className="shrink-0 w-12 h-12 rounded-full bg-white/90 shadow text-2xl font-black text-slate-600 disabled:opacity-30" aria-label="A smaller one">
-        −
+      <button type="button" onClick={() => nudge(1n)} disabled={b >= z.max} className="shrink-0 w-12 h-12 rounded-full bg-white/90 shadow text-2xl font-black text-slate-600 disabled:opacity-30" aria-label="A bigger one">
+        +
       </button>
       <div className="relative flex-1 h-20 mt-8 mx-4">
         {mark(z.big, '🔲 Big', 'big')}
@@ -265,8 +267,8 @@ function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: big
             </span>
           ))}
       </div>
-      <button type="button" onClick={() => nudge(1n)} disabled={b >= z.max} className="shrink-0 w-12 h-12 rounded-full bg-white/90 shadow text-2xl font-black text-slate-600 disabled:opacity-30" aria-label="A bigger one">
-        +
+      <button type="button" onClick={() => nudge(-1n)} disabled={b <= z.min} className="shrink-0 w-12 h-12 rounded-full bg-white/90 shadow text-2xl font-black text-slate-600 disabled:opacity-30" aria-label="A smaller one">
+        −
       </button>
     </div>
   )
