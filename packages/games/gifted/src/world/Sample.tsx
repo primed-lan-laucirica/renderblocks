@@ -22,7 +22,7 @@ export const Sample = memo(function Sample({ item }: { item: Item }) {
     const xs = row(cols, choices.length ? 640 : 960, s, 24)
     const top = 540 - (rows * s + (rows - 1) * 24) / 2
     return (
-      <Paper>
+      <Paper w={1920} h={1080}>
         {cells.map((c, i) => {
           const x = xs[i % cols]
           const y = top + Math.floor(i / cols) * (s + 24)
@@ -45,7 +45,7 @@ export const Sample = memo(function Sample({ item }: { item: Item }) {
   const cx = row(choices.length, 960, cs, 60)
   const low = cells.length ? 620 : 380
   return (
-    <Paper>
+    <Paper w={1920} h={1080}>
       {cells.map((c, i) => (isBlank(c, i, item) ? <Slot key={i} x={xs[i]} y={top} s={s} /> : <CellBox key={i} cell={c} x={xs[i]} y={top} s={s} />))}
       {classify && (
         <>

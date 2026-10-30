@@ -81,7 +81,6 @@ function App({ services }: GameProps) {
   const islands = useRef<IslandsHandle>(null)
   const layer = useRef<HTMLDivElement>(null)
   const fill = useRef<HTMLDivElement>(null)
-  const explainWrap = useRef<HTMLDivElement>(null)
   const closing = useRef(false)
   const [item, setItem] = useState<Item>(() => {
     const p = loadProgress(services.storage.get(STORAGE_KEY))
@@ -160,10 +159,12 @@ function App({ services }: GameProps) {
   })
 
   /** The explainer's last frame dissolves into the puzzle it was leading to. */
+  const [handing, setHanding] = useState(false)
   const finishExplainer = () => {
     const sub = explaining
     if (!sub) return
-    const done = () => {
+    setHanding(true)
+    window.setTimeout(() => {
       // It has just said the instruction; the puzzle needn't say it again.
       lastSaid.current = sub
       if (!explained.includes(sub)) {
@@ -172,10 +173,8 @@ function App({ services }: GameProps) {
         services.storage.set(EXPLAINED_KEY, JSON.stringify(e))
       }
       setReplay(null)
-    }
-    const el = explainWrap.current
-    if (!el) return done()
-    el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 450, fill: 'forwards' }).onfinish = done
+      setHanding(false)
+    }, 450)
   }
 
   useEffect(() => {
@@ -672,13 +671,14 @@ function App({ services }: GameProps) {
                 type="button"
                 onPointerDown={() => {
                   stopVoice()
+                  if (explaining) return finishExplainer()
                   setReplays((n) => n + 1)
                   setReplay(item.sub)
                 }}
                 className="w-6 h-6 rounded-full bg-violet-500 text-white text-[11px] leading-none flex items-center justify-center"
-                aria-label="Watch how it works"
+                aria-label={explaining ? 'Stop watching' : 'Watch how it works'}
               >
-                ▶
+                {explaining ? '■' : '▶'}
               </button>
             )}
           </div>
@@ -732,7 +732,12 @@ function App({ services }: GameProps) {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 w-full max-w-3xl flex flex-col items-center justify-center gap-3 overflow-y-auto py-1">
+      {/* The body: the puzzle, or its explainer over it (the explainer draws in the same boxes, then hands over). */}
+      <div className="relative flex-1 min-h-0 w-full max-w-3xl flex flex-col">
+      <div
+        className="flex-1 min-h-0 w-full flex flex-col items-center justify-center gap-3 overflow-y-auto py-1"
+        style={{ opacity: explaining && !handing ? 0 : 1, transition: 'opacity 450ms', pointerEvents: explaining ? 'none' : undefined }}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={`${progress.seen}-${tried.length}-stim`}
@@ -833,6 +838,20 @@ function App({ services }: GameProps) {
           })}
         </div>
       </div>
+      {explaining && EXPLAINERS[explaining] && (
+        <div className="absolute inset-0" style={{ opacity: handing ? 0 : 1, transition: 'opacity 450ms' }}>
+          <Explainer
+            key={`${explaining}-${replays}`}
+            scene={EXPLAINERS[explaining]!}
+            go={ready}
+            still={replay ? 0 : posterT(EXPLAINERS[explaining]!)}
+            dark={isDark}
+            vw={vw}
+            onFinished={finishExplainer}
+          />
+        </div>
+      )}
+      </div>
 
       <AnimatePresence>
         {banner && (
@@ -857,18 +876,6 @@ function App({ services }: GameProps) {
           {/* What fills in round it as it grows out of its window. */}
           <div ref={fill} className={`absolute inset-0 ${isDark ? 'bg-slate-900' : 'bg-violet-50'}`} />
           <div className="relative h-full w-full">{puzzle}</div>
-          {explaining && EXPLAINERS[explaining] && (
-            <div ref={explainWrap} className="absolute inset-0">
-              <Explainer
-                key={`${explaining}-${replays}`}
-                scene={EXPLAINERS[explaining]!}
-                go={ready}
-                still={replay ? 0 : posterT(EXPLAINERS[explaining]!)}
-                onFinished={finishExplainer}
-                onBack={replay ? () => setReplay(null) : close}
-              />
-            </div>
-          )}
         </div>
       )}
     </div>

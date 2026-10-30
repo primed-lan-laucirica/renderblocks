@@ -11,6 +11,7 @@ import { forwardRef, memo, useEffect, useImperativeHandle, useMemo, useState } f
 import { rng, usePan } from '@renderblocks/scene'
 import type { Progress } from '../adaptive'
 import { EXPLAINERS, posterT } from '../explain'
+import { StageProvider } from '../explain/kit'
 import { MAX_LEVEL, generate } from '../generators'
 import { SUBTEST_NAME, SUBTESTS, type SubtestId } from '../types'
 import { ISLANDS } from './islands'
@@ -254,7 +255,12 @@ export const Islands = forwardRef<IslandsHandle, Props>(function Islands({ progr
                       </div>
                     </div>
                   ) : scene ? (
-                    <scene.Scene t={posterT(scene)} />
+                    // The explainer's last frame, in the puzzle screen's own colours.
+                    <div className={`absolute inset-0 ${dark ? 'bg-slate-900' : 'bg-violet-50'}`}>
+                      <StageProvider value={{ w: 560, h: 315, vw: 760, dark }}>
+                        <scene.Scene t={posterT(scene)} />
+                      </StageProvider>
+                    </div>
                   ) : (
                     <Sample item={samples[sub!]} />
                   )}

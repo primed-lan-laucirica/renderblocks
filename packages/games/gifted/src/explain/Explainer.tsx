@@ -1,12 +1,12 @@
 /**
- * An explainer, with no player around it: the worked example fills the
- * screen on the puzzle screen's own paper, starts by itself, and at the end
- * dissolves into his first real puzzle (the caller fades it out). The faint
- * ← is the only way out.
+ * An explainer, with no player around it: it plays in the puzzle screen's
+ * body, under the puzzle's own header, drawn in the puzzle's own boxes and
+ * colours, starts by itself, and at the end dissolves into the real puzzle
+ * underneath (the caller fades one out and the other in).
  */
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useScenePlayer, type SceneDef } from '@renderblocks/scene'
-import { VOICE } from './kit'
+import { StageProvider, VOICE } from './kit'
 
 interface Props {
   scene: SceneDef
@@ -14,13 +14,26 @@ interface Props {
   go: boolean
   /** Held on this frame until it starts (the window's picture). */
   still?: number
+  dark: boolean
+  /** The screen's width (cells are sized from it, as the puzzle's are). */
+  vw: number
   onFinished: () => void
-  onBack: () => void
-  stageRef?: React.Ref<HTMLDivElement>
 }
 
-export function Explainer({ scene, go, still = 0, onFinished, onBack, stageRef }: Props) {
+export function Explainer({ scene, go, still = 0, dark, vw, onFinished }: Props) {
   const { t, loaded, start } = useScenePlayer(scene, VOICE, { still, onFinished })
+  const box = useRef<HTMLDivElement>(null)
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null)
+  useLayoutEffect(() => {
+    const el = box.current
+    if (!el) return
+    const measure = () => setSize({ w: el.clientWidth, h: el.clientHeight })
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
   const sceneEl = useRef<HTMLDivElement>(null)
   const begun = useRef(false)
   useEffect(() => {
@@ -38,17 +51,14 @@ export function Explainer({ scene, go, still = 0, onFinished, onBack, stageRef }
 
   const { Scene } = scene
   return (
-    <div className="h-dvh w-full relative overflow-hidden select-none" style={{ background: '#f3f1fe' }}>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div ref={stageRef} className="relative" style={{ aspectRatio: '16 / 9', width: 'min(100vw, calc(100dvh * 16 / 9))' }}>
-          <div ref={sceneEl} className="absolute inset-0">
+    <div ref={box} className="absolute inset-0 select-none" data-explainer={scene.id}>
+      <div ref={sceneEl} className="absolute inset-0">
+        {size && (
+          <StageProvider value={{ ...size, vw, dark }}>
             <Scene t={t} />
-          </div>
-        </div>
+          </StageProvider>
+        )}
       </div>
-      <button type="button" onClick={onBack} className="absolute top-3 left-3 w-11 h-11 rounded-full text-2xl font-bold text-slate-500 opacity-40 active:opacity-80" aria-label="Back">
-        ←
-      </button>
     </div>
   )
 }
