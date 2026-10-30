@@ -182,15 +182,18 @@ function RulePicker({ rule, onRule, small }: { rule: Rule; onRule: (r: Rule) => 
 const labelW = (text: string) => text.length * 8.6 + 12
 
 function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: bigint; k: number; choice: Choice; guess: boolean; onChoice: (c: Choice) => void; onSliding: (on: boolean) => void }) {
-  const track = useRef<HTMLDivElement>(null)
+  const track = useRef<HTMLDivElement | null>(null)
+  // The track's width, watched on whichever track is there (it goes when a square has nothing to choose, and comes back).
+  const [el, setEl] = useState<HTMLDivElement | null>(null)
   const [w, setW] = useState(600)
   useEffect(() => {
-    const el = track.current
     if (!el) return
-    const ro = new ResizeObserver(() => setW(el.clientWidth))
+    const measure = () => el.clientWidth > 0 && setW(el.clientWidth)
+    measure()
+    const ro = new ResizeObserver(measure)
     ro.observe(el)
     return () => ro.disconnect()
-  }, [])
+  }, [el])
   const z = useMemo(() => sizesOf(side, k), [side, k])
   // As many stops as fit with every one labelled (the longest label sets the room each needs).
   const room = z ? labelW(show(z.max * z.max, z.K)) : 40
@@ -198,7 +201,7 @@ function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: big
   if (!z || z.count < 2n) return null
   // The side the thumb is on: the one picked, or the rule's.
   const s = sneeze(side, choice, k)
-  const b = s && s.k === z.K ? s.outSide : (z.big ?? z.max)
+  const b = s && s.k <= z.K ? s.outSide * 10n ** BigInt(z.K - s.k) : (z.big ?? z.max)
   // The stops are evenly spaced, the largest at the left, whatever their values (Lan, Oct 30: no odd gaps);
   // a size between two stops (from − and +) sits between them in proportion.
   const last = stops.length - 1
@@ -245,7 +248,10 @@ function SizeSlider({ side, k, choice, guess, onChoice, onSliding }: { side: big
         {mark(z.big, '🔲 Big', 'big')}
         {mark(z.ring, '⬜ Ring', 'ring')}
         <div
-          ref={track}
+          ref={(d) => {
+            track.current = d
+            setEl(d)
+          }}
           className="absolute inset-x-0 top-0 h-12 touch-none"
           onPointerDown={(e) => {
             e.currentTarget.setPointerCapture(e.pointerId)

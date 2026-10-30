@@ -197,12 +197,13 @@ export const fmt = (n: bigint) => n.toLocaleString('en-US')
  * Every square a square of side a (in 10^-k blocks) can sneeze out, for the
  * slider: sides min, min + step … max (max is the ring sneeze), in 10^-K
  * blocks (tenths or hundredths if it can't in what it's counted in, as
- * sneeze does). Null if it can't sneeze at all.
+ * sneeze does; a decimal with only one way in tenths, 0.16 or 0.09, goes on
+ * to hundredths, so there's something to choose). Null if it can't sneeze at all.
  */
 export function sizesOf(a: bigint, k = 0): { K: number; min: bigint; max: bigint; step: bigint; count: bigint; ring: bigint | null; big: bigint | null } | null {
   let A = a
   let K = k
-  while (A < 3n && K <= MAX_K) {
+  while ((A < 3n || (A < 5n && K > 0)) && K <= MAX_K) {
     A *= 10n
     K++
   }
@@ -214,9 +215,10 @@ export function sizesOf(a: bigint, k = 0): { K: number; min: bigint; max: bigint
   let min = A % step
   if (min === 0n) min = step
   if (min > max) return null
+  // The rules' sides, in these units.
   const at = (r: Rule) => {
     const s = sneeze(a, r, k)
-    return s && s.k === K ? s.outSide : null
+    return s && s.k <= K ? s.outSide * 10n ** BigInt(K - s.k) : null
   }
   return { K, min, max, step, count: (max - min) / step + 1n, ring: at('ring'), big: at('big') }
 }
