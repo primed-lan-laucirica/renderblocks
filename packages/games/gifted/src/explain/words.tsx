@@ -1,7 +1,7 @@
  
 /** The Pictures & Words island's explainers. */
 import { explainer } from './define'
-import { BLUE, GREEN_, Q, RED, YELLOW, pic, shape } from './cells'
+import { BLUE, GREEN_, PURPLE, Q, RED, YELLOW, pic, shape } from './cells'
 
 const each = (cells: number[], from: number, to: number, until?: number, choice = false) =>
   cells.map((c, i) => ({ cells: [c], from: from + (i * (to - from)) / cells.length, to: until, choice }))
@@ -105,25 +105,41 @@ export const pictureMemory = explainer(
   }),
 )
 
+// The real directions come from a fixed bank; at the start, two kinds: "both … and …", and "between the two …".
 export const followDirections = explainer(
   'followDirections',
   'Following Directions',
-  ['Listen carefully, then touch.', 'Touch the red square.', 'Touch the blue circle, then the yellow star.', { say: 'Now you try.', pause: 0.8 }, 'Listen, then touch.'],
+  [
+    'Listen carefully, then touch.',
+    'Touch the shape that is both blue and round.',
+    'The blue square is blue, but it is not round.',
+    'The red circle is round, but it is not blue.',
+    'The blue circle is both!',
+    'Touch the shape between the two stars.',
+    'This one!',
+    { say: 'Now you try.', pause: 0.6 },
+    'Listen, then touch.',
+  ],
   (L) => ({
     puzzle: {
       layout: 'touchGrid',
-      stimulus: [shape('circle', RED), shape('square', BLUE), shape('star', YELLOW), shape('square', RED), shape('circle', BLUE), shape('triangle', GREEN_)],
+      stimulus: [shape('star', YELLOW), shape('hexagon', GREEN_), shape('star', PURPLE), shape('square', BLUE), shape('circle', RED), shape('circle', BLUE)],
       blankIndex: -1,
       choices: [],
       answer: -1,
-      touch: { targets: [3], ordered: false, text: '', clip: '' },
+      touch: { targets: [5], ordered: false, text: '', clip: '' },
     },
     appear: 0.2,
     step: 0.15,
+    marks: [
+      { cells: [3], from: L[2].time, to: L[3].time },
+      { cells: [4], from: L[3].time, to: L[4].time },
+      { cells: [0], from: L[5].end - 0.3, to: L[6].end },
+      { cells: [2], from: L[5].end - 0.3, to: L[6].end },
+    ],
     taps: [
-      { cell: 3, at: L[1].end + 0.3 },
-      { cell: 4, at: L[2].end + 0.2 },
-      { cell: 2, at: L[2].end + 0.8 },
+      { cell: 5, at: L[4].time + 0.2 },
+      { cell: 1, at: L[6].time + 0.1 },
     ],
   }),
 )

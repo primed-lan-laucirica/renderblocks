@@ -73,9 +73,9 @@ function PlusTwo({ g, t, from }: { g: Geo; t: number; from: number }) {
 export const numberAnalogy = explainer(
   'numberAnalogy',
   'Number Analogies',
-  ['One goes to three.', 'Four goes to six.', 'Each time, it goes up by two.', 'So what does five go to?', 'Two more than five is seven!', { say: 'Now you try.', pause: 0.6 }, 'Finish the pair.'],
+  ['Three goes to five.', 'Six goes to eight.', 'Each time, it goes up by two.', 'So what does four go to?', 'Two more than four is six!', { say: 'Now you try.', pause: 0.6 }, 'Finish the pair.'],
   (L) => ({
-    puzzle: { layout: 'pairs', stimulus: [num(1), num(3), num(4), num(6), num(5), Q], blankIndex: 5, choices: [num(6), num(7), num(8)], answer: 1 },
+    puzzle: { layout: 'pairs', stimulus: [num(3), num(5), num(6), num(8), num(4), Q], blankIndex: 5, choices: [num(5), num(6), num(7)], answer: 1 },
     appear: 0.2,
     step: 0.25,
     marks: [

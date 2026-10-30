@@ -287,13 +287,25 @@
     "file": "listen-carefully-then-touch-3fe807.mp3",
     "dur": 1.9
   },
-  "Touch the red square.": {
-    "file": "touch-the-red-square-9d2b96.mp3",
-    "dur": 1.2
+  "Touch the shape that is both blue and round.": {
+    "file": "touch-the-shape-that-is-both-blue-and-ro-a22613.mp3",
+    "dur": 2.23
   },
-  "Touch the blue circle, then the yellow star.": {
-    "file": "touch-the-blue-circle-then-the-yellow-st-ef36fa.mp3",
+  "The blue square is blue, but it is not round.": {
+    "file": "the-blue-square-is-blue-but-it-is-not-ro-2c501f.mp3",
+    "dur": 2.66
+  },
+  "The red circle is round, but it is not blue.": {
+    "file": "the-red-circle-is-round-but-it-is-not-bl-89d4f6.mp3",
     "dur": 2.93
+  },
+  "The blue circle is both!": {
+    "file": "the-blue-circle-is-both-d0cb5f.mp3",
+    "dur": 1.27
+  },
+  "Touch the shape between the two stars.": {
+    "file": "touch-the-shape-between-the-two-stars-3b0995.mp3",
+    "dur": 1.97
   },
   "Listen, then touch.": {
     "file": "listen-then-touch-b2377e.mp3",
@@ -319,25 +331,25 @@
     "file": "what-number-comes-next-8bcdb0.mp3",
     "dur": 1.34
   },
-  "One goes to three.": {
-    "file": "one-goes-to-three-1c7441.mp3",
-    "dur": 0.98
+  "Three goes to five.": {
+    "file": "three-goes-to-five-ba0e06.mp3",
+    "dur": 1.25
   },
-  "Four goes to six.": {
-    "file": "four-goes-to-six-c72a09.mp3",
-    "dur": 1.15
+  "Six goes to eight.": {
+    "file": "six-goes-to-eight-5f2371.mp3",
+    "dur": 1.27
   },
   "Each time, it goes up by two.": {
     "file": "each-time-it-goes-up-by-two-fba044.mp3",
     "dur": 1.49
   },
-  "So what does five go to?": {
-    "file": "so-what-does-five-go-to-35ca53.mp3",
+  "So what does four go to?": {
+    "file": "so-what-does-four-go-to-0352a1.mp3",
     "dur": 1.22
   },
-  "Two more than five is seven!": {
-    "file": "two-more-than-five-is-seven-249d6e.mp3",
-    "dur": 1.56
+  "Two more than four is six!": {
+    "file": "two-more-than-four-is-six-86daa8.mp3",
+    "dur": 1.42
   },
   "Here is a number sentence.": {
     "file": "here-is-a-number-sentence-d7a942.mp3",

@@ -4,7 +4,9 @@ import type { Cell, Glyph } from '../types'
 export const BLUE = '#3b82f6'
 export const RED = '#ef4444'
 export const GREEN_ = '#22c55e'
+/** Called orange in the spoken directions. */
 export const YELLOW = '#f59e0b'
+export const PURPLE = '#a855f7'
 export const pic = (emoji: string, count?: number): Cell => ({ kind: 'pic', emoji, ...(count ? { count } : {}) })
 export const num = (value: number): Cell => ({ kind: 'number', value })
 export const text = (t: string): Cell => ({ kind: 'text', text: t })

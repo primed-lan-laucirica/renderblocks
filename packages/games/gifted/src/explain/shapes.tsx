@@ -16,7 +16,7 @@ export const figureClassify = explainer(
   'Figure Classification',
   ['Look at these three shapes.', 'They are all different shapes.', 'But they are all blue.', 'Which one is blue too?', 'The blue star!', 'Find what is the same about all three.', { say: 'Now you try.', pause: 0.6 }, 'Which one goes with these?'],
   (L) => ({
-    puzzle: { layout: 'classify', stimulus: [shape('circle', BLUE, 1, 'outline', 0.8), shape('triangle', BLUE, 2), shape('square', BLUE, 3, 'light')], blankIndex: -1, choices: [shape('triangle', RED, 2), shape('star', BLUE), shape('square', YELLOW)], answer: 1 },
+    puzzle: { layout: 'classify', stimulus: [shape('circle', BLUE, 1, 'outline', 0.8), shape('triangle', BLUE, 2), shape('square', BLUE, 3, 'outline')], blankIndex: -1, choices: [shape('triangle', RED, 2), shape('star', BLUE), shape('square', YELLOW)], answer: 1 },
     appear: L[0].time + 0.2,
     step: 0.45,
     marks: [...each([0, 1, 2], L[1].time, L[1].end, L[2].time), { cells: [0, 1, 2], from: L[2].time + 0.3, colour: BLUE }],
@@ -31,7 +31,7 @@ export const figureSeries = explainer(
   'Figure Series',
   ['Look at these shapes in a row.', 'Red, blue, red.', 'The colors take turns.', 'So what comes next?', 'Blue comes next!', { say: 'Now you try.', pause: 0.6 }, 'What comes next?'],
   (L) => ({
-    puzzle: { layout: 'row', stimulus: [shape('square', RED), shape('square', BLUE), shape('square', RED), Q], blankIndex: 3, choices: [shape('square', RED, 2), shape('square', BLUE), shape('square', YELLOW)], answer: 1 },
+    puzzle: { layout: 'row', stimulus: [shape('square', RED), shape('square', BLUE), shape('square', RED), Q], blankIndex: 3, choices: [shape('square', BLUE, 2), shape('square', BLUE), shape('square', YELLOW)], answer: 1 },
     appear: L[0].time + 0.2,
     marks: each([0, 1, 2], L[1].time, L[1].end, L[3].time),
     note: { text: 'red, blue, red, blue…', from: L[2].time + 0.2 },
@@ -87,7 +87,8 @@ export const patternCompletion = explainer(
       choices: [
         { kind: 'field', grid: stripes(3, 1) },
         { kind: 'field', grid: stripes(3, 0) },
-        { kind: 'field', grid: [[0, 1, 0], [1, 1, 1], [0, 1, 0]] },
+        // One square changed, as the real puzzles' broken pieces are.
+        { kind: 'field', grid: [[0, 1, 0], [0, 1, 1], [0, 1, 0]] },
       ],
       answer: 1,
     },
