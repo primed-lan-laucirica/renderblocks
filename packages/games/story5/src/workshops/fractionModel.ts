@@ -11,6 +11,13 @@
  */
 export const TURN = 24
 export const SIZES = [1, 2, 3, 4, 6, 8, 12]
+/** The mats on the fraction table where loose pieces lie, one pile each (table units; the box is bottom right). */
+export const MATS = [
+  { x: 180, y: 640 },
+  { x: 500, y: 640 },
+  { x: 820, y: 640 },
+  { x: 1120, y: 250 },
+]
 
 export interface Piece {
   id: number

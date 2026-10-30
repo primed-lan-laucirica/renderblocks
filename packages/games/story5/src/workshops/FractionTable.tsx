@@ -14,7 +14,7 @@ import { record } from '../evidence'
 import { FractionPiece } from '../kit/kit'
 import { SANS } from '../kit/sizes'
 import { FractionCircles, type FrameSpec, type Tool } from './fractionCircles'
-import { SIZES, TURN, groupNotation, lcm, looseGroups, makeup, span, sumOf, total, trackNotation, unitName, type Piece } from './fractionModel'
+import { MATS, SIZES, TURN, layOn, lcm, makeup, span, total, trackNotation, unitName, type Piece } from './fractionModel'
 import { TRACK_MAX, TrackExplore, TrackPlace, type Card } from './fractionTrack'
 import { FT_LINES } from './fractionLines'
 import { advanceQueue } from './queue'
@@ -24,25 +24,16 @@ import { CheckButton, Prompt, RunDone, WorkshopScreen, type Mode } from './ui'
 
 // ——— the table's layouts ———
 const TWO: FrameSpec[] = [
-  { x: 260, y: 260 },
-  { x: 740, y: 260 },
+  { x: 260, y: 205 },
+  { x: 740, y: 205 },
 ]
-const ONE: FrameSpec[] = [{ x: 500, y: 260 }]
-/** Where a piece from the box lands: the first free spot on the table. */
-const SPOTS = [
-  { x: 180, y: 660 },
-  { x: 500, y: 660 },
-  { x: 820, y: 660 },
-  { x: 1110, y: 260 },
-  { x: 340, y: 828 },
-  { x: 660, y: 828 },
-]
-
+const ONE: FrameSpec[] = [{ x: 500, y: 205 }]
 function addFromBox(pieces: Piece[], d: number): Piece[] {
+  // Onto the first empty mat, or else the one with least on it, laid over what's there.
   const id = pieces.reduce((m, p) => Math.max(m, p.id), 0) + 1
-  const groups = looseGroups(pieces)
-  const spot = SPOTS.find((s) => !groups.some((g) => Math.hypot(g[0].x - s.x, g[0].y - s.y) < 60)) ?? SPOTS[0]
-  return [...pieces, { id, d, a: 0, frame: null, x: spot.x, y: spot.y }]
+  const on = MATS.map((m) => pieces.filter((p) => p.frame === null && Math.hypot(p.x - m.x, p.y - m.y) < 1))
+  const i = on.reduce((b, g, k) => (g.length < on[b].length ? k : b), 0)
+  return [...pieces, { id, d, a: layOn(on[i], d, 0), frame: null, x: MATS[i].x, y: MATS[i].y }]
 }
 
 /** n pieces of 1/d in a frame, side by side. */
@@ -148,12 +139,34 @@ const TOOLS: { t: Tool; label: string }[] = [
   { t: 'join', label: 'Join' },
 ]
 
+/** Each tool as a picture of what it does to a piece. */
+function ToolPicture({ t }: { t: Tool }) {
+  if (t === 'move') return <span className="text-4xl leading-none">✋</span>
+  const n = t === 'cut2' ? 2 : t === 'cut3' ? 3 : 4
+  // Cut: a whole with the pieces drawn apart. Join: quarters pulled together into a whole.
+  const gap = t === 'join' ? 3 : 9
+  return (
+    <svg viewBox="-70 -70 140 140" className="w-12 h-12">
+      {Array.from({ length: n }, (_, k) => {
+        const mid = -Math.PI / 2 + ((k + 0.5) / n) * Math.PI * 2
+        return (
+          <g key={k} transform={`translate(${Math.cos(mid) * gap} ${Math.sin(mid) * gap})`}>
+            <FractionPiece d={n} k={k} cx={0} cy={0} r={52} />
+          </g>
+        )
+      })}
+      {t === 'join' && <circle cx={0} cy={0} r={62} fill="none" stroke="#fde047" strokeWidth={6} strokeDasharray="10 8" />}
+    </svg>
+  )
+}
+
 function Tools({ tool, onTool }: { tool: Tool; onTool: (t: Tool) => void }) {
   return (
     <div className="grid grid-cols-4 gap-1.5 w-full">
       {TOOLS.map(({ t, label }) => (
-        <button key={t} type="button" onClick={() => onTool(t)} className={`rounded-lg px-1 py-2 text-base font-black leading-tight ${tool === t ? 'bg-amber-500 text-slate-900' : 'bg-white/10'}`}>
-          {label}
+        <button key={t} type="button" onClick={() => onTool(t)} aria-label={label} className={`rounded-xl py-1.5 flex flex-col items-center gap-0.5 ${tool === t ? 'bg-amber-500 text-slate-900' : 'bg-white/10'}`}>
+          <ToolPicture t={t} />
+          <span className="text-xs font-bold opacity-80">{label}</span>
         </button>
       ))}
     </div>
@@ -173,22 +186,6 @@ function Box({ onAdd, sizes = SIZES }: { onAdd: (d: number) => void; sizes?: num
             {unitName(d)}
           </span>
         </button>
-      ))}
-    </div>
-  )
-}
-
-/** The notation for what's on the table: each frame's sum, each loose pile's. */
-function TableNotation({ pieces, frames }: { pieces: Piece[]; frames: FrameSpec[] }) {
-  const lines = [
-    ...frames.map((_, i) => sumOf(pieces.filter((p) => p.frame === i))),
-    ...looseGroups(pieces).map(groupNotation),
-  ].filter(Boolean)
-  return (
-    // A fixed height, so the table doesn't move under his finger as lines come and go.
-    <div className={`flex flex-col items-center justify-center h-28 overflow-hidden font-black tabular-nums text-center leading-tight ${lines.length > 3 ? 'text-lg' : 'text-2xl'}`} style={{ fontFamily: SANS }}>
-      {lines.map((l, i) => (
-        <div key={i}>{l}</div>
       ))}
     </div>
   )
@@ -330,10 +327,9 @@ export function FractionTable({ services, onBack, onStar }: WorkshopProps) {
     }
     return screen(
       <div className="flex-1 min-h-0 flex flex-col landscape:flex-row gap-3">
-        <FractionCircles pieces={pieces} frames={TWO} tool={tool} onChange={setPieces} className="flex-1 min-h-0 w-full rounded-2xl" />
-        <div className="landscape:w-80 flex flex-col gap-2 items-center justify-center shrink-0">
+        <FractionCircles pieces={pieces} frames={TWO} tool={tool} onChange={setPieces} writes onUsed={() => setTool('move')} className="flex-1 min-h-0 w-full rounded-2xl" />
+        <div className="landscape:w-80 flex flex-col gap-3 items-center justify-center shrink-0">
           {toggle}
-          <TableNotation pieces={pieces} frames={TWO} />
           <Tools tool={tool} onTool={setTool} />
           <Box onAdd={(d) => setPieces(addFromBox(pieces, d))} />
           <button type="button" onClick={() => setPieces([])} className="text-sm font-bold text-slate-400 underline">
@@ -366,6 +362,7 @@ export function FractionTable({ services, onBack, onStar }: WorkshopProps) {
             tool={tool}
             onChange={(ps) => setWork({ ...work, pieces: ps })}
             removable={c.kind !== 'add'}
+            onUsed={() => setTool('move')}
             className="flex-1 min-h-0 w-full rounded-2xl"
           />
           <div className="landscape:w-80 flex flex-col gap-2 items-center justify-center shrink-0">

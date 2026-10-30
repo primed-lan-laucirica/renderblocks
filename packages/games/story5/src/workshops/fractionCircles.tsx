@@ -3,13 +3,17 @@
  * child's hands. One tool at a time:
  *   - move: drag a piece into a frame (it fits where there's room), lay it
  *     on another loose piece (it lies over it, side by side with its own
- *     size), or anywhere on the table; drop it in the box to put it away.
+ *     size), or onto one of the mats (the nearest one: loose pieces lie
+ *     only on mats, a pile each, so piles stay apart and each has its
+ *     notation under it); drop it in the box to put it away.
  *     The table has a rim and pieces never leave it; while a piece is
  *     dragged, where it would land lights up (a full frame shows red, and
  *     shakes if he lets go there, the piece sliding back home);
  *   - cut in 2 / cut in 3: tap a piece;
  *   - join: drag across pieces of one size lying together; they join into
  *     one bigger piece if they make a size in the box (four quarters: a whole).
+ * A cut or a join puts the tool back to move, so a stray tap doesn't cut
+ * again; while a cut or join tool is out, the rim takes its colour.
  * Every change is the child's own.
  */
 import { useRef, useState } from 'react'
@@ -17,7 +21,7 @@ import type { Pt } from '../engine/ease'
 import { FractionFrame, FractionPiece } from '../kit/kit'
 import { SANS } from '../kit/sizes'
 import { cue } from './sound'
-import { TURN, cut, fits, join, layOn, looseGroups, placeIn, span, together, type Piece } from './fractionModel'
+import { MATS, TURN, cut, fits, groupNotation, join, layOn, looseGroups, placeIn, span, sumOf, together, type Piece } from './fractionModel'
 
 export type Tool = 'move' | 'cut2' | 'cut3' | 'join'
 
@@ -46,6 +50,13 @@ function keepOn(c: Pt, box: boolean): Pt {
   return { x, y }
 }
 const GLOW = '#fde047'
+const MAT_R = R + 6
+/** The rim's colour: wood, or amber while a cut or join tool is out. */
+const RIM_WOOD = '#8a6440'
+const RIM_TOOL = '#f59e0b'
+const nearestMat = (c: Pt) => MATS.reduce((b, m, i) => (Math.hypot(m.x - c.x, m.y - c.y) < Math.hypot(MATS[b].x - c.x, MATS[b].y - c.y) ? i : b), 0)
+/** The pile on mat m, if any. */
+const pileOn = (ps: Piece[], m: number) => ps.filter((p) => p.frame === null && Math.hypot(p.x - MATS[m].x, p.y - MATS[m].y) < 1)
 const NO = '#ef4444'
 const RED = '#d63b3b'
 /** A piece lying over another is drawn in a second colour, so both show. */
@@ -74,10 +85,14 @@ interface Props {
   onChange: (ps: Piece[]) => void
   /** There's a box on the table to put pieces away in. */
   removable?: boolean
+  /** Write each frame's and pile's notation on the table, under it (Explore; Mastery would give answers away). */
+  writes?: boolean
+  /** A cut or a join was made: the tool goes back to move. */
+  onUsed?: () => void
   className?: string
 }
 
-export function FractionCircles({ pieces, frames, tool, onChange, removable = true, className }: Props) {
+export function FractionCircles({ pieces, frames, tool, onChange, removable = true, writes = false, onUsed, className }: Props) {
   const svg = useRef<SVGSVGElement>(null)
   const [drag, setDrag] = useState<{ id: number; off: Pt; at: Pt; start: Pt; moved: boolean } | null>(null)
   const [gather, setGather] = useState<{ ids: number[]; at: Pt; start: Pt; moved: boolean } | null>(null)
@@ -107,6 +122,7 @@ export function FractionCircles({ pieces, frames, tool, onChange, removable = tr
       const i = pieces.indexOf(p)
       onChange([...pieces.slice(0, i), ...parts, ...pieces.slice(i + 1)])
       cue('break')
+      onUsed?.()
       return
     }
     svg.current?.setPointerCapture?.(e.pointerId)
@@ -130,7 +146,7 @@ export function FractionCircles({ pieces, frames, tool, onChange, removable = tr
   }
 
   /** Where the dragged piece would land if he let go now. */
-  type Landing = { kind: 'box' } | { kind: 'frame'; f: number; a: number | null } | { kind: 'pile'; g: Piece[] } | { kind: 'table'; c: Pt }
+  type Landing = { kind: 'box' } | { kind: 'frame'; f: number; a: number | null } | { kind: 'mat'; m: number; g: Piece[] }
   const landing = (d: NonNullable<typeof drag>, p: Piece): Landing => {
     if (removable && inBox(d.at)) return { kind: 'box' }
     const raw = { x: d.at.x + d.off.x, y: d.at.y + d.off.y }
@@ -138,10 +154,9 @@ export function FractionCircles({ pieces, frames, tool, onChange, removable = tr
     // Into a frame, where there's room.
     const f = frames.findIndex((fr) => !fr.locked && Math.hypot(raw.x - fr.x, raw.y - fr.y) < R * 0.8)
     if (f >= 0) return { kind: 'frame', f, a: placeIn(others.filter((x) => x.frame === f), p.d, p.a) }
-    const c = keepOn(raw, removable)
-    // Onto another loose piece: laid over it.
-    const g = looseGroups(others).find((q) => Math.hypot(q[0].x - c.x, q[0].y - c.y) < 70)
-    return g ? { kind: 'pile', g } : { kind: 'table', c }
+    // Onto the nearest mat, laid over whatever's there.
+    const m = nearestMat(keepOn(raw, removable))
+    return { kind: 'mat', m, g: pileOn(others, m) }
   }
   const dragged = drag?.moved ? pieces.find((x) => x.id === drag.id) : undefined
   const aim = drag && dragged ? landing(drag, dragged) : null
@@ -158,6 +173,7 @@ export function FractionCircles({ pieces, frames, tool, onChange, removable = tr
       onChange([...rest.slice(0, at), whole, ...rest.slice(at)])
       setFlash({ id: whole.id, n: (flash?.n ?? 0) + 1 })
       cue('fuse')
+      onUsed?.()
       return
     }
     if (!drag) return
@@ -179,10 +195,10 @@ export function FractionCircles({ pieces, frames, tool, onChange, removable = tr
       }
       onChange([...others, { ...p, frame: l.f, a: l.a }])
       cue('piece', p.d % 10)
-    } else if (l.kind === 'pile') {
-      onChange([...others, { ...p, frame: null, x: l.g[0].x, y: l.g[0].y, a: layOn(l.g, p.d, p.a) }])
+    } else {
+      onChange([...others, { ...p, frame: null, x: MATS[l.m].x, y: MATS[l.m].y, a: layOn(l.g, p.d, p.a) }])
       cue('piece', p.d % 10)
-    } else onChange([...others, { ...p, frame: null, x: l.c.x, y: l.c.y }])
+    }
   }
 
   // Which loose pieces lie over others (drawn in the second colour).
@@ -214,8 +230,11 @@ export function FractionCircles({ pieces, frames, tool, onChange, removable = tr
 @keyframes ft-shake { 0%,100% { transform: translateX(0) } 20%,60% { transform: translateX(-16px) } 40%,80% { transform: translateX(16px) } } .ft-shake { animation: ft-shake 0.4s ease-in-out }
 @keyframes ft-back { from { transform: translate(var(--dx), var(--dy)) } to { transform: translate(0, 0) } } .ft-back { animation: ft-back 0.3s ease-out }`}</style>
       {/* The table: a wooden rim round the cloth, so it's plain where it ends. */}
-      <rect x={0} y={0} width={TABLE_W} height={TABLE_H} rx={30} fill="#8a6440" />
+      <rect x={0} y={0} width={TABLE_W} height={TABLE_H} rx={30} fill={tool === 'move' ? RIM_WOOD : RIM_TOOL} style={{ transition: 'fill 0.2s' }} />
       <rect x={RIM} y={RIM} width={TABLE_W - 2 * RIM} height={TABLE_H - 2 * RIM} rx={16} fill="#efe6d4" stroke="#6e4f31" strokeWidth={3} />
+      {MATS.map((m, i) => (
+        <circle key={i} cx={m.x} cy={m.y} r={MAT_R} fill="#e4d6bb" stroke="#cbb994" strokeWidth={4} strokeDasharray="14 12" />
+      ))}
       {removable && <PutAway lit={aim?.kind === 'box'} />}
       {frames.map((f, i) => (
         <g key={`${i}-${back?.frame === i ? back.n : 0}`} className={back?.frame === i ? 'ft-shake' : undefined}>
@@ -225,7 +244,15 @@ export function FractionCircles({ pieces, frames, tool, onChange, removable = tr
       ))}
       {/* Where the piece would land: a frame with room or a pile glows; a full frame shows red. */}
       {aim?.kind === 'frame' && <circle cx={frames[aim.f].x} cy={frames[aim.f].y} r={R + 14} fill="none" stroke={aim.a === null ? NO : GLOW} strokeWidth={12} opacity={0.9} />}
-      {aim?.kind === 'pile' && <circle cx={aim.g[0].x} cy={aim.g[0].y} r={R + 12} fill="none" stroke={GLOW} strokeWidth={12} opacity={0.9} />}
+      {aim?.kind === 'mat' && <circle cx={MATS[aim.m].x} cy={MATS[aim.m].y} r={MAT_R + 8} fill="none" stroke={GLOW} strokeWidth={12} opacity={0.9} />}
+      {/* What each frame and pile makes, written under it. */}
+      {writes &&
+        [
+          ...frames.map((f, i) => ({ x: f.x, y: f.y + R + 30 + 44, s: sumOf(pieces.filter((p) => p.frame === i)) })),
+          ...MATS.map((m, i) => ({ x: m.x, y: m.y + MAT_R + 50, s: pileOn(pieces, i).length ? groupNotation(pileOn(pieces, i)) : '' })),
+        ].map((t, i) =>
+          t.s ? <Written key={i} x={t.x} y={t.y} s={t.s} /> : null,
+        )}
       {order.map((p) => {
         const dragging = drag?.moved && drag.id === p.id
         // Dragged, it stays on the table, except over the box, where it shrinks to go in.
@@ -246,6 +273,25 @@ export function FractionCircles({ pieces, frames, tool, onChange, removable = tr
         </text>
       )}
     </svg>
+  )
+}
+
+/** A frame's or pile's notation, under it: big; a long one breaks before its first "=" and squeezes to the mat's width. */
+function Written({ x, y, s }: { x: number; y: number; s: string }) {
+  const at = s.indexOf(' = ')
+  const lines = s.length > 14 && at > 0 ? [s.slice(0, at), s.slice(at + 1)] : [s]
+  const size = lines.length > 1 ? 38 : 48
+  return (
+    <>
+      {lines.map((l, k) => {
+        const wide = l.length * size * 0.56 > 2 * MAT_R
+        return (
+          <text key={k} x={x} y={y + (k - (lines.length - 1) / 2) * size * 1.1 + (lines.length - 1) * size * 0.3} fontFamily={SANS} fontWeight={900} fontSize={size} fill="#3b2f25" textAnchor="middle" dominantBaseline="middle" textLength={wide ? 2 * MAT_R : undefined} lengthAdjust="spacingAndGlyphs">
+            {l}
+          </text>
+        )
+      })}
+    </>
   )
 }
 
