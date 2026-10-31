@@ -160,6 +160,7 @@ function drawBlock(ctx: CanvasRenderingContext2D, b: Block, p: Pose, zoom: numbe
   ctx.save()
   ctx.translate(p.x, p.y)
   ctx.rotate(p.a)
+  if (b.scale !== 1) ctx.scale(b.scale, b.scale)
 
   if (s.kind === 'zero') {
     ctx.lineWidth = 0.12
@@ -291,17 +292,14 @@ export function draw(ctx: CanvasRenderingContext2D, sim: Sim, cam: Camera, st: D
   // Lava, with a slow shimmer on the surface.
   const lavaTop = sim.lavaY
   // Heat glow rising off the lava into the air gap.
-  const glow = ctx.createLinearGradient(0, lavaTop, 0, lavaTop + (0 - lavaTop) * 0.6)
+  const glowH = Math.max(2, -lavaTop * 0.6)
+  const glow = ctx.createLinearGradient(0, lavaTop, 0, lavaTop + glowH)
   glow.addColorStop(0, 'rgba(251, 146, 60, 0.45)')
   glow.addColorStop(1, 'rgba(251, 146, 60, 0)')
   ctx.fillStyle = glow
-  ctx.fillRect(left - 1, lavaTop, right - left + 2, (0 - lavaTop) * 0.6)
-  ctx.fillStyle = 'rgba(234, 88, 12, 0.92)'
-  ctx.fillRect(left - 1, bottom, right - left + 2, lavaTop - bottom)
-  ctx.fillStyle = 'rgba(253, 186, 116, 0.9)'
-  const band = Math.max(0.15, 4 / zoom)
-  const wave = Math.sin(st.now * 2) * band * 0.3
-  ctx.fillRect(left - 1, lavaTop - band + wave, right - left + 2, band)
+  ctx.fillRect(left - 1, lavaTop, right - left + 2, glowH)
+
+  sim.arena?.drawBack?.(ctx, sim, zoom)
 
   // Blocks in play.
   for (const b of sim.blocks) {
@@ -320,7 +318,20 @@ export function draw(ctx: CanvasRenderingContext2D, sim: Sim, cam: Camera, st: D
     }
   }
 
+  // The lava over everything in it: a falling block disappears into it, and
+  // lava risen over the platform hides what it has covered.
+  ctx.fillStyle = 'rgba(234, 88, 12, 0.92)'
+  ctx.fillRect(left - 1, bottom, right - left + 2, lavaTop - bottom)
+  ctx.fillStyle = 'rgba(253, 186, 116, 0.9)'
+  const band = Math.max(0.15, 4 / zoom)
+  const wave = Math.sin(st.now * 2) * band * 0.3
+  ctx.fillRect(left - 1, lavaTop - band + wave, right - left + 2, band)
+
   drawLabels(ctx, sim, cam, st)
+  if (sim.arena?.drawFront) {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    sim.arena.drawFront(ctx, sim, (x, y) => cam.toScreen(x, y), zoom)
+  }
 
   if (st.debug) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)

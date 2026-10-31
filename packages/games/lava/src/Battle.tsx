@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { speakNumber, stopSpeech } from '@renderblocks/kernel'
+import { playClips, speakNumber, stopSpeech } from '@renderblocks/kernel'
 import { announceWinner, celebrate, cutScream, scream, sizzle, stopAudio, thud, unlockAudio } from './audio'
 import { Camera } from './camera'
 import type { LavaConfig } from './config'
+import type { Level } from './levels'
 import { draw } from './render'
 import { notation, type SetId } from './sets'
 import type { ShapeStyle } from './shapes'
@@ -14,6 +15,8 @@ interface BattleProps {
   /** Which set: Square Club blocks are squares, Step Squad staircases; club and power blocks wear their notation. */
   set: SetId
   config: LavaConfig
+  /** A Lava River level, or null for a free battle. */
+  level: Level | null
   onAgain: () => void
   onNewBattle: () => void
   onOpenPanel: () => void
@@ -22,14 +25,20 @@ interface BattleProps {
 /** Touches this close to a block (in screen px) still grab it (spec 8). */
 const GRAB_SLOP_PX = 24
 
-type End = { winner: number | null } | null
+/** A battle ends on its winner; a puzzle level on its number sentence. */
+type End = { winner: number | null; sentence?: string } | null
 
-export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel }: BattleProps) {
+/** How long a level's spoken sum ("6 + 4 = 10") stays up. */
+const NEWS_S = 2.5
+
+export function Battle({ values, set, config, level, onAgain, onNewBattle, onOpenPanel }: BattleProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const simRef = useRef<Sim | null>(null)
   const configRef = useRef(config)
   const [left, setLeft] = useState(values.length)
   const [end, setEnd] = useState<End>(null)
+  const [news, setNews] = useState<string | null>(null)
+  const puzzle = level?.kind === 'puzzle'
 
   // Live tuning: the loop reads configRef, the world gets the new physics.
   useEffect(() => {
@@ -88,7 +97,7 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
       const slop = GRAB_SLOP_PX / cam.zoom
       let best: Block | null = null
       let bestD = Infinity
-      for (const b of sim.alive()) {
+      for (const b of sim.loose()) {
         const dx = wx - b.cur.x
         const dy = wy - b.cur.y
         const c = Math.cos(-b.cur.a)
@@ -193,6 +202,8 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
     let ended = false
     let fps = 60
     let shownLeft = values.length
+    let newsUntil = 0
+    const arena = level?.arena(values) ?? null
     /** Screams in progress, per block. */
     const screams = new Map<Block, ReturnType<typeof scream>>()
     /**
@@ -218,8 +229,8 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
       last = t
       fps = fps * 0.95 + (dt > 0 ? 1 / dt : 60) * 0.05
 
-      // While grabbing, a finger near the screen edge pans that way.
-      if (grabPointer !== null) {
+      // While grabbing, a finger near the screen edge pans that way (a level's arena is all on screen).
+      if (grabPointer !== null && cam.rest === 'auto') {
         const p = pointers.get(grabPointer)
         if (p) {
           const edge = cam.vw * 0.1
@@ -287,6 +298,21 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
       cam.update(dt, sim, cfg, sim.time)
       draw(ctx, sim, cam, { alpha: acc / STEP, now: sim.time, debug: cfg.debug, fps, dpr })
 
+      // A level's news: show it and say it.
+      if (arena && arena.news.length) {
+        const n = arena.news[arena.news.length - 1]
+        arena.news.length = 0
+        if (!ended) {
+          playClips(n.clips)
+          setNews(n.text)
+          newsUntil = sim.time + NEWS_S
+        }
+      }
+      if (newsUntil > 0 && sim.time > newsUntil) {
+        newsUntil = 0
+        setNews(null)
+      }
+
       const alive = sim.alive()
       if (alive.length !== shownLeft) {
         shownLeft = alive.length
@@ -304,7 +330,17 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
 
       // End (spec 4.3): one block left and settled for 1 s — or, if every
       // block ends up in the lava, the last one to hit it wins.
-      if (!ended) {
+      if (!ended && arena && level?.kind === 'puzzle') {
+        if (arena.finished) {
+          ended = true
+          const done = arena.finished
+          celebrate()
+          window.setTimeout(() => !disposed && playClips(done.clips), 700)
+          setNews(null)
+          setEnd({ winner: null, sentence: done.text })
+          cam.fit()
+        }
+      } else if (!ended) {
         if (alive.length === 1 && sim.grabbed() === null) {
           const w = alive[0]
           settledFor = sim.speed(w) < 0.15 * Math.sqrt(w.shape.L) ? settledFor + dt : 0
@@ -324,15 +360,23 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
       if (disposed) return
       const style: ShapeStyle =
         set === 'squares' ? 'square' : set === 'triangular' ? 'steps' : set === 'cubes' ? 'cube' : 'blocks'
-      sim = new Sim(values, configRef.current, style)
+      sim = new Sim(values, configRef.current, { style, arena })
       for (const b of sim.blocks) b.notation = notation(set, b.value)
       simRef.current = sim
       // Debug builds of a battle expose their state for inspection from devtools.
       if (configRef.current.debug) Object.assign(window, { __lava: { sim, cam } })
-      // Start on the smallest block, zoomed to it.
-      const first = sim.blocks[0]
-      cam.x = first ? first.cur.x : 0
-      cam.zoom = first ? (configRef.current.cameraFill * cam.vh) / first.shape.h : 40
+      if (arena) {
+        // A level starts, and rests, on the whole arena.
+        cam.rest = 'fit'
+        cam.mode = 'fit'
+        cam.x = (sim.platform.x0 + sim.platform.x1) / 2
+        cam.zoom = cam.fitZoom(sim)
+      } else {
+        // Start on the smallest block, zoomed to it.
+        const first = sim.blocks[0]
+        cam.x = first ? first.cur.x : 0
+        cam.zoom = first ? (configRef.current.cameraFill * cam.vh) / first.shape.h : 40
+      }
       last = performance.now()
       raf = requestAnimationFrame(frame)
     })
@@ -351,7 +395,7 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
       simRef.current = null
       sim?.free()
     }
-  }, [values, set])
+  }, [values, set, level])
 
   // Hidden parent panel: a 2-second press on the top-left corner (spec 9).
   const holdTimer = useRef<number | null>(null)
@@ -383,12 +427,29 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
       >
         ←
       </button>
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/40 text-white text-lg font-extrabold tabular-nums pointer-events-none">
-        {left} left
-      </div>
+      {!puzzle && (
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/40 text-white text-lg font-extrabold tabular-nums pointer-events-none">
+          {left} left
+        </div>
+      )}
+      {news && !end && (
+        <div
+          key={news}
+          className={`absolute left-1/2 -translate-x-1/2 px-5 py-2 rounded-2xl bg-black/50 text-white font-black tabular-nums whitespace-nowrap pointer-events-none ${
+            puzzle ? 'top-3 text-3xl' : 'top-16 text-2xl'
+          }`}
+        >
+          {news}
+        </div>
+      )}
 
       {end && (
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-4 pb-8 pt-6 bg-linear-to-t from-black/70 to-transparent">
+          {end.sentence && (
+            <div className="text-white font-black tabular-nums text-center leading-tight drop-shadow-lg text-[clamp(2rem,7vw,4.5rem)] px-4">
+              {end.sentence}
+            </div>
+          )}
           {end.winner !== null && (
             <div className="text-white font-black tabular-nums text-center leading-none drop-shadow-lg text-[clamp(2.5rem,10vw,6rem)] px-4 break-all">
               {end.winner.toLocaleString('en-US')}
@@ -407,7 +468,7 @@ export function Battle({ values, set, config, onAgain, onNewBattle, onOpenPanel 
               onClick={onNewBattle}
               className="px-8 py-4 rounded-2xl bg-white/90 active:bg-white text-slate-800 text-2xl font-extrabold shadow-lg"
             >
-              New battle
+              {level ? 'Back' : 'New battle'}
             </button>
           </div>
         </div>

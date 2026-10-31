@@ -331,7 +331,7 @@ describe('physics', () => {
 
   it('a Cube Club battle stands still too', () => {
     const values = spawnNumbers('cubes', { from: 1, to: 1e12 })
-    const sim = new Sim(values, DEFAULTS, 'cube')
+    const sim = new Sim(values, DEFAULTS, { style: 'cube' })
     for (let i = 0; i < 60 * 8; i++) sim.step()
     expect(sim.alive()).toHaveLength(values.length)
     for (const b of sim.blocks) expect(Math.abs(b.cur.a)).toBeLessThan(0.05)

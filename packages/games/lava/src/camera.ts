@@ -40,6 +40,8 @@ export class Camera {
   vw = 1
   vh = 1
   mode: Mode = 'auto'
+  /** What the view settles back to after the action: close-ups in a battle, the whole arena in a level. */
+  rest: 'auto' | 'fit' = 'auto'
   /** Pan momentum, world units / s. */
   vx = 0
   /** Blocks in motion, supplied each frame by the battle loop. */
@@ -75,12 +77,12 @@ export class Camera {
 
   /** Zoom that fits the whole platform and its tallest block. */
   fitZoom(sim: Sim): number {
-    const tallest = Math.max(1, ...sim.alive().map((b) => b.shape.h))
+    const tallest = Math.max(1, sim.viewTop, ...sim.alive().map((b) => b.shape.h))
     return Math.min(
       (0.96 * this.vw) / (sim.platform.x1 - sim.platform.x0),
       (0.5 * this.vh) / tallest,
       // Show the lava too.
-      ((1 - HORIZON) * this.vh * 0.85) / -sim.lavaY,
+      ((1 - HORIZON) * this.vh * 0.85) / -sim.lavaBase,
     )
   }
 
@@ -118,7 +120,7 @@ export class Camera {
 
   /** The grab ended: the thrown block (and anything it hits) takes over from here. */
   release(): void {
-    if (this.mode === 'frozen') this.mode = 'auto'
+    if (this.mode === 'frozen') this.mode = this.rest
   }
 
   /** The blocks currently in motion that the camera should keep in view. */
@@ -132,7 +134,8 @@ export class Camera {
   }
 
   panBy(dxScreen: number): void {
-    if (this.busy()) return
+    // A level's arena is all on screen: nothing to pan to.
+    if (this.busy() || this.rest === 'fit') return
     this.returning = false
     this.x -= dxScreen / this.zoom
     if (this.mode === 'fit') this.mode = 'auto'
@@ -202,7 +205,7 @@ export class Camera {
       const above = ((HORIZON - 0.06) * this.vh) / z
       const below = ((1 - HORIZON - 0.06) * this.vh) / z
       const centred = maxY <= above && minY >= -below ? 0 : (minY + maxY) / 2 - ((HORIZON - 0.5) * this.vh) / z
-      return Math.max(centred, sim.lavaY + ((0.92 - HORIZON) * this.vh) / z)
+      return Math.max(centred, sim.lavaBase + ((0.92 - HORIZON) * this.vh) / z)
     }
     return { zoom, x: (minX + maxX) / 2, y }
   }
@@ -217,8 +220,9 @@ export class Camera {
     let margin = 3
 
     const moving = this.moving.filter((b) => !b.removed)
-    // Any motion takes over the view — from the close-up, a fit-all or a pinch.
-    if ((this.mode === 'auto' || this.mode === 'fit' || this.mode === 'manual') && moving.length > 0) {
+    // Any motion takes over the view — from the close-up, a fit-all or a pinch —
+    // except in a level, whose whole arena is already on screen.
+    if ((this.mode === 'auto' || this.mode === 'fit' || this.mode === 'manual') && moving.length > 0 && this.rest === 'auto') {
       if (!this.returning) this.homeX ??= this.x
       this.returning = false
       this.vx = 0
@@ -230,7 +234,7 @@ export class Camera {
       case 'frozen':
         break
       case 'manual':
-        if (now > this.manualUntil) this.mode = 'auto'
+        if (now > this.manualUntil) this.mode = this.rest
         break
       case 'fit':
         target = this.fitZoom(sim)
@@ -240,8 +244,8 @@ export class Camera {
         if (moving.length === 0) {
           // Everything has settled. If the view ended up over empty lava
           // (the last mover went in), go back to where the battle was.
-          this.mode = 'auto'
-          this.returning = this.homeX !== null && !sim.alive().some((b) => this.onScreen(b))
+          this.mode = this.rest
+          this.returning = this.rest === 'auto' && this.homeX !== null && !sim.alive().some((b) => this.onScreen(b))
           if (!this.returning) this.homeX = null
           break
         }

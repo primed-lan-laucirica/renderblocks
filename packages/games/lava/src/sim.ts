@@ -38,6 +38,10 @@ export interface Block {
   lastThud: number
   /** Symbolic form drawn in its centre (Square Club, Step Squad, Powers), if any. */
   notation: Notation | null
+  /** Held in place by a level (docked in Line Up, falling into the Black Hole): can't be grabbed. */
+  locked: boolean
+  /** Drawn size, 1 normally; a level can shrink a block (into the Black Hole). */
+  scale: number
 }
 
 export interface Thud {
@@ -61,6 +65,28 @@ export interface Rubble {
   vy: number
   a: number
   spin: number
+}
+
+/**
+ * A level's own rules and scenery on top of the battle (levels.ts): extra
+ * bodies, a moving lava surface, docks, a balance, a black hole.
+ */
+export interface Arena {
+  /** Runs once the blocks are placed: move them, add bodies, widen the platform. */
+  setup(sim: Sim): void
+  /** After every physics step. */
+  step(sim: Sim, out: StepEvents): void
+  /** Replaces the usual test for "in the lava" (its centre below the surface). */
+  isOut?(sim: Sim, b: Block): boolean
+  /** World-space scenery, drawn behind the blocks (y up). */
+  drawBack?(ctx: CanvasRenderingContext2D, sim: Sim, zoom: number): void
+  /** Screen-space labels, drawn over everything (px, y down). */
+  drawFront?(ctx: CanvasRenderingContext2D, sim: Sim, toScreen: (x: number, y: number) => [number, number], zoom: number): void
+}
+
+export interface SimOptions {
+  style?: ShapeStyle
+  arena?: Arena | null
 }
 
 interface Grab {
@@ -90,15 +116,21 @@ export class Sim {
    * Lava surface. Well below the platform — an air gap scaled to the
    * battle's tallest block — so a block knocked off has a long, visible fall.
    */
-  readonly lavaY: number
+  lavaY: number
+  /** Where the lava starts (a rising level moves `lavaY` up from here); the camera frames this. */
+  lavaBase: number
+  readonly arena: Arena | null
+  /** Highest point a level's scenery reaches above the platform, for the camera's fit-all. */
+  viewTop = 0
   private readonly byCollider = new Map<number, Block>()
   private readonly events = new RAPIER.EventQueue(true)
   private grab: Grab | null = null
   private cfg: LavaConfig
   time = 0
 
-  constructor(values: number[], cfg: LavaConfig, style: ShapeStyle = 'blocks') {
+  constructor(values: number[], cfg: LavaConfig, { style = 'blocks', arena = null }: SimOptions = {}) {
     this.cfg = cfg
+    this.arena = arena
     this.world = new RAPIER.World({ x: 0, y: -cfg.gravity })
     this.world.timestep = STEP
 
@@ -116,7 +148,20 @@ export class Sim {
           .setLinearDamping(cfg.linearDamping)
           .setAngularDamping(cfg.angularDamping),
       )
-      const block: Block = { id, value, shape, body, prev: { ...pose }, cur: { ...pose }, outAt: null, removed: false, lastThud: -1, notation: null }
+      const block: Block = {
+        id,
+        value,
+        shape,
+        body,
+        prev: { ...pose },
+        cur: { ...pose },
+        outAt: null,
+        removed: false,
+        lastThud: -1,
+        notation: null,
+        locked: false,
+        scale: 1,
+      }
       // Cube Club blocks collide as their drawn outline; everything else as its rectangles.
       const descs = shape.hull
         ? [RAPIER.ColliderDesc.convexHull(new Float32Array(shape.hull.flatMap((p) => [p.x, p.y])))!]
@@ -141,6 +186,7 @@ export class Sim {
     const depth = Math.min(3, Math.max(1, 0.08 * tallest))
     this.platform = { x0: -3, x1: x + 3, depth }
     this.lavaY = -depth - Math.max(MIN_DROP, cfg.lavaDrop * tallest)
+    this.lavaBase = this.lavaY
 
     // Slabs: small under small blocks, bigger under big ones (a quarter of the
     // nearest block's width, 1–8 units), so crumbling looks right at any scale.
@@ -164,6 +210,44 @@ export class Sim {
 
     this.ground = this.world.createRigidBody(RAPIER.RigidBodyDesc.fixed())
     this.buildGround()
+    arena?.setup(this)
+  }
+
+  /** A level makes room for its scenery: the platform now runs x0 to x1, in whole slabs. */
+  resizePlatform(x0: number, x1: number): void {
+    this.cuts.length = 0
+    for (let c = x0; c < x1 - 0.5; c += 2) this.cuts.push(c)
+    this.cuts.push(x1)
+    this.left = 0
+    this.right = this.cuts.length - 1
+    this.platform.x0 = x0
+    this.platform.x1 = x1
+    this.buildGround()
+  }
+
+  /** Put a block back into play at (x, y), still and upright — a level that never loses blocks to the lava. */
+  revive(b: Block, x: number, y: number): void {
+    for (let i = 0; i < b.body.numColliders(); i++) b.body.collider(i).setSensor(false)
+    b.body.setGravityScale(1, true)
+    b.body.setLinearDamping(this.cfg.linearDamping)
+    b.body.setAngularDamping(this.cfg.angularDamping)
+    b.body.setTranslation({ x, y }, true)
+    b.body.setRotation(0, true)
+    b.body.setLinvel({ x: 0, y: 0 }, true)
+    b.body.setAngvel(0, true)
+    b.cur = { x, y, a: 0 }
+    b.prev = { ...b.cur }
+    b.outAt = null
+  }
+
+  /** A level sets its own drop to the lava. */
+  setLava(y: number): void {
+    this.lavaBase = this.lavaY = y
+  }
+
+  /** The friction and bounce blocks use, for a level's own bodies. */
+  get surface(): { friction: number; restitution: number } {
+    return { friction: this.cfg.friction, restitution: this.cfg.restitution }
   }
 
   /** (Re)build the platform collider over what is left of it. */
@@ -184,7 +268,8 @@ export class Sim {
    * time from the end, so there is never a long scroll to find the edge.
    */
   private crumble(out: StepEvents): void {
-    if (this.time < this.nextCrumble) return
+    // A level's scenery sits on the platform: it stays whole.
+    if (this.arena || this.time < this.nextCrumble) return
     const alive = this.alive()
     if (alive.length === 0) return
     let minX = Infinity
@@ -232,6 +317,17 @@ export class Sim {
       }
       b.body.wakeUp()
     }
+  }
+
+  /** A level holds a block in place: it can't be grabbed (it still collides like any block). */
+  lock(b: Block): void {
+    if (this.grab?.block === b) this.endGrab()
+    b.locked = true
+  }
+
+  /** In play and free to grab. */
+  loose(): Block[] {
+    return this.blocks.filter((b) => b.outAt === null && !b.locked)
   }
 
   alive(): Block[] {
@@ -325,7 +421,8 @@ export class Sim {
       const t = b.body.translation()
       b.cur = { x: t.x, y: t.y, a: b.body.rotation() }
       if (b.outAt === null) {
-        if (t.y < this.lavaY || t.x < x0 - 300 || t.x > x1 + 300) {
+        const inLava = this.arena?.isOut ? this.arena.isOut(this, b) : t.y < this.lavaY
+        if (inLava || t.x < x0 - 300 || t.x > x1 + 300) {
           this.sink(b)
           out.sizzles.push(b)
         }
@@ -336,6 +433,7 @@ export class Sim {
     }
 
     this.crumble(out)
+    this.arena?.step(this, out)
     for (let i = this.rubble.length - 1; i >= 0; i--) {
       const r = this.rubble[i]
       r.vy -= this.cfg.gravity * STEP
