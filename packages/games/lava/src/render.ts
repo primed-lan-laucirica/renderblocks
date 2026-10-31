@@ -299,6 +299,19 @@ export function draw(ctx: CanvasRenderingContext2D, sim: Sim, cam: Camera, st: D
   ctx.fillStyle = glow
   ctx.fillRect(left - 1, lavaTop, right - left + 2, glowH)
 
+  // A battle draws its blocks over the lava, as it always has; a level
+  // draws the lava over them (so lava risen over the platform covers what it reaches).
+  const lavaOnTop = sim.arena !== null
+  const drawLava = () => {
+    ctx.fillStyle = 'rgba(234, 88, 12, 0.92)'
+    ctx.fillRect(left - 1, bottom, right - left + 2, lavaTop - bottom)
+    ctx.fillStyle = 'rgba(253, 186, 116, 0.9)'
+    const band = Math.max(0.15, 4 / zoom)
+    const wave = Math.sin(st.now * 2) * band * 0.3
+    ctx.fillRect(left - 1, lavaTop - band + wave, right - left + 2, band)
+  }
+  if (!lavaOnTop) drawLava()
+
   sim.arena?.drawBack?.(ctx, sim, zoom)
 
   // Blocks in play.
@@ -318,14 +331,7 @@ export function draw(ctx: CanvasRenderingContext2D, sim: Sim, cam: Camera, st: D
     }
   }
 
-  // The lava over everything in it: a falling block disappears into it, and
-  // lava risen over the platform hides what it has covered.
-  ctx.fillStyle = 'rgba(234, 88, 12, 0.92)'
-  ctx.fillRect(left - 1, bottom, right - left + 2, lavaTop - bottom)
-  ctx.fillStyle = 'rgba(253, 186, 116, 0.9)'
-  const band = Math.max(0.15, 4 / zoom)
-  const wave = Math.sin(st.now * 2) * band * 0.3
-  ctx.fillRect(left - 1, lavaTop - band + wave, right - left + 2, band)
+  if (lavaOnTop) drawLava()
 
   drawLabels(ctx, sim, cam, st)
   if (sim.arena?.drawFront) {
