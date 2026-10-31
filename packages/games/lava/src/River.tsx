@@ -99,8 +99,9 @@ export function River({ played, onPick, onHome }: RiverProps) {
         }}
       />
 
-      <div className="absolute inset-0 overflow-x-auto overflow-y-hidden">
-        <div className="h-full flex items-center gap-6 px-16 pb-[8%] w-max">
+      {/* Every island on screen at once: a row on a wide screen, wrapping into rows on a tall one. */}
+      <div className="absolute inset-0 overflow-y-auto">
+        <div className="min-h-full flex flex-wrap justify-center content-center gap-x-3 gap-y-6 px-3 pt-16 pb-[14%]">
           {LEVELS.map((level, i) => (
             <button
               key={level.id}
@@ -110,10 +111,10 @@ export function River({ played, onPick, onHome }: RiverProps) {
               className="relative flex flex-col items-center gap-2 shrink-0 active:scale-95 transition-transform"
               style={{ animation: `lava-bob ${3 + (i % 3) * 0.4}s ease-in-out ${i * 0.3}s infinite` }}
             >
-              <div className="px-4 py-1.5 rounded-xl bg-black/40 text-[clamp(1.25rem,2.6vw,2rem)] font-black tabular-nums whitespace-nowrap">{level.sign}</div>
+              <div className="px-4 py-1.5 rounded-xl bg-black/40 text-[clamp(0.85rem,2.1vw,2rem)] font-black tabular-nums whitespace-nowrap">{level.sign}</div>
               <svg
                 viewBox="-120 -110 240 150"
-                className="w-[min(300px,30vw)] min-w-[200px] h-auto"
+                className="w-[clamp(130px,16vw,280px)] h-auto"
                 style={{ filter: played.has(level.id) ? 'none' : 'drop-shadow(0 0 10px rgba(253, 186, 116, 0.55))' }}
               >
                 <Scene id={level.id} />
