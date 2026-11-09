@@ -1,0 +1,64 @@
+/* eslint-disable react-refresh/only-export-components -- the cover and what it is drawn from */
+/**
+ * A rank's cover: its sign (or family of signs) large on the paper. It is
+ * the picture in the rank's window on the road and the first thing the
+ * player shows, so the zoom in lands on the same picture.
+ */
+import { memo } from 'react'
+import { H, W } from '@renderblocks/scene/scene'
+import { rankOf, signsOf } from './data/path'
+import { items, widthOf, type Tok } from './kit/glyphs'
+import { INK, PAPER, SERIF } from './kit/look'
+import { balance, beadsOn, line, Sprites } from './kit/sprites'
+
+/** What the sheet writes in words, as it is shown. */
+const SHOWN: Record<string, string | null> = { '(decimal point)': '.', '(or bold v)': null }
+
+/** The signs of a rank as tokens for a line (the fraction bar inside a half). */
+export const coverToks = (rank: number): Tok[] => signsOf(rank).map((g) => (g === 'frac' ? { frac: ['1', '2'] } : g))
+
+export const Cover = memo(function Cover({ rank, dim = false }: { rank: number; dim?: boolean }) {
+  const toks = coverToks(rank)
+  let body
+  if (toks.length) {
+    const list = items(toks)
+    // Brackets stand apart, as round something.
+    const apart = rank === 5 ? 1.2 : 0.5
+    const units = list.reduce((w, it) => w + widthOf(it), 0) + (list.length - 1) * apart
+    const size = Math.min(520, 1500 / units)
+    let x = W / 2 - (units * size) / 2
+    const at = list.map((it) => {
+      const mid = x + (widthOf(it) * size) / 2
+      x += (widthOf(it) + apart) * size
+      return mid
+    })
+    body = <Sprites list={line(toks, { y: H / 2, size, at })} />
+  } else {
+    const text = rankOf(rank)
+      .glyphs.map((g) => (g in SHOWN ? SHOWN[g] : g))
+      .filter((g): g is string => g !== null)
+      .join('   ')
+    const size = Math.min(420, 1500 / (text.length * 0.52))
+    body = (
+      <text x={W / 2} y={H / 2} fontFamily={SERIF} fontSize={size} fill={INK} textAnchor="middle" dominantBaseline="central" style={{ whiteSpace: 'pre' }}>
+        {text}
+      </text>
+    )
+  }
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" style={{ display: 'block' }}>
+      <rect width={W} height={H} fill={PAPER} />
+      <g opacity={dim ? 0.38 : 1}>{body}</g>
+    </svg>
+  )
+})
+
+/** The Bench's window: the bench itself, small (a true line over a level beam). */
+export const BenchCover = memo(function BenchCover() {
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" style={{ display: 'block' }}>
+      <rect width={W} height={H} fill={PAPER} />
+      <Sprites list={[...balance({ y: 520, left: beadsOn({ n: 3, colour: 'blue' }, { n: 2, colour: 'red' }), right: beadsOn(5) }), ...line(['3', '+', '2', '=', '5'], { y: 250, size: 230, gold: ['='] })]} />
+    </svg>
+  )
+})

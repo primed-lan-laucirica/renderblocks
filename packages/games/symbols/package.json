@@ -1,0 +1,28 @@
+{
+  "name": "@renderblocks/symbols",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./module": "./src/module.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "import": "node scripts/import.mjs",
+    "render": "node scripts/render.mjs",
+    "check": "node scripts/render.mjs --check",
+    "voice": "node scripts/voice.mjs",
+    "timeline": "node scripts/timeline.mjs"
+  },
+  "dependencies": {
+    "@renderblocks/kernel": "workspace:*",
+    "@renderblocks/scene": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.55.0",
+    "vitest": "^5.0.1"
+  }
+}

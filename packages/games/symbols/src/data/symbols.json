@@ -1,0 +1,722 @@
+[
+  {
+    "rank": 1,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "="
+    ],
+    "name": "Equals",
+    "dependsOn": []
+  },
+  {
+    "rank": 2,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "+",
+      "−"
+    ],
+    "name": "Add, subtract",
+    "dependsOn": [
+      1
+    ]
+  },
+  {
+    "rank": 3,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "×",
+      "·"
+    ],
+    "name": "Multiply",
+    "dependsOn": [
+      2
+    ]
+  },
+  {
+    "rank": 4,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "÷",
+      "/",
+      "(fraction bar)"
+    ],
+    "name": "Divide, fractions",
+    "dependsOn": [
+      3
+    ]
+  },
+  {
+    "rank": 5,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "( )"
+    ],
+    "name": "Grouping, order of operations",
+    "dependsOn": [
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "rank": 6,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "<",
+      ">",
+      "≤",
+      "≥",
+      "≠"
+    ],
+    "name": "Comparison",
+    "dependsOn": [
+      1
+    ]
+  },
+  {
+    "rank": 7,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "xⁿ"
+    ],
+    "name": "Exponents",
+    "dependsOn": [
+      3
+    ]
+  },
+  {
+    "rank": 8,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "√"
+    ],
+    "name": "Roots",
+    "dependsOn": [
+      7
+    ]
+  },
+  {
+    "rank": 9,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "%",
+      "(decimal point)"
+    ],
+    "name": "Percent, decimals",
+    "dependsOn": [
+      4
+    ]
+  },
+  {
+    "rank": 10,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "≈"
+    ],
+    "name": "Approximately",
+    "dependsOn": [
+      6,
+      9
+    ]
+  },
+  {
+    "rank": 11,
+    "stage": 1,
+    "stageName": "Arithmetic",
+    "glyphs": [
+      "|x|"
+    ],
+    "name": "Absolute value",
+    "dependsOn": [
+      2,
+      6
+    ]
+  },
+  {
+    "rank": 12,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "x, y, n …"
+    ],
+    "name": "Letters as variables and unknowns",
+    "dependsOn": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "rank": 13,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "±"
+    ],
+    "name": "Plus or minus",
+    "dependsOn": [
+      2,
+      12
+    ]
+  },
+  {
+    "rank": 14,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "xᵢ"
+    ],
+    "name": "Subscripts and indices",
+    "dependsOn": [
+      12
+    ]
+  },
+  {
+    "rank": 15,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "f(x)"
+    ],
+    "name": "Function notation",
+    "dependsOn": [
+      5,
+      12
+    ]
+  },
+  {
+    "rank": 16,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "π",
+      "θ",
+      "sin",
+      "cos",
+      "tan"
+    ],
+    "name": "Pi, angles, trigonometry",
+    "dependsOn": [
+      4,
+      15
+    ]
+  },
+  {
+    "rank": 17,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "e",
+      "log",
+      "ln"
+    ],
+    "name": "Euler's number, logarithms",
+    "dependsOn": [
+      7,
+      15
+    ]
+  },
+  {
+    "rank": 18,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "n!"
+    ],
+    "name": "Factorial",
+    "dependsOn": [
+      3,
+      12
+    ]
+  },
+  {
+    "rank": 19,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "Σ"
+    ],
+    "name": "Summation",
+    "dependsOn": [
+      2,
+      14
+    ]
+  },
+  {
+    "rank": 20,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "Π"
+    ],
+    "name": "Product",
+    "dependsOn": [
+      3,
+      14
+    ]
+  },
+  {
+    "rank": 21,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "∞"
+    ],
+    "name": "Infinity",
+    "dependsOn": [
+      6
+    ]
+  },
+  {
+    "rank": 22,
+    "stage": 2,
+    "stageName": "Algebra",
+    "glyphs": [
+      "∝"
+    ],
+    "name": "Proportional to",
+    "dependsOn": [
+      4,
+      12
+    ]
+  },
+  {
+    "rank": 23,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "¬",
+      "∧",
+      "∨"
+    ],
+    "name": "Not, and, or",
+    "dependsOn": [
+      12
+    ]
+  },
+  {
+    "rank": 24,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "→",
+      "⇒",
+      "↔",
+      "⇔"
+    ],
+    "name": "Implication, equivalence",
+    "dependsOn": [
+      23
+    ]
+  },
+  {
+    "rank": 25,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "∀",
+      "∃"
+    ],
+    "name": "For all, there exists",
+    "dependsOn": [
+      12,
+      23
+    ]
+  },
+  {
+    "rank": 26,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "∈",
+      "∉"
+    ],
+    "name": "Element of, not an element of",
+    "dependsOn": [
+      12
+    ]
+  },
+  {
+    "rank": 27,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "{ x | … }"
+    ],
+    "name": "Set-builder notation",
+    "dependsOn": [
+      25,
+      26
+    ]
+  },
+  {
+    "rank": 28,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "∅"
+    ],
+    "name": "Empty set",
+    "dependsOn": [
+      27
+    ]
+  },
+  {
+    "rank": 29,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "⊆",
+      "⊂"
+    ],
+    "name": "Subset",
+    "dependsOn": [
+      26,
+      24
+    ]
+  },
+  {
+    "rank": 30,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "∪",
+      "∩",
+      "∖"
+    ],
+    "name": "Union, intersection, difference",
+    "dependsOn": [
+      23,
+      27
+    ]
+  },
+  {
+    "rank": 31,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "ℕ",
+      "ℤ",
+      "ℚ",
+      "ℝ",
+      "ℂ"
+    ],
+    "name": "Number systems",
+    "dependsOn": [
+      26,
+      29
+    ]
+  },
+  {
+    "rank": 32,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "A × B"
+    ],
+    "name": "Cartesian product",
+    "dependsOn": [
+      27
+    ]
+  },
+  {
+    "rank": 33,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "f : A → B",
+      "↦",
+      "∘",
+      "f⁻¹"
+    ],
+    "name": "Functions as maps, composition, inverse",
+    "dependsOn": [
+      15,
+      32
+    ]
+  },
+  {
+    "rank": 34,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      ":=",
+      "≡"
+    ],
+    "name": "Definition, identity, congruence mod n",
+    "dependsOn": [
+      1,
+      24
+    ]
+  },
+  {
+    "rank": 35,
+    "stage": 3,
+    "stageName": "Logic and sets",
+    "glyphs": [
+      "∴"
+    ],
+    "name": "Therefore",
+    "dependsOn": [
+      24
+    ]
+  },
+  {
+    "rank": 36,
+    "stage": 4,
+    "stageName": "Calculus",
+    "glyphs": [
+      "Δ"
+    ],
+    "name": "Change in",
+    "dependsOn": [
+      2,
+      12
+    ]
+  },
+  {
+    "rank": 37,
+    "stage": 4,
+    "stageName": "Calculus",
+    "glyphs": [
+      "lim",
+      "x → a"
+    ],
+    "name": "Limits",
+    "dependsOn": [
+      21,
+      36
+    ]
+  },
+  {
+    "rank": 38,
+    "stage": 4,
+    "stageName": "Calculus",
+    "glyphs": [
+      "dy/dx",
+      "f′",
+      "ẋ"
+    ],
+    "name": "Derivatives",
+    "dependsOn": [
+      37
+    ]
+  },
+  {
+    "rank": 39,
+    "stage": 4,
+    "stageName": "Calculus",
+    "glyphs": [
+      "∫",
+      "∫ₐᵇ"
+    ],
+    "name": "Integrals",
+    "dependsOn": [
+      19,
+      37
+    ]
+  },
+  {
+    "rank": 40,
+    "stage": 4,
+    "stageName": "Calculus",
+    "glyphs": [
+      "∂"
+    ],
+    "name": "Partial derivative",
+    "dependsOn": [
+      38
+    ]
+  },
+  {
+    "rank": 41,
+    "stage": 5,
+    "stageName": "Vectors and linear algebra",
+    "glyphs": [
+      "v⃗",
+      "(or bold v)"
+    ],
+    "name": "Vectors",
+    "dependsOn": [
+      14,
+      31
+    ]
+  },
+  {
+    "rank": 42,
+    "stage": 5,
+    "stageName": "Vectors and linear algebra",
+    "glyphs": [
+      "‖v‖"
+    ],
+    "name": "Norm",
+    "dependsOn": [
+      8,
+      41
+    ]
+  },
+  {
+    "rank": 43,
+    "stage": 5,
+    "stageName": "Vectors and linear algebra",
+    "glyphs": [
+      "u · v",
+      "u × v"
+    ],
+    "name": "Dot and cross products",
+    "dependsOn": [
+      19,
+      41
+    ]
+  },
+  {
+    "rank": 44,
+    "stage": 5,
+    "stageName": "Vectors and linear algebra",
+    "glyphs": [
+      "A",
+      "Aᵀ",
+      "A⁻¹",
+      "det A"
+    ],
+    "name": "Matrices, transpose, inverse, determinant",
+    "dependsOn": [
+      14,
+      43
+    ]
+  },
+  {
+    "rank": 45,
+    "stage": 5,
+    "stageName": "Vectors and linear algebra",
+    "glyphs": [
+      "∇",
+      "∇·",
+      "∇×"
+    ],
+    "name": "Gradient, divergence, curl",
+    "dependsOn": [
+      40,
+      43
+    ]
+  },
+  {
+    "rank": 46,
+    "stage": 5,
+    "stageName": "Vectors and linear algebra",
+    "glyphs": [
+      "⟨u, v⟩"
+    ],
+    "name": "Inner product",
+    "dependsOn": [
+      43
+    ]
+  },
+  {
+    "rank": 47,
+    "stage": 6,
+    "stageName": "Probability and statistics",
+    "glyphs": [
+      "P(A)",
+      "P(A | B)"
+    ],
+    "name": "Probability, conditional probability",
+    "dependsOn": [
+      4,
+      30
+    ]
+  },
+  {
+    "rank": 48,
+    "stage": 6,
+    "stageName": "Probability and statistics",
+    "glyphs": [
+      "μ",
+      "σ",
+      "σ²"
+    ],
+    "name": "Mean, standard deviation, variance",
+    "dependsOn": [
+      8,
+      19
+    ]
+  },
+  {
+    "rank": 49,
+    "stage": 6,
+    "stageName": "Probability and statistics",
+    "glyphs": [
+      "E[X]",
+      "Var(X)"
+    ],
+    "name": "Expectation, variance of a random variable",
+    "dependsOn": [
+      19,
+      39,
+      47
+    ]
+  },
+  {
+    "rank": 50,
+    "stage": 6,
+    "stageName": "Probability and statistics",
+    "glyphs": [
+      "X ~ N(μ, σ²)"
+    ],
+    "name": "Is distributed as",
+    "dependsOn": [
+      48,
+      49
+    ]
+  },
+  {
+    "rank": 51,
+    "stage": 7,
+    "stageName": "Structure",
+    "glyphs": [
+      "≅",
+      "≃"
+    ],
+    "name": "Isomorphism, equivalence",
+    "dependsOn": [
+      33
+    ]
+  },
+  {
+    "rank": 52,
+    "stage": 7,
+    "stageName": "Structure",
+    "glyphs": [
+      "⊕",
+      "⊗"
+    ],
+    "name": "Direct sum, tensor product",
+    "dependsOn": [
+      44
+    ]
+  },
+  {
+    "rank": 53,
+    "stage": 7,
+    "stageName": "Structure",
+    "glyphs": [
+      "∮"
+    ],
+    "name": "Contour integral",
+    "dependsOn": [
+      39
+    ]
+  }
+]

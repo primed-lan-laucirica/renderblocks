@@ -1,0 +1,54 @@
+Rank,Stage,Symbol,Name,Depends on (rank)
+1,1. Arithmetic,=,Equals,
+2,1. Arithmetic,+  −,"Add, subtract",1
+3,1. Arithmetic,×  ·,Multiply,2
+4,1. Arithmetic,÷  /  (fraction bar),"Divide, fractions",3
+5,1. Arithmetic,( ),"Grouping, order of operations",2–4
+6,1. Arithmetic,<  >  ≤  ≥  ≠,Comparison,1
+7,1. Arithmetic,xⁿ,Exponents,3
+8,1. Arithmetic,√,Roots,7
+9,1. Arithmetic,%  (decimal point),"Percent, decimals",4
+10,1. Arithmetic,≈,Approximately,"6, 9"
+11,1. Arithmetic,|x|,Absolute value,"2, 6"
+12,2. Algebra,"x, y, n …",Letters as variables and unknowns,1–5
+13,2. Algebra,±,Plus or minus,"2, 12"
+14,2. Algebra,xᵢ,Subscripts and indices,12
+15,2. Algebra,f(x),Function notation,"5, 12"
+16,2. Algebra,π  θ  sin  cos  tan,"Pi, angles, trigonometry","4, 15"
+17,2. Algebra,e  log  ln,"Euler's number, logarithms","7, 15"
+18,2. Algebra,n!,Factorial,"3, 12"
+19,2. Algebra,Σ,Summation,"2, 14"
+20,2. Algebra,Π,Product,"3, 14"
+21,2. Algebra,∞,Infinity,6
+22,2. Algebra,∝,Proportional to,"4, 12"
+23,3. Logic and sets,¬  ∧  ∨,"Not, and, or",12
+24,3. Logic and sets,→  ⇒  ↔  ⇔,"Implication, equivalence",23
+25,3. Logic and sets,∀  ∃,"For all, there exists","12, 23"
+26,3. Logic and sets,∈  ∉,"Element of, not an element of",12
+27,3. Logic and sets,{ x | … },Set-builder notation,"25, 26"
+28,3. Logic and sets,∅,Empty set,27
+29,3. Logic and sets,⊆  ⊂,Subset,"26, 24"
+30,3. Logic and sets,∪  ∩  ∖,"Union, intersection, difference","23, 27"
+31,3. Logic and sets,ℕ  ℤ  ℚ  ℝ  ℂ,Number systems,"26, 29"
+32,3. Logic and sets,A × B,Cartesian product,27
+33,3. Logic and sets,f : A → B   ↦   ∘   f⁻¹,"Functions as maps, composition, inverse","15, 32"
+34,3. Logic and sets,:=  ≡,"Definition, identity, congruence mod n","1, 24"
+35,3. Logic and sets,∴,Therefore,24
+36,4. Calculus,Δ,Change in,"2, 12"
+37,4. Calculus,lim   x → a,Limits,"21, 36"
+38,4. Calculus,dy/dx   f′   ẋ,Derivatives,37
+39,4. Calculus,∫   ∫ₐᵇ,Integrals,"19, 37"
+40,4. Calculus,∂,Partial derivative,38
+41,5. Vectors and linear algebra,v⃗  (or bold v),Vectors,"14, 31"
+42,5. Vectors and linear algebra,‖v‖,Norm,"8, 41"
+43,5. Vectors and linear algebra,u · v   u × v,Dot and cross products,"19, 41"
+44,5. Vectors and linear algebra,A   Aᵀ   A⁻¹   det A,"Matrices, transpose, inverse, determinant","14, 43"
+45,5. Vectors and linear algebra,∇   ∇·   ∇×,"Gradient, divergence, curl","40, 43"
+46,5. Vectors and linear algebra,"⟨u, v⟩",Inner product,43
+47,6. Probability and statistics,P(A)   P(A | B),"Probability, conditional probability","4, 30"
+48,6. Probability and statistics,μ   σ   σ²,"Mean, standard deviation, variance","8, 19"
+49,6. Probability and statistics,E[X]   Var(X),"Expectation, variance of a random variable","19, 39, 47"
+50,6. Probability and statistics,"X ~ N(μ, σ²)",Is distributed as,"48, 49"
+51,7. Structure,≅  ≃,"Isomorphism, equivalence",33
+52,7. Structure,⊕  ⊗,"Direct sum, tensor product",44
+53,7. Structure,∮,Contour integral,39

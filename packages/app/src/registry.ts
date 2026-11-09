@@ -18,6 +18,7 @@ import { skateModule } from '@renderblocks/skate/module'
 import { sortModule } from '@renderblocks/sort/module'
 import { progressModule } from '@renderblocks/progress/module'
 import { story5Module } from '@renderblocks/story5/module'
+import { symbolsModule } from '@renderblocks/symbols/module'
 import { designerModule } from '@renderblocks/designer/module'
 import { windyModule } from '@renderblocks/windy/module'
 import { sneezeModule } from '@renderblocks/sneeze/module'
@@ -44,6 +45,7 @@ export const games: GameModule[] = [
   skateModule,
   sortModule,
   story5Module,
+  symbolsModule,
   designerModule,
   windyModule,
   sneezeModule,
