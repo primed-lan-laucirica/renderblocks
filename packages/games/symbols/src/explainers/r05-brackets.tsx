@@ -3,19 +3,19 @@
  * which part comes first. The signs on the paper are =, +, −, ×, ÷ and the
  * brackets only; "2 + 3 × 4 = 20" is never written.
  *
- * History (checked): a line drawn over the terms (the vinculum) grouped
- * them before brackets did; round brackets are in printed algebra from the
- * 16th century (so "over 400 years ago"), and they displaced the line
- * because type could set them in the row. Not narrated: any "first" user.
+ * The one line of history (checked): a line drawn over the terms (the
+ * vinculum) grouped them before brackets did. It is there because it shows
+ * the same job done another way.
  */
 import type { Spec } from '../engine/spec'
 import { items, place, widthOf, type Tok } from '../kit/glyphs'
 import { INK } from '../kit/look'
-import { balance, beadsOn, card, entering, grid, line, loose, props, row, type Sprite } from '../kit/sprites'
+import { balance, beadsOn, entering, grid, line, loose, props, row, type Sprite } from '../kit/sprites'
 import { beam, OVER, TOP } from './shared'
 
 const BARE: Tok[] = ['2', '+', '3', '×', '4']
 const FIRST: Tok[] = ['(', '2', '+', '3', ')', '×', '4']
+const SECOND: Tok[] = ['2', '+', '(', '3', '×', '4', ')', '=', '14']
 
 const OLD = { y: 500, size: 190 }
 /** Each token's middle and width on a centred line. */
@@ -41,18 +41,6 @@ const overline = (): Sprite[] => {
   ]
 }
 
-/** A printer's row of type: one small block under each token, set edge to edge. */
-const type = (): Sprite[] => {
-  const at = spots(FIRST, OLD.size)
-  // Each block's edges sit halfway between its token and the next one.
-  const edge = (i: number) => (at[i].x + at[i].w / 2 + at[i + 1].x - at[i + 1].w / 2) / 2
-  return at.map((t, i) => {
-    const x1 = i === 0 ? t.x - t.w / 2 - 16 : edge(i - 1) + 3
-    const x2 = i === at.length - 1 ? t.x + t.w / 2 + 16 : edge(i) - 3
-    return card(`type${t.k}`, (x1 + x2) / 2, OLD.y, x2 - x1, OLD.size * 1.12)
-  })
-}
-
 const WORK = { y: 250, size: 150 }
 const ROWS = { x: 960, y: 680, step: 72 }
 /** Two blue and three red in a row, four times; `plus` leaves only the first two blue beside the twelve red. */
@@ -69,7 +57,7 @@ export const r05: Spec = {
   rank: 5,
   id: 'r05',
   title: 'Brackets',
-  layers: ['type', 'scale'],
+  layers: ['scale'],
   steps: [
     // ── 1. The need ──
     {
@@ -83,13 +71,8 @@ export const r05: Spec = {
     { stage: { props: null, scale: balance({ left: HEAVY, right: LIGHT }) }, cue: 'slide', say: 'Not the same! Twenty is heavier than fourteen.' },
     { say: 'One line must not mean two things.' },
 
-    // ── 2. Where it came from ──
-    { act: 2, clear: true, stage: { line: line(BARE, OLD), over: overline() }, move: 1.3, say: 'Long ago, people drew a line to keep numbers together.' },
-    { stage: { over: null, line: line(FIRST, OLD) }, say: 'Round brackets appeared in maths books over 400 years ago.' },
-    { stage: { type: type() }, say: 'Brackets won because printers could set them in one line.' },
-
-    // ── 3. The sign at work ──
-    { act: 3, clear: true, stage: { line: line(BARE, WORK) }, pad: 0.1 },
+    // ── 2. What the sign does ──
+    { act: 2, clear: true, stage: { line: line(BARE, WORK) }, pad: 0.1 },
     {
       stage: { line: entering(line(FIRST, WORK), { '(#0': { x: 300, o: 0 }, ')#0': { x: 1620, o: 0 } }) },
       move: 1.2,
@@ -99,8 +82,11 @@ export const r05: Spec = {
     },
     { stage: { beads: beads(false), line: line(FIRST, { ...WORK, gold: ['(', ')'] }) }, say: 'Brackets say: do this part first.' },
     { stage: { line: line([...FIRST, '=', '20'], WORK) }, say: 'Two plus three is five. Five times four equals twenty.', poster: true },
-    { stage: { beads: beads(true), line: line(['2', '+', '(', '3', '×', '4', ')', '=', '14'], WORK) }, move: 1.3, cue: 'slide', say: 'Move the brackets, and it changes. Two plus twelve equals fourteen.' },
-    { stage: { line: line([...BARE, '=', '14'], WORK) }, say: 'With no brackets, times and divide go first.' },
+    { stage: { beads: beads(true), line: line(SECOND, WORK) }, move: 1.3, cue: 'slide', say: 'Move the brackets, and it changes. Two plus twelve equals fourteen.' },
+    { stage: { line: line(SECOND, { ...WORK, gold: ['(', ')'] }) }, move: 0.5, say: 'Brackets always come in a pair: one opens, and one closes.' },
+
+    // ── 3. Where it is used ──
+    { act: 3, stage: { line: line([...BARE, '=', '14'], WORK) }, say: 'With no brackets, times and divide go first. So this is still fourteen.' },
     {
       clear: true,
       stage: {
@@ -109,6 +95,7 @@ export const r05: Spec = {
       },
       say: 'Eight minus two is six. Six divided by three equals two.',
     },
+    { clear: true, stage: { line: line(BARE, OLD), over: overline() }, move: 1.3, say: 'Long ago, people drew a line over the part instead. Brackets do the same job.' },
 
     // ── 4. His turn ──
     {

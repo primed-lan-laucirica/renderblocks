@@ -19,26 +19,6 @@
     "file": "the-same-shape-doesn-t-matter-only-how-m-3cbd15.mp3",
     "dur": 2.3
   },
-  "People used to write the words out, every time.": {
-    "file": "people-used-to-write-the-words-out-every-bb3392.mp3",
-    "dur": 3.02
-  },
-  "In 1557, Robert Recorde got tired of writing \"is equal to\".": {
-    "file": "in-1557-robert-recorde-got-tired-of-writ-d6f0d0.mp3",
-    "dur": 4.32
-  },
-  "So he drew two twin lines, both the same length.": {
-    "file": "so-he-drew-two-twin-lines-both-the-same--5de2ce.mp3",
-    "dur": 3.12
-  },
-  "He said no two things could be more equal.": {
-    "file": "he-said-no-two-things-could-be-more-equa-cf25e2.mp3",
-    "dur": 1.92
-  },
-  "His lines were much longer than ours!": {
-    "file": "his-lines-were-much-longer-than-ours-a5fcfe.mp3",
-    "dur": 2.16
-  },
   "This is the equals sign.": {
     "file": "this-is-the-equals-sign-9eed93.mp3",
     "dur": 1.32
@@ -46,6 +26,22 @@
   "Five equals five.": {
     "file": "five-equals-five-35aaf3.mp3",
     "dur": 1.27
+  },
+  "It says that this side and that side are the same amount.": {
+    "file": "it-says-that-this-side-and-that-side-are-1d1f4d.mp3",
+    "dur": 2.71
+  },
+  "One more on that side, and equals is not true any more. The sign has to come off.": {
+    "file": "one-more-on-that-side-and-equals-is-not--c2dfd0.mp3",
+    "dur": 5.42
+  },
+  "One more on this side, and it is true again. Six equals six.": {
+    "file": "one-more-on-this-side-and-it-is-true-aga-77ce03.mp3",
+    "dur": 4.63
+  },
+  "Its two lines are twins: the same length, side by side. No two things can be more equal.": {
+    "file": "its-two-lines-are-twins-the-same-length--94eefa.mp3",
+    "dur": 5.9
   },
   "A tally, a Roman five, and our five. Different marks, the same amount.": {
     "file": "a-tally-a-roman-five-and-our-five-differ-c27a55.mp3",
@@ -103,22 +99,6 @@
     "file": "we-can-write-equals-but-we-have-no-sign--76f0c3.mp3",
     "dur": 3.55
   },
-  "In 1489, Johann Widman printed two little signs in a German book.": {
-    "file": "in-1489-johann-widman-printed-two-little-7ca3eb.mp3",
-    "dur": 4.99
-  },
-  "He used them for barrels of figs.": {
-    "file": "he-used-them-for-barrels-of-figs-02aae9.mp3",
-    "dur": 1.99
-  },
-  "This one meant a little more.": {
-    "file": "this-one-meant-a-little-more-2b72c9.mp3",
-    "dur": 1.3
-  },
-  "And this one meant a little less.": {
-    "file": "and-this-one-meant-a-little-less-36a153.mp3",
-    "dur": 1.82
-  },
   "This is plus.": {
     "file": "this-is-plus-672a5c.mp3",
     "dur": 0.89
@@ -127,9 +107,9 @@
     "file": "three-plus-two-equals-five-2755f8.mp3",
     "dur": 1.46
   },
-  "And the other way round: five equals three plus two.": {
-    "file": "and-the-other-way-round-five-equals-thre-3af573.mp3",
-    "dur": 3.53
+  "Plus joins two amounts into one.": {
+    "file": "plus-joins-two-amounts-into-one-a6f579.mp3",
+    "dur": 1.87
   },
   "Five here, three there. This side is too heavy.": {
     "file": "five-here-three-there-this-side-is-too-h-ee298c.mp3",
@@ -147,9 +127,21 @@
     "file": "five-minus-two-equals-three-a7838c.mp3",
     "dur": 1.66
   },
-  "Plus puts more on. Minus takes some off.": {
-    "file": "plus-puts-more-on-minus-takes-some-off-2bb8e0.mp3",
-    "dur": 2.16
+  "Minus takes one amount away from another.": {
+    "file": "minus-takes-one-amount-away-from-another-d9f9f1.mp3",
+    "dur": 2.06
+  },
+  "Plus works either way round. Three plus two is the same as two plus three.": {
+    "file": "plus-works-either-way-round-three-plus-t-0055dc.mp3",
+    "dur": 5.47
+  },
+  "Minus can also compare. Five is two more than three, so five minus three equals two.": {
+    "file": "minus-can-also-compare-five-is-two-more--242256.mp3",
+    "dur": 6.1
+  },
+  "Minus undoes plus. Put two on, take two off, and you are back at three.": {
+    "file": "minus-undoes-plus-put-two-on-take-two-of-d953e1.mp3",
+    "dur": 5.71
   },
   "A thousand plus one equals a thousand and one.": {
     "file": "a-thousand-plus-one-equals-a-thousand-an-dc9b27.mp3",
@@ -191,22 +183,6 @@
     "file": "that-is-a-lot-of-writing-we-need-somethi-881175.mp3",
     "dur": 3.41
   },
-  "In 1631, William Oughtred used a little cross for \"times\".": {
-    "file": "in-1631-william-oughtred-used-a-little-c-990236.mp3",
-    "dur": 3.82
-  },
-  "Later, Gottfried Leibniz said he didn't like the cross.": {
-    "file": "later-gottfried-leibniz-said-he-didn-t-l-3ee8ab.mp3",
-    "dur": 3.17
-  },
-  "It looked too much like the letter x!": {
-    "file": "it-looked-too-much-like-the-letter-x-b648c9.mp3",
-    "dur": 2.23
-  },
-  "So he used a dot instead.": {
-    "file": "so-he-used-a-dot-instead-fe37a6.mp3",
-    "dur": 1.61
-  },
   "Here is a row of three.": {
     "file": "here-is-a-row-of-three-7a4226.mp3",
     "dur": 1.2
@@ -223,17 +199,29 @@
     "file": "five-times-three-equals-fifteen-59527a.mp3",
     "dur": 2.06
   },
+  "One sign, instead of plus again and again.": {
+    "file": "one-sign-instead-of-plus-again-and-again-e69dea.mp3",
+    "dur": 2.45
+  },
   "Turn it round: three times five. Still fifteen.": {
     "file": "turn-it-round-three-times-five-still-fif-50ec21.mp3",
     "dur": 2.78
+  },
+  "Five plus five plus five is three times five.": {
+    "file": "five-plus-five-plus-five-is-three-times--fbad31.mp3",
+    "dur": 3
   },
   "This dot also means times.": {
     "file": "this-dot-also-means-times-8ef261.mp3",
     "dur": 1.68
   },
-  "Five plus five plus five is three times five.": {
-    "file": "five-plus-five-plus-five-is-three-times--fbad31.mp3",
-    "dur": 3
+  "The cross looks a lot like the letter x.": {
+    "file": "the-cross-looks-a-lot-like-the-letter-x-d12804.mp3",
+    "dur": 2.14
+  },
+  "So in later maths, you will often see the dot instead.": {
+    "file": "so-in-later-maths-you-will-often-see-the-111609.mp3",
+    "dur": 3.41
   },
   "A thousand times a thousand equals a million.": {
     "file": "a-thousand-times-a-thousand-equals-a-mil-fb3830.mp3",
@@ -275,22 +263,6 @@
     "file": "twelve-shared-between-three-is-four-each-a2b814.mp3",
     "dur": 4.87
   },
-  "In 1659, Johann Rahn printed this sign in a Swiss maths book.": {
-    "file": "in-1659-johann-rahn-printed-this-sign-in-56db70.mp3",
-    "dur": 4.85
-  },
-  "Another sign for sharing is even older.": {
-    "file": "another-sign-for-sharing-is-even-older-35e314.mp3",
-    "dur": 2.26
-  },
-  "Arab mathematicians began drawing a line inside fractions.": {
-    "file": "arab-mathematicians-began-drawing-a-line-d0a45b.mp3",
-    "dur": 3.34
-  },
-  "In 1202, Fibonacci used that line in his big book.": {
-    "file": "in-1202-fibonacci-used-that-line-in-his--499ec6.mp3",
-    "dur": 4.03
-  },
   "This is the divide sign.": {
     "file": "this-is-the-divide-sign-d21013.mp3",
     "dur": 1.39
@@ -298,6 +270,14 @@
   "Twelve divided by three equals four.": {
     "file": "twelve-divided-by-three-equals-four-555fd3.mp3",
     "dur": 2.21
+  },
+  "Divide shares an amount into equal parts.": {
+    "file": "divide-shares-an-amount-into-equal-parts-28b45d.mp3",
+    "dur": 2.42
+  },
+  "Divide can also ask: how many threes are in twelve? Four.": {
+    "file": "divide-can-also-ask-how-many-threes-are--81d74b.mp3",
+    "dur": 3.98
   },
   "Four, three times, makes twelve. Divide undoes times.": {
     "file": "four-three-times-makes-twelve-divide-und-65ae53.mp3",
@@ -307,13 +287,17 @@
     "file": "there-are-other-ways-to-write-divide-006d8a.mp3",
     "dur": 1.92
   },
-  "This slash means divide, too.": {
-    "file": "this-slash-means-divide-too-92a33d.mp3",
-    "dur": 1.87
+  "This slash also means divide. You will see it on keyboards and screens.": {
+    "file": "this-slash-also-means-divide-you-will-se-f71ee6.mp3",
+    "dur": 4.78
   },
   "And so does the line in a fraction. Twelve over three equals four.": {
     "file": "and-so-does-the-line-in-a-fraction-twelv-cc3131.mp3",
     "dur": 4.56
+  },
+  "The divide sign looks like a little fraction: a line, with a dot where each number goes.": {
+    "file": "the-divide-sign-looks-like-a-little-frac-0e4cdc.mp3",
+    "dur": 5.76
   },
   "One bead, to share between two plates.": {
     "file": "one-bead-to-share-between-two-plates-e280af.mp3",
@@ -322,6 +306,10 @@
   "One divided by two equals one half.": {
     "file": "one-divided-by-two-equals-one-half-8a5430.mp3",
     "dur": 2.35
+  },
+  "The top number is shared out. The bottom number says how many shares.": {
+    "file": "the-top-number-is-shared-out-the-bottom--ad509a.mp3",
+    "dur": 5.35
   },
   "Share eight between two plates. How many on each?": {
     "file": "share-eight-between-two-plates-how-many--3cd44d.mp3",
@@ -359,18 +347,6 @@
     "file": "one-line-must-not-mean-two-things-fa80e1.mp3",
     "dur": 1.99
   },
-  "Long ago, people drew a line to keep numbers together.": {
-    "file": "long-ago-people-drew-a-line-to-keep-numb-e4c0a3.mp3",
-    "dur": 3.12
-  },
-  "Round brackets appeared in maths books over 400 years ago.": {
-    "file": "round-brackets-appeared-in-maths-books-o-0b6551.mp3",
-    "dur": 3.43
-  },
-  "Brackets won because printers could set them in one line.": {
-    "file": "brackets-won-because-printers-could-set--a17f39.mp3",
-    "dur": 3
-  },
   "These are brackets.": {
     "file": "these-are-brackets-263093.mp3",
     "dur": 1.22
@@ -387,13 +363,21 @@
     "file": "move-the-brackets-and-it-changes-two-plu-9b51f0.mp3",
     "dur": 4.56
   },
-  "With no brackets, times and divide go first.": {
-    "file": "with-no-brackets-times-and-divide-go-fir-a84706.mp3",
-    "dur": 2.62
+  "Brackets always come in a pair: one opens, and one closes.": {
+    "file": "brackets-always-come-in-a-pair-one-opens-4c5619.mp3",
+    "dur": 3.36
+  },
+  "With no brackets, times and divide go first. So this is still fourteen.": {
+    "file": "with-no-brackets-times-and-divide-go-fir-51751f.mp3",
+    "dur": 5.21
   },
   "Eight minus two is six. Six divided by three equals two.": {
     "file": "eight-minus-two-is-six-six-divided-by-th-193764.mp3",
     "dur": 3.74
+  },
+  "Long ago, people drew a line over the part instead. Brackets do the same job.": {
+    "file": "long-ago-people-drew-a-line-over-the-par-2d0340.mp3",
+    "dur": 5.04
   },
   "Six minus two, then times five, equals twenty.": {
     "file": "six-minus-two-then-times-five-equals-twe-58094c.mp3",
@@ -419,14 +403,6 @@
     "file": "equals-can-t-say-that-we-need-new-signs-73ec90.mp3",
     "dur": 2.52
   },
-  "In 1631, a book by Thomas Harriot showed these two signs.": {
-    "file": "in-1631-a-book-by-thomas-harriot-showed--46808f.mp3",
-    "dur": 4.06
-  },
-  "Later, people added lines to mean \"or equal to\".": {
-    "file": "later-people-added-lines-to-mean-or-equa-cc090c.mp3",
-    "dur": 3.02
-  },
   "This is the less-than sign.": {
     "file": "this-is-the-less-than-sign-7f99e6.mp3",
     "dur": 1.34
@@ -447,6 +423,10 @@
     "file": "this-sign-means-not-equal-nine-is-not-eq-2d3178.mp3",
     "dur": 3.41
   },
+  "It is equals, crossed out. It says they are different, but not which one is bigger.": {
+    "file": "it-is-equals-crossed-out-it-says-they-ar-b9c95b.mp3",
+    "dur": 6.05
+  },
   "Two more, and now they are equal. Nine equals nine.": {
     "file": "two-more-and-now-they-are-equal-nine-equ-c81dce.mp3",
     "dur": 3.89
@@ -454,6 +434,10 @@
   "This sign means less than, or equal to.": {
     "file": "this-sign-means-less-than-or-equal-to-78293e.mp3",
     "dur": 2.33
+  },
+  "It is the less-than sign, with one line of equals under it.": {
+    "file": "it-is-the-less-than-sign-with-one-line-o-86e058.mp3",
+    "dur": 3.36
   },
   "Four is less than or equal to five. And so is five. Both are true.": {
     "file": "four-is-less-than-or-equal-to-five-and-s-1e7417.mp3",
@@ -466,6 +450,14 @@
   "Six is greater than or equal to five. And so is five.": {
     "file": "six-is-greater-than-or-equal-to-five-and-e0cc90.mp3",
     "dur": 3.91
+  },
+  "At least five means greater than or equal to five.": {
+    "file": "at-least-five-means-greater-than-or-equa-ee9f89.mp3",
+    "dur": 2.93
+  },
+  "Five works. Six works. And so does seven.": {
+    "file": "five-works-six-works-and-so-does-seven-3a7b74.mp3",
+    "dur": 2.42
   },
   "Which sign goes here?": {
     "file": "which-sign-goes-here-3cf214.mp3",

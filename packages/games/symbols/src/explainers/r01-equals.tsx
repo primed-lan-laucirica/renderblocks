@@ -1,18 +1,20 @@
 /**
  * Rank 1, = : two pans that balance. Only numerals and = are ever on the
- * paper ("not the same" stays in words until rank 6 names it).
+ * paper ("not the same" stays in words until rank 6 names it). The sign is
+ * a claim that must be true: when a pan gains a bead, it comes off.
  *
- * History (checked): Robert Recorde, The Whetstone of Witte, London, 1557.
- * "…a paire of paralleles, or Gemowe lines of one lengthe, thus: =, bicause
- * noe .2. thynges, can be moare equalle." His lines were much longer than
- * today's sign.
+ * The shape is told by its reason, with no name and no date: two lines of
+ * one length, because no two things can be more equal. (The reason is Robert
+ * Recorde's, The Whetstone of Witte, London, 1557: "…a paire of paralleles,
+ * or Gemowe lines of one lengthe, thus: =, bicause noe .2. thynges, can be
+ * moare equalle.")
  */
 import type { Spec } from '../engine/spec'
 import { INK } from '../kit/look'
-import { balance, beadsOn, cardOn, line, PIVOT, props, words, type Sprite } from '../kit/sprites'
-import { beam, book, FROM_TRAY, OVER, PAN_ZONE, TOP } from './shared'
+import { balance, beadsOn, cardOn, line, PIVOT, props, type Sprite } from '../kit/sprites'
+import { beam, FROM_TRAY, OVER, PAN_ZONE, TOP } from './shared'
 
-/** Recorde's pair of lines: `len` is half their length. Short enough, they are today's sign. */
+/** Recorde's pair of lines, drawn long so they can be seen to be twins: `len` is half their length. */
 const twin = (len: number, x: number, y: number, size = 150): Sprite[] => [
   {
     k: 'twin',
@@ -52,32 +54,25 @@ export const r01: Spec = {
     },
     { stage: { props: null }, cue: 'slide', say: "The same. Shape doesn't matter, only how many." },
 
-    // ── 2. Where it came from ──
+    // ── 2. What the sign does ──
+    { act: 2, stage: { scale: balance({ left: beadsOn(5), right: beadsOn(5) }), line: line(['='], { y: TOP, at: [PIVOT.x] }) }, move: 1.1, quiet: 1.2, motif: true, say: 'This is the equals sign.' },
+    { stage: { line: line(['5', '=', '5'], { y: TOP, at: OVER }) }, quiet: 1.2, say: 'Five equals five.', poster: true },
+    { stage: { line: line(['5', '=', '5'], { y: TOP, at: OVER, gold: ['='] }) }, move: 0.5, say: 'It says that this side and that side are the same amount.' },
     {
-      act: 2,
-      clear: true,
-      stage: { w1: words('5 is equal to 5', { x: 420, y: 330, size: 84, anchor: 'start', write: 1 }).map((s) => ({ ...s, enter: { w: 0, o: 1 } })) },
-      move: 1.3,
-      also: [
-        { at: 1.4, move: 1.3, stage: { w2: words('9 is equal to 9', { x: 420, y: 500, size: 84, anchor: 'start' }).map((s) => ({ ...s, enter: { w: 0, o: 1 } })) } },
-        { at: 2.8, move: 1.3, stage: { w3: words('12 is equal to 12', { x: 420, y: 670, size: 84, anchor: 'start' }).map((s) => ({ ...s, enter: { w: 0, o: 1 } })) } },
-      ],
-      say: 'People used to write the words out, every time.',
-    },
-    { clear: true, stage: { book: book(520, 520, ['The', 'Whetstone', 'of Witte'], '1557') }, say: 'In 1557, Robert Recorde got tired of writing "is equal to".' },
-    { stage: { twin: twin(330, 1260, 430) }, move: 1.6, say: 'So he drew two twin lines, both the same length.' },
-    { stage: { old: words('bicause noe .2. thynges, can be moare equalle', { x: 1260, y: 610, size: 44, font: 'old' }) }, say: 'He said no two things could be more equal.' },
-    { stage: { old: null, twin: twin(37.5, 1260, 430) }, move: 1.5, say: 'His lines were much longer than ours!' },
-
-    // ── 3. The sign at work ──
-    {
-      act: 3,
-      stage: { book: null, twin: twin(37.5, PIVOT.x, TOP), scale: balance({ left: beadsOn(5), right: beadsOn(5) }) },
+      stage: { scale: balance({ left: beadsOn(5), right: { ...beadsOn(6), from: { x: 520, y: -260 } } }), line: line(['5', '_', '6'], { y: TOP, at: OVER }) },
       move: 1.2,
-      pad: 0,
+      cue: 'bead',
+      say: 'One more on that side, and equals is not true any more. The sign has to come off.',
     },
-    { stage: { twin: null, line: line(['='], { y: TOP, at: [PIVOT.x] }) }, move: 0.01, quiet: 1.2, motif: true, say: 'This is the equals sign.' },
-    { stage: { line: line(['5', '=', '5'], { y: TOP, at: OVER }) }, quiet: 2, say: 'Five equals five.', poster: true },
+    {
+      stage: { scale: balance({ left: { ...beadsOn(6), from: { x: -520, y: -260 } }, right: beadsOn(6) }), line: line(['6', '=', '6'], { y: TOP, at: OVER }) },
+      move: 1.2,
+      cue: 'bead',
+      say: 'One more on this side, and it is true again. Six equals six.',
+    },
+
+    // ── 3. Where it is used ──
+    { act: 3, clear: true, stage: { twin: twin(330, 960, 480) }, move: 1.6, say: 'Its two lines are twins: the same length, side by side. No two things can be more equal.' },
     {
       clear: true,
       stage: { marks: line([{ tally: 5, k: 'tally' }, { roman: 'V', n: 5, k: 'V' }, { g: '5', k: 'five' }], { y: 400, size: 170, under: true, at: [520, 960, 1400] }) },

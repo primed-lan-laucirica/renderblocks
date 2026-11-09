@@ -1,16 +1,16 @@
 /**
  * Rank 3, × and · : the same pile again and again, as rows of an array. The
- * signs on the paper are =, +, × and · only.
+ * signs on the paper are =, +, × and · only. Times is the short way to write
+ * plus again and again, and it works either way round.
  *
- * History (checked): William Oughtred, Clavis Mathematicae, 1631, used the
- * cross for multiplying. Leibniz, in a letter of 1698, said he did not like
- * it because it is easily confused with x, and used a dot. Not narrated:
- * that the dot was "raised", or who used a cross before Oughtred.
+ * Why there is a dot is told as a reason, not as history: the cross is easily
+ * confused with the letter x. (Checked: Oughtred used the cross in 1631;
+ * Leibniz, in a letter of 1698, gave that reason for using a dot.)
  */
 import type { Pt } from '@renderblocks/scene/ease'
 import type { Spec } from '../engine/spec'
 import { balance, beadsOn, cardOn, grid, line, loose, props, words, type Pile } from '../kit/sprites'
-import { beam, book, FROM_TRAY, OVER_LEFT, PAN_ZONE, plate, TOP } from './shared'
+import { beam, FROM_TRAY, OVER_LEFT, PAN_ZONE, plate, TOP } from './shared'
 
 const THREES: Pile[] = Array.from({ length: 5 }, () => ({ n: 3, cols: 1, colour: 'blue' }))
 const FIVES: Pile[] = Array.from({ length: 3 }, () => ({ n: 5, cols: 1 }))
@@ -48,14 +48,8 @@ export const r03: Spec = {
     { stage: { line: line(PILES, { y: TOP, size: 100 }) }, say: 'To write five piles of three, we need plus again and again.' },
     { stage: { line: line(PILES, { y: TOP, size: 100, gold: ['+'] }) }, move: 0.5, say: 'That is a lot of writing. We need something shorter.' },
 
-    // ── 2. Where it came from ──
-    { act: 2, clear: true, stage: { book: book(520, 520, ['William', 'Oughtred'], '1631'), sign: line(['×'], { x: 1260, y: 450, size: 320 }) }, say: 'In 1631, William Oughtred used a little cross for "times".' },
-    { stage: { book: null, sign: line(['×'], { x: 740, y: 450, size: 320 }) }, say: "Later, Gottfried Leibniz said he didn't like the cross." },
-    { stage: { letter: words('x', { x: 1180, y: 425, size: 340, font: 'old' }) }, say: 'It looked too much like the letter x!' },
-    { stage: { letter: null, sign: line(['·'], { x: 960, y: 450, size: 320 }) }, say: 'So he used a dot instead.' },
-
-    // ── 3. The signs at work ──
-    { act: 3, clear: true, stage: { array: array(1) }, say: 'Here is a row of three.' },
+    // ── 2. What the sign does ──
+    { act: 2, clear: true, stage: { array: array(1) }, say: 'Here is a row of three.' },
     {
       stage: { array: array(2) },
       move: 0.5,
@@ -65,9 +59,14 @@ export const r03: Spec = {
     },
     { stage: { line: line(['×'], { y: TOP, size: 220 }) }, quiet: 1.6, motif: true, say: 'This is the times sign.' },
     { stage: { line: line([FIVE, '×', THREE, '=', '15'], { y: TOP }) }, say: 'Five times three equals fifteen.', poster: true },
-    { stage: { array: array(5, true), line: line([THREE, '×', FIVE, '=', '15'], { y: TOP }) }, move: 1.4, cue: 'slide', say: 'Turn it round: three times five. Still fifteen.' },
-    { stage: { line: line([THREE, '·', FIVE, '=', '15'], { y: TOP }) }, quiet: 1.5, motif: true, say: 'This dot also means times.' },
+    { stage: { long: line(PILES, { y: 372, size: 76 }) }, say: 'One sign, instead of plus again and again.' },
+
+    // ── 3. Where it is used ──
+    { act: 3, stage: { long: null, array: array(5, true), line: line([THREE, '×', FIVE, '=', '15'], { y: TOP }) }, move: 1.4, cue: 'slide', say: 'Turn it round: three times five. Still fifteen.' },
     { stage: { line: line(['5', '+', '5', '+', '5', '=', '3', '×', '5'], { y: TOP, size: 130 }) }, say: 'Five plus five plus five is three times five.' },
+    { stage: { line: line([THREE, '·', FIVE, '=', '15'], { y: TOP }) }, quiet: 1.5, motif: true, say: 'This dot also means times.' },
+    { clear: true, stage: { sign: line(['×'], { x: 740, y: 450, size: 320 }), letter: words('x', { x: 1180, y: 425, size: 340, font: 'old' }) }, say: 'The cross looks a lot like the letter x.' },
+    { stage: { letter: null, sign: line(['·'], { x: 960, y: 450, size: 320 }) }, say: 'So in later maths, you will often see the dot instead.' },
     { clear: true, stage: { line: line(['1,000', '×', '1,000', '=', '1,000,000'], { y: 480, size: 125 }) }, quiet: 1.5, say: 'A thousand times a thousand equals a million.' },
 
     // ── 4. His turn ──

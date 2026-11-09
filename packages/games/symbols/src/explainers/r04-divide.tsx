@@ -1,18 +1,20 @@
 /**
  * Rank 4, ÷ / and the fraction bar: beads dealt out onto plates. The signs
- * on the paper are =, ×, −, ÷, / and the bar only.
+ * on the paper are =, ×, −, ÷, / and the bar only. Divide shares into equal
+ * parts, counts how many of one amount are in another, and undoes times;
+ * the slash and the bar are the same sign in other places.
  *
- * History (checked): Johann Rahn, Teutsche Algebra, Zürich, 1659, the first
- * printed ÷ for dividing. The fraction bar came into use among Arab
- * mathematicians (al-Hassar, 12th century, is the usual first citation) and
- * Fibonacci's Liber Abaci (1202) carried it into Europe. Not narrated: a
- * single inventor of the bar, or who first used the slash.
+ * The three are tied to each other by how they look (÷ as a little fraction,
+ * a dot where each number goes); that is a likeness, not a claim about where
+ * ÷ came from. No names or dates are narrated. (Checked, should one be
+ * wanted: Johann Rahn, Zürich, 1659, the first printed ÷; the bar is in use
+ * by the 12th century and in Fibonacci's Liber Abaci, 1202.)
  */
 import type { Spec } from '../engine/spec'
 import { SUPPLY } from '../engine/turns'
 import { B } from '../kit/look'
 import { grid, line, row, type Sprite } from '../kit/sprites'
-import { book, onPlate, plate, PLATE_BEAD, TOP } from './shared'
+import { onPlate, plate, PLATE_BEAD, TOP } from './shared'
 
 const PLATE_Y = 790
 const THREE = [560, 960, 1360]
@@ -29,6 +31,8 @@ const share = (total: number, dealt: number, xs: number[], heap: { x: number; y:
   })
 
 const HEAP12 = grid(12, 6, 960, 420, 70)
+/** The same twelve as four threes in a row. */
+const threes = () => Array.from({ length: 12 }, (_, i) => bead(`d${i}`, 960 + (Math.floor(i / 3) - 1.5) * 300 + ((i % 3) - 1) * 68, 600))
 const TRAY8 = row(8, SUPPLY.x, SUPPLY.y, 48)
 
 /** One bead cut in two: together, or one half on each plate. */
@@ -59,21 +63,25 @@ export const r04: Spec = {
     { say: 'Four on each plate. None left over.' },
     { stage: { line: line(['12', '_', '3', '=', '4'], { y: TOP, gold: ['_'] }) }, say: 'Twelve, shared between three, is four each. We need a sign for "shared".' },
 
-    // ── 2. Where it came from ──
-    { act: 2, clear: true, stage: { book: book(520, 520, ['Johann', 'Rahn'], '1659'), sign: line(['÷'], { x: 1260, y: 450, size: 320 }) }, say: 'In 1659, Johann Rahn printed this sign in a Swiss maths book.' },
-    { say: 'Another sign for sharing is even older.' },
-    { clear: true, stage: { old: line([{ frac: ['1', '2'] }], { x: 960, y: 480, size: 360 }) }, say: 'Arab mathematicians began drawing a line inside fractions.' },
-    { stage: { old: line([{ frac: ['1', '2'] }], { x: 1260, y: 480, size: 360 }), book: book(520, 520, ['Fibonacci'], '1202') }, say: 'In 1202, Fibonacci used that line in his big book.' },
+    // ── 2. What the sign does ──
+    { act: 2, stage: { line: line(['12', '÷', '3', '=', '4'], { y: TOP, gold: ['÷'] }) }, quiet: 1.4, motif: true, say: 'This is the divide sign.' },
+    { stage: { line: line(['12', '÷', '3', '=', '4'], { y: TOP }) }, move: 0.5, say: 'Twelve divided by three equals four.', poster: true },
+    { stage: { line: line(['12', '÷', '3', '=', '4'], { y: TOP, gold: ['÷'] }) }, move: 0.5, say: 'Divide shares an amount into equal parts.' },
+    { stage: { plates: null, beads: threes() }, move: 1.3, cue: 'slide', say: 'Divide can also ask: how many threes are in twelve? Four.' },
+    { stage: { back: line(['4', '×', '3', '=', '12'], { y: 840, size: 130 }) }, say: 'Four, three times, makes twelve. Divide undoes times.' },
 
-    // ── 3. The signs at work ──
-    { act: 3, clear: true, stage: { line: line(['÷'], { y: 460, size: 340 }) }, quiet: 1.6, motif: true, say: 'This is the divide sign.' },
-    { stage: { plates: plates(THREE), beads: share(12, 12, THREE, HEAP12), line: line(['12', '÷', '3', '=', '4'], { y: TOP }) }, move: 1.1, say: 'Twelve divided by three equals four.', poster: true },
-    { stage: { back: line(['4', '×', '3', '=', '12'], { y: 430, size: 130 }) }, say: 'Four, three times, makes twelve. Divide undoes times.' },
-    { clear: ['line'], stage: { line: line(['12', '÷', '3', '=', '4'], { y: 230, size: 140 }) }, say: 'There are other ways to write divide.' },
-    { stage: { slash: line(['12', '/', '3', '=', '4'], { y: 520, size: 140 }) }, quiet: 1.5, motif: true, say: 'This slash means divide, too.' },
+    // ── 3. Where it is used ──
+    { act: 3, clear: true, stage: { line: line(['12', '÷', '3', '=', '4'], { y: 230, size: 140 }) }, say: 'There are other ways to write divide.' },
+    { stage: { slash: line(['12', '/', '3', '=', '4'], { y: 520, size: 140 }) }, quiet: 1.5, motif: true, say: 'This slash also means divide. You will see it on keyboards and screens.' },
     { stage: { bar: line([{ frac: ['12', '3'] }, '=', '4'], { y: 830, size: 190 }) }, quiet: 1.5, motif: true, say: 'And so does the line in a fraction. Twelve over three equals four.' },
+    {
+      stage: { line: line(['12', '÷', '3', '=', '4'], { y: 230, size: 140, gold: ['÷'] }), bar: line([{ frac: ['12', '3'] }, '=', '4'], { y: 830, size: 190, gold: ['frac'] }) },
+      move: 0.5,
+      say: 'The divide sign looks like a little fraction: a line, with a dot where each number goes.',
+    },
     { clear: true, stage: { plates: plates(TWO), halves: halves(false) }, say: 'One bead, to share between two plates.' },
     { stage: { halves: halves(true), line: line(['1', '÷', '2', '=', { frac: ['1', '2'] }], { y: TOP }) }, move: 1.2, cue: 'break', say: 'One divided by two equals one half.' },
+    { stage: { line: line(['1', '÷', '2', '=', { frac: ['1', '2'] }], { y: TOP, gold: ['frac'] }) }, move: 0.5, say: 'The top number is shared out. The bottom number says how many shares.' },
 
     // ── 4. His turn ──
     {

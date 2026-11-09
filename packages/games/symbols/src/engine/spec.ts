@@ -78,7 +78,7 @@ export interface BuildTurn extends TurnBase {
 export type Turn = PredictTurn | ChooseTurn | ReadTurn | PlaceTurn | BuildTurn
 
 export interface Step {
-  /** This step opens an act (1 the need, 2 where it came from, 3 the sign at work, 4 his turn). */
+  /** This step opens an act (1 the need, 2 what the sign does, 3 where it is used, 4 his turn). History is a passing line at most. */
   act?: 1 | 2 | 3 | 4
   /** The line spoken (narration is voice only; the paper is kept for objects and notation). */
   say?: string

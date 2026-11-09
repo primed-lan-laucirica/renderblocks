@@ -1,22 +1,26 @@
 /**
  * Rank 6, < > ≤ ≥ ≠ : a beam that is not level, and what to write then. The
- * signs on the paper are =, + and the five new ones.
+ * signs on the paper are =, + and the five new ones. Each is told by what it
+ * says about two amounts, and "or equal to" by where it is wanted (at least).
  *
- * History (checked): < and > are first printed in Thomas Harriot's Artis
- * Analyticae Praxis (1631), published after his death by his editors, so
- * the narration says "a book by Thomas Harriot showed". The "or equal to"
- * lines came later (Bouguer, 1734, with a double line). Not narrated: the
- * story of the mark on a man's arm, or who first drew ≠.
+ * The signs are tied to each other, not to dates: not-equal is equals
+ * crossed out, and "or equal to" is one line of equals under < or >. No
+ * names or dates are narrated. (Checked, should one be wanted: < and > are
+ * first printed in Thomas Harriot's Artis Analyticae Praxis, 1631; the "or
+ * equal to" lines came later.)
  */
 import type { Spec } from '../engine/spec'
-import { balance, beadsOn, cardOn, line, props, type Pile } from '../kit/sprites'
-import { beam, book, crossed, FROM_TRAY, OVER, PAN_ZONE, TOP } from './shared'
+import { balance, beadsOn, cardOn, line, loose, props, row, type Pile } from '../kit/sprites'
+import { beam, crossed, FROM_TRAY, OVER, PAN_ZONE, TOP } from './shared'
 
 const SEVEN: Pile = { n: 7, cols: 4 }
 const NINE: Pile = { n: 9, cols: 5 }
 
 const LEFT = { x: 520, y: 440, size: 170, under: true }
 const RIGHT = { x: 1400, y: 440, size: 170, under: true }
+
+/** Rows of five, six, … up to n beads: every amount that is at least five. */
+const least = (n: number) => Array.from({ length: n - 4 }, (_, r) => loose(row(5 + r, 960, 520 + r * 110, 84), { s: 1.7, k: `m${r}_`, from: { x: 960, y: 1180 } })).flat()
 
 export const r06: Spec = {
   rank: 6,
@@ -34,13 +38,9 @@ export const r06: Spec = {
     { stage: { props: null, scale: balance({ left: beadsOn(SEVEN), right: beadsOn(NINE) }) }, cue: 'slide', say: 'That side. Nine is more than seven.' },
     { stage: { line: line(['7', '_', '9'], { y: TOP, at: OVER, gold: ['_'] }) }, say: "Equals can't say that. We need new signs." },
 
-    // ── 2. Where it came from ──
-    { act: 2, clear: true, stage: { book: book(520, 520, ['Thomas', 'Harriot'], '1631'), signs: line(['<', '>'], { x: 1260, y: 380, size: 280 }) }, say: 'In 1631, a book by Thomas Harriot showed these two signs.' },
-    { stage: { more: line(['≤', '≥'], { x: 1260, y: 700, size: 280 }) }, say: 'Later, people added lines to mean "or equal to".' },
-
-    // ── 3. The signs at work ──
-    { act: 3, clear: true, stage: { line: line(['<'], { y: 460, size: 340 }) }, quiet: 1.6, motif: true, say: 'This is the less-than sign.' },
-    { stage: { scale: balance({ left: beadsOn(SEVEN), right: beadsOn(NINE) }), line: line(['7', '<', '9'], { y: TOP, at: OVER }) }, move: 1.1, say: 'Seven is less than nine.', poster: true },
+    // ── 2. What the signs do ──
+    { act: 2, stage: { line: line(['7', '<', '9'], { y: TOP, at: OVER }) }, quiet: 1.4, motif: true, say: 'This is the less-than sign.' },
+    { say: 'Seven is less than nine.', poster: true },
     { stage: { line: line(['7', '<', '9'], { y: TOP, at: OVER, gold: ['<'] }) }, move: 0.5, say: 'The small end points at the smaller number.' },
     {
       stage: { scale: crossed(balance({ left: beadsOn(NINE), right: beadsOn(SEVEN) })), line: line(['9', '>', '7'], { y: TOP, at: OVER }) },
@@ -51,16 +51,28 @@ export const r06: Spec = {
       say: 'Turned round, it is the greater-than sign. Nine is greater than seven.',
     },
     { stage: { line: line(['9', '≠', '7'], { y: TOP, at: OVER }) }, quiet: 1.6, motif: true, say: 'This sign means not equal. Nine is not equal to seven.' },
+    { stage: { line: line(['9', '≠', '7'], { y: TOP, at: OVER, gold: ['≠'] }) }, move: 0.5, say: 'It is equals, crossed out. It says they are different, but not which one is bigger.' },
     {
       stage: { scale: crossed(balance({ left: beadsOn(NINE), right: { ...beadsOn(NINE), from: { x: 520, y: -260 } } })), line: line(['9', '=', { g: '9', k: 'nine' }], { y: TOP, at: OVER }) },
       move: 1.2,
       cue: 'bead',
       say: 'Two more, and now they are equal. Nine equals nine.',
     },
-    { clear: true, stage: { line: line(['≤'], { y: 460, size: 340 }) }, quiet: 1.6, motif: true, say: 'This sign means less than, or equal to.' },
-    { stage: { line: line(['4', '≤', '5'], LEFT), twin: line(['5', '≤', '5'], RIGHT) }, move: 1.1, say: 'Four is less than or equal to five. And so is five. Both are true.' },
+
+    // ── 3. Where they are used ──
+    { act: 3, clear: true, stage: { line: line(['≤'], { y: 460, size: 340 }) }, quiet: 1.6, motif: true, say: 'This sign means less than, or equal to.' },
+    { stage: { part: line(['<'], { x: 520, y: 460, size: 220 }), whole: line(['='], { x: 1400, y: 460, size: 220 }) }, say: 'It is the less-than sign, with one line of equals under it.' },
+    { stage: { part: null, whole: null, line: line(['4', '≤', '5'], LEFT), twin: line(['5', '≤', '5'], RIGHT) }, move: 1.1, say: 'Four is less than or equal to five. And so is five. Both are true.' },
     { clear: true, stage: { line: line(['≥'], { y: 460, size: 340 }) }, quiet: 1.6, motif: true, say: 'And this one means greater than, or equal to.' },
     { stage: { line: line(['6', '≥', '5'], LEFT), twin: line(['5', '≥', '5'], RIGHT) }, move: 1.1, say: 'Six is greater than or equal to five. And so is five.' },
+    { clear: true, stage: { line: line(['?', '≥', '5'], { y: 260, size: 170 }) }, say: 'At least five means greater than or equal to five.' },
+    {
+      stage: { enough: least(5) },
+      move: 0.5,
+      cue: 'bead',
+      also: [6, 7].map((n, i) => ({ at: 1.1 * (i + 1), move: 0.5, cue: 'bead' as const, stage: { enough: least(n) } })),
+      say: 'Five works. Six works. And so does seven.',
+    },
 
     // ── 4. His turn ──
     {

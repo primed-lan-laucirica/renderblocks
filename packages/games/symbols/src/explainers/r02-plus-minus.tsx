@@ -1,27 +1,31 @@
 /**
  * Rank 2, + and − : beads pushed onto a pan, beads taken off it. The signs on
- * the paper are =, + and − only.
+ * the paper are =, + and − only. Plus joins and works either way round; minus
+ * takes away, compares, and undoes plus.
  *
- * History (checked): Johann Widman, Leipzig, 1489, the first printed + and −.
- * He used them for a surplus and a shortfall (his examples weigh barrels of
- * figs), not yet for adding and taking away. Not narrated: where the marks
- * came from before him.
+ * No history is narrated. (Checked, should a line be wanted: Johann Widman,
+ * Leipzig, 1489, the first printed + and −, for a surplus and a shortfall.)
  */
 import type { Spec } from '../engine/spec'
-import { balance, beadsOn, cardOn, line, loose, PAN_X, props, row, type Pile } from '../kit/sprites'
-import { barrel, beam, book, crossed, FROM_TRAY, OVER_LEFT, OVER_RIGHT, PAN_ZONE, TOP } from './shared'
+import { balance, beadsOn, cardOn, line, loose, PAN_X, PIVOT, props, type Pile } from '../kit/sprites'
+import { beam, FROM_TRAY, OVER_LEFT, PAN_ZONE, TOP } from './shared'
 
 const THREE: Pile = { n: 3, colour: 'blue' }
 const TWO: Pile = { n: 2, colour: 'red' }
 
-const BARREL = { more: 640, less: 1280, y: 800 }
-/** Two barrels of figs, each with its mark; `more` and `less` show what the marks said. */
-const barrels = (more: boolean, less: boolean) => ({
-  barrels: [barrel('more', BARREL.more, BARREL.y), barrel('less', BARREL.less, BARREL.y)],
-  marks: line(['+', '−'], { y: BARREL.y - 150, size: 130, at: [BARREL.more, BARREL.less], gold: [...(more ? ['+'] : []), ...(less ? ['−'] : [])] }),
-  extra: more ? loose(row(2, BARREL.more, BARREL.y - 350, 70), { s: 1.4, k: 'm', from: { x: BARREL.more, y: BARREL.y - 520 } }) : null,
-  short: less ? loose(row(2, BARREL.less, BARREL.y - 350, 70), { s: 1.4, k: 's', ghost: () => 1 }) : null,
-})
+/** A sum over each pan, with equals over the pivot (3 + 2 = 2 + 3). */
+const OVER_BOTH = [PAN_X.left - 130, PAN_X.left, PAN_X.left + 130, PIVOT.x, PAN_X.right - 130, PAN_X.right, PAN_X.right + 130]
+
+const APART = { x: 728, y: 500, step: 116 }
+/** Five over three, lined up at the left: the two that stick out are how far apart the amounts are. */
+const apart = () => {
+  const at = (i: number, r: number) => ({ x: APART.x + i * APART.step, y: APART.y + r * 150 })
+  return [
+    ...loose([0, 1, 2].map((i) => at(i, 0)), { s: 2.4, k: 'f', colour: 'blue' }),
+    ...loose([3, 4].map((i) => at(i, 0)), { s: 2.4, k: 'x' }),
+    ...loose([0, 1, 2].map((i) => at(i, 1)), { s: 2.4, k: 't', colour: 'red' }),
+  ]
+}
 
 const PILES = ['3', '+', '3', '+', '3', '+', '3', '+', '3', '=', '15']
 
@@ -29,7 +33,7 @@ export const r02: Spec = {
   rank: 2,
   id: 'r02',
   title: 'Plus and minus',
-  layers: ['barrels', 'scale', 'minus'],
+  layers: ['scale', 'minus'],
   steps: [
     // ── 1. The need ──
     {
@@ -42,29 +46,28 @@ export const r02: Spec = {
     { stage: { props: null }, cue: 'slide', say: 'Level! Three and two together are the same as five.' },
     { stage: { line: line(['3', '_', '2', '=', '5'], { y: TOP, at: OVER_LEFT, gold: ['_'] }) }, say: 'We can write equals. But we have no sign for "together".' },
 
-    // ── 2. Where it came from ──
-    { act: 2, clear: true, stage: { book: book(520, 520, ['Johann', 'Widman'], '1489'), signs: line(['+', '−'], { x: 1260, y: 450, size: 280 }) }, say: 'In 1489, Johann Widman printed two little signs in a German book.' },
-    { clear: true, stage: barrels(false, false), say: 'He used them for barrels of figs.' },
-    { stage: barrels(true, false), cue: 'bead', say: 'This one meant a little more.' },
-    { stage: barrels(true, true), cue: 'slide', say: 'And this one meant a little less.' },
-
-    // ── 3. The signs at work ──
-    { act: 3, clear: true, stage: { line: line(['+'], { y: 460, size: 340 }) }, quiet: 1.6, motif: true, say: 'This is plus.' },
-    { stage: { scale: balance({ left: beadsOn(THREE, TWO), right: beadsOn(5) }), line: line(['3', '+', '2', '=', '5'], { y: TOP, at: OVER_LEFT }) }, move: 1.1, say: 'Three plus two equals five.', poster: true },
-    {
-      stage: { scale: crossed(balance({ left: beadsOn(5), right: beadsOn(THREE, TWO) })), line: line(['5', '=', '3', '+', '2'], { y: TOP, at: OVER_RIGHT }) },
-      move: 1.4,
-      cue: 'slide',
-      say: 'And the other way round: five equals three plus two.',
-    },
+    // ── 2. What the signs do ──
+    { act: 2, stage: { line: line(['3', '+', '2', '=', '5'], { y: TOP, at: OVER_LEFT, gold: ['+'] }) }, quiet: 1.4, motif: true, say: 'This is plus.' },
+    { stage: { line: line(['3', '+', '2', '=', '5'], { y: TOP, at: OVER_LEFT }) }, move: 0.5, say: 'Three plus two equals five.', poster: true },
+    { stage: { line: line(['3', '+', '2', '=', '5'], { y: TOP, at: OVER_LEFT, gold: ['+'] }) }, move: 0.5, say: 'Plus joins two amounts into one.' },
     { clear: true, stage: { minus: balance({ left: beadsOn(5), right: beadsOn(3) }) }, say: 'Five here, three there. This side is too heavy.' },
     { stage: { minus: balance({ left: beadsOn({ n: 5, ghost: 2 }), right: beadsOn(3) }) }, cue: 'slide', say: 'Take two away, and it is level.' },
     { stage: { line: line(['−'], { y: TOP, size: 200, at: [PAN_X.left] }) }, quiet: 1.6, motif: true, say: 'This is minus.' },
     { stage: { line: line(['5', '−', '2', '=', '3'], { y: TOP, at: OVER_LEFT }) }, say: 'Five minus two equals three.' },
+    { stage: { line: line(['5', '−', '2', '=', '3'], { y: TOP, at: OVER_LEFT, gold: ['−'] }) }, move: 0.5, say: 'Minus takes one amount away from another.' },
+
+    // ── 3. Where they are used ──
+    {
+      act: 3,
+      clear: true,
+      stage: { scale: balance({ left: beadsOn(THREE, TWO), right: beadsOn(TWO, THREE) }), line: line(['3', '+', '2', '=', '2', '+', '3'], { y: TOP, at: OVER_BOTH }) },
+      say: 'Plus works either way round. Three plus two is the same as two plus three.',
+    },
+    { clear: true, stage: { rows: apart(), line: line(['5', '−', '3', '=', '2'], { y: TOP }) }, say: 'Minus can also compare. Five is two more than three, so five minus three equals two.' },
     {
       clear: true,
       stage: { sum: line(['3', '+', '2', '=', '5'], { y: 300, under: true, gold: ['+'] }), less: line(['5', '−', '2', '=', '3'], { y: 660, under: true, gold: ['−'] }) },
-      say: 'Plus puts more on. Minus takes some off.',
+      say: 'Minus undoes plus. Put two on, take two off, and you are back at three.',
     },
     { clear: true, stage: { line: line(['1,000', '+', '1', '=', '1,001'], { y: 480 }) }, quiet: 1.5, say: 'A thousand plus one equals a thousand and one.' },
 
