@@ -21,7 +21,10 @@ import { GOLD_EDGE, INK, SANS, SERIF, SOFT } from './look'
  * and where they stop above. From rank 36 on there are the signs of
  * change: a small step in a letter (the dx of dy/dx, or ∂x with a rounded
  * d), a letter with a dot over it, "lim" with what approaches what set
- * under it, and the tall ∫ with its ends set at its foot and its head. `k`
+ * under it, and the tall ∫ with its ends set at its foot and its head. From rank 41 on
+ * there are vectors (a letter with an arrow over it, or set upright and
+ * heavy) and matrices (numbers in rows and columns between tall
+ * brackets; one column of them is a vector standing up). `k`
  * names a token, so it can move to another place on the next line (5 = V
  * becomes V = 5).
  */
@@ -38,26 +41,33 @@ export type Tok =
   | { big: 'Σ' | 'Π' | '∫' | 'lim'; from?: Part; to?: Part; k?: string }
   | { d: Part; round?: boolean; k?: string }
   | { dot: Part; k?: string }
+  | { vec: Part; k?: string }
+  | { bold: string; k?: string }
+  | { mat: Part[][]; k?: string; lit?: number[] }
 
 /** What a token holds inside it, itself a little line: one token, or several. */
 export type Part = string | Tok[]
 
 export interface Item {
   k: string
-  kind: 'num' | 'sign' | 'unknown' | 'gap' | 'tally' | 'roman' | 'frac' | 'sup' | 'root' | 'letter' | 'word' | 'sub' | 'fn' | 'big' | 'diff' | 'dot'
-  /** What it shows (a sign's name on the line: "=", "frac", "pow", "var", "sub", "fn", "d", "dot"). */
+  kind: 'num' | 'sign' | 'unknown' | 'gap' | 'tally' | 'roman' | 'frac' | 'sup' | 'root' | 'letter' | 'word' | 'sub' | 'fn' | 'big' | 'diff' | 'dot' | 'vec' | 'bold' | 'mat'
+  /** What it shows (a sign's name on the line: "=", "frac", "pow", "var", "sub", "fn", "d", "dot", "vec", "bold", "mat"). */
   g: string
   /** The letter a variable or a function is written with. */
   ch?: string
   /** The amount a numeral or mark stands for. */
   n?: number
-  /** The little lines inside it: a fraction's top and bottom, what is raised, what is under the root. */
+  /** The little lines inside it: a fraction's top and bottom, what is raised, what is under the root, a matrix's numbers row by row. */
   parts?: Item[][]
+  /** How many columns a matrix has. */
+  cols?: number
+  /** A table's cells shown in gold (counted along the rows, from 0). */
+  lit?: number[]
   /** Every sign it puts on the paper, its own first. */
   signs: string[]
   /** All that it shows, as text: two items with the same id are drawn alike. */
   id: string
-  /** A bar that opens its pair (the first of | |). */
+  /** A bar that opens its pair (the first of | |, or of ‖ ‖). */
   opens?: boolean
   /** A minus with nothing before it to take from (−3): it is set against its number. */
   unary?: boolean
@@ -125,6 +135,11 @@ const WIDTH: Record<string, number> = {
   '∴': 0.66,
   Δ: 0.68,
   '′': 0.12,
+  '‖': 0.24,
+  ᵀ: 0.34,
+  '∇': 0.68,
+  '⟨': 0.28,
+  '⟩': 0.28,
 }
 export const isSign = (g: string) => g in WIDTH
 
@@ -134,7 +149,7 @@ const NUMERAL = /^−?[\d,]+(\.\d+)?$/
 const LETTER = /^[A-Za-df-z]$/
 const NAMED = ['π', 'θ', 'e']
 /** A function's name written as a word (and the mod of clock sums), and its width as type. */
-const WORDS: Record<string, number> = { sin: 1.34, cos: 1.62, tan: 1.52, log: 1.46, ln: 0.88, mod: 1.9 }
+const WORDS: Record<string, number> = { sin: 1.34, cos: 1.62, tan: 1.52, log: 1.46, ln: 0.88, mod: 1.9, det: 1.5 }
 const number = (g: string) => Number(g.replace(/,/g, '').replace('−', '-'))
 const within = (part: Part) => items(typeof part === 'string' ? [part] : part)
 /** The amount of a part that is one numeral. */
@@ -144,6 +159,7 @@ const amount = (list: Item[]) => (list.length === 1 && list[0].kind === 'num' ? 
 export function items(toks: Tok[]): Item[] {
   const seen = new Map<string, number>()
   let bars = 0
+  let doubled = 0
   let quantified = false
   let before: Item | undefined
   return toks.map((t, at) => {
@@ -155,6 +171,7 @@ export function items(toks: Tok[]): Item[] {
       if (g === '?') it = { kind: 'unknown', g }
       else if (g === '_') it = { kind: 'gap', g }
       else if (g === '|') it = { kind: 'sign', g, opens: bars++ % 2 === 0 }
+      else if (g === '‖') it = { kind: 'sign', g, opens: doubled++ % 2 === 0 }
       else if (g === '−' || g === '±') it = { kind: 'sign', g, unary: !before || (before.kind === 'sign' && !closes(before) && !['%', '!', '∞'].includes(before.g)) }
       else if (g === '(' && ((quantified && before?.kind === 'letter') || toks[at + 1] === 'mod')) it = { kind: 'sign', g, scope: true }
       else if (isSign(g)) it = { kind: 'sign', g }
@@ -194,6 +211,15 @@ export function items(toks: Tok[]): Item[] {
     } else if ('dot' in t) {
       it = { kind: 'dot', g: 'dot', parts: [within(t.dot)] }
       k = t.k
+    } else if ('vec' in t) {
+      it = { kind: 'vec', g: 'vec', parts: [within(t.vec)] }
+      k = t.k
+    } else if ('bold' in t) {
+      it = { kind: 'bold', g: 'bold', ch: t.bold }
+      k = t.k
+    } else if ('mat' in t) {
+      it = { kind: 'mat', g: 'mat', parts: t.mat.flat().map(within), cols: t.mat[0].length, lit: t.lit }
+      k = t.k
     } else {
       it = { kind: 'big', g: t.big, parts: [t.from === undefined ? [] : within(t.from), t.to === undefined ? [] : within(t.to)] }
       k = t.k
@@ -208,7 +234,7 @@ export function items(toks: Tok[]): Item[] {
     }
     const inner = (it.parts ?? []).flat()
     const own = it.kind === 'num' ? ['−', '.'].filter((c) => it.g.includes(c)) : it.kind === 'unknown' || it.kind === 'gap' || it.kind === 'tally' || it.kind === 'roman' ? [] : [it.g]
-    const id = `${it.kind}:${it.ch ?? it.g}` + (it.parts ? `[${it.parts.map((part) => part.map((x) => x.id).join(' ')).join(' | ')}]` : '')
+    const id = `${it.kind}:${it.ch ?? it.g}${it.cols ? `/${it.cols}` : ''}${it.lit?.length ? `!${it.lit.join(',')}` : ''}` + (it.parts ? `[${it.parts.map((part) => part.map((x) => x.id).join(' ')).join(' | ')}]` : '')
     return (before = { ...it, k, signs: [...own, ...inner.flatMap((x) => x.signs)], id })
   })
 }
@@ -232,12 +258,18 @@ const LIM = { w: 1.36, under: 0.42, off: 0.64 }
 const INT = { w: 0.46, lim: 0.38, off: 0.56 }
 /** The d of dx (upright, so it is not taken for a number called d) and the rounded ∂: their widths, and the room before the letter. */
 const DIFF = { d: 0.56, round: 0.52, gap: 0.03 }
+/** A matrix: its numbers' size, the pitch of its rows, the room between its columns, and its brackets' reach and the room inside them. */
+const MAT = { cell: 0.62, row: 0.74, gap: 0.4, bracket: 0.13, pad: 0.12 }
+/** Each column's width (its widest number's), in units of the line's size. */
+const columns = (it: Item) => Array.from({ length: it.cols! }, (_, c) => Math.max(...it.parts!.filter((_, i) => i % it.cols! === c).map((cell) => span(cell) * MAT.cell)))
 /** The root's own strokes before what it reaches, and the line's run past it. */
 const ROOT = { lead: 0.46, tail: 0.08 }
 
 const SPACE = 0.26
-const closes = (it: Item) => it.g === ')' || it.g === '}' || (it.g === '|' && !it.opens)
-const opens = (it: Item) => it.g === '(' || it.g === '{' || (it.g === '|' && !!it.opens)
+const closes = (it: Item) => it.g === ')' || it.g === '}' || it.g === '⟩' || ((it.g === '|' || it.g === '‖') && !it.opens)
+const opens = (it: Item) => it.g === '(' || it.g === '{' || it.g === '⟨' || ((it.g === '|' || it.g === '‖') && !!it.opens)
+/** Something that is one vector or one matrix: a number or a letter right against it is times. */
+const arrowed = (it: Item) => it.kind === 'vec' || it.kind === 'bold' || it.kind === 'mat'
 /** Signs that stand before what they are about (not P, for all x): they stand close to it. */
 const BEFORE = ['¬', '∀', '∃']
 /** The room between two neighbours: none to speak of inside a pair, under a raised number, or round a point. */
@@ -245,10 +277,17 @@ function space(a: Item, b: Item) {
   // The raised −1 of f⁻¹ stands clear of the italic f's top.
   if (a.kind === 'fn' && b.kind === 'sup') return a.ch === 'f' ? 0.14 : 0.05
   if (b.kind === 'sup' || b.kind === 'sub' || b.g === '!' || a.g === '.' || b.g === '.' || b.g === ',') return 0.03
+  // The raised T stands against its matrix, as a raised number does.
+  if (b.g === 'ᵀ') return 0.04
   if (a.g === ',') return 0.24
   if (BEFORE.includes(a.g)) return 0.1
   // Delta stands against its letter (Δx is one thing); a prime against its function, and the bracket against the prime.
   if (a.g === 'Δ') return 0.04
+  // Del stands against what it works on; before a dot or a cross it makes one sign with it.
+  if (a.g === '∇') return b.g === '·' || b.g === '×' ? 0.12 : 0.06
+  // Two norms side by side stand apart; a matrix stands a little off a matrix or a vector it multiplies.
+  if (a.g === '‖' && b.g === '‖' && closes(a)) return 0.16
+  if (a.kind === 'mat' && arrowed(b)) return 0.12
   if (b.g === '′') return a.kind === 'fn' && a.ch === 'f' ? 0.13 : 0.02
   if (a.g === '′' && b.g === '(') return 0.06
   // The dx that closes an integral stands a little off what is before it.
@@ -263,10 +302,11 @@ function space(a: Item, b: Item) {
   if (a.kind === 'big') return a.g === 'lim' ? 0.2 : 0.12
   // A bar is a plain stroke, so it stands a little further off than a bracket (a minus next to it must not run into it).
   if ((a.g === '|' && opens(a)) || (b.g === '|' && closes(b))) return 0.13
+  if ((a.g === '‖' && opens(a)) || (b.g === '‖' && closes(b))) return 0.1
   if (opens(a) || closes(b) || a.unary || b.g === '%') return 0.05
   // A number or a letter right against a letter or a bracket: times, with its sign left out (2x, πd, 2(x + 1)).
-  if (a.kind === 'num' || a.kind === 'letter' || a.kind === 'sup' || a.kind === 'sub' || closes(a)) {
-    if (b.kind === 'letter' || b.kind === 'fn' || b.g === '(') return 0.05
+  if (a.kind === 'num' || a.kind === 'letter' || a.kind === 'sup' || a.kind === 'sub' || closes(a) || a.g === 'ᵀ') {
+    if (b.kind === 'letter' || b.kind === 'fn' || b.g === '(' || arrowed(b) || (b.g === '‖' && opens(b))) return 0.05
     if (b.kind === 'word') return 0.14
   }
   return SPACE
@@ -311,6 +351,12 @@ export function widthOf(it: Item): number {
       return (it.g === 'd' ? DIFF.d : DIFF.round) + (it.parts![0].length ? DIFF.gap + span(it.parts![0]) : 0)
     case 'dot':
       return span(it.parts![0])
+    case 'vec':
+      return Math.max(span(it.parts![0]), 0.6)
+    case 'bold':
+      return letter(it.ch!) + 0.06
+    case 'mat':
+      return columns(it).reduce((w, c) => w + c, 0) + (it.cols! - 1) * MAT.gap + 2 * (MAT.bracket + MAT.pad)
   }
 }
 
@@ -673,6 +719,28 @@ export function Sign({ g, size, colour = INK }: { g: string; size: number; colou
         </>
       )
       break
+    case '‖':
+      d = [L(-0.07, -0.44, -0.07, 0.44, 0), L(0.07, -0.44, 0.07, 0.44, 1)]
+      break
+    case 'ᵀ':
+      // A small capital T, raised.
+      d = (
+        <g {...st} strokeWidth={S * 0.07}>
+          <line x1={-0.14 * S} y1={-0.52 * S} x2={0.14 * S} y2={-0.52 * S} />
+          <line x1={0} y1={-0.52 * S} x2={0} y2={-0.18 * S} />
+        </g>
+      )
+      break
+    case '∇':
+      // Delta, upside down.
+      d = <polygon points={`${-0.25 * S},${-0.3 * S} 0,${0.32 * S} ${0.25 * S},${-0.3 * S}`} {...st} />
+      break
+    case '⟨':
+      d = <polyline points={`${0.08 * S},${-0.44 * S} ${-0.08 * S},0 ${0.08 * S},${0.44 * S}`} {...st} />
+      break
+    case '⟩':
+      d = <polyline points={`${-0.08 * S},${-0.44 * S} ${0.08 * S},0 ${-0.08 * S},${0.44 * S}`} {...st} />
+      break
     default:
       // A sign with no drawing yet (the later stages): type.
       d = (
@@ -916,6 +984,52 @@ export function Token({ it, x, y, size, o = 1, s = 1, colour = INK }: { it: Item
             </g>
           </>
         )
+      break
+    }
+    case 'vec': {
+      // The arrow sits just over the letter: higher over a capital or a tall letter.
+      const tall = it.parts![0].some((x) => /[A-Zbdfhklt]/.test(x.ch ?? ''))
+      const top = (tall ? -0.56 : -0.43) * S
+      const half = (widthOf(it) / 2 - 0.04) * S
+      d = (
+        <>
+          <Row list={it.parts![0]} size={S} colour={colour} />
+          <g data-sign="vec" stroke={colour} strokeWidth={S * 0.07} strokeLinecap="round" strokeLinejoin="round" fill="none">
+            <line x1={-half} y1={top} x2={half} y2={top} />
+            <polyline points={`${half - 0.12 * S},${top - 0.09 * S} ${half},${top} ${half - 0.12 * S},${top + 0.09 * S}`} />
+          </g>
+        </>
+      )
+      break
+    }
+    case 'bold':
+      // Upright and heavy, as books print a vector: the stroke round the letter thickens it on any font.
+      d = (
+        <text data-sign="bold" fontFamily={SERIF} fontWeight={700} fontSize={S} fill={colour} stroke={colour} strokeWidth={S * 0.035} strokeLinejoin="round" textAnchor="middle" dominantBaseline="central">
+          {it.ch}
+        </text>
+      )
+      break
+    case 'mat': {
+      const cols = columns(it)
+      const rows = it.parts!.length / it.cols!
+      const w = widthOf(it)
+      const half = ((rows * MAT.row) / 2 + 0.06) * S
+      const xs = cols.map((c, i) => -w / 2 + MAT.bracket + MAT.pad + cols.slice(0, i).reduce((x, v) => x + v, 0) + i * MAT.gap + c / 2)
+      const bracket = (m: number) => `M ${m * (w / 2 - MAT.bracket) * S} ${-half} H ${((m * w) / 2) * S} V ${half} H ${m * (w / 2 - MAT.bracket) * S}`
+      d = (
+        <>
+          <g data-sign="mat" stroke={colour} strokeWidth={S * 0.075} strokeLinecap="round" strokeLinejoin="round" fill="none">
+            <path d={bracket(-1)} />
+            <path d={bracket(1)} />
+          </g>
+          {it.parts!.map((cell, i) => (
+            <g key={i} transform={`translate(${xs[i % it.cols!] * S} ${(Math.floor(i / it.cols!) - (rows - 1) / 2) * MAT.row * S})`}>
+              <Row list={cell} size={S * MAT.cell} colour={it.lit?.includes(i) ? GOLD_EDGE : colour} />
+            </g>
+          ))}
+        </>
+      )
       break
     }
     case 'big':

@@ -3011,6 +3011,450 @@
     "file": "can-one-sign-carry-both-a-size-and-a-dir-4cc3a9.mp3",
     "dur": 2.95
   },
+  "A bead moves three across and two up. Is two across and three up the same move?": {
+    "file": "a-bead-moves-three-across-and-two-up-is--bdeccf.mp3",
+    "dur": 5.57
+  },
+  "Different. The two moves end in different places.": {
+    "file": "different-the-two-moves-end-in-different-839521.mp3",
+    "dur": 3.55
+  },
+  "A move has a size and a direction. It takes two numbers, kept in order. We need one name for the whole move.": {
+    "file": "a-move-has-a-size-and-a-direction-it-tak-3624f7.mp3",
+    "dur": 7.73
+  },
+  "This is a vector. Its name is a letter with a small arrow on top. We read it: vector v.": {
+    "file": "this-is-a-vector-its-name-is-a-letter-wi-b278eb.mp3",
+    "dur": 7.06
+  },
+  "Vector v equals three, two: three across, two up. The arrow on top says it is a move, not one number.": {
+    "file": "vector-v-equals-three-two-three-across-t-e4ee54.mp3",
+    "dur": 7.7
+  },
+  "Start it anywhere. Same size, same direction: it is the same vector.": {
+    "file": "start-it-anywhere-same-size-same-directi-ba41f0.mp3",
+    "dur": 5.74
+  },
+  "Its two numbers are its parts. They are called v one and v two.": {
+    "file": "its-two-numbers-are-its-parts-they-are-c-70e69a.mp3",
+    "dur": 4.61
+  },
+  "The parts are real numbers. So vector v is an element of R two: every pair of real numbers.": {
+    "file": "the-parts-are-real-numbers-so-vector-v-i-f1c5d7.mp3",
+    "dur": 7.51
+  },
+  "Many books print the letter in bold instead of putting an arrow on it. It is the same vector.": {
+    "file": "many-books-print-the-letter-in-bold-inst-d5d792.mp3",
+    "dur": 6.53
+  },
+  "Vectors add. Do one move, then the other: tip to tail.": {
+    "file": "vectors-add-do-one-move-then-the-other-t-a659b2.mp3",
+    "dur": 3.22
+  },
+  "Together: four across, three up. The parts add: three plus one, and one plus two.": {
+    "file": "together-four-across-three-up-the-parts--7c9792.mp3",
+    "dur": 5.76
+  },
+  "A number times a vector stretches it. Two v is twice as long, and points the same way.": {
+    "file": "a-number-times-a-vector-stretches-it-two-6a8323.mp3",
+    "dur": 4.78
+  },
+  "Vectors are used wherever something has a size and a direction. The wind: how strong, and which way.": {
+    "file": "vectors-are-used-wherever-something-has--35c708.mp3",
+    "dur": 6.67
+  },
+  "A push is a vector: how hard, and which way. Two pushes at once add, tip to tail.": {
+    "file": "a-push-is-a-vector-how-hard-and-which-wa-35e626.mp3",
+    "dur": 5.54
+  },
+  "And the way something travels: how fast, and which way. Four east and three north, every hour.": {
+    "file": "and-the-way-something-travels-how-fast-a-0dd314.mp3",
+    "dur": 6.7
+  },
+  "Vector u is three, one. Vector v is one, two. Which one is true?": {
+    "file": "vector-u-is-three-one-vector-v-is-one-tw-207909.mp3",
+    "dur": 5.16
+  },
+  "Each bead lays down one more v. Add beads until the arrows reach the gold dot.": {
+    "file": "each-bead-lays-down-one-more-v-add-beads-9b0c1b.mp3",
+    "dur": 4.9
+  },
+  "Vector v equals two, five.": {
+    "file": "vector-v-equals-two-five-d0aefe.mp3",
+    "dur": 1.68
+  },
+  "This vector goes three across and four up.": {
+    "file": "this-vector-goes-three-across-and-four-u-d7f016.mp3",
+    "dur": 2.09
+  },
+  "How long is the arrow itself?": {
+    "file": "how-long-is-the-arrow-itself-ebf425.mp3",
+    "dur": 1.66
+  },
+  "Vector v goes three across and four up. How long is the arrow itself?": {
+    "file": "vector-v-goes-three-across-and-four-up-h-b05821.mp3",
+    "dur": 4.32
+  },
+  "Five. Seven is the walk along both steps. The arrow cuts the corner: laid flat, it is five squares long.": {
+    "file": "five-seven-is-the-walk-along-both-steps--28876d.mp3",
+    "dur": 8.45
+  },
+  "Every vector has a length. We need a sign for it.": {
+    "file": "every-vector-has-a-length-we-need-a-sign-5930d4.mp3",
+    "dur": 3.22
+  },
+  "This is the norm. Two upright bars on each side of the vector. We read it: the norm of v.": {
+    "file": "this-is-the-norm-two-upright-bars-on-eac-aa5e21.mp3",
+    "dur": 7.46
+  },
+  "The norm of v equals five. The norm is the length of the arrow, from tail to tip.": {
+    "file": "the-norm-of-v-equals-five-the-norm-is-th-c1311b.mp3",
+    "dur": 5.57
+  },
+  "One pair of bars asks how far a number is from zero. Doubled bars ask how far the tip of a vector is from its tail. Neither is ever below zero.": {
+    "file": "one-pair-of-bars-asks-how-far-a-number-i-87ae4b.mp3",
+    "dur": 9.22
+  },
+  "The norm comes from the two parts. Put a square on each step: nine small squares, and sixteen.": {
+    "file": "the-norm-comes-from-the-two-parts-put-a--a030a9.mp3",
+    "dur": 6.89
+  },
+  "Together, twenty-five: just what the square on the arrow holds. And the square root of twenty-five is five.": {
+    "file": "together-twenty-five-just-what-the-squar-e33d1d.mp3",
+    "dur": 7.1
+  },
+  "So: square each part, add them, and take the square root. That is the norm of v.": {
+    "file": "so-square-each-part-add-them-and-take-th-d0b6c4.mp3",
+    "dur": 6.48
+  },
+  "The norm tells how far apart two places are. Eight across and six up: sixty-four plus thirty-six is one hundred, so the norm is ten.": {
+    "file": "the-norm-tells-how-far-apart-two-places--e4c657.mp3",
+    "dur": 9
+  },
+  "And how fast something goes. A boat sails four east and three north every hour. Its speed is the norm: five every hour.": {
+    "file": "and-how-fast-something-goes-a-boat-sails-8987fd.mp3",
+    "dur": 8.14
+  },
+  "Shrink a vector until its norm is one, and only its direction is left.": {
+    "file": "shrink-a-vector-until-its-norm-is-one-an-0968e4.mp3",
+    "dur": 4.82
+  },
+  "The norm of v is five. Which one can v be?": {
+    "file": "the-norm-of-v-is-five-which-one-can-v-be-a5fc08.mp3",
+    "dur": 2.98
+  },
+  "A length is never below zero. Which sign makes it true?": {
+    "file": "a-length-is-never-below-zero-which-sign--750d55.mp3",
+    "dur": 3.34
+  },
+  "The norm of v equals ten.": {
+    "file": "the-norm-of-v-equals-ten-e98456.mp3",
+    "dur": 1.7
+  },
+  "Two vectors can be added. A number can stretch one.": {
+    "file": "two-vectors-can-be-added-a-number-can-st-09c224.mp3",
+    "dur": 3.48
+  },
+  "Can two vectors be multiplied?": {
+    "file": "can-two-vectors-be-multiplied-f3ed1c.mp3",
+    "dur": 1.63
+  },
+  "Vectors add, and a number stretches a vector. Can two vectors be multiplied together?": {
+    "file": "vectors-add-and-a-number-stretches-a-vec-a65e3f.mp3",
+    "dur": 4.7
+  },
+  "Yes, and in two ways. Each uses an old sign for times, with a new job: the dot, and the cross.": {
+    "file": "yes-and-in-two-ways-each-uses-an-old-sig-3ecdf8.mp3",
+    "dur": 8.11
+  },
+  "This is the dot product. We read it: u dot v.": {
+    "file": "this-is-the-dot-product-we-read-it-u-dot-b9a391.mp3",
+    "dur": 3.86
+  },
+  "Multiply the matching parts, then add. Three times two, plus one times three: nine.": {
+    "file": "multiply-the-matching-parts-then-add-thr-0b0454.mp3",
+    "dur": 5.57
+  },
+  "The answer is a number, not a vector. It says how much the two arrows go the same way.": {
+    "file": "the-answer-is-a-number-not-a-vector-it-s-c1d7d2.mp3",
+    "dur": 5.4
+  },
+  "With letters: u one v one, plus u two v two. When there are more parts, sigma keeps it short.": {
+    "file": "with-letters-u-one-v-one-plus-u-two-v-tw-15865b.mp3",
+    "dur": 7.8
+  },
+  "Turn v until the arrows make a square corner. Now the dot product is zero. Zero always means a square corner.": {
+    "file": "turn-v-until-the-arrows-make-a-square-co-c8466d.mp3",
+    "dur": 8.33
+  },
+  "This is the cross product. We read it: u cross v.": {
+    "file": "this-is-the-cross-product-we-read-it-u-c-3d807b.mp3",
+    "dur": 3.96
+  },
+  "It gives a new vector, square to both. For two arrows on the paper, it points straight out of the paper.": {
+    "file": "it-gives-a-new-vector-square-to-both-for-fc082c.mp3",
+    "dur": 7.42
+  },
+  "Its length is the area of the shape the two arrows span. Multiply the parts crosswise and subtract: three times three, minus one times two. Seven.": {
+    "file": "its-length-is-the-area-of-the-shape-the--2cc53d.mp3",
+    "dur": 10.82
+  },
+  "The dot gives a number. The cross gives a vector.": {
+    "file": "the-dot-gives-a-number-the-cross-gives-a-ac6229.mp3",
+    "dur": 3.19
+  },
+  "Where are they used? A push is a vector, and so is a move. Push dot move is the work done: only the push along the way counts.": {
+    "file": "where-are-they-used-a-push-is-a-vector-a-8ffe65.mp3",
+    "dur": 10.94
+  },
+  "To test for a square corner, take the dot product and look for zero.": {
+    "file": "to-test-for-a-square-corner-take-the-dot-7976a4.mp3",
+    "dur": 4.66
+  },
+  "And the cross product measures slanted shapes. Four across and three high: an area of twelve.": {
+    "file": "and-the-cross-product-measures-slanted-s-94624a.mp3",
+    "dur": 5.88
+  },
+  "Vector u is two, three. Vector v is four, one. Which one is true?": {
+    "file": "vector-u-is-two-three-vector-v-is-four-o-01dac4.mp3",
+    "dur": 5.9
+  },
+  "One of these two signs gives a number. Which one?": {
+    "file": "one-of-these-two-signs-gives-a-number-wh-0b3d33.mp3",
+    "dur": 3.5
+  },
+  "U dot v equals zero.": {
+    "file": "u-dot-v-equals-zero-e22a3c.mp3",
+    "dur": 1.66
+  },
+  "Here are four numbers, in two rows and two columns.": {
+    "file": "here-are-four-numbers-in-two-rows-and-tw-d69819.mp3",
+    "dur": 3.58
+  },
+  "Can a whole table of numbers be one thing, with one name?": {
+    "file": "can-a-whole-table-of-numbers-be-one-thin-27605b.mp3",
+    "dur": 3.5
+  },
+  "A square, one across and one up. Stretch the paper: twice as wide, three times as tall. How many squares does it cover now?": {
+    "file": "a-square-one-across-and-one-up-stretch-t-d8b5fd.mp3",
+    "dur": 7.75
+  },
+  "Six. The stretch moves every point on the paper. To write it down, we need a table of numbers.": {
+    "file": "six-the-stretch-moves-every-point-on-the-acb374.mp3",
+    "dur": 6.12
+  },
+  "This is a matrix. Numbers in rows and columns, inside tall brackets. Its name is a capital letter: the matrix A.": {
+    "file": "this-is-a-matrix-numbers-in-rows-and-col-6f50ac.mp3",
+    "dur": 9.38
+  },
+  "A matrix times a vector gives a new vector. Here the vector stands as a column: one, one.": {
+    "file": "a-matrix-times-a-vector-gives-a-new-vect-263f6e.mp3",
+    "dur": 7.08
+  },
+  "Each row is dotted with the column. Row one: two times one, plus zero times one, is two. Row two gives three.": {
+    "file": "each-row-is-dotted-with-the-column-row-o-1eeef7.mp3",
+    "dur": 8.04
+  },
+  "So A moves every arrow at once. The whole picture stretches.": {
+    "file": "so-a-moves-every-arrow-at-once-the-whole-941e63.mp3",
+    "dur": 3.65
+  },
+  "A inverse undoes A: half as far across, a third as far up. The raised minus one means undo, as it did for a function.": {
+    "file": "a-inverse-undoes-a-half-as-far-across-a--665891.mp3",
+    "dur": 8.76
+  },
+  "The determinant of A is one number: how many times bigger A makes an area. One square became six.": {
+    "file": "the-determinant-of-a-is-one-number-how-m-7a2ba4.mp3",
+    "dur": 7.32
+  },
+  "A determinant of zero means the picture is squashed flat. Then nothing can undo it: there is no inverse.": {
+    "file": "a-determinant-of-zero-means-the-picture--29f6af.mp3",
+    "dur": 8.5
+  },
+  "Every number in a matrix has its place. In the matrix B, b one two is in row one, column two.": {
+    "file": "every-number-in-a-matrix-has-its-place-i-81fbcd.mp3",
+    "dur": 7.9
+  },
+  "B transpose swaps rows and columns. Now the two is in row two, column one.": {
+    "file": "b-transpose-swaps-rows-and-columns-now-t-888f38.mp3",
+    "dur": 6.6
+  },
+  "Matrices move pictures on a screen. Every turn and every stretch is a matrix.": {
+    "file": "matrices-move-pictures-on-a-screen-every-e3f639.mp3",
+    "dur": 4.78
+  },
+  "And a matrix holds several equations at once: the matrix A, times vector x, equals vector b.": {
+    "file": "and-a-matrix-holds-several-equations-at--f936a5.mp3",
+    "dur": 7.63
+  },
+  "Here is a matrix A. Which one is A transpose?": {
+    "file": "here-is-a-matrix-a-which-one-is-a-transp-9ce8fb.mp3",
+    "dur": 3.19
+  },
+  "Each bead makes the matrix A stretch one more up. Add beads until the determinant of A is six.": {
+    "file": "each-bead-makes-the-matrix-a-stretch-one-5b45a8.mp3",
+    "dur": 6.07
+  },
+  "The determinant of A inverse equals one sixth.": {
+    "file": "the-determinant-of-a-inverse-equals-one--746f5b.mp3",
+    "dur": 3
+  },
+  "On a hill, every place has its own arrow, pointing straight uphill.": {
+    "file": "on-a-hill-every-place-has-its-own-arrow--9f8c6e.mp3",
+    "dur": 4.15
+  },
+  "Which sign gives all of those arrows at once?": {
+    "file": "which-sign-gives-all-of-those-arrows-at--e71879.mp3",
+    "dur": 2.42
+  },
+  "A map of a hill. From the dot, a step east climbs two, and a step north climbs one. Which way is the steepest?": {
+    "file": "a-map-of-a-hill-from-the-dot-a-step-east-13af5a.mp3",
+    "dur": 8.09
+  },
+  "Between the two. The steepest way goes two across for every one up.": {
+    "file": "between-the-two-the-steepest-way-goes-tw-ff34d5.mp3",
+    "dur": 4.46
+  },
+  "Two partial slopes, one direction. We need a sign that keeps them together.": {
+    "file": "two-partial-slopes-one-direction-we-need-4fa81e.mp3",
+    "dur": 4.85
+  },
+  "This sign is read: del.": {
+    "file": "this-sign-is-read-del-f81b96.mp3",
+    "dur": 1.94
+  },
+  "It is a delta, turned upside down.": {
+    "file": "it-is-a-delta-turned-upside-down-179cb1.mp3",
+    "dur": 1.94
+  },
+  "Del f is the gradient of f: a vector. Its parts are the two partial slopes.": {
+    "file": "del-f-is-the-gradient-of-f-a-vector-its--56d819.mp3",
+    "dur": 5.5
+  },
+  "On our hill, del h is two, one. It points straight uphill, and it is longer where the hill is steeper.": {
+    "file": "on-our-hill-del-h-is-two-one-it-points-s-e33d85.mp3",
+    "dur": 7.82
+  },
+  "Del f gives an arrow at every place. In this bowl, each one points away from the bottom.": {
+    "file": "del-f-gives-an-arrow-at-every-place-in-t-4c49b1.mp3",
+    "dur": 5.62
+  },
+  "Put a dot after del. Del dot F asks a field of arrows: how much do you spread out from here? That is the divergence. Here it is two: the arrows spread.": {
+    "file": "put-a-dot-after-del-del-dot-f-asks-a-fie-f75d96.mp3",
+    "dur": 12.17
+  },
+  "Put a cross after del. Del cross F asks: how much do you turn round this place? That is the curl.": {
+    "file": "put-a-cross-after-del-del-cross-f-asks-h-f0105c.mp3",
+    "dur": 8.16
+  },
+  "As between two vectors, the dot gives a number and the cross gives a vector. This curl points straight out of the paper.": {
+    "file": "as-between-two-vectors-the-dot-gives-a-n-a47d97.mp3",
+    "dur": 8.14
+  },
+  "Heat flows from hot to cold: straight down the gradient of the temperature, T.": {
+    "file": "heat-flows-from-hot-to-cold-straight-dow-0bdbfa.mp3",
+    "dur": 4.73
+  },
+  "Water from a spring spreads out: its divergence is more than zero. Down a drain, it is less than zero.": {
+    "file": "water-from-a-spring-spreads-out-its-dive-b03ca0.mp3",
+    "dur": 7.92
+  },
+  "On a weather map, the curl of the wind shows where a storm is turning.": {
+    "file": "on-a-weather-map-the-curl-of-the-wind-sh-d9e719.mp3",
+    "dur": 4.01
+  },
+  "Partial f, partial x, is three. Partial f, partial y, is four. Which one is true?": {
+    "file": "partial-f-partial-x-is-three-partial-f-p-baa1aa.mp3",
+    "dur": 6.41
+  },
+  "These arrows spread, and the answer is a number. Which sign goes after del?": {
+    "file": "these-arrows-spread-and-the-answer-is-a--de9236.mp3",
+    "dur": 4.7
+  },
+  "Del dot F equals three.": {
+    "file": "del-dot-f-equals-three-b22834.mp3",
+    "dur": 1.68
+  },
+  "The dot between two vectors says how much they point the same way.": {
+    "file": "the-dot-between-two-vectors-says-how-muc-819e05.mp3",
+    "dur": 3.77
+  },
+  "Can things that are not arrows be compared like that?": {
+    "file": "can-things-that-are-not-arrows-be-compar-9dbd1e.mp3",
+    "dur": 3.12
+  },
+  "U dot v tells how much two arrows go the same way. Could one number tell that for two waves?": {
+    "file": "u-dot-v-tells-how-much-two-arrows-go-the-28a837.mp3",
+    "dur": 5.64
+  },
+  "Yes. But a wave has no step across and no step up. We need a wider sign than the dot.": {
+    "file": "yes-but-a-wave-has-no-step-across-and-no-758846.mp3",
+    "dur": 5.88
+  },
+  "These are angle brackets. Two things go in, and one number comes out. We read it: the inner product of u and v.": {
+    "file": "these-are-angle-brackets-two-things-go-i-7d9e53.mp3",
+    "dur": 8.52
+  },
+  "For two arrows, the inner product is the dot product. Three times one, plus one times two: five.": {
+    "file": "for-two-arrows-the-inner-product-is-the--eb96d6.mp3",
+    "dur": 7.2
+  },
+  "For two lists of n numbers, it is the same: multiply the matching parts, and sigma adds them all.": {
+    "file": "for-two-lists-of-n-numbers-it-is-the-sam-92d938.mp3",
+    "dur": 6.74
+  },
+  "A function has a value at every x. So for two functions, the integral does the adding.": {
+    "file": "a-function-has-a-value-at-every-x-so-for-93dc78.mp3",
+    "dur": 6.14
+  },
+  "These two waves rise and fall together. Multiplied, they are never below zero: all green. The inner product is big.": {
+    "file": "these-two-waves-rise-and-fall-together-m-b1eacc.mp3",
+    "dur": 8.38
+  },
+  "Shift one wave. Now there is as much red, below zero, as green. They cancel: the inner product is zero.": {
+    "file": "shift-one-wave-now-there-is-as-much-red--28ec01.mp3",
+    "dur": 9.89
+  },
+  "Zero means square to each other: for arrows, and for waves too.": {
+    "file": "zero-means-square-to-each-other-for-arro-7c838a.mp3",
+    "dur": 4.34
+  },
+  "A thing's inner product with itself is its norm, squared. For the arrow three, four: nine plus sixteen, twenty-five. The norm is five.": {
+    "file": "a-thing-s-inner-product-with-itself-is-i-5901d4.mp3",
+    "dur": 10.58
+  },
+  "Inner products tell how alike two sounds are. A sound is a wave. The bigger the inner product, the more alike.": {
+    "file": "inner-products-tell-how-alike-two-sounds-32aae7.mp3",
+    "dur": 7.54
+  },
+  "They pick one note out of a sound: the inner product with a pure note tells how much of that note is in it.": {
+    "file": "they-pick-one-note-out-of-a-sound-the-in-76dfe2.mp3",
+    "dur": 6.65
+  },
+  "And they give a length and an angle to things that are not arrows: lists, waves, even pictures.": {
+    "file": "and-they-give-a-length-and-an-angle-to-t-7007be.mp3",
+    "dur": 6.41
+  },
+  "Vector u is one, two. Vector v is three, one. Which one is true?": {
+    "file": "vector-u-is-one-two-vector-v-is-three-on-3493d8.mp3",
+    "dur": 6.6
+  },
+  "Now u is two, one, and v is minus one, two. Which sign goes here?": {
+    "file": "now-u-is-two-one-and-v-is-minus-one-two--74ff13.mp3",
+    "dur": 5.62
+  },
+  "The inner product of u and v equals six.": {
+    "file": "the-inner-product-of-u-and-v-equals-six-c387b4.mp3",
+    "dur": 2.5
+  },
+  "A bag holds three red beads and one blue. One comes out, without looking.": {
+    "file": "a-bag-holds-three-red-beads-and-one-blue-bfedc7.mp3",
+    "dur": 4.42
+  },
+  "How likely is it to be red?": {
+    "file": "how-likely-is-it-to-be-red-eb9739.mp3",
+    "dur": 1.46
+  },
   "Write what you see.": {
     "file": "write-what-you-see-c8d289.mp3",
     "dur": 1.03

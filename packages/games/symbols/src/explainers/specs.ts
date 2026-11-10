@@ -40,5 +40,11 @@ import { r37 } from './r37-limits'
 import { r38 } from './r38-derivatives'
 import { r39 } from './r39-integrals'
 import { r40 } from './r40-partial'
+import { r41 } from './r41-vectors'
+import { r42 } from './r42-norm'
+import { r43 } from './r43-products'
+import { r44 } from './r44-matrices'
+import { r45 } from './r45-del'
+import { r46 } from './r46-inner'
 
-export const SPECS: Spec[] = [r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31, r32, r33, r34, r35, r36, r37, r38, r39, r40]
+export const SPECS: Spec[] = [r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31, r32, r33, r34, r35, r36, r37, r38, r39, r40, r41, r42, r43, r44, r45, r46]

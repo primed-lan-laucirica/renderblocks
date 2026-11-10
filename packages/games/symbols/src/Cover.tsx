@@ -33,6 +33,12 @@ const WORN: Record<number, Tok[][]> = {
   38: [[{ frac: [[{ d: 'y' }], [{ d: 'x' }]] }], [{ fn: 'f' }, '′'], [{ dot: 'x' }]],
   39: [[{ big: '∫', from: 'a', to: 'b' }]],
   40: [[{ frac: [[{ d: 'f', round: true }], [{ d: 'x', round: true }]] }]],
+  41: [[{ vec: 'v' }], [{ bold: 'v' }]],
+  42: [['‖', { vec: 'v' }, '‖']],
+  43: [[{ vec: 'u' }, '·', { vec: 'v' }], [{ vec: 'u' }, '×', { vec: 'v' }]],
+  44: [['A'], ['A', 'ᵀ'], ['A', { sup: '−1' }], ['det', 'A']],
+  45: [['∇'], ['∇', '·'], ['∇', '×']],
+  46: [['⟨', 'u', ',', 'v', '⟩']],
 }
 
 /** A rank's signs as little lines for its cover: each sign alone (the fraction bar inside a half), or as it is worn. */

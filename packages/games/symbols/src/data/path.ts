@@ -37,7 +37,9 @@ export const STAGES: StageInfo[] = [...new Set(RANKS.map((r) => r.stage))].map((
  * letter that is not theirs ("xⁿ" is the raised number, "pow"; "xᵢ" the
  * label set low, "sub"; "f(x)" the function's name, "fn"; any letter for a
  * number is "var"; "{ x | … }" is the braces and what goes between them;
- * "dy/dx" is the upright d, "f′" the prime and "ẋ" the dot over a letter);
+ * "dy/dx" is the upright d, "f′" the prime and "ẋ" the dot over a letter;
+ * "v⃗" is the arrow over a letter, "vec", and a matrix is its tall
+ * brackets, "mat");
  * SHEET_NAMES says which of these each stands for, and a test checks the
  * two agree.
  */
@@ -121,6 +123,15 @@ export const OWNER: Record<string, number> = {
   dot: 38,
   '∫': 39,
   '∂': 40,
+  vec: 41,
+  bold: 41,
+  '‖': 42,
+  mat: 44,
+  ᵀ: 44,
+  det: 44,
+  '∇': 45,
+  '⟨': 46,
+  '⟩': 46,
 }
 
 export const SHEET_NAMES: Record<string, string[]> = {
@@ -149,6 +160,21 @@ export const SHEET_NAMES: Record<string, string[]> = {
   'ẋ': ['dot'],
   // The same sign with its two ends written on.
   '∫ₐᵇ': [],
+  // The arrow over a letter, and the same letter set upright and heavy.
+  'v⃗': ['vec'],
+  '(or bold v)': ['bold'],
+  '‖v‖': ['‖'],
+  // Rank 3's dot and cross, with a new job between two vectors.
+  'u · v': [],
+  'u × v': [],
+  // A matrix's name is a capital letter; its own sign is the tall brackets round its numbers. The raised −1 is a power's place, as in f⁻¹.
+  A: ['mat'],
+  'Aᵀ': ['ᵀ'],
+  'A⁻¹': [],
+  'det A': ['det'],
+  '∇·': [],
+  '∇×': [],
+  '⟨u, v⟩': ['⟨', '⟩'],
 }
 
 /** The signs of one rank, as the equation line names them. */
