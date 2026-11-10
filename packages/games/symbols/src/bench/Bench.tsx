@@ -20,7 +20,7 @@ import { GOLD, GOLD_EDGE, INK, PAPER, SANS, SOFT } from '../kit/look'
 import { line, Sprites, type Sprite } from '../kit/sprites'
 import { check, filled, makeRun, type Item } from './items'
 import { SAY } from './lines'
-import { expression, isDigit, isRelation, join, READS, statement, type Node } from './parse'
+import { canFollow, expression, isDigit, isRelation, join, READS, statement, type Node } from './parse'
 import { benchSprites, panOf } from './picture'
 import { advanceQueue, LOCKOUT_MS } from './queue'
 import { cue, sfx } from '../engine/sound'
@@ -302,15 +302,16 @@ export function Bench({ services, stage, signs, mastery, starred, onStar, onBack
   const put = (g: string) => {
     if (mode === 'explore') {
       const next = [...tiles, g]
-      if (!fits(next)) return
+      if (!canFollow(tiles, g) || !fits(next)) return
       cue(isDigit(g) ? 'digit' : 'slide', isDigit(g) ? Number(g) : 0)
       return setTiles(next)
     }
     if (!run || !item || run.phase !== 'ask') return
     const tone = () => cue(isDigit(g) ? 'digit' : 'slide', isDigit(g) ? Number(g) : 0)
     if (item.skill === 'write') {
-      const next = [...(run.fills[0] ?? []), g]
-      if (!fits(next)) return
+      const sofar = run.fills[0] ?? []
+      const next = [...sofar, g]
+      if (!canFollow(sofar, g) || !fits(next)) return
       tone()
       return setRun({ ...run, fills: [next] })
     }
@@ -420,7 +421,10 @@ export function Bench({ services, stage, signs, mastery, starred, onStar, onBack
   // ── drawing ──
 
   const want = item?.skill === 'make' && run ? item.wants[run.active] : null
-  const tileOn = (g: string) => !!asking && (want === null || (want === 'sign') === !isDigit(g))
+  /** The line he is writing himself (Explore, or a "write what you see"); null when he fills gaps. */
+  const own = mode === 'explore' ? tiles : item?.skill === 'write' && run ? (run.fills[0] ?? []) : null
+  // A tile is lit only when it can come next: a second sign in a row, or a second equals, cannot.
+  const tileOn = (g: string) => !!asking && (own ? canFollow(own, g) : want === null || (want === 'sign') === !isDigit(g))
   const marks = item?.skill === 'make' && run && run.phase !== 'right' ? spans(view.toks, view.size) : []
   const left = run ? run.queue.length : 0
   const row1 = MID - (12 * STEP + 28 - 8) / 2 + TILE_W / 2

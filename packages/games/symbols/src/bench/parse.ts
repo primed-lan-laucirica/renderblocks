@@ -57,6 +57,24 @@ export function join(tiles: string[]): string[] {
   return out
 }
 
+/**
+ * Can this tile come next? A line is written the way it is read: a sign of
+ * arithmetic needs an amount before it, a relation sign comes once, between
+ * two finished sides, and a bracket closes only what was opened. Every line
+ * that can be read can be written this way; nothing else can.
+ */
+export function canFollow(tiles: string[], g: string): boolean {
+  const last = tiles[tiles.length - 1]
+  const open = tiles.filter((t) => t === '(').length - tiles.filter((t) => t === ')').length
+  /** The line so far ends in an amount: a numeral, or a closed bracket. */
+  const amount = last !== undefined && (isDigit(last) || last === ')')
+  if (isDigit(g)) return last !== ')'
+  if (g === '(') return !amount
+  if (g === ')') return amount && open > 0
+  if (isRelation(g)) return amount && open === 0 && !tiles.some(isRelation)
+  return g in OPS && amount
+}
+
 // ── expressions ──────────────────────────────────────────────────────────
 
 export type Op = '+' | '−' | '×' | '÷'

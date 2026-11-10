@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { check, filled, makeRun, matches, type Item } from './items'
-import { expression, join, num, Q, READS, soFar, statement } from './parse'
+import { canFollow, expression, join, num, Q, READS, soFar, statement } from './parse'
 import { look, panOf } from './picture'
 import { advanceQueue } from './queue'
 
@@ -223,6 +223,78 @@ describe('the answer check', () => {
     expect(check(w, [['8', '=', '1', '2', '−', '4']])).toBe(true)
     expect(check(w, [['8', '=', '8']])).toBe(false)
     expect(check(w, [[]])).toBe(false)
+  })
+})
+
+describe('which tile can come next', () => {
+  /** Put the tiles down one by one; the ones the line refuses are left out. */
+  const typed = (s: string) => t(s).reduce<string[]>((line, g) => (canFollow(line, g) ? [...line, g] : line), [])
+  const next = (s: string) => READS.concat('5').filter((g) => canFollow(t(s), g))
+  const SIGNS = ['+', '−', '×', '·', '÷', '/']
+  const RELS = ['=', '<', '>', '≤', '≥', '≠']
+
+  it('an empty line starts with a number or an opening bracket', () => {
+    expect(next('')).toEqual(['(', '5'])
+  })
+
+  it('a sign of arithmetic needs an amount before it, so two never sit side by side', () => {
+    expect(next('3')).toEqual([...RELS.slice(0, 1), ...SIGNS, ...RELS.slice(1), '5'])
+    for (const a of SIGNS) for (const b of [...SIGNS, ...RELS, ')']) expect(canFollow(['3', a], b), `3 ${a} ${b}`).toBe(false)
+    expect(next('3 +')).toEqual(['(', '5'])
+    expect(typed('3 + + × 5')).toEqual(t('3 + 5'))
+  })
+
+  it('one relation sign to a line', () => {
+    expect(next('3 + 5 =')).toEqual(['(', '5'])
+    for (const r of RELS) expect(canFollow(t('3 + 5 = 8'), r), r).toBe(false)
+    expect(canFollow(t('3 + 5 = 8'), '+')).toBe(true)
+    expect(typed('3 + 5 = 8 = = < 2')).toEqual(t('3 + 5 = 8 2'))
+    expect(typed('= 3 = = 3')).toEqual(t('3 = 3'))
+  })
+
+  it('a bracket closes only what was opened, and only after an amount', () => {
+    expect(canFollow(t('3'), ')')).toBe(false)
+    expect(canFollow(t('('), ')')).toBe(false)
+    expect(canFollow(t('( 3 +'), ')')).toBe(false)
+    expect(canFollow(t('( 3 + 4'), ')')).toBe(true)
+    expect(canFollow(t('( ( 3 )'), ')')).toBe(true)
+    expect(canFollow(t('( 3 )'), ')')).toBe(false)
+    expect(canFollow(t('( 3 + 4'), '=')).toBe(false)
+    expect(canFollow(t('( 3 + 4 )'), '=')).toBe(true)
+  })
+
+  it('no number hard against a bracket, either side', () => {
+    expect(canFollow(t('3'), '(')).toBe(false)
+    expect(canFollow(t('( 3 )'), '(')).toBe(false)
+    expect(canFollow(t('( 3 )'), '5')).toBe(false)
+    expect(next('( 3 ) ×')).toEqual(['(', '5'])
+  })
+
+  it('whatever it lets through, the reader can read', () => {
+    // Every line of up to seven tiles the rule allows: once it ends in an amount with its brackets closed, the whole of it is read.
+    let read = 0
+    const grow = (line: string[], left: number): void => {
+      const last = line[line.length - 1]
+      if ((last === '3' || last === ')') && canFollow(line, '+') && !canFollow(line, ')')) {
+        const toks = join(line)
+        if (toks.some((g) => RELS.includes(g))) expect(statement(toks, true).whole, line.join(' ')).toBe(true)
+        else expect(expression(toks), line.join(' ')).not.toBeNull()
+        read++
+      }
+      if (left === 0) return
+      for (const g of ['3', '+', '×', '=', '<', '(', ')']) if (canFollow(line, g)) grow([...line, g], left - 1)
+    }
+    for (const g of ['3', '(']) grow([g], 6)
+    expect(read).toBeGreaterThan(100)
+  })
+
+  it('every line a run asks him to write can be written', () => {
+    for (let seed = 1; seed <= 200; seed++)
+      for (const item of makeRun(READS, seed)) {
+        if (item.skill !== 'write') continue
+        expect(typed(item.answer[0].join(' ')), item.id).toEqual(item.answer[0])
+        expect(check(item, [typed(item.answer[0].join(' '))]), item.id).toBe(true)
+      }
   })
 })
 
