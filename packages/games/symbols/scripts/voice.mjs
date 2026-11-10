@@ -51,8 +51,13 @@ const SPOKEN = [
   // So is a lone small u; a lone v is heard as "phi" unless it is spelled out.
   [/\bu\b/g, 'U'],
   [/\bv\b/g, 'vee'],
+  // A capital V opening a line is swallowed too ("V tensor W" was heard as "denser W").
+  [/\bV\b/g, 'Vee'],
   // A capital A naming a matrix is heard as the word "a" where that word could stand.
   [/\bA (?=inverse|transpose)/g, 'A-'],
+  // The Greek m is said "mew"; spelled mu, it is heard as "moo".
+  [/\bmu\b/g, 'mew'],
+  [/\bMu\b/g, 'Mew'],
 ]
 const spoken = (text) => SPOKEN.reduce((t, [from, to]) => t.replace(from, to), text)
 const duration = (f) => Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]).toString().trim())

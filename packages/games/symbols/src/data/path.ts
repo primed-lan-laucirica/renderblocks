@@ -39,7 +39,8 @@ export const STAGES: StageInfo[] = [...new Set(RANKS.map((r) => r.stage))].map((
  * number is "var"; "{ x | … }" is the braces and what goes between them;
  * "dy/dx" is the upright d, "f′" the prime and "ẋ" the dot over a letter;
  * "v⃗" is the arrow over a letter, "vec", and a matrix is its tall
- * brackets, "mat");
+ * brackets, "mat"; the upright P of "P(A)" is "prob", the E of "E[X]" is
+ * "expect" and the N of the normal curve is "normal");
  * SHEET_NAMES says which of these each stands for, and a test checks the
  * two agree.
  */
@@ -132,6 +133,20 @@ export const OWNER: Record<string, number> = {
   '∇': 45,
   '⟨': 46,
   '⟩': 46,
+  prob: 47,
+  μ: 48,
+  σ: 48,
+  expect: 49,
+  Var: 49,
+  '[': 49,
+  ']': 49,
+  '~': 50,
+  normal: 50,
+  '≅': 51,
+  '≃': 51,
+  '⊕': 52,
+  '⊗': 52,
+  '∮': 53,
 }
 
 export const SHEET_NAMES: Record<string, string[]> = {
@@ -175,6 +190,16 @@ export const SHEET_NAMES: Record<string, string[]> = {
   '∇·': [],
   '∇×': [],
   '⟨u, v⟩': ['⟨', '⟩'],
+  // The upright P. The bar read "given" is rank 27's bar, which read "such that".
+  'P(A)': ['prob'],
+  'P(A | B)': [],
+  // The raised two is a power.
+  'σ²': [],
+  // The upright E and its square brackets; the word Var.
+  'E[X]': ['expect', '[', ']'],
+  'Var(X)': ['Var'],
+  // The wave, and the upright N of the normal curve.
+  'X ~ N(μ, σ²)': ['~', 'normal'],
 }
 
 /** The signs of one rank, as the equation line names them. */

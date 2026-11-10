@@ -46,5 +46,12 @@ import { r43 } from './r43-products'
 import { r44 } from './r44-matrices'
 import { r45 } from './r45-del'
 import { r46 } from './r46-inner'
+import { r47 } from './r47-probability'
+import { r48 } from './r48-mean'
+import { r49 } from './r49-expectation'
+import { r50 } from './r50-distributed'
+import { r51 } from './r51-isomorphism'
+import { r52 } from './r52-sums'
+import { r53 } from './r53-contour'
 
-export const SPECS: Spec[] = [r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31, r32, r33, r34, r35, r36, r37, r38, r39, r40, r41, r42, r43, r44, r45, r46]
+export const SPECS: Spec[] = [r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26, r27, r28, r29, r30, r31, r32, r33, r34, r35, r36, r37, r38, r39, r40, r41, r42, r43, r44, r45, r46, r47, r48, r49, r50, r51, r52, r53]

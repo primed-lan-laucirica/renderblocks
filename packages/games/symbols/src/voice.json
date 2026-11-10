@@ -3455,6 +3455,538 @@
     "file": "how-likely-is-it-to-be-red-eb9739.mp3",
     "dur": 1.46
   },
+  "A bag holds three red beads and one blue. One comes out, without looking. How likely is it to be red?": {
+    "file": "a-bag-holds-three-red-beads-and-one-blue-f4f521.mp3",
+    "dur": 7.42
+  },
+  "Three out of four. Four beads could come out, and three of them are red.": {
+    "file": "three-out-of-four-four-beads-could-come--dc8286.mp3",
+    "dur": 4.97
+  },
+  "Three quarters says how likely. We need a sign that asks: how likely?": {
+    "file": "three-quarters-says-how-likely-we-need-a-5ef2c0.mp3",
+    "dur": 5.09
+  },
+  "This is read: the probability of A. The upright P is short for probability. A is something that might happen.": {
+    "file": "this-is-read-the-probability-of-a-the-up-ce4604.mp3",
+    "dur": 8.54
+  },
+  "Here, A is: a red bead comes out. The probability of A equals three quarters.": {
+    "file": "here-a-is-a-red-bead-comes-out-the-proba-d60ee9.mp3",
+    "dur": 5.81
+  },
+  "A probability is always from zero to one. Zero: it cannot happen. One: it is certain.": {
+    "file": "a-probability-is-always-from-zero-to-one-5d4939.mp3",
+    "dur": 7.58
+  },
+  "Roll a die. A is: more than three. B is: an even number.": {
+    "file": "roll-a-die-a-is-more-than-three-b-is-an--5f6c8e.mp3",
+    "dur": 4.58
+  },
+  "The probability of A is three out of six: one half.": {
+    "file": "the-probability-of-a-is-three-out-of-six-51b2c0.mp3",
+    "dur": 3.48
+  },
+  "Now someone peeks and says: it is even. Only two, four and six are left.": {
+    "file": "now-someone-peeks-and-says-it-is-even-on-7f1674.mp3",
+    "dur": 4.94
+  },
+  "Two of those three are in A. With a bar, we read: the probability of A, given B. It equals two thirds.": {
+    "file": "two-of-those-three-are-in-a-with-a-bar-w-759acb.mp3",
+    "dur": 9.05
+  },
+  "The bar comes from set brackets, where it was read: such that. Both times, it narrows things down.": {
+    "file": "the-bar-comes-from-set-brackets-where-it-d229a7.mp3",
+    "dur": 6.29
+  },
+  "As a rule: the probability of both, divided by the probability of B.": {
+    "file": "as-a-rule-the-probability-of-both-divide-05e688.mp3",
+    "dur": 5.69
+  },
+  "Probability is used wherever something is not certain. The probability of rain is zero point seven: seventy percent.": {
+    "file": "probability-is-used-wherever-something-i-330fa2.mp3",
+    "dur": 7.56
+  },
+  "In games: heads has probability one half. A six has probability one sixth.": {
+    "file": "in-games-heads-has-probability-one-half--4f4f55.mp3",
+    "dur": 5.38
+  },
+  "Given is for new information. The probability of rain, given dark clouds, is higher.": {
+    "file": "given-is-for-new-information-the-probabi-0a4d14.mp3",
+    "dur": 5.54
+  },
+  "Two red beads and three blue. A is: a red bead comes out. Which one is right?": {
+    "file": "two-red-beads-and-three-blue-a-is-a-red--9c04ef.mp3",
+    "dur": 5.76
+  },
+  "Three red beads. Add blue beads until the probability of red is one half.": {
+    "file": "three-red-beads-add-blue-beads-until-the-2f368c.mp3",
+    "dur": 5.04
+  },
+  "The probability of A, given B, equals one quarter.": {
+    "file": "the-probability-of-a-given-b-equals-one--d4ac96.mp3",
+    "dur": 3.77
+  },
+  "Eight plants were measured. Each bead stands over the height of one plant.": {
+    "file": "eight-plants-were-measured-each-bead-sta-8df8f0.mp3",
+    "dur": 4.03
+  },
+  "What one number could stand for all eight?": {
+    "file": "what-one-number-could-stand-for-all-eigh-2e3275.mp3",
+    "dur": 2.02
+  },
+  "Eight plants were measured. Each bead stands over the height of one plant. What one number could stand for all eight?": {
+    "file": "eight-plants-were-measured-each-bead-sta-e2c40c.mp3",
+    "dur": 6.96
+  },
+  "Five. Add all eight heights: forty. Share forty among the eight: five each.": {
+    "file": "five-add-all-eight-heights-forty-share-f-1b1c33.mp3",
+    "dur": 5.98
+  },
+  "That number is called the mean. We need a sign for it.": {
+    "file": "that-number-is-called-the-mean-we-need-a-61ad0f.mp3",
+    "dur": 3.5
+  },
+  "This is the Greek letter mu. It is the Greek m, for mean.": {
+    "file": "this-is-the-greek-letter-mu-it-is-the-gr-3783e9.mp3",
+    "dur": 3.79
+  },
+  "Mu equals five: the mean of the eight heights.": {
+    "file": "mu-equals-five-the-mean-of-the-eight-hei-d88af8.mp3",
+    "dur": 2.81
+  },
+  "As a rule: add up all n of the numbers, then divide by n.": {
+    "file": "as-a-rule-add-up-all-n-of-the-numbers-th-1df4b1.mp3",
+    "dur": 3.79
+  },
+  "These eight have mean five as well. But they keep much closer to it. Mu cannot tell the two groups apart.": {
+    "file": "these-eight-have-mean-five-as-well-but-t-d87309.mp3",
+    "dur": 7.1
+  },
+  "How spread out are ours? Write on each bead how far it is from mu.": {
+    "file": "how-spread-out-are-ours-write-on-each-be-a80a33.mp3",
+    "dur": 4.44
+  },
+  "Square each distance, so the far beads count for more. The squares add up to thirty-two.": {
+    "file": "square-each-distance-so-the-far-beads-co-691508.mp3",
+    "dur": 5.52
+  },
+  "Their mean is thirty-two over eight: four. It is called the variance, and written sigma squared.": {
+    "file": "their-mean-is-thirty-two-over-eight-four-b30eb5.mp3",
+    "dur": 6.89
+  },
+  "Its square root is sigma, the standard deviation. Sigma equals two: a usual distance from the mean.": {
+    "file": "its-square-root-is-sigma-the-standard-de-ef2401.mp3",
+    "dur": 8.02
+  },
+  "Sigma is the Greek s. The capital one stood for sum. The small one stands for standard.": {
+    "file": "sigma-is-the-greek-s-the-capital-one-sto-895ddd.mp3",
+    "dur": 5.9
+  },
+  "Mu and sigma are used wherever many things are measured. Two groups, the same mean: sigma tells them apart.": {
+    "file": "mu-and-sigma-are-used-wherever-many-thin-81a098.mp3",
+    "dur": 7.32
+  },
+  "Mu plus or minus sigma: from three to seven. Most of the beads lie in there.": {
+    "file": "mu-plus-or-minus-sigma-from-three-to-sev-bcc03d.mp3",
+    "dur": 4.63
+  },
+  "The weather: in summer the mean is twenty degrees, and sigma is three. Seventeen to twenty-three is an ordinary day.": {
+    "file": "the-weather-in-summer-the-mean-is-twenty-3a2332.mp3",
+    "dur": 7.82
+  },
+  "Three numbers: one, two and six. Which one is right?": {
+    "file": "three-numbers-one-two-and-six-which-one--8ab9e0.mp3",
+    "dur": 2.93
+  },
+  "Two beads stand over the four. Add beads over the six until the mean is five.": {
+    "file": "two-beads-stand-over-the-four-add-beads--814181.mp3",
+    "dur": 5.16
+  },
+  "Sigma squared equals nine.": {
+    "file": "sigma-squared-equals-nine-a4d4d9.mp3",
+    "dur": 1.66
+  },
+  "Now take a die. Roll it many times, and write down each number.": {
+    "file": "now-take-a-die-roll-it-many-times-and-wr-44f864.mp3",
+    "dur": 4.22
+  },
+  "What will the mean of the rolls come close to?": {
+    "file": "what-will-the-mean-of-the-rolls-come-clo-8ddada.mp3",
+    "dur": 2.11
+  },
+  "Roll a die many times. What will the mean of the rolls come close to?": {
+    "file": "roll-a-die-many-times-what-will-the-mean-816b31.mp3",
+    "dur": 4.3
+  },
+  "Three and a half. Here are twenty-four rolls: their mean is three point five.": {
+    "file": "three-and-a-half-here-are-twenty-four-ro-d18b86.mp3",
+    "dur": 5.66
+  },
+  "But what of rolls still to come? Their mean needs a sign.": {
+    "file": "but-what-of-rolls-still-to-come-their-me-3fef94.mp3",
+    "dur": 3.38
+  },
+  "This is read: the expected value of X. For short: E of X.": {
+    "file": "this-is-read-the-expected-value-of-x-for-0053ac.mp3",
+    "dur": 5.52
+  },
+  "X is a capital: the number the die will show. Chance has not picked it yet.": {
+    "file": "x-is-a-capital-the-number-the-die-will-s-81807d.mp3",
+    "dur": 4.68
+  },
+  "Each value has a probability: here, one sixth each.": {
+    "file": "each-value-has-a-probability-here-one-si-a8efa3.mp3",
+    "dur": 3.5
+  },
+  "Take each value times its probability, and add them up.": {
+    "file": "take-each-value-times-its-probability-an-8ad6a7.mp3",
+    "dur": 3.58
+  },
+  "One sixth of one, plus one sixth of two, up to six: three and a half, where the bars balance.": {
+    "file": "one-sixth-of-one-plus-one-sixth-of-two-u-4b9e55.mp3",
+    "dur": 6.19
+  },
+  "The brackets are square: what is inside is not one number, but a number still to be picked.": {
+    "file": "the-brackets-are-square-what-is-inside-i-2e502e.mp3",
+    "dur": 5.62
+  },
+  "Mu was the mean of numbers already measured. For numbers still to come, it is the expected value.": {
+    "file": "mu-was-the-mean-of-numbers-already-measu-859277.mp3",
+    "dur": 7.37
+  },
+  "And the variance of X is the expected squared distance from mu: sigma squared.": {
+    "file": "and-the-variance-of-x-is-the-expected-sq-5df021.mp3",
+    "dur": 4.58
+  },
+  "When X can be any number on a line, the sum becomes an integral.": {
+    "file": "when-x-can-be-any-number-on-a-line-the-s-ebc221.mp3",
+    "dur": 3.74
+  },
+  "What is a game worth? A six wins six beads; anything else, nothing. The expected value is one bead: a fair price.": {
+    "file": "what-is-a-game-worth-a-six-wins-six-bead-016eb8.mp3",
+    "dur": 8.38
+  },
+  "The long run: a hundred rolls should add up to about three hundred and fifty.": {
+    "file": "the-long-run-a-hundred-rolls-should-add--53fbe0.mp3",
+    "dur": 4.51
+  },
+  "Insurance: a small chance of a big loss. Its expected value sets the price.": {
+    "file": "insurance-a-small-chance-of-a-big-loss-i-f7a0de.mp3",
+    "dur": 5.86
+  },
+  "A coin: tails counts zero, heads counts one. Which is the expected value?": {
+    "file": "a-coin-tails-counts-zero-heads-counts-on-54bc6d.mp3",
+    "dur": 5.69
+  },
+  "A coin game: heads wins the whole prize. Make the game worth two beads a go.": {
+    "file": "a-coin-game-heads-wins-the-whole-prize-m-0be172.mp3",
+    "dur": 5.28
+  },
+  "The expected value of X equals mu.": {
+    "file": "the-expected-value-of-x-equals-mu-f1a20b.mp3",
+    "dur": 2.3
+  },
+  "Add up ten dice, again and again. The totals pile up like this.": {
+    "file": "add-up-ten-dice-again-and-again-the-tota-17d9d6.mp3",
+    "dur": 4.68
+  },
+  "Does this shape have a name?": {
+    "file": "does-this-shape-have-a-name-d53e2d.mp3",
+    "dur": 1.15
+  },
+  "Add up ten dice, again and again. The totals pile up like this. Where will most of the next totals fall?": {
+    "file": "add-up-ten-dice-again-and-again-the-tota-0bac63.mp3",
+    "dur": 8.4
+  },
+  "In the middle. The pile is shaped like a bell. The shape has a name: the normal distribution.": {
+    "file": "in-the-middle-the-pile-is-shaped-like-a--bfd11f.mp3",
+    "dur": 7.18
+  },
+  "Call the next total X. We need a sign that says: its values pile up in this shape.": {
+    "file": "call-the-next-total-x-we-need-a-sign-tha-d6ae8c.mp3",
+    "dur": 5.02
+  },
+  "This is read: X is distributed as N, mu, sigma squared. The wave is read: is distributed as.": {
+    "file": "this-is-read-x-is-distributed-as-n-mu-si-c059db.mp3",
+    "dur": 8.66
+  },
+  "The upright N is short for normal: the bell. Two numbers in brackets say which bell.": {
+    "file": "the-upright-n-is-short-for-normal-the-be-7b5290.mp3",
+    "dur": 5.23
+  },
+  "Mu is the middle of the bell: here, thirty-five. Change mu, and the whole bell slides.": {
+    "file": "mu-is-the-middle-of-the-bell-here-thirty-e10577.mp3",
+    "dur": 6.14
+  },
+  "Sigma, the standard deviation, says how wide the bell is. Here, sigma is two.": {
+    "file": "sigma-the-standard-deviation-says-how-wi-b20fe0.mp3",
+    "dur": 6.77
+  },
+  "Within one sigma of mu lie sixty-eight percent of the values: about two thirds.": {
+    "file": "within-one-sigma-of-mu-lie-sixty-eight-p-759c9a.mp3",
+    "dur": 4.94
+  },
+  "Within three sigmas lie nearly all of them.": {
+    "file": "within-three-sigmas-lie-nearly-all-of-th-273d99.mp3",
+    "dur": 2.71
+  },
+  "Grow sigma to three: the bell widens, and it sinks.": {
+    "file": "grow-sigma-to-three-the-bell-widens-and--922b66.mp3",
+    "dur": 3.17
+  },
+  "With numbers: N, thirty-five, nine. The nine is sigma squared, the variance.": {
+    "file": "with-numbers-n-thirty-five-nine-the-nine-1688da.mp3",
+    "dur": 4.58
+  },
+  "So the expected value of X is mu. The variance of X is sigma squared.": {
+    "file": "so-the-expected-value-of-x-is-mu-the-var-d04a3f.mp3",
+    "dur": 5.38
+  },
+  "Two waves compare two numbers. One wave says where the values of X come from.": {
+    "file": "two-waves-compare-two-numbers-one-wave-s-aa7711.mp3",
+    "dur": 5.02
+  },
+  "The heights of grown people are close to normal: most near the middle, a few far out.": {
+    "file": "the-heights-of-grown-people-are-close-to-fb101e.mp3",
+    "dur": 4.68
+  },
+  "Measure one thing many times. The small errors are normal too, with their middle at zero.": {
+    "file": "measure-one-thing-many-times-the-small-e-043496.mp3",
+    "dur": 6.36
+  },
+  "Some tests are scored to be normal: mu is one hundred, and sigma is fifteen.": {
+    "file": "some-tests-are-scored-to-be-normal-mu-is-2802a1.mp3",
+    "dur": 5.21
+  },
+  "Mu is three, and sigma is two. Which one is right?": {
+    "file": "mu-is-three-and-sigma-is-two-which-one-i-4bdc49.mp3",
+    "dur": 3.53
+  },
+  "X is distributed as N, ten, four.": {
+    "file": "x-is-distributed-as-n-ten-four-ca202f.mp3",
+    "dur": 2.57
+  },
+  "Two rows of numbers, paired by arrows.": {
+    "file": "two-rows-of-numbers-paired-by-arrows-d78218.mp3",
+    "dur": 2.3
+  },
+  "Up here, two times four is eight. Underneath: one plus two is three. Is that an accident?": {
+    "file": "up-here-two-times-four-is-eight-undernea-71f2b2.mp3",
+    "dur": 6.65
+  },
+  "Two rows of numbers, paired by arrows. Up here, two times four is eight. Underneath: one plus two is three. Does it work for four times four too?": {
+    "file": "two-rows-of-numbers-paired-by-arrows-up--c225c4.mp3",
+    "dur": 9.86
+  },
+  "Yes. Four times four is sixteen. Underneath: two plus two is four.": {
+    "file": "yes-four-times-four-is-sixteen-underneat-925b4c.mp3",
+    "dur": 5.16
+  },
+  "Call the rows A and B. Their numbers are different, but they behave alike. We need a sign for that.": {
+    "file": "call-the-rows-a-and-b-their-numbers-are--172e23.mp3",
+    "dur": 6.74
+  },
+  "The pairing is a map: f, from A to B. Eight maps to three.": {
+    "file": "the-pairing-is-a-map-f-from-a-to-b-eight-f89451.mp3",
+    "dur": 3.86
+  },
+  "And the map keeps the pattern: times up here turns into plus down there.": {
+    "file": "and-the-map-keeps-the-pattern-times-up-h-74d172.mp3",
+    "dur": 4.34
+  },
+  "For that, we put a wave on top of the equals sign. We read it: A is isomorphic to B.": {
+    "file": "for-that-we-put-a-wave-on-top-of-the-equ-6e18a5.mp3",
+    "dur": 6.22
+  },
+  "Isomorphic means: the same shape. A does not equal B: the members are different. The pattern they make is the same.": {
+    "file": "isomorphic-means-the-same-shape-a-does-n-cd3dd0.mp3",
+    "dur": 8.64
+  },
+  "With only one bar under the wave, we read: is equivalent to. It is looser. A square can be bent into a circle: for some questions, that is alike enough.": {
+    "file": "with-only-one-bar-under-the-wave-we-read-97c5ed.mp3",
+    "dur": 12.12
+  },
+  "These signs are one family. A bar says: the same. A wave says: alike. The fewer the bars, the looser the likeness.": {
+    "file": "these-signs-are-one-family-a-bar-says-th-c84b0c.mp3",
+    "dur": 9.84
+  },
+  "Isomorphic things can stand in for each other. Eight times sixteen is hard. So cross over: three plus four is seven.": {
+    "file": "isomorphic-things-can-stand-in-for-each--faeb86.mp3",
+    "dur": 8.06
+  },
+  "Then cross back: one hundred and twenty-eight. That is what a log is for: it turns times into plus.": {
+    "file": "then-cross-back-one-hundred-and-twenty-e-6eb3c3.mp3",
+    "dur": 7.49
+  },
+  "A clock: three hours and three more. Its hand: a quarter turn and a quarter more. Hours and turns are isomorphic.": {
+    "file": "a-clock-three-hours-and-three-more-its-h-b9c6fe.mp3",
+    "dur": 7.39
+  },
+  "Two maps to one, eight to three, sixteen to four. Two times eight is sixteen. Which one says the same, underneath?": {
+    "file": "two-maps-to-one-eight-to-three-sixteen-t-bc35de.mp3",
+    "dur": 7.9
+  },
+  "G and H have different members, but the same pattern. Which sign goes between them?": {
+    "file": "g-and-h-have-different-members-but-the-s-b9d42a.mp3",
+    "dur": 5.26
+  },
+  "V is isomorphic to W.": {
+    "file": "v-is-isomorphic-to-w-7829c9.mp3",
+    "dur": 1.99
+  },
+  "Here are two lists of numbers. There are two ways to put them together into one.": {
+    "file": "here-are-two-lists-of-numbers-there-are--c48bed.mp3",
+    "dur": 4.99
+  },
+  "Join them end to end. Or multiply every number of one by every number of the other. How many numbers each way?": {
+    "file": "join-them-end-to-end-or-multiply-every-n-2575e9.mp3",
+    "dur": 7.13
+  },
+  "Vector u is one, two. Vector v is three, four, five. Multiply every number of one by every number of the other. How many answers?": {
+    "file": "vector-u-is-one-two-vector-v-is-three-fo-254f7f.mp3",
+    "dur": 10.56
+  },
+  "Six. Each of the two meets each of the three.": {
+    "file": "six-each-of-the-two-meets-each-of-the-th-2d7635.mp3",
+    "dur": 2.86
+  },
+  "Joined end to end, they make a list of five. Two ways to put lists together. Each needs a sign.": {
+    "file": "joined-end-to-end-they-make-a-list-of-fi-7b85be.mp3",
+    "dur": 7.94
+  },
+  "A plus and a times, each with a ring round it: direct sum, and tensor. The ring says: not for single numbers, but for whole lists.": {
+    "file": "a-plus-and-a-times-each-with-a-ring-roun-89b8c0.mp3",
+    "dur": 9.43
+  },
+  "We read: u direct sum v. The lists are joined end to end. Their lengths add: two plus three.": {
+    "file": "we-read-u-direct-sum-v-the-lists-are-joi-3b384c.mp3",
+    "dur": 7.8
+  },
+  "And u tensor v: every pairing, multiplied. One times three, four, five. Two times three, four, five.": {
+    "file": "and-u-tensor-v-every-pairing-multiplied--2b54df.mp3",
+    "dur": 9
+  },
+  "A times table: a matrix with two rows and three columns. The lengths multiply: two times three.": {
+    "file": "a-times-table-a-matrix-with-two-rows-and-283514.mp3",
+    "dur": 7.61
+  },
+  "For two matrices, direct sum sets them corner to corner, with zeros everywhere else.": {
+    "file": "for-two-matrices-direct-sum-sets-them-co-5d3cbc.mp3",
+    "dur": 5.33
+  },
+  "Spaces have capital letters for names: V direct sum W. A plane and a line make a space of three dimensions. Dimensions add. With tensor, they multiply.": {
+    "file": "spaces-have-capital-letters-for-names-v--f77d93.mp3",
+    "dur": 12.29
+  },
+  "Direct sum splits a thing into parts that do not mix: a kite's place on the map, and its height.": {
+    "file": "direct-sum-splits-a-thing-into-parts-tha-b330ed.mp3",
+    "dur": 5.81
+  },
+  "Tensor is for when every pairing matters. Two coins, each heads or tails: four outcomes.": {
+    "file": "tensor-is-for-when-every-pairing-matters-0907f3.mp3",
+    "dur": 6.34
+  },
+  "A quantum computer joins its parts with tensor. Each added part doubles the list.": {
+    "file": "a-quantum-computer-joins-its-parts-with--0022f4.mp3",
+    "dur": 4.78
+  },
+  "A list of three numbers and a list of four. Which one has twelve numbers?": {
+    "file": "a-list-of-three-numbers-and-a-list-of-fo-9ff94a.mp3",
+    "dur": 5.14
+  },
+  "Each bead adds a number to vector v. Make the times table hold eight numbers.": {
+    "file": "each-bead-adds-a-number-to-vector-v-make-698548.mp3",
+    "dur": 4.61
+  },
+  "V tensor W.": {
+    "file": "v-tensor-w-887c64.mp3",
+    "dur": 1.46
+  },
+  "A steady wind, and a path that comes back to where it began.": {
+    "file": "a-steady-wind-and-a-path-that-comes-back-bc0d1c.mp3",
+    "dur": 3.6
+  },
+  "Add up the push all the way round, back to the start. How do we write that?": {
+    "file": "add-up-the-push-all-the-way-round-back-t-8f1789.mp3",
+    "dur": 5.23
+  },
+  "A steady wind. Walk round the path, back to the start, and add up every push. What do you get?": {
+    "file": "a-steady-wind-walk-round-the-path-back-t-592901.mp3",
+    "dur": 7.66
+  },
+  "Zero. Along the bottom, the wind is behind us for two steps: two.": {
+    "file": "zero-along-the-bottom-the-wind-is-behind-83e283.mp3",
+    "dur": 5.28
+  },
+  "Up this side, the wind blows across our path: zero.": {
+    "file": "up-this-side-the-wind-blows-across-our-p-96ca5f.mp3",
+    "dur": 3.1
+  },
+  "Along the top, we walk against it: minus two. Then down: zero again.": {
+    "file": "along-the-top-we-walk-against-it-minus-t-4cf5a5.mp3",
+    "dur": 5.11
+  },
+  "Altogether, zero. How do we write: add all the way round?": {
+    "file": "altogether-zero-how-do-we-write-add-all--0e997c.mp3",
+    "dur": 4.34
+  },
+  "The integral sign, with a ring on it: the closed integral. The ring says the path ends where it began.": {
+    "file": "the-integral-sign-with-a-ring-on-it-the--47bc42.mp3",
+    "dur": 7.82
+  },
+  "We read it: the integral, round C, of F dot d r. C names the curve.": {
+    "file": "we-read-it-the-integral-round-c-of-f-dot-8c86ef.mp3",
+    "dur": 6.74
+  },
+  "F is the wind. And d r is one tiny step along the curve. The dot asks how much the wind pushes along it.": {
+    "file": "f-is-the-wind-and-d-r-is-one-tiny-step-a-3cc5c5.mp3",
+    "dur": 7.82
+  },
+  "The sign adds that up, all the way round. Here: zero.": {
+    "file": "the-sign-adds-that-up-all-the-way-round--e05214.mp3",
+    "dur": 3.96
+  },
+  "Now the wind whirls. On every side it pushes us along: two, plus two, plus two, plus two. Eight.": {
+    "file": "now-the-wind-whirls-on-every-side-it-pus-71f0b0.mp3",
+    "dur": 8.42
+  },
+  "Shrink the loop to almost nothing, and this is the curl: del cross F.": {
+    "file": "shrink-the-loop-to-almost-nothing-and-th-92e9b7.mp3",
+    "dur": 5.76
+  },
+  "The plain integral ran from a to b. A loop has no ends: only a ring, and the curve's name.": {
+    "file": "the-plain-integral-ran-from-a-to-b-a-loo-71e71d.mp3",
+    "dur": 7.2
+  },
+  "Carry a load round a hill and back. Up and down cancel: the work is zero.": {
+    "file": "carry-a-load-round-a-hill-and-back-up-an-e94cbd.mp3",
+    "dur": 5.14
+  },
+  "In flowing water, it tells how much the flow turns.": {
+    "file": "in-flowing-water-it-tells-how-much-the-f-a87f64.mp3",
+    "dur": 3.43
+  },
+  "Move a magnet up to a loop of wire: electricity is pushed round it.": {
+    "file": "move-a-magnet-up-to-a-loop-of-wire-elect-9866fb.mp3",
+    "dur": 4.42
+  },
+  "It ends where it began. Which one says that?": {
+    "file": "it-ends-where-it-began-which-one-says-th-f1ac4e.mp3",
+    "dur": 2.62
+  },
+  "Each bead walks one side. Add beads until the loop is closed.": {
+    "file": "each-bead-walks-one-side-add-beads-until-346037.mp3",
+    "dur": 3.43
+  },
+  "The integral, round C, of F dot d r, equals six.": {
+    "file": "the-integral-round-c-of-f-dot-d-r-equals-073c48.mp3",
+    "dur": 3.82
+  },
+  "That was the last sign on the road. Each one is a short way to write an exact idea. Now you can read them.": {
+    "file": "that-was-the-last-sign-on-the-road-each--03b823.mp3",
+    "dur": 7.06
+  },
   "Write what you see.": {
     "file": "write-what-you-see-c8d289.mp3",
     "dur": 1.03

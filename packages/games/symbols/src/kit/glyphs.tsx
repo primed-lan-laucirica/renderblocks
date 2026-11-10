@@ -24,7 +24,10 @@ import { GOLD_EDGE, INK, SANS, SERIF, SOFT } from './look'
  * under it, and the tall ∫ with its ends set at its foot and its head. From rank 41 on
  * there are vectors (a letter with an arrow over it, or set upright and
  * heavy) and matrices (numbers in rows and columns between tall
- * brackets; one column of them is a vector standing up). `k`
+ * brackets; one column of them is a vector standing up). From rank 47 on
+ * there are the upright capitals of chance (the P of P(A), the E of E[X],
+ * the N of the normal curve: `op`, so that they are not taken for a
+ * number's letter), and the ∫ with a ring on it. `k`
  * names a token, so it can move to another place on the next line (5 = V
  * becomes V = 5).
  */
@@ -38,12 +41,13 @@ export type Tok =
   | { root: Part; k?: string }
   | { sub: Part; k?: string }
   | { fn: string; k?: string }
-  | { big: 'Σ' | 'Π' | '∫' | 'lim'; from?: Part; to?: Part; k?: string }
+  | { big: 'Σ' | 'Π' | '∫' | '∮' | 'lim'; from?: Part; to?: Part; k?: string }
   | { d: Part; round?: boolean; k?: string }
   | { dot: Part; k?: string }
   | { vec: Part; k?: string }
   | { bold: string; k?: string }
   | { mat: Part[][]; k?: string; lit?: number[] }
+  | { op: 'P' | 'E' | 'N'; k?: string }
 
 /** What a token holds inside it, itself a little line: one token, or several. */
 export type Part = string | Tok[]
@@ -51,9 +55,9 @@ export type Part = string | Tok[]
 export interface Item {
   k: string
   kind: 'num' | 'sign' | 'unknown' | 'gap' | 'tally' | 'roman' | 'frac' | 'sup' | 'root' | 'letter' | 'word' | 'sub' | 'fn' | 'big' | 'diff' | 'dot' | 'vec' | 'bold' | 'mat'
-  /** What it shows (a sign's name on the line: "=", "frac", "pow", "var", "sub", "fn", "d", "dot", "vec", "bold", "mat"). */
+  /** What it shows (a sign's name on the line: "=", "frac", "pow", "var", "sub", "fn", "d", "dot", "vec", "bold", "mat", "prob"). */
   g: string
-  /** The letter a variable or a function is written with. */
+  /** The letter a variable, a function or an upright capital is written with. */
   ch?: string
   /** The amount a numeral or mark stands for. */
   n?: number
@@ -140,6 +144,13 @@ const WIDTH: Record<string, number> = {
   '∇': 0.68,
   '⟨': 0.28,
   '⟩': 0.28,
+  '[': 0.24,
+  ']': 0.24,
+  '~': 0.7,
+  '≅': 0.7,
+  '≃': 0.7,
+  '⊕': 0.8,
+  '⊗': 0.8,
 }
 export const isSign = (g: string) => g in WIDTH
 
@@ -147,9 +158,11 @@ export const isSign = (g: string) => g in WIDTH
 const NUMERAL = /^−?[\d,]+(\.\d+)?$/
 /** A letter standing for a number (any but e, which is one number's own name, as π is; θ is the angle's letter). */
 const LETTER = /^[A-Za-df-z]$/
-const NAMED = ['π', 'θ', 'e']
+const NAMED = ['π', 'θ', 'e', 'μ', 'σ']
 /** A function's name written as a word (and the mod of clock sums), and its width as type. */
-const WORDS: Record<string, number> = { sin: 1.34, cos: 1.62, tan: 1.52, log: 1.46, ln: 0.88, mod: 1.9, det: 1.5 }
+const WORDS: Record<string, number> = { sin: 1.34, cos: 1.62, tan: 1.52, log: 1.46, ln: 0.88, mod: 1.9, det: 1.5, Var: 1.62, prob: 0.64, expect: 0.6, normal: 0.76 }
+/** The upright capitals of chance, and the sign each one is: P for probability, E for expectation, N for the normal curve. */
+const OPS = { P: 'prob', E: 'expect', N: 'normal' } as const
 const number = (g: string) => Number(g.replace(/,/g, '').replace('−', '-'))
 const within = (part: Part) => items(typeof part === 'string' ? [part] : part)
 /** The amount of a part that is one numeral. */
@@ -179,7 +192,7 @@ export function items(toks: Tok[]): Item[] {
       else if (LETTER.test(g)) it = { kind: 'letter', g: 'var', ch: g }
       else if (NAMED.includes(g)) it = { kind: 'letter', g, ch: g }
       else if (g in WORDS) it = { kind: 'word', g }
-      else if (g === 'Σ' || g === 'Π' || g === '∫' || g === 'lim') it = { kind: 'big', g, parts: [[], []] }
+      else if (g === 'Σ' || g === 'Π' || g === '∫' || g === '∮' || g === 'lim') it = { kind: 'big', g, parts: [[], []] }
       else if (g === '∂') it = { kind: 'diff', g, parts: [[]] }
       else throw new Error(`No such token: "${g}"`)
     } else if ('tally' in t) {
@@ -220,6 +233,9 @@ export function items(toks: Tok[]): Item[] {
     } else if ('mat' in t) {
       it = { kind: 'mat', g: 'mat', parts: t.mat.flat().map(within), cols: t.mat[0].length, lit: t.lit }
       k = t.k
+    } else if ('op' in t) {
+      it = { kind: 'word', g: OPS[t.op], ch: t.op }
+      k = t.k
     } else {
       it = { kind: 'big', g: t.big, parts: [t.from === undefined ? [] : within(t.from), t.to === undefined ? [] : within(t.to)] }
       k = t.k
@@ -243,7 +259,7 @@ export function items(toks: Tok[]): Item[] {
 const CHAR: Record<string, number> = { ',': 0.3, '.': 0.24, '−': 0.5 }
 const digits = (g: string) => [...g].reduce((w, c) => w + (CHAR[c] ?? 0.62), 0)
 /** A letter's width (serif italic), where it is not the usual. */
-const LETTERS: Record<string, number> = { i: 0.36, j: 0.38, l: 0.36, t: 0.42, f: 0.44, r: 0.48, s: 0.5, e: 0.52, c: 0.52, m: 0.9, w: 0.82, π: 0.66, θ: 0.58 }
+const LETTERS: Record<string, number> = { i: 0.36, j: 0.38, l: 0.36, t: 0.42, f: 0.44, r: 0.48, s: 0.5, e: 0.52, c: 0.52, m: 0.9, w: 0.82, W: 0.98, M: 0.94, π: 0.66, θ: 0.58, μ: 0.66, σ: 0.66 }
 const letter = (ch: string) => LETTERS[ch] ?? (/[A-Z]/.test(ch) ? 0.76 : 0.6)
 
 /** A fraction's numerals, and what is raised, as a part of the line's size. */
@@ -266,8 +282,8 @@ const columns = (it: Item) => Array.from({ length: it.cols! }, (_, c) => Math.ma
 const ROOT = { lead: 0.46, tail: 0.08 }
 
 const SPACE = 0.26
-const closes = (it: Item) => it.g === ')' || it.g === '}' || it.g === '⟩' || ((it.g === '|' || it.g === '‖') && !it.opens)
-const opens = (it: Item) => it.g === '(' || it.g === '{' || it.g === '⟨' || ((it.g === '|' || it.g === '‖') && !!it.opens)
+const closes = (it: Item) => it.g === ')' || it.g === '}' || it.g === '⟩' || it.g === ']' || ((it.g === '|' || it.g === '‖') && !it.opens)
+const opens = (it: Item) => it.g === '(' || it.g === '{' || it.g === '⟨' || it.g === '[' || ((it.g === '|' || it.g === '‖') && !!it.opens)
 /** Something that is one vector or one matrix: a number or a letter right against it is times. */
 const arrowed = (it: Item) => it.kind === 'vec' || it.kind === 'bold' || it.kind === 'mat'
 /** Signs that stand before what they are about (not P, for all x): they stand close to it. */
@@ -298,7 +314,7 @@ function space(a: Item, b: Item) {
   // A function's name stands against its brackets; its word stands a little off what it takes.
   // An italic f leans over its bracket, so it stands a little further off.
   if (a.kind === 'fn' && b.g === '(') return a.ch === 'f' ? 0.1 : 0.03
-  if (a.kind === 'word') return b.g === '(' ? 0.05 : 0.14
+  if (a.kind === 'word') return b.g === '(' || b.g === '[' ? 0.05 : 0.14
   if (a.kind === 'big') return a.g === 'lim' ? 0.2 : 0.12
   // A bar is a plain stroke, so it stands a little further off than a bracket (a minus next to it must not run into it).
   if ((a.g === '|' && opens(a)) || (b.g === '|' && closes(b))) return 0.13
@@ -345,7 +361,7 @@ export function widthOf(it: Item): number {
       return span(it.parts![0]) * SUB + 0.02
     case 'big':
       if (it.g === 'lim') return Math.max(LIM.w, span(it.parts![0]) * LIM.under)
-      if (it.g === '∫') return INT.w + (it.parts![0].length || it.parts![1].length ? Math.max(span(it.parts![0]), span(it.parts![1])) * INT.lim + 0.06 : 0)
+      if (it.g === '∫' || it.g === '∮') return INT.w + (it.parts![0].length || it.parts![1].length ? Math.max(span(it.parts![0]), span(it.parts![1])) * INT.lim + 0.06 : 0)
       return Math.max(BIG.w, span(it.parts![0]) * BIG.lim, span(it.parts![1]) * BIG.lim)
     case 'diff':
       return (it.g === 'd' ? DIFF.d : DIFF.round) + (it.parts![0].length ? DIFF.gap + span(it.parts![0]) : 0)
@@ -392,6 +408,8 @@ export function Sign({ g, size, colour = INK }: { g: string; size: number; colou
   const dot = (x: number, y: number, r = 0.068) => <circle cx={x * S} cy={y * S} r={r * S} fill={colour} />
   /** An arrow's head, its point at x (to the right for dir 1). */
   const head = (dir: number, x = 0.4, h = 0.18) => <polyline points={`${(x - h) * dir * S},${-h * S} ${x * dir * S},0 ${(x - h) * dir * S},${h * S}`} {...st} />
+  /** One wave, lying at height y and reaching w to each side. */
+  const wave = (y: number, w = 0.25, key?: number) => <path key={key} d={`M ${-w * S} ${(y + 0.04) * S} C ${-0.56 * w * S} ${(y - 0.15) * S} ${-0.24 * w * S} ${(y - 0.08) * S} 0 ${y * S} C ${0.24 * w * S} ${(y + 0.08) * S} ${0.56 * w * S} ${(y + 0.15) * S} ${w * S} ${(y - 0.04) * S}`} {...st} />
   const less = (dir: number, dy = 0, h = 0.25) => <polyline points={`${0.25 * dir * S},${(dy - h) * S} ${-0.25 * dir * S},${dy * S} ${0.25 * dir * S},${(dy + h) * S}`} {...st} />
   let d: ReactNode
   switch (g) {
@@ -741,6 +759,46 @@ export function Sign({ g, size, colour = INK }: { g: string; size: number; colou
     case '⟩':
       d = <polyline points={`${-0.08 * S},${-0.44 * S} ${0.08 * S},0 ${-0.08 * S},${0.44 * S}`} {...st} />
       break
+    case '[':
+      d = <polyline points={`${0.08 * S},${-0.44 * S} ${-0.06 * S},${-0.44 * S} ${-0.06 * S},${0.44 * S} ${0.08 * S},${0.44 * S}`} {...st} />
+      break
+    case ']':
+      d = <polyline points={`${-0.08 * S},${-0.44 * S} ${0.06 * S},${-0.44 * S} ${0.06 * S},${0.44 * S} ${-0.08 * S},${0.44 * S}`} {...st} />
+      break
+    case '~':
+      d = wave(0, 0.3)
+      break
+    case '≅':
+      // Equals, with a wave over it: the same in every way that matters, though not the very same thing.
+      d = [wave(-0.25, 0.25, 0), L(-0.25, 0, 0.25, 0, 1), L(-0.25, 0.22, 0.25, 0.22, 2)]
+      break
+    case '≃':
+      d = [wave(-0.14, 0.25, 0), L(-0.25, 0.16, 0.25, 0.16, 1)]
+      break
+    case '⊕':
+      // Plus, in a ring.
+      d = (
+        <>
+          <circle r={0.3 * S} {...st} strokeWidth={S * 0.075} />
+          <g {...st} strokeWidth={S * 0.075}>
+            <line x1={-0.3 * S} y1={0} x2={0.3 * S} y2={0} />
+            <line x1={0} y1={-0.3 * S} x2={0} y2={0.3 * S} />
+          </g>
+        </>
+      )
+      break
+    case '⊗':
+      // Times, in a ring.
+      d = (
+        <>
+          <circle r={0.3 * S} {...st} strokeWidth={S * 0.075} />
+          <g {...st} strokeWidth={S * 0.075}>
+            <line x1={-0.212 * S} y1={-0.212 * S} x2={0.212 * S} y2={0.212 * S} />
+            <line x1={-0.212 * S} y1={0.212 * S} x2={0.212 * S} y2={-0.212 * S} />
+          </g>
+        </>
+      )
+      break
     default:
       // A sign with no drawing yet (the later stages): type.
       d = (
@@ -761,7 +819,14 @@ function Big({ g, size, colour }: { g: string; size: number; colour: string }) {
   const S = size * BIG.s
   const st = { stroke: colour, strokeWidth: size * 0.085, strokeLinecap: 'round', strokeLinejoin: 'round', fill: 'none' } as const
   const pts = (list: [number, number][]) => list.map(([x, y]) => `${x * S},${y * S}`).join(' ')
-  if (g === '∫') return <path d={`M ${0.19 * size} ${-0.56 * size} C ${0.16 * size} ${-0.7 * size} ${0.04 * size} ${-0.68 * size} ${0.03 * size} ${-0.46 * size} L ${-0.03 * size} ${0.46 * size} C ${-0.04 * size} ${0.68 * size} ${-0.16 * size} ${0.7 * size} ${-0.19 * size} ${0.56 * size}`} {...st} strokeWidth={size * 0.1} />
+  // The tall ∫, and the same with a ring on it: the way round comes back to where it began.
+  if (g === '∫' || g === '∮')
+    return (
+      <>
+        <path d={`M ${0.19 * size} ${-0.56 * size} C ${0.16 * size} ${-0.7 * size} ${0.04 * size} ${-0.68 * size} ${0.03 * size} ${-0.46 * size} L ${-0.03 * size} ${0.46 * size} C ${-0.04 * size} ${0.68 * size} ${-0.16 * size} ${0.7 * size} ${-0.19 * size} ${0.56 * size}`} {...st} strokeWidth={size * 0.1} />
+        {g === '∮' && <circle r={0.15 * size} {...st} strokeWidth={size * 0.075} />}
+      </>
+    )
   if (g === 'Σ')
     return (
       <polyline
@@ -944,7 +1009,7 @@ export function Token({ it, x, y, size, o = 1, s = 1, colour = INK }: { it: Item
     case 'word':
       d = (
         <text data-sign={it.g} {...type(S, colour)} textLength={WORDS[it.g] * S} lengthAdjust="spacingAndGlyphs">
-          {it.g}
+          {it.ch ?? it.g}
         </text>
       )
       break
@@ -1047,12 +1112,12 @@ export function Token({ it, x, y, size, o = 1, s = 1, colour = INK }: { it: Item
         )
         break
       }
-      if (it.g === '∫') {
+      if (it.g === '∫' || it.g === '∮') {
         const left = -widthOf(it) / 2
         d = (
           <>
-            <g data-sign="∫" transform={`translate(${(left + INT.w / 2) * S} 0)`}>
-              <Big g="∫" size={S} colour={colour} />
+            <g data-sign={it.g} transform={`translate(${(left + INT.w / 2) * S} 0)`}>
+              <Big g={it.g} size={S} colour={colour} />
             </g>
             {/* Where it starts, at its foot; where it stops, at its head. */}
             <g transform={`translate(${(left + INT.w - 0.1 + (span(it.parts![0]) * INT.lim) / 2) * S} ${INT.off * S})`}>
