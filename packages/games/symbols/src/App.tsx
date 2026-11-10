@@ -7,6 +7,10 @@
  * Home is a place, not a list: the symbol road (Road). A tap on a window
  * picks it, another zooms into it and the explainer plays; at the end it
  * zooms back out to the road, which glides on to what's next.
+ *
+ * Each sign also has a deep dive (Dive): a lecture from YouTube, for whoever
+ * wants more than the explainer. It is reached from the sign's window on the
+ * road and from its explainer, and is never part of the path.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
@@ -15,6 +19,7 @@ import { Bench } from './bench/Bench'
 import { READS } from './bench/parse'
 import { Cover } from './Cover'
 import { signsOf, STAGES } from './data/path'
+import { Dive } from './Dive'
 import { record } from './evidence'
 import { EXPLAINERS, explainerOf } from './explainers'
 import { PAPER } from './kit/look'
@@ -42,6 +47,8 @@ function App({ services }: GameProps) {
   const [progress, setProgress] = useState<Progress>(() => load(services.storage))
   const [open, setOpen] = useState<{ stop: Stop; ready: boolean } | null>(null)
   const [next, setNext] = useState<string | null>(() => firstNext(load(services.storage)))
+  /** The rank whose deep dive is showing. */
+  const [dive, setDive] = useState<number | null>(null)
   const road = useRef<RoadHandle>(null)
   const layer = useRef<HTMLDivElement>(null)
   const paper = useRef<HTMLDivElement>(null)
@@ -86,12 +93,12 @@ function App({ services }: GameProps) {
     zoomOut(el, from, paper.current, done)
   }
 
-  // Android back: out of an explainer or the Bench to the road; from the road, out of the tile.
+  // Android back: out of a deep dive, an explainer or the Bench to the road; from the road, out of the tile.
   const closeRef = useRef(close)
   useLayoutEffect(() => {
     closeRef.current = close
   })
-  useEffect(() => services.onBack(() => (open ? (closeRef.current(null), true) : false)), [services, open])
+  useEffect(() => services.onBack(() => (dive !== null ? (setDive(null), true) : open ? (closeRef.current(null), true) : false)), [services, open, dive])
 
   const stop = open?.stop
   const scene = stop?.kind === 'rank' ? explainerOf(stop.rank) : null
@@ -105,11 +112,12 @@ function App({ services }: GameProps) {
         watched={new Set(progress.watched)}
         stars={progress.stars}
         next={next}
-        covered={!!open}
+        covered={!!open || dive !== null}
         onOpen={(s) => {
           setNext(null)
           setOpen({ stop: s, ready: false })
         }}
+        onDive={setDive}
         onExit={services.exitToHome}
       />
       {stop && (
@@ -135,6 +143,11 @@ function App({ services }: GameProps) {
                 close(firstNext(done) ?? after(stop.id))
               }}
               onBack={() => close(null)}
+              // The explainer is left where it was (it starts over next time), and the lecture takes the screen.
+              onDive={() => {
+                setOpen(null)
+                setDive(scene.rank)
+              }}
             />
           )}
           {stop.kind === 'bench' && (
@@ -152,6 +165,7 @@ function App({ services }: GameProps) {
           )}
         </div>
       )}
+      {dive !== null && <Dive rank={dive} onBack={() => setDive(null)} />}
     </div>
   )
 }

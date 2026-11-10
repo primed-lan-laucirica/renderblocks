@@ -13,7 +13,8 @@
     "render": "node scripts/render.mjs",
     "check": "node scripts/render.mjs --check",
     "voice": "node scripts/voice.mjs",
-    "timeline": "node scripts/timeline.mjs"
+    "timeline": "node scripts/timeline.mjs",
+    "dives": "node scripts/dives.mjs"
   },
   "dependencies": {
     "@renderblocks/kernel": "workspace:*",

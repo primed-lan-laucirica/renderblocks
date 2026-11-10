@@ -22,11 +22,13 @@ interface Props {
   /** The last frame has been held a moment. */
   onFinished: () => void
   onBack: () => void
+  /** Leave for this sign's deep dive. */
+  onDive: () => void
   /** The 16:9 stage, for the zoom in and out. */
   stageRef?: React.Ref<HTMLDivElement>
 }
 
-export function Player({ scene, go, cover, onTurnDone, onFinished, onBack, stageRef }: Props) {
+export function Player({ scene, go, cover, onTurnDone, onFinished, onBack, onDive, stageRef }: Props) {
   const { t, beat, loaded, start, finishBeat: carryOn, sayPrompt } = useScenePlayer(scene, VOICE, { onFinished })
   const [covered, setCovered] = useState(true)
 
@@ -86,6 +88,10 @@ export function Player({ scene, go, cover, onTurnDone, onFinished, onBack, stage
       {/* The only way out, faint in the corner (and Android back). */}
       <button type="button" onClick={onBack} className="absolute top-3 left-3 w-11 h-11 rounded-full text-2xl font-bold opacity-30 active:opacity-70" style={{ color: INK }} aria-label="Back">
         ←
+      </button>
+      {/* And the way further in: this sign's lecture, as faint. */}
+      <button type="button" onClick={onDive} className="absolute top-3 left-16 h-11 px-3 rounded-full font-bold opacity-30 active:opacity-70 whitespace-nowrap" style={{ color: INK, fontFamily: SANS, fontSize: 15 }} data-dive={scene.rank}>
+        ▶ Deep dive
       </button>
     </div>
   )

@@ -2,6 +2,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { rng } from '@renderblocks/scene/ease'
+import { DIVES, divesOf, embedUrl, minutesOf, watchUrl } from './data/dives'
 import { OWNER, RANKS, SHEET_NAMES, signsOf, STAGES } from './data/path'
 import { guess } from './engine/compile'
 import { EXPLAINERS } from './explainers'
@@ -161,5 +162,42 @@ describe('the voice', () => {
 
   it('narration never writes a sign out: it is spoken, so it uses the sign’s name', () => {
     for (const text of LINES) expect(/[=+−×÷·<>≤≥≠/()√%≈|±∞∝ΣΠπθ¬∧∨→⇒↔⇔∀∃∈∉{}∣…∅⊆⊂∪∩∖ℕℤℚℝℂ↦∘≡∴Δ′∫∂‖∇⟨⟩ᵀμσ~≅≃⊕⊗∮[\]]/.test(text), text).toBe(false)
+  })
+})
+
+describe('the deep dives', () => {
+  it('every rank has one, and no rank beyond the road', () => {
+    for (const r of RANKS) expect(divesOf(r.rank).length, `rank ${r.rank}`).toBeGreaterThan(0)
+    expect(Object.keys(DIVES).length).toBe(RANKS.length)
+  })
+
+  it('each names a video, who gives it, and a part that lies inside it', () => {
+    for (const r of RANKS) {
+      const list = divesOf(r.rank)
+      expect(new Set(list.map((d) => d.id)).size, `rank ${r.rank} lists a video twice`).toBe(list.length)
+      for (const d of list) {
+        const at = `rank ${r.rank}, ${d.id}`
+        expect(d.id, at).toMatch(/^[A-Za-z0-9_-]{11}$/)
+        expect(d.title.trim(), at).not.toBe('')
+        expect(d.by.trim(), at).not.toBe('')
+        expect(d.start ?? 0, at).toBeGreaterThanOrEqual(0)
+        expect(d.end ?? d.len, at).toBeLessThanOrEqual(d.len)
+        expect(d.start ?? 0, at).toBeLessThan(d.end ?? d.len)
+        expect(minutesOf(d), at).toBeGreaterThanOrEqual(1)
+      }
+    }
+  })
+
+  it('the player is asked for the part, without full screen, and told where it is shown', () => {
+    const d = divesOf(4)[0]
+    const u = new URL(embedUrl(d, 'https://localhost'))
+    expect(u.origin + u.pathname).toBe(`https://www.youtube-nocookie.com/embed/${d.id}`)
+    expect(u.searchParams.get('start')).toBe(String(d.start))
+    expect(u.searchParams.get('end')).toBe(String(d.end))
+    expect(u.searchParams.get('fs')).toBe('0')
+    expect(u.searchParams.get('origin')).toBe('https://localhost')
+    expect(watchUrl(d)).toBe(`https://www.youtube.com/watch?v=${d.id}&t=${d.start}s`)
+    // From the beginning: no start is sent.
+    expect(new URL(embedUrl(divesOf(1)[0], 'https://localhost')).searchParams.has('start')).toBe(false)
   })
 })

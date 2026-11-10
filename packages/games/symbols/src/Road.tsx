@@ -3,12 +3,14 @@
  * road, each a window showing its sign; each stage's stretch is its own
  * colour and ends at its Bench. A tap on a window picks it and draws thin
  * gold threads back to the signs it is built from; a second tap goes in.
+ * A picked window also offers its deep dive, a lecture for whoever wants more.
  * Ranks that have no explainer yet are there, faint, so the whole road can
  * be seen (and their threads followed), but they don't open.
  */
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { usePan } from '@renderblocks/scene/usePan'
 import { BenchCover, Cover } from './Cover'
+import { divesOf } from './data/dives'
 import { RANKS, STAGES, stageColour } from './data/path'
 import { GOLD, INK, PAPER, SANS, SERIF, SOFT } from './kit/look'
 
@@ -58,6 +60,9 @@ function layout(list: Stop[], vw: number, vh: number) {
   return { placed, width, roadY, titleW: Math.max(160, start - ww / 2 - 64) }
 }
 
+/** The height of the deep dive's button. */
+const DIVE_H = 36
+
 export interface RoadHandle {
   /** The window's rectangle on screen (after bringing it into view at once). */
   rectOf: (id: string) => DOMRect | null
@@ -77,10 +82,12 @@ interface Props {
   /** Hidden behind an explainer or the Bench: it stops listening. */
   covered: boolean
   onOpen: (stop: Stop) => void
+  /** The picked sign's deep dive was asked for. */
+  onDive: (rank: number) => void
   onExit: () => void
 }
 
-export const Road = forwardRef<RoadHandle, Props>(function Road({ built, benches, watched, stars, next, covered, onOpen, onExit }, ref) {
+export const Road = forwardRef<RoadHandle, Props>(function Road({ built, benches, watched, stars, next, covered, onOpen, onDive, onExit }, ref) {
   const [size, setSize] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }))
   useEffect(() => {
     const on = () => setSize({ w: window.innerWidth, h: window.innerHeight })
@@ -100,6 +107,8 @@ export const Road = forwardRef<RoadHandle, Props>(function Road({ built, benches
     viewW: size.w,
     disabled: covered,
     onTap: (target) => {
+      const dive = target.closest('[data-dive]')?.getAttribute('data-dive')
+      if (dive) return onDive(Number(dive))
       const hit = find(target.closest('[data-stop]')?.getAttribute('data-stop') ?? null)
       if (!hit) return setPicked(null)
       const s = hit.stop
@@ -236,6 +245,18 @@ export const Road = forwardRef<RoadHandle, Props>(function Road({ built, benches
               )
             })}
           </svg>
+        )}
+        {/* The picked sign's deep dive, beyond its name. */}
+        {sel?.stop.kind === 'rank' && divesOf(sel.stop.rank).length > 0 && (
+          <div
+            data-dive={sel.stop.rank}
+            role="button"
+            aria-label={`Deep dive: ${RANKS[sel.stop.rank - 1].name}`}
+            className="absolute z-[3] -translate-x-1/2 rounded-full px-4 whitespace-nowrap flex items-center"
+            style={{ left: sel.ax, top: sel.above ? Math.max(8, sel.y - 30 - DIVE_H - 6) : Math.min(size.h - DIVE_H - 8, sel.y + sel.h + 36), height: DIVE_H, background: PAPER, color: INK, border: `2px solid ${INK}`, fontFamily: SANS, fontWeight: 700, fontSize: 15, boxShadow: '0 2px 8px rgba(59,47,37,0.25)' }}
+          >
+            ▶ Deep dive
+          </div>
         )}
       </div>
       <button type="button" onClick={onExit} onPointerDown={(e) => e.stopPropagation()} className="absolute top-3 left-3 w-11 h-11 rounded-full text-2xl font-bold opacity-40 active:opacity-80" style={{ color: INK }} aria-label="Home">
