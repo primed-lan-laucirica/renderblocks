@@ -45,6 +45,9 @@ const fileFor = (text) => {
 const SPOKEN = [
   [/\bSine\b/g, 'Sign'],
   [/\bsine\b/g, 'sign'],
+  // A lone small y or t is swallowed (heard as "he", "you", "to"); the capital is said in full.
+  [/\by\b/g, 'Y'],
+  [/\bt\b/g, 'T'],
 ]
 const spoken = (text) => SPOKEN.reduce((t, [from, to]) => t.replace(from, to), text)
 const duration = (f) => Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]).toString().trim())

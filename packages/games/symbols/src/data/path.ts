@@ -36,7 +36,8 @@ export const STAGES: StageInfo[] = [...new Set(RANKS.map((r) => r.stage))].map((
  * few signs in words ("(fraction bar)"), as a pair ("( )") or round a
  * letter that is not theirs ("xⁿ" is the raised number, "pow"; "xᵢ" the
  * label set low, "sub"; "f(x)" the function's name, "fn"; any letter for a
- * number is "var"; "{ x | … }" is the braces and what goes between them);
+ * number is "var"; "{ x | … }" is the braces and what goes between them;
+ * "dy/dx" is the upright d, "f′" the prime and "ẋ" the dot over a letter);
  * SHEET_NAMES says which of these each stands for, and a test checks the
  * two agree.
  */
@@ -113,6 +114,13 @@ export const OWNER: Record<string, number> = {
   '≡': 34,
   mod: 34,
   '∴': 35,
+  Δ: 36,
+  lim: 37,
+  d: 38,
+  '′': 38,
+  dot: 38,
+  '∫': 39,
+  '∂': 40,
 }
 
 export const SHEET_NAMES: Record<string, string[]> = {
@@ -133,6 +141,14 @@ export const SHEET_NAMES: Record<string, string[]> = {
   'f : A → B': [':'],
   'f⁻¹': [],
   '≡': ['≡', 'mod'],
+  // The arrow under "lim" is rank 24's.
+  'x → a': [],
+  // The upright d of a small step, the prime after a function's name, and the dot over a letter.
+  'dy/dx': ['d'],
+  'f′': ['′'],
+  'ẋ': ['dot'],
+  // The same sign with its two ends written on.
+  '∫ₐᵇ': [],
 }
 
 /** The signs of one rank, as the equation line names them. */

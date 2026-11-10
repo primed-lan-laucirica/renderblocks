@@ -18,8 +18,12 @@ import { GOLD_EDGE, INK, SANS, SERIF, SOFT } from './look'
  * that are one number's own name ("π", "e") or an angle's ("θ"), a
  * function's words ("sin", "log") and its name (the f of f(x)), a label
  * set low (the i of xᵢ), and the big Σ and Π with where they start below
- * and where they stop above. `k` names a token, so it can move to another
- * place on the next line (5 = V becomes V = 5).
+ * and where they stop above. From rank 36 on there are the signs of
+ * change: a small step in a letter (the dx of dy/dx, or ∂x with a rounded
+ * d), a letter with a dot over it, "lim" with what approaches what set
+ * under it, and the tall ∫ with its ends set at its foot and its head. `k`
+ * names a token, so it can move to another place on the next line (5 = V
+ * becomes V = 5).
  */
 export type Tok =
   | string
@@ -31,15 +35,17 @@ export type Tok =
   | { root: Part; k?: string }
   | { sub: Part; k?: string }
   | { fn: string; k?: string }
-  | { big: 'Σ' | 'Π'; from?: Part; to?: Part; k?: string }
+  | { big: 'Σ' | 'Π' | '∫' | 'lim'; from?: Part; to?: Part; k?: string }
+  | { d: Part; round?: boolean; k?: string }
+  | { dot: Part; k?: string }
 
 /** What a token holds inside it, itself a little line: one token, or several. */
 export type Part = string | Tok[]
 
 export interface Item {
   k: string
-  kind: 'num' | 'sign' | 'unknown' | 'gap' | 'tally' | 'roman' | 'frac' | 'sup' | 'root' | 'letter' | 'word' | 'sub' | 'fn' | 'big'
-  /** What it shows (a sign's name on the line: "=", "frac", "pow", "var", "sub", "fn"). */
+  kind: 'num' | 'sign' | 'unknown' | 'gap' | 'tally' | 'roman' | 'frac' | 'sup' | 'root' | 'letter' | 'word' | 'sub' | 'fn' | 'big' | 'diff' | 'dot'
+  /** What it shows (a sign's name on the line: "=", "frac", "pow", "var", "sub", "fn", "d", "dot"). */
   g: string
   /** The letter a variable or a function is written with. */
   ch?: string
@@ -117,6 +123,8 @@ const WIDTH: Record<string, number> = {
   ':=': 0.96,
   '≡': 0.7,
   '∴': 0.66,
+  Δ: 0.68,
+  '′': 0.12,
 }
 export const isSign = (g: string) => g in WIDTH
 
@@ -154,7 +162,8 @@ export function items(toks: Tok[]): Item[] {
       else if (LETTER.test(g)) it = { kind: 'letter', g: 'var', ch: g }
       else if (NAMED.includes(g)) it = { kind: 'letter', g, ch: g }
       else if (g in WORDS) it = { kind: 'word', g }
-      else if (g === 'Σ' || g === 'Π') it = { kind: 'big', g, parts: [[], []] }
+      else if (g === 'Σ' || g === 'Π' || g === '∫' || g === 'lim') it = { kind: 'big', g, parts: [[], []] }
+      else if (g === '∂') it = { kind: 'diff', g, parts: [[]] }
       else throw new Error(`No such token: "${g}"`)
     } else if ('tally' in t) {
       it = { kind: 'tally', g: `tally${t.tally}`, n: t.tally }
@@ -178,6 +187,12 @@ export function items(toks: Tok[]): Item[] {
       k = t.k
     } else if ('fn' in t) {
       it = { kind: 'fn', g: 'fn', ch: t.fn }
+      k = t.k
+    } else if ('d' in t) {
+      it = { kind: 'diff', g: t.round ? '∂' : 'd', parts: [t.d === '' ? [] : within(t.d)] }
+      k = t.k
+    } else if ('dot' in t) {
+      it = { kind: 'dot', g: 'dot', parts: [within(t.dot)] }
       k = t.k
     } else {
       it = { kind: 'big', g: t.big, parts: [t.from === undefined ? [] : within(t.from), t.to === undefined ? [] : within(t.to)] }
@@ -211,6 +226,12 @@ const SUP = 0.56
 const SUB = 0.5
 /** The big Σ and Π: how much taller than the line they stand, their width, and their limits' size and distance. */
 const BIG = { s: 1.2, w: 0.92, lim: 0.38, off: 0.88 }
+/** The word "lim": its width, and the size and depth of what is set under it. */
+const LIM = { w: 1.36, under: 0.42, off: 0.64 }
+/** The tall ∫: its own width, its ends' size, and how far up and down they sit. */
+const INT = { w: 0.46, lim: 0.38, off: 0.56 }
+/** The d of dx (upright, so it is not taken for a number called d) and the rounded ∂: their widths, and the room before the letter. */
+const DIFF = { d: 0.56, round: 0.52, gap: 0.03 }
 /** The root's own strokes before what it reaches, and the line's run past it. */
 const ROOT = { lead: 0.46, tail: 0.08 }
 
@@ -226,6 +247,12 @@ function space(a: Item, b: Item) {
   if (b.kind === 'sup' || b.kind === 'sub' || b.g === '!' || a.g === '.' || b.g === '.' || b.g === ',') return 0.03
   if (a.g === ',') return 0.24
   if (BEFORE.includes(a.g)) return 0.1
+  // Delta stands against its letter (Δx is one thing); a prime against its function, and the bracket against the prime.
+  if (a.g === 'Δ') return 0.04
+  if (b.g === '′') return a.kind === 'fn' && a.ch === 'f' ? 0.13 : 0.02
+  if (a.g === '′' && b.g === '(') return 0.06
+  // The dx that closes an integral stands a little off what is before it.
+  if (b.kind === 'diff' && (a.kind !== 'sign' || closes(a))) return 0.16
   if (b.scope) return 0.22
   // Empty set brackets stand apart, so that they read as two.
   if (a.g === '{' && b.g === '}') return 0.2
@@ -233,7 +260,7 @@ function space(a: Item, b: Item) {
   // An italic f leans over its bracket, so it stands a little further off.
   if (a.kind === 'fn' && b.g === '(') return a.ch === 'f' ? 0.1 : 0.03
   if (a.kind === 'word') return b.g === '(' ? 0.05 : 0.14
-  if (a.kind === 'big') return 0.12
+  if (a.kind === 'big') return a.g === 'lim' ? 0.2 : 0.12
   // A bar is a plain stroke, so it stands a little further off than a bracket (a minus next to it must not run into it).
   if ((a.g === '|' && opens(a)) || (b.g === '|' && closes(b))) return 0.13
   if (opens(a) || closes(b) || a.unary || b.g === '%') return 0.05
@@ -277,7 +304,13 @@ export function widthOf(it: Item): number {
     case 'sub':
       return span(it.parts![0]) * SUB + 0.02
     case 'big':
+      if (it.g === 'lim') return Math.max(LIM.w, span(it.parts![0]) * LIM.under)
+      if (it.g === '∫') return INT.w + (it.parts![0].length || it.parts![1].length ? Math.max(span(it.parts![0]), span(it.parts![1])) * INT.lim + 0.06 : 0)
       return Math.max(BIG.w, span(it.parts![0]) * BIG.lim, span(it.parts![1]) * BIG.lim)
+    case 'diff':
+      return (it.g === 'd' ? DIFF.d : DIFF.round) + (it.parts![0].length ? DIFF.gap + span(it.parts![0]) : 0)
+    case 'dot':
+      return span(it.parts![0])
   }
 }
 
@@ -625,6 +658,21 @@ export function Sign({ g, size, colour = INK }: { g: string; size: number; colou
         </>
       )
       break
+    case 'Δ':
+      d = <polygon points={`${-0.25 * S},${0.3 * S} 0,${-0.32 * S} ${0.25 * S},${0.3 * S}`} {...st} />
+      break
+    case '′':
+      d = L(0.035, -0.44, -0.035, -0.2)
+      break
+    case '∂':
+      // A rounded d: the bowl, and a stem that curls back over it.
+      d = (
+        <>
+          <ellipse cx={-0.02 * S} cy={0.1 * S} rx={0.19 * S} ry={0.21 * S} {...st} strokeWidth={S * 0.105} />
+          <path d={`M ${-0.15 * S} ${-0.36 * S} C ${0.06 * S} ${-0.46 * S} ${0.2 * S} ${-0.24 * S} ${0.17 * S} ${0.1 * S}`} {...st} strokeWidth={S * 0.105} />
+        </>
+      )
+      break
     default:
       // A sign with no drawing yet (the later stages): type.
       d = (
@@ -645,6 +693,7 @@ function Big({ g, size, colour }: { g: string; size: number; colour: string }) {
   const S = size * BIG.s
   const st = { stroke: colour, strokeWidth: size * 0.085, strokeLinecap: 'round', strokeLinejoin: 'round', fill: 'none' } as const
   const pts = (list: [number, number][]) => list.map(([x, y]) => `${x * S},${y * S}`).join(' ')
+  if (g === '∫') return <path d={`M ${0.19 * size} ${-0.56 * size} C ${0.16 * size} ${-0.7 * size} ${0.04 * size} ${-0.68 * size} ${0.03 * size} ${-0.46 * size} L ${-0.03 * size} ${0.46 * size} C ${-0.04 * size} ${0.68 * size} ${-0.16 * size} ${0.7 * size} ${-0.19 * size} ${0.56 * size}`} {...st} strokeWidth={size * 0.1} />
   if (g === 'Σ')
     return (
       <polyline
@@ -838,7 +887,70 @@ export function Token({ it, x, y, size, o = 1, s = 1, colour = INK }: { it: Item
         </g>
       )
       break
+    case 'diff':
+    case 'dot': {
+      const w = widthOf(it)
+      const own = it.g === 'd' ? DIFF.d : DIFF.round
+      const inner = span(it.parts![0])
+      d =
+        it.kind === 'dot' ? (
+          <>
+            <Row list={it.parts![0]} size={S} colour={colour} />
+            <g data-sign="dot">
+              <circle cx={0.04 * S} cy={-0.43 * S} r={0.062 * S} fill={colour} />
+            </g>
+          </>
+        ) : (
+          <>
+            <g transform={`translate(${(-w / 2 + own / 2) * S} 0)`}>
+              {it.g === 'd' ? (
+                <text data-sign="d" fontFamily={SERIF} fontWeight={700} fontSize={S} fill={colour} textAnchor="middle" dominantBaseline="central">
+                  d
+                </text>
+              ) : (
+                <Sign g="∂" size={S} colour={colour} />
+              )}
+            </g>
+            <g transform={`translate(${(w / 2 - inner / 2) * S} 0)`}>
+              <Row list={it.parts![0]} size={S} colour={colour} />
+            </g>
+          </>
+        )
+      break
+    }
     case 'big':
+      if (it.g === 'lim') {
+        d = (
+          <>
+            <text data-sign="lim" {...type(S, colour)} textLength={LIM.w * S} lengthAdjust="spacingAndGlyphs">
+              lim
+            </text>
+            {/* What approaches what, under it. */}
+            <g transform={`translate(0 ${LIM.off * S})`}>
+              <Row list={it.parts![0]} size={S * LIM.under} colour={colour} />
+            </g>
+          </>
+        )
+        break
+      }
+      if (it.g === '∫') {
+        const left = -widthOf(it) / 2
+        d = (
+          <>
+            <g data-sign="∫" transform={`translate(${(left + INT.w / 2) * S} 0)`}>
+              <Big g="∫" size={S} colour={colour} />
+            </g>
+            {/* Where it starts, at its foot; where it stops, at its head. */}
+            <g transform={`translate(${(left + INT.w - 0.1 + (span(it.parts![0]) * INT.lim) / 2) * S} ${INT.off * S})`}>
+              <Row list={it.parts![0]} size={S * INT.lim} colour={colour} />
+            </g>
+            <g transform={`translate(${(left + INT.w + 0.02 + (span(it.parts![1]) * INT.lim) / 2) * S} ${-INT.off * S})`}>
+              <Row list={it.parts![1]} size={S * INT.lim} colour={colour} />
+            </g>
+          </>
+        )
+        break
+      }
       d = (
         <>
           <g data-sign={it.g}>

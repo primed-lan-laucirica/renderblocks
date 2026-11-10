@@ -2643,6 +2643,374 @@
     "file": "how-do-we-write-the-change-in-x-def983.mp3",
     "dur": 1.87
   },
+  "X was twelve. Now x is fifteen. How much did it change?": {
+    "file": "x-was-twelve-now-x-is-fifteen-how-much-d-dbb225.mp3",
+    "dur": 4.58
+  },
+  "Three. Fifteen minus twelve is three.": {
+    "file": "three-fifteen-minus-twelve-is-three-a44520.mp3",
+    "dur": 2.3
+  },
+  "How far did it move? How much did it grow? Each one asks for a change. We need a short way to write: the change in x.": {
+    "file": "how-far-did-it-move-how-much-did-it-grow-a7c9a1.mp3",
+    "dur": 8.86
+  },
+  "This sign is delta. Put before x, it says: the change in x.": {
+    "file": "this-sign-is-delta-put-before-x-it-says--49b662.mp3",
+    "dur": 4.03
+  },
+  "We read it: delta x equals three.": {
+    "file": "we-read-it-delta-x-equals-three-a488e2.mp3",
+    "dur": 2.54
+  },
+  "Delta is the Greek capital D, for difference. A difference is what subtracting gives.": {
+    "file": "delta-is-the-greek-capital-d-for-differe-5cc5f9.mp3",
+    "dur": 5.35
+  },
+  "Call the old number x one, and the new number x two. Delta x equals x two minus x one. Always the new one minus the old one.": {
+    "file": "call-the-old-number-x-one-and-the-new-nu-d26009.mp3",
+    "dur": 9.67
+  },
+  "Delta x is one thing: one number. It does not mean delta times x.": {
+    "file": "delta-x-is-one-thing-one-number-it-does--328bbf.mp3",
+    "dur": 5.06
+  },
+  "Now x goes from twelve down to nine. Nine minus twelve is minus three. When x goes down, delta x is below zero.": {
+    "file": "now-x-goes-from-twelve-down-to-nine-nine-1ce0c6.mp3",
+    "dur": 8.42
+  },
+  "Delta is used wherever something changes. In the morning it was eight degrees. At noon it was eighteen. Delta T equals ten.": {
+    "file": "delta-is-used-wherever-something-changes-d4e94c.mp3",
+    "dur": 9.5
+  },
+  "Two changes can be compared. Along this line, x goes from one to four: delta x is three.": {
+    "file": "two-changes-can-be-compared-along-this-l-305e2e.mp3",
+    "dur": 7.01
+  },
+  "And y goes from two to eight: delta y is six.": {
+    "file": "and-y-goes-from-two-to-eight-delta-y-is--1a4571.mp3",
+    "dur": 3.41
+  },
+  "Delta y over delta x is two. For every step across, the line climbs two. That number is the slope.": {
+    "file": "delta-y-over-delta-x-is-two-for-every-st-88d40e.mp3",
+    "dur": 8.02
+  },
+  "Speed is the same idea. Delta x, how far, over delta t, how long. Sixty steps in ten seconds is six steps each second.": {
+    "file": "speed-is-the-same-idea-delta-x-how-far-o-b632b3.mp3",
+    "dur": 9.12
+  },
+  "X one is four, and x two is ten. Which one is true?": {
+    "file": "x-one-is-four-and-x-two-is-ten-which-one-ad2d0d.mp3",
+    "dur": 3.82
+  },
+  "X was three. Add beads until delta x equals four.": {
+    "file": "x-was-three-add-beads-until-delta-x-equa-619ff3.mp3",
+    "dur": 3.65
+  },
+  "Delta y equals five.": {
+    "file": "delta-y-equals-five-b7f750.mp3",
+    "dur": 1.58
+  },
+  "On a curve, the slope keeps changing. Delta y over delta x gives the slope between two points.": {
+    "file": "on-a-curve-the-slope-keeps-changing-delt-e974af.mp3",
+    "dur": 6.74
+  },
+  "Bring the points closer, and closer. What does the slope get close to?": {
+    "file": "bring-the-points-closer-and-closer-what--02bd5e.mp3",
+    "dur": 5.02
+  },
+  "One. A half. A third. A quarter. This is one over n, and n keeps growing. Does one over n ever reach zero?": {
+    "file": "one-a-half-a-third-a-quarter-this-is-one-9e948f.mp3",
+    "dur": 9.74
+  },
+  "No. One over n is always more than zero. But it gets as close to zero as you like.": {
+    "file": "no-one-over-n-is-always-more-than-zero-b-e4df9d.mp3",
+    "dur": 5.62
+  },
+  "It heads for zero, and never lands on it. We need a sign for the number it is heading to.": {
+    "file": "it-heads-for-zero-and-never-lands-on-it--024ebc.mp3",
+    "dur": 5.59
+  },
+  "This sign says: limit. It is the word limit, cut short.": {
+    "file": "this-sign-says-limit-it-is-the-word-limi-4009a1.mp3",
+    "dur": 4.42
+  },
+  "Under it, we write what is moving, and where to. We read it: the limit, as n goes to infinity, of one over n, equals zero.": {
+    "file": "under-it-we-write-what-is-moving-and-whe-0e534b.mp3",
+    "dur": 9.94
+  },
+  "The arrow says: goes to, or approaches. X approaches two: x gets as close to two as you like.": {
+    "file": "the-arrow-says-goes-to-or-approaches-x-a-654121.mp3",
+    "dur": 7.34
+  },
+  "Here is a function: f of x equals two x. Put in numbers closer and closer to two. Out come numbers closer and closer to four.": {
+    "file": "here-is-a-function-f-of-x-equals-two-x-p-6d8c8f.mp3",
+    "dur": 9.65
+  },
+  "So we write: the limit, as x approaches two, of f of x, equals four.": {
+    "file": "so-we-write-the-limit-as-x-approaches-tw-3ac120.mp3",
+    "dur": 6.07
+  },
+  "A limit is about getting close, not arriving.": {
+    "file": "a-limit-is-about-getting-close-not-arriv-0aa05c.mp3",
+    "dur": 2.74
+  },
+  "Limits are used for sums that never end. Half a square, then half of what is left, and so on: the total gets closer and closer to one whole square. The limit of the sum is one.": {
+    "file": "limits-are-used-for-sums-that-never-end--35bd94.mp3",
+    "dur": 12.67
+  },
+  "Limits also give the slope of a curve at one point. Bring two points together, so that delta x goes to zero. The slope goes: three, two and a half, two point one.": {
+    "file": "limits-also-give-the-slope-of-a-curve-at-4420af.mp3",
+    "dur": 10.66
+  },
+  "We cannot put zero itself in: zero over zero says nothing. But the limit says where the slope is heading: two.": {
+    "file": "we-cannot-put-zero-itself-in-zero-over-z-941997.mp3",
+    "dur": 7.82
+  },
+  "X approaches two. Which sign goes here?": {
+    "file": "x-approaches-two-which-sign-goes-here-20c7d9.mp3",
+    "dur": 2.42
+  },
+  "F of x equals two x, and x approaches three. Which one is true?": {
+    "file": "f-of-x-equals-two-x-and-x-approaches-thr-1a5a5b.mp3",
+    "dur": 5.66
+  },
+  "The limit, as x approaches five, of f of x, equals ten.": {
+    "file": "the-limit-as-x-approaches-five-of-f-of-x-38729a.mp3",
+    "dur": 3.58
+  },
+  "The slope at one point is the limit, as delta x goes to zero, of delta y over delta x. That is a lot to write. Is there a shorter way?": {
+    "file": "the-slope-at-one-point-is-the-limit-as-d-7b8f77.mp3",
+    "dur": 10.42
+  },
+  "On a curve, the slope keeps changing. Where is this curve steeper: at A, or at B?": {
+    "file": "on-a-curve-the-slope-keeps-changing-wher-1c54ee.mp3",
+    "dur": 6.38
+  },
+  "At B. The line that just touches the curve there is steeper.": {
+    "file": "at-b-the-line-that-just-touches-the-curv-96967b.mp3",
+    "dur": 3.6
+  },
+  "The slope at one point is a limit: the limit, as delta x goes to zero, of delta y over delta x. It needs a shorter sign.": {
+    "file": "the-slope-at-one-point-is-a-limit-the-li-331c51.mp3",
+    "dur": 8.76
+  },
+  "This is the shorter sign. We read it: d y, d x.": {
+    "file": "this-is-the-shorter-sign-we-read-it-d-y--aafd9e.mp3",
+    "dur": 4.99
+  },
+  "It means that same limit. Delta, the capital D, has shrunk to a small d: a difference of almost nothing.": {
+    "file": "it-means-that-same-limit-delta-the-capit-a13d7d.mp3",
+    "dur": 7.78
+  },
+  "It looks like a fraction, but it is one sign: the slope at one point. Its name is the derivative.": {
+    "file": "it-looks-like-a-fraction-but-it-is-one-s-a3a972.mp3",
+    "dur": 7.15
+  },
+  "For y equals x squared, the slope is always two x. So d y, d x equals two x.": {
+    "file": "for-y-equals-x-squared-the-slope-is-alwa-f5fb52.mp3",
+    "dur": 6.19
+  },
+  "At x equals one, the slope is two. At x equals two, the slope is four.": {
+    "file": "at-x-equals-one-the-slope-is-two-at-x-eq-bb1b54.mp3",
+    "dur": 6.14
+  },
+  "When the function has a name, we can write: f prime of x. The small stroke is read: prime.": {
+    "file": "when-the-function-has-a-name-we-can-writ-853be1.mp3",
+    "dur": 7.06
+  },
+  "When something changes with time, a dot goes over the letter. X dot means d x, d t.": {
+    "file": "when-something-changes-with-time-a-dot-g-be08c3.mp3",
+    "dur": 6.29
+  },
+  "Three ways of writing, one meaning: how fast one thing changes, as another changes.": {
+    "file": "three-ways-of-writing-one-meaning-how-fa-4e5db4.mp3",
+    "dur": 6.05
+  },
+  "The derivative gives speed. A cart has rolled t squared metres after t seconds. Its speed is x dot: two t. After three seconds, six metres each second.": {
+    "file": "the-derivative-gives-speed-a-cart-has-ro-ce26db.mp3",
+    "dur": 11.95
+  },
+  "It finds the top of a hill. At the very top, the curve is flat: d y, d x equals zero.": {
+    "file": "it-finds-the-top-of-a-hill-at-the-very-t-b8f722.mp3",
+    "dur": 6.43
+  },
+  "And it measures growth. D h, d t is how fast the height of a plant changes.": {
+    "file": "and-it-measures-growth-d-h-d-t-is-how-fa-3142b9.mp3",
+    "dur": 5.93
+  },
+  "D y, d x equals two x. At x equals three, which one is true?": {
+    "file": "d-y-d-x-equals-two-x-at-x-equals-three-w-09f0ed.mp3",
+    "dur": 5.3
+  },
+  "Add beads until the line just touches the curve.": {
+    "file": "add-beads-until-the-line-just-touches-th-45a2ba.mp3",
+    "dur": 2.64
+  },
+  "F prime of two equals four.": {
+    "file": "f-prime-of-two-equals-four-b14ebb.mp3",
+    "dur": 1.68
+  },
+  "Now turn it round. This curve is our speed at every moment.": {
+    "file": "now-turn-it-round-this-curve-is-our-spee-4cc0bc.mp3",
+    "dur": 4.1
+  },
+  "How far did we go?": {
+    "file": "how-far-did-we-go-842831.mp3",
+    "dur": 1.18
+  },
+  "How much room is under this curve? Strips can measure it. Will thinner strips fit better, or worse?": {
+    "file": "how-much-room-is-under-this-curve-strips-a4238c.mp3",
+    "dur": 6.26
+  },
+  "Better. Thinner strips leave less out.": {
+    "file": "better-thinner-strips-leave-less-out-dfac43.mp3",
+    "dur": 2.02
+  },
+  "Each strip is f of x tall, and delta x wide. Sigma adds them all.": {
+    "file": "each-strip-is-f-of-x-tall-and-delta-x-wi-60e4b8.mp3",
+    "dur": 5.09
+  },
+  "Thinner and thinner: the limit of that sum is the area, exactly. But it is a lot to write.": {
+    "file": "thinner-and-thinner-the-limit-of-that-su-fcc6dc.mp3",
+    "dur": 7.37
+  },
+  "This sign is the integral. It stands for that whole limit of a sum.": {
+    "file": "this-sign-is-the-integral-it-stands-for--ca0af8.mp3",
+    "dur": 4.34
+  },
+  "Sigma is the Greek S, for sum. The integral sign is an S too, stretched tall.": {
+    "file": "sigma-is-the-greek-s-for-sum-the-integra-2548ff.mp3",
+    "dur": 5.78
+  },
+  "And d x is the strip's width: delta x, shrunk to almost nothing.": {
+    "file": "and-d-x-is-the-strip-s-width-delta-x-shr-ec0198.mp3",
+    "dur": 4.34
+  },
+  "The start, a, sits at its foot. The end, b, at its top.": {
+    "file": "the-start-a-sits-at-its-foot-the-end-b-a-b96315.mp3",
+    "dur": 4.99
+  },
+  "We read it: the integral from a to b of f of x, d x.": {
+    "file": "we-read-it-the-integral-from-a-to-b-of-f-ea9da9.mp3",
+    "dur": 4.75
+  },
+  "Under the line y equals x, from zero to two, is half a two by two square. So the integral from zero to two of x, d x, equals two.": {
+    "file": "under-the-line-y-equals-x-from-zero-to-t-a8f3cb.mp3",
+    "dur": 10.32
+  },
+  "Strips agree: four make one and a half, eight make one and three quarters. The limit is two.": {
+    "file": "strips-agree-four-make-one-and-a-half-ei-577c08.mp3",
+    "dur": 5.88
+  },
+  "When the line shows speed, the area under it is how far you went. Two a second, for three seconds: six steps.": {
+    "file": "when-the-line-shows-speed-the-area-under-845999.mp3",
+    "dur": 8.5
+  },
+  "The integral also undoes the derivative. The slope of x squared is two x.": {
+    "file": "the-integral-also-undoes-the-derivative--c86b2f.mp3",
+    "dur": 5.93
+  },
+  "So the integral of two x, d x, is x squared. No ends: the answer is a function.": {
+    "file": "so-the-integral-of-two-x-d-x-is-x-square-01bec0.mp3",
+    "dur": 5.83
+  },
+  "Start at one. Stop at four. Which one says that?": {
+    "file": "start-at-one-stop-at-four-which-one-says-174304.mp3",
+    "dur": 2.78
+  },
+  "Each strip is one wide and two tall. Add strips until the integral equals eight.": {
+    "file": "each-strip-is-one-wide-and-two-tall-add--42ef11.mp3",
+    "dur": 4.61
+  },
+  "The integral from one to four of f of x, d x, equals nine.": {
+    "file": "the-integral-from-one-to-four-of-f-of-x--34c55b.mp3",
+    "dur": 4.01
+  },
+  "On this slope, the height depends on two numbers: how far east, and how far north.": {
+    "file": "on-this-slope-the-height-depends-on-two--534efd.mp3",
+    "dur": 4.85
+  },
+  "How steep is it? That depends on which way you walk. How do we write that?": {
+    "file": "how-steep-is-it-that-depends-on-which-wa-4d5d84.mp3",
+    "dur": 4.8
+  },
+  "A block of beads, x wide and y tall, holds x times y beads. Make x one bigger. How many beads come on?": {
+    "file": "a-block-of-beads-x-wide-and-y-tall-holds-9c9fda.mp3",
+    "dur": 9.43
+  },
+  "Three. One new column, as tall as y.": {
+    "file": "three-one-new-column-as-tall-as-y-46a04f.mp3",
+    "dur": 2.47
+  },
+  "Make y one bigger instead, and four come on: one new row, as wide as x.": {
+    "file": "make-y-one-bigger-instead-and-four-come--f17318.mp3",
+    "dur": 5.5
+  },
+  "With one letter, the slope was d f, d x. Now it depends on which letter moves. We need a sign that says: move this one, hold the others still.": {
+    "file": "with-one-letter-the-slope-was-d-f-d-x-no-97ed8e.mp3",
+    "dur": 12
+  },
+  "This is a partial derivative. We read it: partial f, partial x.": {
+    "file": "this-is-a-partial-derivative-we-read-it--5fe62c.mp3",
+    "dur": 5.11
+  },
+  "Its sign is a d made round. Partial: one part of the change. X moves; every other letter stays still.": {
+    "file": "its-sign-is-a-d-made-round-partial-one-p-f63ef1.mp3",
+    "dur": 7.49
+  },
+  "In the block, each step in x brings on one column, y tall. So partial f, partial x, equals y.": {
+    "file": "in-the-block-each-step-in-x-brings-on-on-4bc1a3.mp3",
+    "dur": 7.51
+  },
+  "Each step in y brings on one row, x wide. So partial f, partial y, equals x.": {
+    "file": "each-step-in-y-brings-on-one-row-x-wide--c73b49.mp3",
+    "dur": 6.29
+  },
+  "One f, two answers. The letter underneath says which one moved.": {
+    "file": "one-f-two-answers-the-letter-underneath--861fcc.mp3",
+    "dur": 4.46
+  },
+  "On this slope, the height h depends on two numbers: how far east, x, and how far north, y.": {
+    "file": "on-this-slope-the-height-h-depends-on-tw-d96da6.mp3",
+    "dur": 7.25
+  },
+  "Walk east, and you climb one for every two steps. Partial h, partial x, is one half.": {
+    "file": "walk-east-and-you-climb-one-for-every-tw-07bb18.mp3",
+    "dur": 6.31
+  },
+  "Walk north, and you stay level. Partial h, partial y, is zero.": {
+    "file": "walk-north-and-you-stay-level-partial-h--bc8b19.mp3",
+    "dur": 4.68
+  },
+  "Temperature, T, depends on the place, x, and the time, t. Partial T, partial t, says how fast one place warms up.": {
+    "file": "temperature-t-depends-on-the-place-x-and-0695a0.mp3",
+    "dur": 9.74
+  },
+  "And partial T, partial x, says how it changes from place to place, at one moment.": {
+    "file": "and-partial-t-partial-x-says-how-it-chan-69e8a5.mp3",
+    "dur": 6.31
+  },
+  "F is x times y. Which one is true?": {
+    "file": "f-is-x-times-y-which-one-is-true-82c8ad.mp3",
+    "dur": 2.69
+  },
+  "This block is three wide. Add rows until partial f, partial x, equals four.": {
+    "file": "this-block-is-three-wide-add-rows-until--bc3b0d.mp3",
+    "dur": 5.59
+  },
+  "Partial f, partial y, equals two.": {
+    "file": "partial-f-partial-y-equals-two-c3cbc8.mp3",
+    "dur": 2.4
+  },
+  "On a slope, one way is the steepest of all. To point that way takes more than one number.": {
+    "file": "on-a-slope-one-way-is-the-steepest-of-al-311a85.mp3",
+    "dur": 5.14
+  },
+  "Can one sign carry both a size and a direction?": {
+    "file": "can-one-sign-carry-both-a-size-and-a-dir-4cc3a9.mp3",
+    "dur": 2.95
+  },
   "Write what you see.": {
     "file": "write-what-you-see-c8d289.mp3",
     "dur": 1.03
