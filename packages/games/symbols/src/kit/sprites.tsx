@@ -48,7 +48,7 @@ export interface Sprite {
 }
 
 /** What a sprite shows, apart from its numbers: two states that differ here cross-fade. */
-export const sig = (s: Sprite) => `${s.type}|${s.d.it ? `${s.d.it.kind}:${s.d.it.g}:${s.d.it.top ?? ''}/${s.d.it.bot ?? ''}` : ''}|${s.d.text ?? ''}|${s.d.font ?? ''}|${s.d.anchor ?? ''}|${s.d.colour ?? ''}|${s.d.id ?? ''}`
+export const sig = (s: Sprite) => `${s.type}|${s.d.it?.id ?? ''}|${s.d.text ?? ''}|${s.d.font ?? ''}|${s.d.anchor ?? ''}|${s.d.colour ?? ''}|${s.d.id ?? ''}`
 
 const REST: Nums = { o: 1, s: 1, ghost: 0, w: 1, gold: 0, tilt: 0 }
 
@@ -354,7 +354,9 @@ function Bead({ n, colour = 'gold' }: { n: Nums; colour?: BeadColour }) {
   const size = B * (n.s ?? 1)
   const [fill, edge] = BEAD[colour]
   const ghost = n.ghost ?? 0
-  const stroke = Math.max(1.2, size * 0.055)
+  // A thin slice of a bead (a tenth) keeps a thin edge, and as a ghost a whole, paler one (dashes would only clutter it). A very big bead's edge stops growing.
+  const thin = (n.w ?? 1) < 0.5
+  const stroke = Math.min(9, Math.max(1.2, Math.min(size, size * (n.w ?? 1) * 3) * 0.055))
   // Half a bead (`half` -1 is the left half, 1 the right): round outside, cut straight inside. (x, y) is the half's own middle.
   if (n.half) {
     const d = Math.sign(n.half)
@@ -373,7 +375,7 @@ function Bead({ n, colour = 'gold' }: { n: Nums; colour?: BeadColour }) {
   const w = size * (n.w ?? 1)
   return (
     <g opacity={n.o ?? 1} data-bead="">
-      <rect x={n.x - w / 2} y={n.y - size / 2} width={w} height={size} rx={size * 0.2} fill={fill} fillOpacity={1 - ghost * 0.92} stroke={edge} strokeWidth={stroke} strokeDasharray={ghost > 0.5 ? `${size * 0.16} ${size * 0.12}` : undefined} />
+      <rect x={n.x - w / 2} y={n.y - size / 2} width={w} height={size} rx={Math.min(size * 0.2, w * 0.45)} fill={fill} fillOpacity={1 - ghost * 0.92} stroke={edge} strokeWidth={stroke} strokeOpacity={thin ? 1 - ghost * 0.5 : 1} strokeDasharray={ghost > 0.5 && !thin ? `${size * 0.16} ${size * 0.12}` : undefined} />
       {ghost < 0.5 && <rect x={n.x - w / 2 + size * 0.14} y={n.y - size / 2 + size * 0.13} width={Math.max(0, w - size * 0.5)} height={size * 0.16} rx={size * 0.08} fill="#fff" opacity={0.35 * (1 - ghost)} />}
     </g>
   )

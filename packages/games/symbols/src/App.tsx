@@ -12,6 +12,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { GameProps } from '@renderblocks/kernel'
 import { ZOOM_MS, zoomIn, zoomOut } from '@renderblocks/scene/zoom'
 import { Bench } from './bench/Bench'
+import { READS } from './bench/parse'
 import { Cover } from './Cover'
 import { signsOf, STAGES } from './data/path'
 import { record } from './evidence'
@@ -21,9 +22,10 @@ import { Player } from './Player'
 import { load, save, type Progress } from './progress'
 import { Road, stops, type RoadHandle, type Stop } from './Road'
 
-/** Ranks that have an explainer, and stages that have a Bench (a stage gets its Bench once it has explainers). */
+/** Ranks that have an explainer, and stages that have a Bench (a stage gets its Bench once it has an explainer whose signs the Bench can read). */
 const BUILT = new Set(EXPLAINERS.map((e) => e.rank))
-const BENCHES = STAGES.filter((s) => s.ranks.some((r) => BUILT.has(r))).map((s) => s.n)
+const onBench = (rank: number) => BUILT.has(rank) && signsOf(rank).some((g) => READS.includes(g))
+const BENCHES = STAGES.filter((s) => s.ranks.some(onBench)).map((s) => s.n)
 const STOPS = stops(BENCHES)
 const opens = (s: Stop) => s.kind === 'bench' || BUILT.has(s.rank)
 
@@ -33,8 +35,8 @@ const after = (id: string) => STOPS.slice(STOPS.findIndex((s) => s.id === id) + 
 /** The first explainer not yet watched (or, all watched, nothing). */
 const firstNext = (p: Progress) => STOPS.find((s) => s.kind === 'rank' && BUILT.has(s.rank) && !p.watched.includes(s.rank))?.id ?? null
 
-/** A stage's Mastery run opens when every explainer the stage has so far is watched. */
-const masteryOpen = (stage: number, p: Progress) => (STAGES.find((s) => s.n === stage)?.ranks ?? []).filter((r) => BUILT.has(r)).every((r) => p.watched.includes(r))
+/** A stage's Mastery run opens when every explainer whose signs it uses is watched (the Bench does not read the later signs of stage 1 yet, so they do not hold it shut). */
+const masteryOpen = (stage: number, p: Progress) => (STAGES.find((s) => s.n === stage)?.ranks ?? []).filter(onBench).every((r) => p.watched.includes(r))
 
 function App({ services }: GameProps) {
   const [progress, setProgress] = useState<Progress>(() => load(services.storage))

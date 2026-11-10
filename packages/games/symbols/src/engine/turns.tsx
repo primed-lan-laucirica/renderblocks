@@ -132,8 +132,8 @@ export const SUPPLY = { x: 960, y: 975, w: 420, h: 84 }
 export function SupplyView({ o = 1, unit = 1, empty = false }: { o?: number; unit?: number; empty?: boolean }) {
   const { x, y, w, h } = SUPPLY
   // What one move brings: a bead, or a little bar of them.
-  const bars = unit > 1 ? Math.max(2, Math.floor(7 / (unit + 0.6))) : 7
-  const step = unit > 1 ? 44 : 54
+  const bars = unit > 5 ? 1 : unit > 1 ? Math.max(2, Math.floor(7 / (unit + 0.6))) : 7
+  const step = unit > 1 ? Math.min(44, (w - 40) / unit) : 54
   return (
     <g opacity={o}>
       <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={20} fill="#9a6b45" />
@@ -141,7 +141,7 @@ export function SupplyView({ o = 1, unit = 1, empty = false }: { o?: number; uni
       {!empty &&
         Array.from({ length: bars }, (_, b) => {
           const mid = x + (b - (bars - 1) / 2) * (unit > 1 ? unit * step + 26 : step)
-          return <Sprites key={b} list={loose(row(unit, mid, y, step), { s: unit > 1 ? 1 : 1.15, k: `supply${b}/` })} />
+          return <Sprites key={b} list={loose(row(unit, mid, y, step), { s: unit > 1 ? Math.min(1, step / 44) : 1.15, k: `supply${b}/` })} />
         })}
     </g>
   )

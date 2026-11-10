@@ -80,7 +80,8 @@ export function blendLists(a: Sprite[], b: Sprite[], k: number): Sprite[] {
   return [...a.filter((s) => !seen.has(s.k)).flatMap((s) => between(s, null, k)), ...b.flatMap((s) => between(from.get(s.k) ?? null, s, k))]
 }
 
-const signsIn = (list: Sprite[]) => list.flatMap((s) => (s.type === 'tok' && s.d.it && (s.d.it.kind === 'sign' || s.d.it.kind === 'frac') ? [s.d.it.g] : []))
+/** Every sign a list of sprites puts on the paper (a token's own, and those inside it). */
+const signsIn = (list: Sprite[]) => list.flatMap((s) => (s.type === 'tok' && s.d.it ? s.d.it.signs : []))
 
 export function compile(spec: Spec, clips: Record<string, Clip>): Explainer {
   const tracks = new Map<string, Track>()

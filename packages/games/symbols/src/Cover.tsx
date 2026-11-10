@@ -7,32 +7,43 @@
 import { memo } from 'react'
 import { H, W } from '@renderblocks/scene/scene'
 import { rankOf, signsOf } from './data/path'
-import { items, widthOf, type Tok } from './kit/glyphs'
+import { items, place, widthOf, type Tok } from './kit/glyphs'
 import { INK, PAPER, SERIF } from './kit/look'
 import { balance, beadsOn, line, Sprites } from './kit/sprites'
 
 /** What the sheet writes in words, as it is shown. */
 const SHOWN: Record<string, string | null> = { '(decimal point)': '.', '(or bold v)': null }
 
-/** The signs of a rank as tokens for a line (the fraction bar inside a half). */
-export const coverToks = (rank: number): Tok[] => signsOf(rank).map((g) => (g === 'frac' ? { frac: ['1', '2'] } : g))
+/** Signs that only show round something: each on the smallest line that carries it. */
+const WORN: Record<number, Tok[][]> = {
+  7: [['2', { sup: '3' }]],
+  8: [[{ root: '9' }]],
+  9: [['0', '.', '5'], ['50', '%']],
+  11: [['|', '−3', '|']],
+}
+
+/** A rank's signs as little lines for its cover: each sign alone (the fraction bar inside a half), or as it is worn. */
+export const coverToks = (rank: number): Tok[][] => WORN[rank] ?? signsOf(rank).map((g) => [g === 'frac' ? { frac: ['1', '2'] } : g])
 
 export const Cover = memo(function Cover({ rank, dim = false }: { rank: number; dim?: boolean }) {
-  const toks = coverToks(rank)
+  const groups = coverToks(rank)
   let body
-  if (toks.length) {
-    const list = items(toks)
+  if (groups.length) {
+    const wide = groups.map((toks) => {
+      const list = items(toks)
+      const xs = place(list, 1)
+      return xs[xs.length - 1] - xs[0] + (widthOf(list[0]) + widthOf(list[list.length - 1])) / 2
+    })
     // Brackets stand apart, as round something.
     const apart = rank === 5 ? 1.2 : 0.5
-    const units = list.reduce((w, it) => w + widthOf(it), 0) + (list.length - 1) * apart
+    const units = wide.reduce((w, v) => w + v, 0) + (groups.length - 1) * apart
     const size = Math.min(520, 1500 / units)
     let x = W / 2 - (units * size) / 2
-    const at = list.map((it) => {
-      const mid = x + (widthOf(it) * size) / 2
-      x += (widthOf(it) + apart) * size
-      return mid
+    body = groups.map((toks, i) => {
+      const mid = x + (wide[i] * size) / 2
+      x += (wide[i] + apart) * size
+      return <Sprites key={i} list={line(toks, { x: mid, y: H / 2, size })} />
     })
-    body = <Sprites list={line(toks, { y: H / 2, size, at })} />
   } else {
     const text = rankOf(rank)
       .glyphs.map((g) => (g in SHOWN ? SHOWN[g] : g))

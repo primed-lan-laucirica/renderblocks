@@ -1,6 +1,7 @@
 /**
  * Rank 6, < > ≤ ≥ ≠ : a beam that is not level, and what to write then. The
- * signs on the paper are =, + and the five new ones. Each is told by what it
+ * signs on the paper are =, + and the five new ones (and × in the closing
+ * question). Each is told by what it
  * says about two amounts, and "or equal to" by where it is wanted (at least).
  *
  * The signs are tied to each other, not to dates: not-equal is equals
@@ -104,6 +105,8 @@ export const r06: Spec = {
     },
     { clear: true, say: 'Now you read one.', pad: 0.2 },
     { stage: { line: line(['10', '≠', '12'], { y: 480, size: 190 }) }, move: 0.6, say: 'Ten is not equal to twelve.', turn: { kind: 'read', id: 'read10', prompt: 'You read it.' } },
-    { clear: true, stage: { line: line(['=', '≠', '<', '>', '≤', '≥'], { y: 480, size: 190 }) }, say: 'Six signs for comparing two amounts. Now you know them all.', pad: 1 },
+    { clear: true, stage: { line: line(['=', '≠', '<', '>', '≤', '≥'], { y: 480, size: 190 }) }, say: 'Six signs for comparing two amounts. Now you know them all.' },
+    { clear: true, teaser: true, stage: { line: line(['2', '×', '2', '×', '2', '×', '2', '×', '2', '=', '?'], { y: 480, size: 150 }) }, say: 'Two times two times two times two times two.' },
+    { teaser: true, stage: { line: line(['2', '×', '2', '×', '2', '×', '2', '×', '2', '=', '?'], { y: 480, size: 150, gold: ['×'] }) }, move: 0.5, say: 'Is there a shorter way to write that?', pad: 1 },
   ],
 }

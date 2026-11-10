@@ -227,7 +227,7 @@ function Build({ turn, onDone }: { turn: BuildTurn; onDone: () => void }) {
       <Sprites list={shown} />
       <rect data-zone="" x={z.x} y={z.y} width={z.w} height={z.h} fill="transparent" onPointerDown={down('zone')} {...hand} />
       <rect data-tray="" x={SUPPLY.x - SUPPLY.w / 2 - 30} y={SUPPLY.y - SUPPLY.h / 2 - 40} width={SUPPLY.w + 60} height={SUPPLY.h + 70} fill="transparent" onPointerDown={down('tray')} {...hand} />
-      {drag?.moved && <Sprites list={loose(row(turn.unit ?? 1, drag.x, drag.y - 30, 62), { s: 1.5, k: 'held', fade: 0.95 })} />}
+      {drag?.moved && <Sprites list={loose(row(turn.unit ?? 1, drag.x, drag.y - 30, Math.min(62, 440 / (turn.unit ?? 1))), { s: Math.min(1.5, 10.6 / (turn.unit ?? 1)), k: 'held', fade: 0.95 })} />}
     </>
   )
 }
