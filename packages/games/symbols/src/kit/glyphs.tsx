@@ -55,6 +55,8 @@ export interface Item {
   opens?: boolean
   /** A minus with nothing before it to take from (−3): it is set against its number. */
   unary?: boolean
+  /** A bracket that opens what a ∀ or ∃ speaks about, or a (mod n): it stands off what is before it, so it is not read as times. */
+  scope?: boolean
 }
 
 /** Each drawn sign's width, in units of the line's size. */
@@ -82,6 +84,39 @@ const WIDTH: Record<string, number> = {
   '!': 0.22,
   '∞': 0.94,
   '∝': 0.8,
+  '¬': 0.7,
+  '∧': 0.7,
+  '∨': 0.7,
+  '→': 1,
+  '⇒': 1.04,
+  '↔': 1,
+  '⇔': 1.04,
+  '∀': 0.74,
+  '∃': 0.6,
+  '∈': 0.7,
+  '∉': 0.7,
+  '{': 0.36,
+  '}': 0.36,
+  '∣': 0.1,
+  ',': 0.16,
+  '…': 0.62,
+  '∅': 0.72,
+  '⊆': 0.7,
+  '⊂': 0.7,
+  '∪': 0.66,
+  '∩': 0.66,
+  '∖': 0.44,
+  ℕ: 0.78,
+  ℤ: 0.7,
+  ℚ: 0.8,
+  ℝ: 0.74,
+  ℂ: 0.72,
+  ':': 0.2,
+  '↦': 1,
+  '∘': 0.36,
+  ':=': 0.96,
+  '≡': 0.7,
+  '∴': 0.66,
 }
 export const isSign = (g: string) => g in WIDTH
 
@@ -90,8 +125,8 @@ const NUMERAL = /^−?[\d,]+(\.\d+)?$/
 /** A letter standing for a number (any but e, which is one number's own name, as π is; θ is the angle's letter). */
 const LETTER = /^[A-Za-df-z]$/
 const NAMED = ['π', 'θ', 'e']
-/** A function's name written as a word, and its width as type. */
-const WORDS: Record<string, number> = { sin: 1.34, cos: 1.62, tan: 1.52, log: 1.46, ln: 0.88 }
+/** A function's name written as a word (and the mod of clock sums), and its width as type. */
+const WORDS: Record<string, number> = { sin: 1.34, cos: 1.62, tan: 1.52, log: 1.46, ln: 0.88, mod: 1.9 }
 const number = (g: string) => Number(g.replace(/,/g, '').replace('−', '-'))
 const within = (part: Part) => items(typeof part === 'string' ? [part] : part)
 /** The amount of a part that is one numeral. */
@@ -101,8 +136,9 @@ const amount = (list: Item[]) => (list.length === 1 && list[0].kind === 'num' ? 
 export function items(toks: Tok[]): Item[] {
   const seen = new Map<string, number>()
   let bars = 0
+  let quantified = false
   let before: Item | undefined
-  return toks.map((t) => {
+  return toks.map((t, at) => {
     let it: Omit<Item, 'k' | 'signs' | 'id'>
     let k: string | undefined
     if (typeof t === 'string' || 'g' in t) {
@@ -112,6 +148,7 @@ export function items(toks: Tok[]): Item[] {
       else if (g === '_') it = { kind: 'gap', g }
       else if (g === '|') it = { kind: 'sign', g, opens: bars++ % 2 === 0 }
       else if (g === '−' || g === '±') it = { kind: 'sign', g, unary: !before || (before.kind === 'sign' && !closes(before) && !['%', '!', '∞'].includes(before.g)) }
+      else if (g === '(' && ((quantified && before?.kind === 'letter') || toks[at + 1] === 'mod')) it = { kind: 'sign', g, scope: true }
       else if (isSign(g)) it = { kind: 'sign', g }
       else if (NUMERAL.test(g)) it = { kind: 'num', g, n: number(g) }
       else if (LETTER.test(g)) it = { kind: 'letter', g: 'var', ch: g }
@@ -146,6 +183,8 @@ export function items(toks: Tok[]): Item[] {
       it = { kind: 'big', g: t.big, parts: [t.from === undefined ? [] : within(t.from), t.to === undefined ? [] : within(t.to)] }
       k = t.k
     }
+    // A gap that opens the line may be waiting for a ∀ or an ∃.
+    if (it.g === '∀' || it.g === '∃' || (it.kind === 'gap' && !before)) quantified = true
     if (!k) {
       const name = it.ch ?? it.g
       const i = seen.get(name) ?? 0
@@ -176,11 +215,20 @@ const BIG = { s: 1.2, w: 0.92, lim: 0.38, off: 0.88 }
 const ROOT = { lead: 0.46, tail: 0.08 }
 
 const SPACE = 0.26
-const closes = (it: Item) => it.g === ')' || (it.g === '|' && !it.opens)
-const opens = (it: Item) => it.g === '(' || (it.g === '|' && !!it.opens)
+const closes = (it: Item) => it.g === ')' || it.g === '}' || (it.g === '|' && !it.opens)
+const opens = (it: Item) => it.g === '(' || it.g === '{' || (it.g === '|' && !!it.opens)
+/** Signs that stand before what they are about (not P, for all x): they stand close to it. */
+const BEFORE = ['¬', '∀', '∃']
 /** The room between two neighbours: none to speak of inside a pair, under a raised number, or round a point. */
 function space(a: Item, b: Item) {
-  if (b.kind === 'sup' || b.kind === 'sub' || b.g === '!' || a.g === '.' || b.g === '.') return 0.03
+  // The raised −1 of f⁻¹ stands clear of the italic f's top.
+  if (a.kind === 'fn' && b.kind === 'sup') return a.ch === 'f' ? 0.14 : 0.05
+  if (b.kind === 'sup' || b.kind === 'sub' || b.g === '!' || a.g === '.' || b.g === '.' || b.g === ',') return 0.03
+  if (a.g === ',') return 0.24
+  if (BEFORE.includes(a.g)) return 0.1
+  if (b.scope) return 0.22
+  // Empty set brackets stand apart, so that they read as two.
+  if (a.g === '{' && b.g === '}') return 0.2
   // A function's name stands against its brackets; its word stands a little off what it takes.
   // An italic f leans over its bracket, so it stands a little further off.
   if (a.kind === 'fn' && b.g === '(') return a.ch === 'f' ? 0.1 : 0.03
@@ -263,6 +311,8 @@ export function Sign({ g, size, colour = INK }: { g: string; size: number; colou
   const st = { stroke: colour, strokeWidth: S * 0.09, strokeLinecap: 'round', strokeLinejoin: 'round', fill: 'none' } as const
   const L = (x1: number, y1: number, x2: number, y2: number, key?: number) => <line key={key} x1={x1 * S} y1={y1 * S} x2={x2 * S} y2={y2 * S} {...st} />
   const dot = (x: number, y: number, r = 0.068) => <circle cx={x * S} cy={y * S} r={r * S} fill={colour} />
+  /** An arrow's head, its point at x (to the right for dir 1). */
+  const head = (dir: number, x = 0.4, h = 0.18) => <polyline points={`${(x - h) * dir * S},${-h * S} ${x * dir * S},0 ${(x - h) * dir * S},${h * S}`} {...st} />
   const less = (dir: number, dy = 0, h = 0.25) => <polyline points={`${0.25 * dir * S},${(dy - h) * S} ${-0.25 * dir * S},${dy * S} ${0.25 * dir * S},${(dy + h) * S}`} {...st} />
   let d: ReactNode
   switch (g) {
@@ -371,6 +421,209 @@ export function Sign({ g, size, colour = INK }: { g: string; size: number; colou
       break
     case '∝':
       d = <path d={`M ${0.32 * S} ${-0.2 * S} C ${0.1 * S} ${-0.2 * S} ${0.02 * S} ${0.2 * S} ${-0.16 * S} ${0.2 * S} C ${-0.28 * S} ${0.2 * S} ${-0.34 * S} ${0.1 * S} ${-0.34 * S} 0 C ${-0.34 * S} ${-0.1 * S} ${-0.28 * S} ${-0.2 * S} ${-0.16 * S} ${-0.2 * S} C ${0.02 * S} ${-0.2 * S} ${0.1 * S} ${0.2 * S} ${0.32 * S} ${0.2 * S}`} {...st} strokeWidth={S * 0.08} />
+      break
+    case '¬':
+      d = <polyline points={`${-0.25 * S},${-0.06 * S} ${0.25 * S},${-0.06 * S} ${0.25 * S},${0.2 * S}`} {...st} />
+      break
+    case '∧':
+      d = <polyline points={`${-0.25 * S},${0.27 * S} 0,${-0.27 * S} ${0.25 * S},${0.27 * S}`} {...st} />
+      break
+    case '∨':
+      d = <polyline points={`${-0.25 * S},${-0.27 * S} 0,${0.27 * S} ${0.25 * S},${-0.27 * S}`} {...st} />
+      break
+    case '→':
+    case '↦':
+      d = (
+        <>
+          {L(-0.4, 0, 0.4, 0)}
+          {head(1)}
+          {g === '↦' && L(-0.4, -0.17, -0.4, 0.17)}
+        </>
+      )
+      break
+    case '↔':
+      d = (
+        <>
+          {L(-0.4, 0, 0.4, 0)}
+          {head(1)}
+          {head(-1)}
+        </>
+      )
+      break
+    case '⇒':
+      d = (
+        <>
+          {L(-0.42, -0.1, 0.3, -0.1)}
+          {L(-0.42, 0.1, 0.3, 0.1)}
+          {head(1, 0.42, 0.26)}
+        </>
+      )
+      break
+    case '⇔':
+      d = (
+        <>
+          {L(-0.3, -0.1, 0.3, -0.1)}
+          {L(-0.3, 0.1, 0.3, 0.1)}
+          {head(1, 0.42, 0.26)}
+          {head(-1, 0.42, 0.26)}
+        </>
+      )
+      break
+    case '∀':
+      d = (
+        <>
+          <polyline points={`${-0.27 * S},${-0.36 * S} 0,${0.36 * S} ${0.27 * S},${-0.36 * S}`} {...st} />
+          {L(-0.165, -0.08, 0.165, -0.08)}
+        </>
+      )
+      break
+    case '∃':
+      d = (
+        <>
+          <polyline points={`${-0.2 * S},${-0.36 * S} ${0.2 * S},${-0.36 * S} ${0.2 * S},${0.36 * S} ${-0.2 * S},${0.36 * S}`} {...st} />
+          {L(-0.12, 0, 0.2, 0)}
+        </>
+      )
+      break
+    case '∈':
+    case '∉':
+      d = (
+        <>
+          <path d={`M ${0.24 * S} ${-0.26 * S} H ${0.02 * S} A ${0.26 * S} ${0.26 * S} 0 0 0 ${0.02 * S} ${0.26 * S} H ${0.24 * S}`} {...st} />
+          {L(-0.24, 0, 0.24, 0)}
+          {g === '∉' && L(-0.13, 0.42, 0.15, -0.42)}
+        </>
+      )
+      break
+    case '{':
+    case '}': {
+      const m = g === '{' ? 1 : -1
+      d = <path d={`M ${0.11 * m * S} ${-0.45 * S} C ${-0.02 * m * S} ${-0.45 * S} ${-0.02 * m * S} ${-0.38 * S} ${-0.02 * m * S} ${-0.3 * S} L ${-0.02 * m * S} ${-0.13 * S} C ${-0.02 * m * S} ${-0.04 * S} ${-0.06 * m * S} 0 ${-0.13 * m * S} 0 C ${-0.06 * m * S} 0 ${-0.02 * m * S} ${0.04 * S} ${-0.02 * m * S} ${0.13 * S} L ${-0.02 * m * S} ${0.3 * S} C ${-0.02 * m * S} ${0.38 * S} ${-0.02 * m * S} ${0.45 * S} ${0.11 * m * S} ${0.45 * S}`} {...st} strokeWidth={S * 0.075} />
+      break
+    }
+    case '∣':
+      d = L(0, -0.4, 0, 0.4)
+      break
+    case ',':
+      d = (
+        <>
+          {dot(0, 0.3, 0.07)}
+          <line x1={0.035 * S} y1={0.31 * S} x2={-0.035 * S} y2={0.46 * S} {...st} strokeWidth={S * 0.065} />
+        </>
+      )
+      break
+    case '…':
+      d = (
+        <>
+          {dot(-0.22, 0.3, 0.07)}
+          {dot(0, 0.3, 0.07)}
+          {dot(0.22, 0.3, 0.07)}
+        </>
+      )
+      break
+    case '∅':
+      d = (
+        <>
+          <circle r={0.27 * S} {...st} />
+          {L(-0.2, 0.4, 0.2, -0.4)}
+        </>
+      )
+      break
+    case '⊂':
+      d = <path d={`M ${0.25 * S} ${-0.25 * S} H 0 A ${0.25 * S} ${0.25 * S} 0 0 0 0 ${0.25 * S} H ${0.25 * S}`} {...st} />
+      break
+    case '⊆':
+      d = (
+        <>
+          <path d={`M ${0.25 * S} ${-0.32 * S} H ${-0.04 * S} A ${0.21 * S} ${0.21 * S} 0 0 0 ${-0.04 * S} ${0.1 * S} H ${0.25 * S}`} {...st} />
+          {L(-0.25, 0.33, 0.25, 0.33)}
+        </>
+      )
+      break
+    case '∪':
+      d = <path d={`M ${-0.23 * S} ${-0.28 * S} V ${0.05 * S} A ${0.23 * S} ${0.23 * S} 0 0 0 ${0.23 * S} ${0.05 * S} V ${-0.28 * S}`} {...st} />
+      break
+    case '∩':
+      d = <path d={`M ${-0.23 * S} ${0.28 * S} V ${-0.05 * S} A ${0.23 * S} ${0.23 * S} 0 0 1 ${0.23 * S} ${-0.05 * S} V ${0.28 * S}`} {...st} />
+      break
+    case '∖':
+      d = L(-0.13, -0.36, 0.13, 0.36)
+      break
+    // The number systems: a capital with one stroke doubled, which marks it as a set of numbers.
+    case 'ℕ':
+      d = (
+        <g {...st} strokeWidth={S * 0.07}>
+          <polyline points={`${-0.27 * S},${0.36 * S} ${-0.27 * S},${-0.36 * S} ${-0.14 * S},${-0.36 * S} ${0.27 * S},${0.36 * S} ${0.27 * S},${-0.36 * S}`} />
+          <polyline points={`${-0.27 * S},${-0.36 * S} ${0.14 * S},${0.36 * S} ${0.27 * S},${0.36 * S}`} />
+        </g>
+      )
+      break
+    case 'ℤ':
+      d = (
+        <g {...st} strokeWidth={S * 0.07}>
+          <polyline points={`${-0.24 * S},${-0.36 * S} ${0.24 * S},${-0.36 * S} ${-0.1 * S},${0.36 * S} ${0.24 * S},${0.36 * S}`} />
+          <polyline points={`${0.1 * S},${-0.36 * S} ${-0.24 * S},${0.36 * S} ${-0.1 * S},${0.36 * S}`} />
+        </g>
+      )
+      break
+    case 'ℚ':
+      d = (
+        <g {...st} strokeWidth={S * 0.07}>
+          <ellipse rx={0.28 * S} ry={0.36 * S} />
+          <line x1={-0.14 * S} y1={-0.31 * S} x2={-0.14 * S} y2={0.31 * S} />
+          <line x1={0.04 * S} y1={0.2 * S} x2={0.3 * S} y2={0.46 * S} />
+        </g>
+      )
+      break
+    case 'ℝ':
+      d = (
+        <g {...st} strokeWidth={S * 0.07}>
+          <path d={`M ${-0.11 * S} ${0.36 * S} H ${-0.25 * S} V ${-0.36 * S} H ${0.06 * S} A ${0.185 * S} ${0.185 * S} 0 0 1 ${0.06 * S} ${0.01 * S} H ${-0.11 * S}`} />
+          <line x1={-0.11 * S} y1={-0.36 * S} x2={-0.11 * S} y2={0.36 * S} />
+          <line x1={-0.02 * S} y1={0.01 * S} x2={0.26 * S} y2={0.36 * S} />
+        </g>
+      )
+      break
+    case 'ℂ':
+      d = (
+        <g {...st} strokeWidth={S * 0.07}>
+          <path d={`M ${0.24 * S} ${-0.2 * S} C ${0.14 * S} ${-0.42 * S} ${-0.28 * S} ${-0.44 * S} ${-0.28 * S} 0 C ${-0.28 * S} ${0.44 * S} ${0.14 * S} ${0.42 * S} ${0.24 * S} ${0.2 * S}`} />
+          <line x1={-0.14 * S} y1={-0.28 * S} x2={-0.14 * S} y2={0.28 * S} />
+        </g>
+      )
+      break
+    case ':':
+      d = (
+        <>
+          {dot(0, -0.13, 0.072)}
+          {dot(0, 0.22, 0.072)}
+        </>
+      )
+      break
+    case ':=':
+      d = (
+        <>
+          {dot(-0.36, -0.115, 0.072)}
+          {dot(-0.36, 0.115, 0.072)}
+          {L(-0.14, -0.115, 0.36, -0.115)}
+          {L(-0.14, 0.115, 0.36, 0.115)}
+        </>
+      )
+      break
+    case '∘':
+      d = <circle r={0.12 * S} {...st} strokeWidth={S * 0.075} />
+      break
+    case '≡':
+      d = [L(-0.25, -0.2, 0.25, -0.2, 0), L(-0.25, 0, 0.25, 0, 1), L(-0.25, 0.2, 0.25, 0.2, 2)]
+      break
+    case '∴':
+      d = (
+        <>
+          {dot(0, -0.19, 0.078)}
+          {dot(-0.21, 0.17, 0.078)}
+          {dot(0.21, 0.17, 0.078)}
+        </>
+      )
       break
     default:
       // A sign with no drawing yet (the later stages): type.

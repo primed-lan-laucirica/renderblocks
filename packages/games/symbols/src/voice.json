@@ -1723,6 +1723,926 @@
     "file": "can-we-do-sums-with-true-and-false-f21728.mp3",
     "dur": 2.38
   },
+  "Three is less than five. Is that true, or false?": {
+    "file": "three-is-less-than-five-is-that-true-or--c324b0.mp3",
+    "dur": 3.24
+  },
+  "True. We light a lamp for true.": {
+    "file": "true-we-light-a-lamp-for-true-ccfb8e.mp3",
+    "dur": 1.99
+  },
+  "Five is less than three is false. Its lamp stays dark.": {
+    "file": "five-is-less-than-three-is-false-its-lam-b5ed2e.mp3",
+    "dur": 3.38
+  },
+  "A line that is either true or false is called a statement. We can name a statement with a letter: P, and Q.": {
+    "file": "a-line-that-is-either-true-or-false-is-c-dddf3c.mp3",
+    "dur": 7.9
+  },
+  "Now we want to join statements: both of these, or one of these, or not this one.": {
+    "file": "now-we-want-to-join-statements-both-of-t-b895c7.mp3",
+    "dur": 4.78
+  },
+  "This sign means not. It turns a statement over. P is true, so not P is false.": {
+    "file": "this-sign-means-not-it-turns-a-statement-7483ff.mp3",
+    "dur": 6.14
+  },
+  "Q is false, so not Q is true.": {
+    "file": "q-is-false-so-not-q-is-true-226e6a.mp3",
+    "dur": 2.06
+  },
+  "This sign means and. P and Q is true only when both of them are true.": {
+    "file": "this-sign-means-and-p-and-q-is-true-only-624e86.mp3",
+    "dur": 5.28
+  },
+  "Put one lamp out, and P and Q is false.": {
+    "file": "put-one-lamp-out-and-p-and-q-is-false-17cca0.mp3",
+    "dur": 2.42
+  },
+  "This sign means or. P or Q is true when at least one of them is true.": {
+    "file": "this-sign-means-or-p-or-q-is-true-when-a-ff91b7.mp3",
+    "dur": 5.98
+  },
+  "Both true counts as well.": {
+    "file": "both-true-counts-as-well-40935d.mp3",
+    "dur": 1.3
+  },
+  "Only when both are false is P or Q false.": {
+    "file": "only-when-both-are-false-is-p-or-q-false-3622ac.mp3",
+    "dur": 2.54
+  },
+  "Not turns over. And needs both. Or needs at least one: its sign is the sign for and, upside down.": {
+    "file": "not-turns-over-and-needs-both-or-needs-a-4bc224.mp3",
+    "dur": 9.79
+  },
+  "Here x is more than two, and x is less than five. So x lies between two and five.": {
+    "file": "here-x-is-more-than-two-and-x-is-less-th-ba5ce1.mp3",
+    "dur": 6.24
+  },
+  "With or, either will do: x is less than two, or x is more than five.": {
+    "file": "with-or-either-will-do-x-is-less-than-tw-82ed7c.mp3",
+    "dur": 5.47
+  },
+  "Not, x equals three, says the same as: x is not equal to three. The stroke is a not.": {
+    "file": "not-x-equals-three-says-the-same-as-x-is-2d0f06.mp3",
+    "dur": 6.98
+  },
+  "They sort things, too. P says: this bead is red. Q says: this bead is big. P and Q picks only the big red beads.": {
+    "file": "they-sort-things-too-p-says-this-bead-is-5f1dd1.mp3",
+    "dur": 9.94
+  },
+  "P or Q picks every bead that is red, or big, or both. A search on a computer works this way.": {
+    "file": "p-or-q-picks-every-bead-that-is-red-or-b-fe71ac.mp3",
+    "dur": 6.7
+  },
+  "P is true, and Q is false. Which one is true?": {
+    "file": "p-is-true-and-q-is-false-which-one-is-tr-d740e9.mp3",
+    "dur": 2.81
+  },
+  "Which sign makes this line true?": {
+    "file": "which-sign-makes-this-line-true-22abbc.mp3",
+    "dur": 1.68
+  },
+  "P and not Q.": {
+    "file": "p-and-not-q-b80427.mp3",
+    "dur": 1.18
+  },
+  "If x equals two, then x plus one equals three.": {
+    "file": "if-x-equals-two-then-x-plus-one-equals-t-8b618c.mp3",
+    "dur": 3.24
+  },
+  "Which sign says: if this, then that?": {
+    "file": "which-sign-says-if-this-then-that-cfffb2.mp3",
+    "dur": 2.9
+  },
+  "X equals two. So what is x plus one?": {
+    "file": "x-equals-two-so-what-is-x-plus-one-7b13de.mp3",
+    "dur": 3.02
+  },
+  "Three. If x equals two, then x plus one equals three.": {
+    "file": "three-if-x-equals-two-then-x-plus-one-eq-f72085.mp3",
+    "dur": 3.5
+  },
+  "We want a sign that says: if this, then that.": {
+    "file": "we-want-a-sign-that-says-if-this-then-th-be5521.mp3",
+    "dur": 3.41
+  },
+  "This arrow says it. If x equals two, then x plus one equals three. We also read the arrow as: implies.": {
+    "file": "this-arrow-says-it-if-x-equals-two-then--9088a4.mp3",
+    "dur": 10.08
+  },
+  "An arrow points one way. X equals two implies x squared equals four: true.": {
+    "file": "an-arrow-points-one-way-x-equals-two-imp-04691e.mp3",
+    "dur": 5.35
+  },
+  "Turn it round, and it is false. When x squared equals four, x could be minus two.": {
+    "file": "turn-it-round-and-it-is-false-when-x-squ-0c9284.mp3",
+    "dur": 5.9
+  },
+  "This arrow has two heads, so it holds both ways. We read it: if and only if.": {
+    "file": "this-arrow-has-two-heads-so-it-holds-bot-b4a450.mp3",
+    "dur": 5.52
+  },
+  "Between statements named by letters, the same arrows are often drawn with one line.": {
+    "file": "between-statements-named-by-letters-the--8c5c0a.mp3",
+    "dur": 4.54
+  },
+  "If P then Q is a statement too. It is false in just one case: P is true, but Q is false.": {
+    "file": "if-p-then-q-is-a-statement-too-it-is-fal-b71684.mp3",
+    "dur": 7.61
+  },
+  "The two-headed arrow is two arrows in one: if P then Q, and if Q then P.": {
+    "file": "the-two-headed-arrow-is-two-arrows-in-on-55c8b4.mp3",
+    "dur": 5.66
+  },
+  "They are used wherever one fact follows from another. If x is more than five, then x is more than three.": {
+    "file": "they-are-used-wherever-one-fact-follows--6f2bb3.mp3",
+    "dur": 7.49
+  },
+  "But not the other way round. Four is more than three, and it is not more than five.": {
+    "file": "but-not-the-other-way-round-four-is-more-2f1e3a.mp3",
+    "dur": 5.11
+  },
+  "They are used in solving, too. Each step can be undone, so every line says the same as the one before it.": {
+    "file": "they-are-used-in-solving-too-each-step-c-6af3e2.mp3",
+    "dur": 7.63
+  },
+  "And now we can say it exactly. X squared equals four, if and only if x equals plus or minus two.": {
+    "file": "and-now-we-can-say-it-exactly-x-squared--49e309.mp3",
+    "dur": 7.66
+  },
+  "Which arrow belongs here? Take care: minus three squared is nine as well.": {
+    "file": "which-arrow-belongs-here-take-care-minus-ac7816.mp3",
+    "dur": 4.44
+  },
+  "If x equals four, then x is more than three.": {
+    "file": "if-x-equals-four-then-x-is-more-than-thr-13e4a1.mp3",
+    "dur": 2.9
+  },
+  "N plus one is more than n, when n is one, or two, or three.": {
+    "file": "n-plus-one-is-more-than-n-when-n-is-one--73a983.mp3",
+    "dur": 4.01
+  },
+  "How do we say that it is true for every number?": {
+    "file": "how-do-we-say-that-it-is-true-for-every--b0d13b.mp3",
+    "dur": 3.14
+  },
+  "N plus one is more than n. Is that true for every number n?": {
+    "file": "n-plus-one-is-more-than-n-is-that-true-f-127e4d.mp3",
+    "dur": 3.98
+  },
+  "Every number. Try one, seven, a hundred: adding one always makes more.": {
+    "file": "every-number-try-one-seven-a-hundred-add-177c41.mp3",
+    "dur": 4.82
+  },
+  "But the numbers never end. We need a sign that says: for all.": {
+    "file": "but-the-numbers-never-end-we-need-a-sign-1fa073.mp3",
+    "dur": 4.37
+  },
+  "This sign says: for all. For all n, n plus one is more than n.": {
+    "file": "this-sign-says-for-all-for-all-n-n-plus--16a2e9.mp3",
+    "dur": 5.3
+  },
+  "It is a capital A, for all, turned upside down. The letter after it is what it speaks about.": {
+    "file": "it-is-a-capital-a-for-all-turned-upside--c3a7a6.mp3",
+    "dur": 6.24
+  },
+  "X plus two equals five is not true for all x. But it is true for one of them: three.": {
+    "file": "x-plus-two-equals-five-is-not-true-for-a-c1e119.mp3",
+    "dur": 6.86
+  },
+  "This sign says: there exists. There exists an x for which x plus two equals five.": {
+    "file": "this-sign-says-there-exists-there-exists-535aa1.mp3",
+    "dur": 6.38
+  },
+  "It is a capital E, for exists, turned back to front.": {
+    "file": "it-is-a-capital-e-for-exists-turned-back-03dd0e.mp3",
+    "dur": 2.95
+  },
+  "One number that fails makes a for-all false. For all x, x is more than three? Two is not.": {
+    "file": "one-number-that-fails-makes-a-for-all-fa-0b4db2.mp3",
+    "dur": 7.08
+  },
+  "And one number that works makes a there-exists true. Four is more than three.": {
+    "file": "and-one-number-that-works-makes-a-there--c87468.mp3",
+    "dur": 4.63
+  },
+  "So, not for all x, says the same as: there exists an x for which it is not.": {
+    "file": "so-not-for-all-x-says-the-same-as-there--af1bbd.mp3",
+    "dur": 5.38
+  },
+  "A rule for every number is a for-all. For all a, and for all b, a plus b equals b plus a.": {
+    "file": "a-rule-for-every-number-is-a-for-all-for-0ebbfd.mp3",
+    "dur": 6.46
+  },
+  "Can an equation be solved? That asks whether a number exists. Two x equals ten: yes, five. X plus one equals x: no.": {
+    "file": "can-an-equation-be-solved-that-asks-whet-e1b3c3.mp3",
+    "dur": 10.97
+  },
+  "Together: for all n, there exists an m that is more than n. So there is no biggest number.": {
+    "file": "together-for-all-n-there-exists-an-m-tha-5d0599.mp3",
+    "dur": 7.7
+  },
+  "X plus x equals six. Is that true for all x, or for just one? Put in the sign.": {
+    "file": "x-plus-x-equals-six-is-that-true-for-all-f699ae.mp3",
+    "dur": 6.58
+  },
+  "There exists an x that is more than nine.": {
+    "file": "there-exists-an-x-that-is-more-than-nine-172e3b.mp3",
+    "dur": 2.09
+  },
+  "Often we do not mean every number: only these ones, gathered in a loop.": {
+    "file": "often-we-do-not-mean-every-number-only-t-f820a0.mp3",
+    "dur": 4.46
+  },
+  "Four is one of them. How do we write that a thing belongs to a collection?": {
+    "file": "four-is-one-of-them-how-do-we-write-that-9658dc.mp3",
+    "dur": 4.56
+  },
+  "These numbers belong together, in a loop. Which one belongs with them: ten, or seven?": {
+    "file": "these-numbers-belong-together-in-a-loop--85cc3a.mp3",
+    "dur": 5.38
+  },
+  "Ten. Every number in the loop is even.": {
+    "file": "ten-every-number-in-the-loop-is-even-e559d1.mp3",
+    "dur": 2.16
+  },
+  "A collection like this is called a set. Each thing in it is an element of the set.": {
+    "file": "a-collection-like-this-is-called-a-set-e-85e262.mp3",
+    "dur": 4.99
+  },
+  "We name a set with a capital letter. This one is A.": {
+    "file": "we-name-a-set-with-a-capital-letter-this-34d76c.mp3",
+    "dur": 3.19
+  },
+  "How do we write that four is in A, and seven is not?": {
+    "file": "how-do-we-write-that-four-is-in-a-and-se-f5e5f6.mp3",
+    "dur": 3.29
+  },
+  "This sign says: is an element of. Four is an element of A.": {
+    "file": "this-sign-says-is-an-element-of-four-is--c93ffd.mp3",
+    "dur": 4.15
+  },
+  "It is shaped like the letter E, for element. We can also read it: four is in A.": {
+    "file": "it-is-shaped-like-the-letter-e-for-eleme-1f4c65.mp3",
+    "dur": 6.07
+  },
+  "Strike it through, and it says: is not an element of. Seven is not in A.": {
+    "file": "strike-it-through-and-it-says-is-not-an--57f8e3.mp3",
+    "dur": 5.62
+  },
+  "The stroke means not, just as it does in the not-equal sign.": {
+    "file": "the-stroke-means-not-just-as-it-does-in--01f5e3.mp3",
+    "dur": 3.74
+  },
+  "Each of these is a statement, so it is true or false. Six is in A: true. Five is in A: false.": {
+    "file": "each-of-these-is-a-statement-so-it-is-tr-fbdb1b.mp3",
+    "dur": 9
+  },
+  "It is used wherever things are sorted into sets. Here B is the odd numbers. Five is in B, and five is not in A.": {
+    "file": "it-is-used-wherever-things-are-sorted-in-efa4d8.mp3",
+    "dur": 8.18
+  },
+  "Often we do not say which element. X is an element of A says only that x is one of these.": {
+    "file": "often-we-do-not-say-which-element-x-is-a-94058c.mp3",
+    "dur": 6.38
+  },
+  "Then one line can speak for all of them. For all x in A, x is more than one.": {
+    "file": "then-one-line-can-speak-for-all-of-them--019809.mp3",
+    "dur": 5.42
+  },
+  "Or for at least one. There exists an x in A that is more than seven: it is eight.": {
+    "file": "or-for-at-least-one-there-exists-an-x-in-7fad71.mp3",
+    "dur": 5.9
+  },
+  "Here is another set, A. Which one is true?": {
+    "file": "here-is-another-set-a-which-one-is-true-6a9963.mp3",
+    "dur": 2.57
+  },
+  "Is four in A? Put in the sign that makes this line true.": {
+    "file": "is-four-in-a-put-in-the-sign-that-makes--de51bc.mp3",
+    "dur": 3.34
+  },
+  "Nine is not an element of A.": {
+    "file": "nine-is-not-an-element-of-a-76d7d4.mp3",
+    "dur": 1.7
+  },
+  "Drawing a loop takes a while.": {
+    "file": "drawing-a-loop-takes-a-while-615a10.mp3",
+    "dur": 1.39
+  },
+  "How could we write a set on one line?": {
+    "file": "how-could-we-write-a-set-on-one-line-b66aed.mp3",
+    "dur": 1.9
+  },
+  "Two loops, each holding one, two and three. Are they the same set, or different sets?": {
+    "file": "two-loops-each-holding-one-two-and-three-a88863.mp3",
+    "dur": 5.3
+  },
+  "The same. A set is only what is in it, not where each thing sits.": {
+    "file": "the-same-a-set-is-only-what-is-in-it-not-49437f.mp3",
+    "dur": 5.11
+  },
+  "Drawing a loop every time takes a while. We want to write the set A on one line.": {
+    "file": "drawing-a-loop-every-time-takes-a-while--fa5f6f.mp3",
+    "dur": 5.57
+  },
+  "Curly brackets hold a set, and its elements are listed between them. A is the set of one, two and three.": {
+    "file": "curly-brackets-hold-a-set-and-its-elemen-edac21.mp3",
+    "dur": 8.4
+  },
+  "A comma keeps each element apart from the next. Without the commas, this set would hold one number: one hundred and twenty-three.": {
+    "file": "a-comma-keeps-each-element-apart-from-th-d729f2.mp3",
+    "dur": 8.3
+  },
+  "Written in another order, it is still the same set.": {
+    "file": "written-in-another-order-it-is-still-the-266a4b.mp3",
+    "dur": 3.67
+  },
+  "Three dots mean: and so on. This is every even number: a set that never ends, on one line.": {
+    "file": "three-dots-mean-and-so-on-this-is-every--4536b6.mp3",
+    "dur": 7.92
+  },
+  "Dots in the middle skip ahead: every whole number from one to one hundred.": {
+    "file": "dots-in-the-middle-skip-ahead-every-whol-a357b9.mp3",
+    "dur": 5.16
+  },
+  "Some sets cannot be listed at all, so we give a rule. The upright bar says: such that. This is the set of all x such that x is more than three.": {
+    "file": "some-sets-cannot-be-listed-at-all-so-we--205ba5.mp3",
+    "dur": 9.98
+  },
+  "To see what is in such a set, check the rule. Five is more than three, so five is in B. Two is not.": {
+    "file": "to-see-what-is-in-such-a-set-check-the-r-819218.mp3",
+    "dur": 8.42
+  },
+  "A statement about a whole set fits on a line too. For all x in A, x is less than four.": {
+    "file": "a-statement-about-a-whole-set-fits-on-a--c6c3ef.mp3",
+    "dur": 5.52
+  },
+  "And the answers to a question can be a set. X squared equals nine has two answers: minus three, and three.": {
+    "file": "and-the-answers-to-a-question-can-be-a-s-df2a57.mp3",
+    "dur": 8.04
+  },
+  "Which of these sets has five in it?": {
+    "file": "which-of-these-sets-has-five-in-it-bc3849.mp3",
+    "dur": 1.85
+  },
+  "This should be every even number. Which sign goes in the gap?": {
+    "file": "this-should-be-every-even-number-which-s-5d68a4.mp3",
+    "dur": 3.34
+  },
+  "The set of all x such that x is more than two.": {
+    "file": "the-set-of-all-x-such-that-x-is-more-tha-ab9431.mp3",
+    "dur": 2.86
+  },
+  "The set of all x such that x is more than five, and less than three. No number is in it.": {
+    "file": "the-set-of-all-x-such-that-x-is-more-tha-d8f491.mp3",
+    "dur": 5.33
+  },
+  "How do we write a set with nothing in it?": {
+    "file": "how-do-we-write-a-set-with-nothing-in-it-8a43a9.mp3",
+    "dur": 1.94
+  },
+  "The set of all x such that x is more than five, and less than three. How many elements does it have?": {
+    "file": "the-set-of-all-x-such-that-x-is-more-tha-d15aaf.mp3",
+    "dur": 7.51
+  },
+  "None. No number is more than five and also less than three.": {
+    "file": "none-no-number-is-more-than-five-and-als-ab145d.mp3",
+    "dur": 4.08
+  },
+  "So its loop is empty. A set with nothing in it is still a set.": {
+    "file": "so-its-loop-is-empty-a-set-with-nothing--78cf87.mp3",
+    "dur": 3.72
+  },
+  "In curly brackets, it is two brackets with nothing between them. That is easy to miss.": {
+    "file": "in-curly-brackets-it-is-two-brackets-wit-2f3744.mp3",
+    "dur": 6.38
+  },
+  "So it has a sign of its own. This is the empty set: the set with no elements.": {
+    "file": "so-it-has-a-sign-of-its-own-this-is-the--dd6f34.mp3",
+    "dur": 5.28
+  },
+  "It looks like a zero with a stroke through it, but it is not zero. Zero is a number. The empty set is a set.": {
+    "file": "it-looks-like-a-zero-with-a-stroke-throu-37854f.mp3",
+    "dur": 9.1
+  },
+  "Even the set that holds only zero is not empty: it has one element. The empty set has none.": {
+    "file": "even-the-set-that-holds-only-zero-is-not-28d7f4.mp3",
+    "dur": 8.02
+  },
+  "Whatever x is, it is not in there. For all x, x is not an element of the empty set.": {
+    "file": "whatever-x-is-it-is-not-in-there-for-all-d2aad1.mp3",
+    "dur": 6
+  },
+  "Which x makes this line true? None does. So the set of its answers is the empty set.": {
+    "file": "which-x-makes-this-line-true-none-does-s-1f2f09.mp3",
+    "dur": 5.81
+  },
+  "And which numbers are in both of these sets? No number is both even and odd, so that set is empty too.": {
+    "file": "and-which-numbers-are-in-both-of-these-s-7b10bd.mp3",
+    "dur": 6.77
+  },
+  "Which one is the empty set?": {
+    "file": "which-one-is-the-empty-set-1cc846.mp3",
+    "dur": 1.34
+  },
+  "Is three in the empty set? Put in the sign that makes this line true.": {
+    "file": "is-three-in-the-empty-set-put-in-the-sig-280d15.mp3",
+    "dur": 5.28
+  },
+  "Zero is not an element of the empty set.": {
+    "file": "zero-is-not-an-element-of-the-empty-set-450616.mp3",
+    "dur": 2.52
+  },
+  "Every element of A is also in B.": {
+    "file": "every-element-of-a-is-also-in-b-88b1c8.mp3",
+    "dur": 2.38
+  },
+  "How do we write that one set sits inside another?": {
+    "file": "how-do-we-write-that-one-set-sits-inside-f32b56.mp3",
+    "dur": 2.59
+  },
+  "Every element of A is also in B. Is every element of B in A?": {
+    "file": "every-element-of-a-is-also-in-b-is-every-df3f6d.mp3",
+    "dur": 4.78
+  },
+  "No. One is in B, but it is not in A. So A sits inside B, and B holds more.": {
+    "file": "no-one-is-in-b-but-it-is-not-in-a-so-a-s-4e398a.mp3",
+    "dur": 7.32
+  },
+  "This sign says: is a subset of. A is a subset of B: every element of A is also in B.": {
+    "file": "this-sign-says-is-a-subset-of-a-is-a-sub-da8399.mp3",
+    "dur": 7.37
+  },
+  "It looks like the less-than-or-equal sign, made round. And its open end faces the bigger one in the same way.": {
+    "file": "it-looks-like-the-less-than-or-equal-sig-ca8a3a.mp3",
+    "dur": 7.08
+  },
+  "The line underneath means: or equal. Six is less than or equal to six, and every set is a subset of itself.": {
+    "file": "the-line-underneath-means-or-equal-six-i-742d70.mp3",
+    "dur": 7.9
+  },
+  "Take the line away, and it says: is a proper subset of. A is inside B, and A is not all of B.": {
+    "file": "take-the-line-away-and-it-says-is-a-prop-b106c3.mp3",
+    "dur": 8.71
+  },
+  "What it says can be written with signs we know. For all x, if x is in A, then x is in B.": {
+    "file": "what-it-says-can-be-written-with-signs-w-7b451c.mp3",
+    "dur": 7.49
+  },
+  "It is used when one kind of number is a special kind of another. Every multiple of four is even, so the multiples of four are a proper subset of the even numbers.": {
+    "file": "it-is-used-when-one-kind-of-number-is-a--9e69ca.mp3",
+    "dur": 11.23
+  },
+  "The empty set is a subset of every set: it has no element that could be left out.": {
+    "file": "the-empty-set-is-a-subset-of-every-set-i-704d7b.mp3",
+    "dur": 4.68
+  },
+  "Take care: in some books, the sign without the line is used for both.": {
+    "file": "take-care-in-some-books-the-sign-without-47c8ba.mp3",
+    "dur": 4.8
+  },
+  "Here are two sets, A and B. Which one is true?": {
+    "file": "here-are-two-sets-a-and-b-which-one-is-t-179e1c.mp3",
+    "dur": 3.1
+  },
+  "These two sets are equal. Put in the sign that makes this line true.": {
+    "file": "these-two-sets-are-equal-put-in-the-sign-2f4d79.mp3",
+    "dur": 4.2
+  },
+  "A is a proper subset of B.": {
+    "file": "a-is-a-proper-subset-of-b-955bc0.mp3",
+    "dur": 1.51
+  },
+  "These two sets overlap. Three and four are in both.": {
+    "file": "these-two-sets-overlap-three-and-four-ar-6169c2.mp3",
+    "dur": 3.14
+  },
+  "How do we write the part in both? And everything in either?": {
+    "file": "how-do-we-write-the-part-in-both-and-eve-3b890f.mp3",
+    "dur": 3.29
+  },
+  "Here are two sets, A and B. Which numbers are in both of them?": {
+    "file": "here-are-two-sets-a-and-b-which-numbers--bb84f1.mp3",
+    "dur": 3.89
+  },
+  "Three and four. Drawn as loops, they sit where the two loops overlap.": {
+    "file": "three-and-four-drawn-as-loops-they-sit-w-d325b7.mp3",
+    "dur": 4.49
+  },
+  "This sign says: intersection. A intersection B is everything that is in A and in B.": {
+    "file": "this-sign-says-intersection-a-intersecti-a52577.mp3",
+    "dur": 6.22
+  },
+  "This one says: union. A union B is everything in A or in B, or in both. Three and four are listed only once.": {
+    "file": "this-one-says-union-a-union-b-is-everyth-4c124d.mp3",
+    "dur": 9.19
+  },
+  "And this sign says: without. A without B is everything in A that is not in B.": {
+    "file": "and-this-sign-says-without-a-without-b-i-df0da3.mp3",
+    "dur": 6.67
+  },
+  "Turn it round, and the answer changes. B without A is five and six.": {
+    "file": "turn-it-round-and-the-answer-changes-b-w-9d5227.mp3",
+    "dur": 5.16
+  },
+  "Look at the shapes. The sign for intersection is the sign for and, made round. The sign for union is the sign for or, made round.": {
+    "file": "look-at-the-shapes-the-sign-for-intersec-645123.mp3",
+    "dur": 10.34
+  },
+  "Intersection finds what two sets share. Here A is the multiples of two, up to twelve, and B the multiples of three. Six and twelve are in both.": {
+    "file": "intersection-finds-what-two-sets-share-h-9d79c9.mp3",
+    "dur": 11.78
+  },
+  "Now A is every even number, and B every odd number. They share nothing, so their intersection is the empty set.": {
+    "file": "now-a-is-every-even-number-and-b-every-o-51ef27.mp3",
+    "dur": 8.35
+  },
+  "And their union is every counting number.": {
+    "file": "and-their-union-is-every-counting-number-e850b6.mp3",
+    "dur": 2.5
+  },
+  "Here are two new sets. Which one is true?": {
+    "file": "here-are-two-new-sets-which-one-is-true-474a1c.mp3",
+    "dur": 2.5
+  },
+  "Put in the sign that makes this line true.": {
+    "file": "put-in-the-sign-that-makes-this-line-tru-d8c61d.mp3",
+    "dur": 2.18
+  },
+  "A intersection B is the empty set.": {
+    "file": "a-intersection-b-is-the-empty-set-ac690e.mp3",
+    "dur": 1.9
+  },
+  "The counting numbers go on for ever.": {
+    "file": "the-counting-numbers-go-on-for-ever-03f07f.mp3",
+    "dur": 2.18
+  },
+  "A set used this much has a sign of its own. What is it?": {
+    "file": "a-set-used-this-much-has-a-sign-of-its-o-293f63.mp3",
+    "dur": 3.62
+  },
+  "Here is the set of counting numbers: one, two, three, and on without end. Is one half in this set?": {
+    "file": "here-is-the-set-of-counting-numbers-one--304fcd.mp3",
+    "dur": 7.39
+  },
+  "No. One half is a number, but it is not a counting number.": {
+    "file": "no-one-half-is-a-number-but-it-is-not-a--f2d84b.mp3",
+    "dur": 3.55
+  },
+  "There are bigger sets of numbers, and each one has a sign of its own.": {
+    "file": "there-are-bigger-sets-of-numbers-and-eac-22d650.mp3",
+    "dur": 4.03
+  },
+  "The counting numbers are called the natural numbers. Their sign is a capital N with one stroke doubled.": {
+    "file": "the-counting-numbers-are-called-the-natu-4ef7f9.mp3",
+    "dur": 6.86
+  },
+  "The doubled stroke says: a set of numbers, not one number.": {
+    "file": "the-doubled-stroke-says-a-set-of-numbers-675bc1.mp3",
+    "dur": 3.24
+  },
+  "Taking away needs zero and the numbers below it. These are the integers: Z, from a German word for number.": {
+    "file": "taking-away-needs-zero-and-the-numbers-b-63d7f5.mp3",
+    "dur": 7.58
+  },
+  "Dividing needs fractions. These are the rational numbers: Q, for quotient.": {
+    "file": "dividing-needs-fractions-these-are-the-r-622725.mp3",
+    "dur": 5.62
+  },
+  "The root of two is no fraction, yet it has a place on the number line. Every place on the line is a real number: R.": {
+    "file": "the-root-of-two-is-no-fraction-yet-it-ha-ae9f7e.mp3",
+    "dur": 8.28
+  },
+  "Some numbers lie off the line altogether: the complex numbers, C. They come much later.": {
+    "file": "some-numbers-lie-off-the-line-altogether-0b9a28.mp3",
+    "dur": 5.81
+  },
+  "Each set is a subset of the next.": {
+    "file": "each-set-is-a-subset-of-the-next-19fab8.mp3",
+    "dur": 1.92
+  },
+  "The signs say what kind of number we have. Minus two is an integer, but not a natural number.": {
+    "file": "the-signs-say-what-kind-of-number-we-hav-1ecadf.mp3",
+    "dur": 6
+  },
+  "The root of two is real, but not rational.": {
+    "file": "the-root-of-two-is-real-but-not-rational-004104.mp3",
+    "dur": 2.21
+  },
+  "They also say what a letter may be. Here, n is a natural number: one, or two, or three, and so on.": {
+    "file": "they-also-say-what-a-letter-may-be-here--0cab72.mp3",
+    "dur": 7.99
+  },
+  "And one line can speak about a whole set. For every real number x, x squared is at least zero.": {
+    "file": "and-one-line-can-speak-about-a-whole-set-e26f78.mp3",
+    "dur": 7.27
+  },
+  "One half is an element of which set? Put in the sign that makes the line true.": {
+    "file": "one-half-is-an-element-of-which-set-put--321a3d.mp3",
+    "dur": 5.11
+  },
+  "Seven is an element of N: a natural number.": {
+    "file": "seven-is-an-element-of-n-a-natural-numbe-944a2d.mp3",
+    "dur": 3.22
+  },
+  "A place on a grid needs two numbers: three across, and two up.": {
+    "file": "a-place-on-a-grid-needs-two-numbers-thre-d61c42.mp3",
+    "dur": 3.38
+  },
+  "What is the set of all such pairs?": {
+    "file": "what-is-the-set-of-all-such-pairs-2e8a8d.mp3",
+    "dur": 1.85
+  },
+  "This bead is three across and two up. Is that the same place as two across and three up?": {
+    "file": "this-bead-is-three-across-and-two-up-is--50940a.mp3",
+    "dur": 5.81
+  },
+  "No. Two across and three up is a different place.": {
+    "file": "no-two-across-and-three-up-is-a-differen-7d67d1.mp3",
+    "dur": 3.05
+  },
+  "So a place needs two numbers, and their order matters. How do we write the two as one thing?": {
+    "file": "so-a-place-needs-two-numbers-and-their-o-f412d6.mp3",
+    "dur": 5.88
+  },
+  "We write them in brackets, with a comma between: across first, then up. This is called an ordered pair.": {
+    "file": "we-write-them-in-brackets-with-a-comma-b-57a6ee.mp3",
+    "dur": 7.63
+  },
+  "Two, three is a different pair. In a pair, the order matters.": {
+    "file": "two-three-is-a-different-pair-in-a-pair--6ea8be.mp3",
+    "dur": 4.2
+  },
+  "In a set, it does not. Curly brackets with the same elements are the same set, in either order.": {
+    "file": "in-a-set-it-does-not-curly-brackets-with-a3b745.mp3",
+    "dur": 6.48
+  },
+  "The numbers across come from one set, A. The numbers up come from another, B.": {
+    "file": "the-numbers-across-come-from-one-set-a-t-471547.mp3",
+    "dur": 6.05
+  },
+  "The set of every pair, first from A and second from B, is written with the times sign. We read it: A cross B.": {
+    "file": "the-set-of-every-pair-first-from-a-and-s-5d74b5.mp3",
+    "dur": 9.07
+  },
+  "Why the times sign? Count the pairs. Four across, three up: four times three is twelve.": {
+    "file": "why-the-times-sign-count-the-pairs-four--01b275.mp3",
+    "dur": 4.87
+  },
+  "Each pair is one element of A cross B.": {
+    "file": "each-pair-is-one-element-of-a-cross-b-61d84e.mp3",
+    "dur": 2.28
+  },
+  "The two sets can be of different kinds. On a game board, a square is named by a letter and a number.": {
+    "file": "the-two-sets-can-be-of-different-kinds-o-28d925.mp3",
+    "dur": 6.24
+  },
+  "With the real numbers used twice, a pair names every point of a flat sheet. That is how graphs and maps are drawn.": {
+    "file": "with-the-real-numbers-used-twice-a-pair--acf554.mp3",
+    "dur": 7.27
+  },
+  "Across first, then up. Which pair names the place of the bead?": {
+    "file": "across-first-then-up-which-pair-names-th-6b38c8.mp3",
+    "dur": 3.58
+  },
+  "Here are a new A and a new B. Is this pair in A cross B? Put in the sign that makes the line true.": {
+    "file": "here-are-a-new-a-and-a-new-b-is-this-pai-ef40fc.mp3",
+    "dur": 7.15
+  },
+  "Its first number is three, and three is not in A.": {
+    "file": "its-first-number-is-three-and-three-is-n-11bc12.mp3",
+    "dur": 3.79
+  },
+  "The pair two, three is an element of A cross B.": {
+    "file": "the-pair-two-three-is-an-element-of-a-cr-1964d1.mp3",
+    "dur": 3.48
+  },
+  "A function takes each element of A to one element of B.": {
+    "file": "a-function-takes-each-element-of-a-to-on-8900b1.mp3",
+    "dur": 3.43
+  },
+  "How do we write where it starts, and where it lands?": {
+    "file": "how-do-we-write-where-it-starts-and-wher-6b39a2.mp3",
+    "dur": 3.34
+  },
+  "F doubles each number in the set A, and lands in the set B. Where does it take three?": {
+    "file": "f-doubles-each-number-in-the-set-a-and-l-8736c5.mp3",
+    "dur": 5.11
+  },
+  "To six. Every element of A has its arrow.": {
+    "file": "to-six-every-element-of-a-has-its-arrow-4cac8e.mp3",
+    "dur": 2.52
+  },
+  "The rule, f of x equals two x, does not say where f starts, or where it lands.": {
+    "file": "the-rule-f-of-x-equals-two-x-does-not-sa-0258da.mp3",
+    "dur": 5.74
+  },
+  "So we write it with a colon and an arrow. We read it: F, from A to B.": {
+    "file": "so-we-write-it-with-a-colon-and-an-arrow-daae52.mp3",
+    "dur": 6.22
+  },
+  "The arrow points from the set where f starts to the set where it lands.": {
+    "file": "the-arrow-points-from-the-set-where-f-st-542eb4.mp3",
+    "dur": 3.96
+  },
+  "A second arrow, with a bar at its tail, is for one element. We read it: x maps to two x.": {
+    "file": "a-second-arrow-with-a-bar-at-its-tail-is-86393b.mp3",
+    "dur": 6.79
+  },
+  "The plain arrow joins sets. The barred arrow joins elements: three maps to six.": {
+    "file": "the-plain-arrow-joins-sets-the-barred-ar-977346.mp3",
+    "dur": 5.09
+  },
+  "A second function, g, adds one. Do f, then g: a small ring joins them. We read it: G after F.": {
+    "file": "a-second-function-g-adds-one-do-f-then-g-9e4181.mp3",
+    "dur": 9.5
+  },
+  "It is read from the right: f is done first. One goes to two, then to three.": {
+    "file": "it-is-read-from-the-right-f-is-done-firs-3c4d47.mp3",
+    "dur": 4.99
+  },
+  "Turn every arrow round, and we have the function that undoes f. We write f with a small minus one raised, and read it: F inverse.": {
+    "file": "turn-every-arrow-round-and-we-have-the-f-c7d7d0.mp3",
+    "dur": 10.13
+  },
+  "F inverse of six is three. The minus one here is not a power. It means: undo f.": {
+    "file": "f-inverse-of-six-is-three-the-minus-one--fd9b07.mp3",
+    "dur": 6.86
+  },
+  "These signs say what a function works on. Squaring takes each real number to a real number.": {
+    "file": "these-signs-say-what-a-function-works-on-8a4d2a.mp3",
+    "dur": 5.64
+  },
+  "Joining maps does a job in steps. One turns hours into minutes, the next turns minutes into seconds.": {
+    "file": "joining-maps-does-a-job-in-steps-one-tur-fc3473.mp3",
+    "dur": 6.91
+  },
+  "One after the other, they turn hours straight into seconds.": {
+    "file": "one-after-the-other-they-turn-hours-stra-8e34ff.mp3",
+    "dur": 3.22
+  },
+  "This map takes x to x plus two. Which is true?": {
+    "file": "this-map-takes-x-to-x-plus-two-which-is--9e058a.mp3",
+    "dur": 3.34
+  },
+  "Which arrow goes from an element to where it lands? Put it in.": {
+    "file": "which-arrow-goes-from-an-element-to-wher-09a2cf.mp3",
+    "dur": 4.15
+  },
+  "F, from A to B.": {
+    "file": "f-from-a-to-b-122085.mp3",
+    "dur": 1.58
+  },
+  "F of x equals two x. Did we find that out, or did we decide it?": {
+    "file": "f-of-x-equals-two-x-did-we-find-that-out-c706c7.mp3",
+    "dur": 4.32
+  },
+  "The equals sign cannot say.": {
+    "file": "the-equals-sign-cannot-say-536bbd.mp3",
+    "dur": 1.66
+  },
+  "X plus two equals five. Is that true for every x, or for just one?": {
+    "file": "x-plus-two-equals-five-is-that-true-for--a15c93.mp3",
+    "dur": 5.3
+  },
+  "Just one. X must be three. But x plus x equals two x is true whatever x is.": {
+    "file": "just-one-x-must-be-three-but-x-plus-x-eq-921137.mp3",
+    "dur": 6.19
+  },
+  "And f of x equals two x claims nothing at all. It only gives a name.": {
+    "file": "and-f-of-x-equals-two-x-claims-nothing-a-a15c36.mp3",
+    "dur": 5.04
+  },
+  "One sign is doing three jobs.": {
+    "file": "one-sign-is-doing-three-jobs-573663.mp3",
+    "dur": 1.7
+  },
+  "This sign says: is defined as. F of x is defined as two x.": {
+    "file": "this-sign-says-is-defined-as-f-of-x-is-d-93af0d.mp3",
+    "dur": 4.66
+  },
+  "It is an equals sign with two dots, on the side of the new name. A name is a choice, so it cannot be false.": {
+    "file": "it-is-an-equals-sign-with-two-dots-on-th-f6e37c.mp3",
+    "dur": 7.7
+  },
+  "This sign says: is identical to. X plus x is identical to two x.": {
+    "file": "this-sign-says-is-identical-to-x-plus-x--c01a6e.mp3",
+    "dur": 5.78
+  },
+  "It is an equals sign with one bar more. It says the two sides are equal for all x.": {
+    "file": "it-is-an-equals-sign-with-one-bar-more-i-6b1e65.mp3",
+    "dur": 5.81
+  },
+  "Now each job has its own sign. A name. Always equal. And the plain equals sign, for what is true only when x is three.": {
+    "file": "now-each-job-has-its-own-sign-a-name-alw-4e4bb3.mp3",
+    "dur": 9.12
+  },
+  "The first is used wherever a new name comes in. D is defined as two r. Every line after it can use d.": {
+    "file": "the-first-is-used-wherever-a-new-name-co-ec0b18.mp3",
+    "dur": 7.97
+  },
+  "The three bars mark a rule that holds for every number. A plus b is identical to b plus a.": {
+    "file": "the-three-bars-mark-a-rule-that-holds-fo-d6d91a.mp3",
+    "dur": 6.79
+  },
+  "The three bars have a second job. On a clock, count fourteen hours on from twelve. You land on two.": {
+    "file": "the-three-bars-have-a-second-job-on-a-cl-480853.mp3",
+    "dur": 6.26
+  },
+  "We write: fourteen is congruent to two, mod twelve. Counting round in twelves, they are the same place.": {
+    "file": "we-write-fourteen-is-congruent-to-two-mo-81dd06.mp3",
+    "dur": 7.8
+  },
+  "Which one is true for every x?": {
+    "file": "which-one-is-true-for-every-x-5df7ff.mp3",
+    "dur": 1.49
+  },
+  "Fifteen and three are not equal. But on a clock they are the same place. Put in the sign.": {
+    "file": "fifteen-and-three-are-not-equal-but-on-a-ce62b0.mp3",
+    "dur": 6.43
+  },
+  "F of x is defined as x plus one.": {
+    "file": "f-of-x-is-defined-as-x-plus-one-159ec4.mp3",
+    "dur": 2.62
+  },
+  "X is more than five. Five is more than three.": {
+    "file": "x-is-more-than-five-five-is-more-than-th-1e9dc2.mp3",
+    "dur": 3.05
+  },
+  "So x is more than three. Which sign says: so?": {
+    "file": "so-x-is-more-than-three-which-sign-says--0e8a68.mp3",
+    "dur": 3.46
+  },
+  "X is more than five. Five is more than three. Is x more than three?": {
+    "file": "x-is-more-than-five-five-is-more-than-th-b71bfb.mp3",
+    "dur": 5.66
+  },
+  "Yes. It follows from the two lines above. We want a sign that says: so.": {
+    "file": "yes-it-follows-from-the-two-lines-above--23bfee.mp3",
+    "dur": 5.62
+  },
+  "Three dots in a triangle say: therefore. Therefore, x is more than three.": {
+    "file": "three-dots-in-a-triangle-say-therefore-t-67e3e8.mp3",
+    "dur": 5.64
+  },
+  "The lines above it are what we know.": {
+    "file": "the-lines-above-it-are-what-we-know-868b00.mp3",
+    "dur": 1.94
+  },
+  "The line after it is what must follow.": {
+    "file": "the-line-after-it-is-what-must-follow-5e49cf.mp3",
+    "dur": 2.18
+  },
+  "The arrow from before says only: if. It does not say that x is two.": {
+    "file": "the-arrow-from-before-says-only-if-it-do-469af3.mp3",
+    "dur": 5.5
+  },
+  "But once we know that x is two, we may write: therefore, x plus one equals three.": {
+    "file": "but-once-we-know-that-x-is-two-we-may-wr-63fd72.mp3",
+    "dur": 5.21
+  },
+  "Every step of reasoning has this shape. If P then Q. P. Therefore, Q.": {
+    "file": "every-step-of-reasoning-has-this-shape-i-63a72b.mp3",
+    "dur": 5.76
+  },
+  "It is used in solving. Two x plus one equals seven. Therefore, two x equals six. Therefore, x equals three.": {
+    "file": "it-is-used-in-solving-two-x-plus-one-equ-e3593c.mp3",
+    "dur": 10.7
+  },
+  "And in any argument. Four is in A. A is a subset of B. Therefore, four is in B.": {
+    "file": "and-in-any-argument-four-is-in-a-a-is-a--0c4de1.mp3",
+    "dur": 7.44
+  },
+  "A therefore has to be earned. X squared equals four; therefore, x equals two? No: x could be minus two.": {
+    "file": "a-therefore-has-to-be-earned-x-squared-e-c7028b.mp3",
+    "dur": 8.86
+  },
+  "Therefore, x equals plus or minus two.": {
+    "file": "therefore-x-equals-plus-or-minus-two-cc3caf.mp3",
+    "dur": 2.45
+  },
+  "X plus one equals five. Which line follows?": {
+    "file": "x-plus-one-equals-five-which-line-follow-fc3344.mp3",
+    "dur": 3.05
+  },
+  "X equals seven. So x plus one equals eight. Put in the sign.": {
+    "file": "x-equals-seven-so-x-plus-one-equals-eigh-c7a7a7.mp3",
+    "dur": 4.58
+  },
+  "Therefore, x equals nine.": {
+    "file": "therefore-x-equals-nine-3a8e95.mp3",
+    "dur": 1.56
+  },
+  "X was twelve. Now x is fifteen. It changed by three.": {
+    "file": "x-was-twelve-now-x-is-fifteen-it-changed-ee16db.mp3",
+    "dur": 4.1
+  },
+  "How do we write: the change in x?": {
+    "file": "how-do-we-write-the-change-in-x-def983.mp3",
+    "dur": 1.87
+  },
   "Write what you see.": {
     "file": "write-what-you-see-c8d289.mp3",
     "dur": 1.03

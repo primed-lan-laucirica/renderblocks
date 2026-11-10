@@ -70,7 +70,8 @@ describe('every explainer keeps the path’s rules', () => {
     it(`${e.id}: its own signs, and one from each rank it depends on`, () => {
       const shown = new Set(e.signs.filter((s) => !s.teaser).map((s) => s.g))
       for (const g of signsOf(e.rank)) expect(shown.has(g), `${e.id} never shows its own "${g}"`).toBe(true)
-      for (const d of RANKS[e.rank - 1].dependsOn) expect(signsOf(d).some((g) => shown.has(g)), `${e.id} shows no sign of rank ${d}`).toBe(true)
+      // A rank with no sign of its own (pairs, rank 32, are written with brackets and a comma) asks nothing here.
+      for (const d of RANKS[e.rank - 1].dependsOn) if (signsOf(d).length) expect(signsOf(d).some((g) => shown.has(g)), `${e.id} shows no sign of rank ${d}`).toBe(true)
     })
 
     it(`${e.id}: no silence over 2.5 s that is not a wait`, () => {
@@ -159,6 +160,6 @@ describe('the voice', () => {
   })
 
   it('narration never writes a sign out: it is spoken, so it uses the sign’s name', () => {
-    for (const text of LINES) expect(/[=+−×÷·<>≤≥≠/()√%≈|±∞∝ΣΠπθ]/.test(text), text).toBe(false)
+    for (const text of LINES) expect(/[=+−×÷·<>≤≥≠/()√%≈|±∞∝ΣΠπθ¬∧∨→⇒↔⇔∀∃∈∉{}∣…∅⊆⊂∪∩∖ℕℤℚℝℂ↦∘≡∴]/.test(text), text).toBe(false)
   })
 })

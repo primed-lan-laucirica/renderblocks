@@ -36,8 +36,9 @@ export const STAGES: StageInfo[] = [...new Set(RANKS.map((r) => r.stage))].map((
  * few signs in words ("(fraction bar)"), as a pair ("( )") or round a
  * letter that is not theirs ("xⁿ" is the raised number, "pow"; "xᵢ" the
  * label set low, "sub"; "f(x)" the function's name, "fn"; any letter for a
- * number is "var"); SHEET_NAMES says which of these each stands for, and a
- * test checks the two agree.
+ * number is "var"; "{ x | … }" is the braces and what goes between them);
+ * SHEET_NAMES says which of these each stands for, and a test checks the
+ * two agree.
  */
 export const OWNER: Record<string, number> = {
   '=': 1,
@@ -78,6 +79,40 @@ export const OWNER: Record<string, number> = {
   Π: 20,
   '∞': 21,
   '∝': 22,
+  '¬': 23,
+  '∧': 23,
+  '∨': 23,
+  '→': 24,
+  '⇒': 24,
+  '↔': 24,
+  '⇔': 24,
+  '∀': 25,
+  '∃': 25,
+  '∈': 26,
+  '∉': 26,
+  '{': 27,
+  '}': 27,
+  '∣': 27,
+  ',': 27,
+  '…': 27,
+  '∅': 28,
+  '⊆': 29,
+  '⊂': 29,
+  '∪': 30,
+  '∩': 30,
+  '∖': 30,
+  ℕ: 31,
+  ℤ: 31,
+  ℚ: 31,
+  ℝ: 31,
+  ℂ: 31,
+  ':': 33,
+  '↦': 33,
+  '∘': 33,
+  ':=': 34,
+  '≡': 34,
+  mod: 34,
+  '∴': 35,
 }
 
 export const SHEET_NAMES: Record<string, string[]> = {
@@ -90,6 +125,14 @@ export const SHEET_NAMES: Record<string, string[]> = {
   'xᵢ': ['sub'],
   'f(x)': ['fn'],
   'n!': ['!'],
+  // The braces, the bar that reads "such that" (not rank 11's pair of bars), the comma between members and the dots for "and so on".
+  '{ x | … }': ['{', '}', '∣', ',', '…'],
+  // The times sign between two sets is rank 3's own.
+  'A × B': [],
+  // The colon; its arrow is rank 24's, and the raised −1 of f⁻¹ is a power's place with a minus in it.
+  'f : A → B': [':'],
+  'f⁻¹': [],
+  '≡': ['≡', 'mod'],
 }
 
 /** The signs of one rank, as the equation line names them. */
