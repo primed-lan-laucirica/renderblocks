@@ -20,6 +20,10 @@ const WORN: Record<number, Tok[][]> = {
   8: [[{ root: '9' }]],
   9: [['0', '.', '5'], ['50', '%']],
   11: [['|', '−3', '|']],
+  12: [['x'], ['y'], ['n']],
+  14: [['x', { sub: 'i' }]],
+  15: [[{ fn: 'f' }, '(', 'x', ')']],
+  18: [['n', '!']],
 }
 
 /** A rank's signs as little lines for its cover: each sign alone (the fraction bar inside a half), or as it is worn. */

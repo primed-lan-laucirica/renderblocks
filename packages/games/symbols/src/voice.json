@@ -831,6 +831,898 @@
     "file": "what-shall-we-call-a-number-we-do-not-kn-be8cb3.mp3",
     "dur": 2.69
   },
+  "A closed box and two beads are level with five beads. How many beads are in the box?": {
+    "file": "a-closed-box-and-two-beads-are-level-wit-6c034e.mp3",
+    "dur": 5.28
+  },
+  "Three. Three plus two equals five.": {
+    "file": "three-three-plus-two-equals-five-1e0bd2.mp3",
+    "dur": 2.09
+  },
+  "Now there are two numbers we do not know. Are they the same number, or different ones? A question mark cannot say.": {
+    "file": "now-there-are-two-numbers-we-do-not-know-df82b0.mp3",
+    "dur": 7.9
+  },
+  "Each unknown number needs a name of its own.": {
+    "file": "each-unknown-number-needs-a-name-of-its--e1e41a.mp3",
+    "dur": 2.18
+  },
+  "So we name the number with a letter. This one is x.": {
+    "file": "so-we-name-the-number-with-a-letter-this-e302cb.mp3",
+    "dur": 4.03
+  },
+  "We read it: x plus two equals five.": {
+    "file": "we-read-it-x-plus-two-equals-five-dfc349.mp3",
+    "dur": 2.59
+  },
+  "The letter stands for the number in the box: a number we do not know yet.": {
+    "file": "the-letter-stands-for-the-number-in-the--307bbe.mp3",
+    "dur": 4.32
+  },
+  "Open the box: three. So x equals three.": {
+    "file": "open-the-box-three-so-x-equals-three-577f1b.mp3",
+    "dur": 3.17
+  },
+  "Along one line, the same letter is always the same number.": {
+    "file": "along-one-line-the-same-letter-is-always-dffd5d.mp3",
+    "dur": 3.12
+  },
+  "x plus x equals six. Both boxes hold three.": {
+    "file": "x-plus-x-equals-six-both-boxes-hold-thre-463fa9.mp3",
+    "dur": 2.83
+  },
+  "A different letter is a different box.": {
+    "file": "a-different-letter-is-a-different-box-c75c40.mp3",
+    "dur": 2.59
+  },
+  "It may hold a different number. Here x is three, and y is four.": {
+    "file": "it-may-hold-a-different-number-here-x-is-43a999.mp3",
+    "dur": 4.82
+  },
+  "A letter can also stand for any number at all. Whatever number n is, n plus one is the next number.": {
+    "file": "a-letter-can-also-stand-for-any-number-a-e558c8.mp3",
+    "dur": 7.01
+  },
+  "A letter like this is called a variable, because its number can vary.": {
+    "file": "a-letter-like-this-is-called-a-variable--69189d.mp3",
+    "dur": 4.66
+  },
+  "Here is two times x. But look: the times sign and the letter x are easy to mix up.": {
+    "file": "here-is-two-times-x-but-look-the-times-s-50ead5.mp3",
+    "dur": 5.71
+  },
+  "So next to a letter we use the dot.": {
+    "file": "so-next-to-a-letter-we-use-the-dot-81e015.mp3",
+    "dur": 2.06
+  },
+  "Or we write no sign at all. Two x means two times x.": {
+    "file": "or-we-write-no-sign-at-all-two-x-means-t-8dc70a.mp3",
+    "dur": 3.91
+  },
+  "A letter can go wherever a number can go: over a fraction bar, or inside brackets.": {
+    "file": "a-letter-can-go-wherever-a-number-can-go-f19cfa.mp3",
+    "dur": 5.26
+  },
+  "With letters we can write a rule for every number at once. A plus B equals B plus A, whatever the two numbers are.": {
+    "file": "with-letters-we-can-write-a-rule-for-eve-86c255.mp3",
+    "dur": 8.69
+  },
+  "Formulas are written with letters too. The distance round a square is four times its side: P equals four S.": {
+    "file": "formulas-are-written-with-letters-too-th-34edec.mp3",
+    "dur": 7.39
+  },
+  "Here, x is four. Which one is true?": {
+    "file": "here-x-is-four-which-one-is-true-8b272d.mp3",
+    "dur": 2.28
+  },
+  "x plus two equals six. Put beads in the box until the beam is level.": {
+    "file": "x-plus-two-equals-six-put-beads-in-the-b-d3ab70.mp3",
+    "dur": 5.14
+  },
+  "Two x equals ten.": {
+    "file": "two-x-equals-ten-4cb5b5.mp3",
+    "dur": 1.3
+  },
+  "The absolute value of x equals three. So x is three steps from zero.": {
+    "file": "the-absolute-value-of-x-equals-three-so--73264c.mp3",
+    "dur": 6.43
+  },
+  "But on which side of zero? Can one line give both answers?": {
+    "file": "but-on-which-side-of-zero-can-one-line-g-e1be81.mp3",
+    "dur": 3.5
+  },
+  "The absolute value of x equals three: x is three steps from zero. How many numbers could x be?": {
+    "file": "the-absolute-value-of-x-equals-three-x-i-4b260a.mp3",
+    "dur": 7.73
+  },
+  "Two. Three is three steps from zero. So is minus three.": {
+    "file": "two-three-is-three-steps-from-zero-so-is-0a668c.mp3",
+    "dur": 4.32
+  },
+  "So x equals three, or x equals minus three. That takes two lines.": {
+    "file": "so-x-equals-three-or-x-equals-minus-thre-c5de8d.mp3",
+    "dur": 5.14
+  },
+  "We need one sign that says both: plus, or minus.": {
+    "file": "we-need-one-sign-that-says-both-plus-or--839735.mp3",
+    "dur": 3.02
+  },
+  "This is the plus or minus sign.": {
+    "file": "this-is-the-plus-or-minus-sign-3b62a7.mp3",
+    "dur": 1.75
+  },
+  "We read it: x equals plus or minus three.": {
+    "file": "we-read-it-x-equals-plus-or-minus-three-dc9334.mp3",
+    "dur": 2.76
+  },
+  "Look at its shape: a plus, sitting on a minus. One sign that says both.": {
+    "file": "look-at-its-shape-a-plus-sitting-on-a-mi-4b2340.mp3",
+    "dur": 4.66
+  },
+  "It is short for two lines: x equals three, or x equals minus three.": {
+    "file": "it-is-short-for-two-lines-x-equals-three-7bd7b1.mp3",
+    "dur": 5.23
+  },
+  "x equals plus or minus five: five, or minus five. Always two numbers, just as far from zero as each other.": {
+    "file": "x-equals-plus-or-minus-five-five-or-minu-0eb559.mp3",
+    "dur": 7.25
+  },
+  "You will see this sign most where things are measured. This says: ten, give or take one.": {
+    "file": "you-will-see-this-sign-most-where-things-bedb78.mp3",
+    "dur": 5.93
+  },
+  "Ten minus one is nine. Ten plus one is eleven. The true number is somewhere from nine to eleven.": {
+    "file": "ten-minus-one-is-nine-ten-plus-one-is-el-16232b.mp3",
+    "dur": 6.91
+  },
+  "A bag of flour may be marked five hundred grams, plus or minus ten. It holds somewhere from four hundred and ninety to five hundred and ten.": {
+    "file": "a-bag-of-flour-may-be-marked-five-hundre-3e3279.mp3",
+    "dur": 10.15
+  },
+  "Approximately equal says: about ten. Plus or minus says more: how far off it may be.": {
+    "file": "approximately-equal-says-about-ten-plus--f2db8f.mp3",
+    "dur": 6.82
+  },
+  "Which one says that x is five, or minus five?": {
+    "file": "which-one-says-that-x-is-five-or-minus-f-d5e5e4.mp3",
+    "dur": 2.59
+  },
+  "The true number is somewhere from eight to twelve. Which sign goes here?": {
+    "file": "the-true-number-is-somewhere-from-eight--5fd19d.mp3",
+    "dur": 4.06
+  },
+  "Ten, plus or minus three. Build the smallest number it can be.": {
+    "file": "ten-plus-or-minus-three-build-the-smalle-9b8634.mp3",
+    "dur": 3.72
+  },
+  "x equals plus or minus two.": {
+    "file": "x-equals-plus-or-minus-two-93061c.mp3",
+    "dur": 1.68
+  },
+  "Here is a list of numbers. We can name them A, B, C, D.": {
+    "file": "here-is-a-list-of-numbers-we-can-name-th-419e7a.mp3",
+    "dur": 5.26
+  },
+  "But a list may have a hundred numbers, and there are only twenty-six letters. How can we name them all?": {
+    "file": "but-a-list-may-have-a-hundred-numbers-an-a6ff02.mp3",
+    "dur": 6.86
+  },
+  "Here is a list of numbers. Four of them are named with letters. Are there enough letters to name a hundred numbers?": {
+    "file": "here-is-a-list-of-numbers-four-of-them-a-ae3714.mp3",
+    "dur": 7.1
+  },
+  "No. There are only twenty-six letters.": {
+    "file": "no-there-are-only-twenty-six-letters-bb8016.mp3",
+    "dur": 2.28
+  },
+  "And a letter does not show the order. Which number is the ninth? It is hard to tell.": {
+    "file": "and-a-letter-does-not-show-the-order-whi-00dd51.mp3",
+    "dur": 5.11
+  },
+  "A list needs names that never run out, and that show each number’s place.": {
+    "file": "a-list-needs-names-that-never-run-out-an-75ae2e.mp3",
+    "dur": 4.49
+  },
+  "So the whole list gets one letter, x. And each number gets a small number, set low, for its place in the list.": {
+    "file": "so-the-whole-list-gets-one-letter-x-and--c9fa66.mp3",
+    "dur": 8.21
+  },
+  "This small, low number is called a subscript.": {
+    "file": "this-small-low-number-is-called-a-subscr-bfa01c.mp3",
+    "dur": 2.78
+  },
+  "We read it: x one. It is the first number in the list. Here, x one equals three.": {
+    "file": "we-read-it-x-one-it-is-the-first-number--a96396.mp3",
+    "dur": 6.53
+  },
+  "x four is the fourth number. Here, x four equals two.": {
+    "file": "x-four-is-the-fourth-number-here-x-four--2d1d91.mp3",
+    "dur": 3.86
+  },
+  "The subscript is a label, like a house number. It is part of the name, and never part of a sum.": {
+    "file": "the-subscript-is-a-label-like-a-house-nu-2e77d6.mp3",
+    "dur": 6.91
+  },
+  "Do not mix it up with a power. A small number set high means multiply: x squared is x times x.": {
+    "file": "do-not-mix-it-up-with-a-power-a-small-nu-c0b8d7.mp3",
+    "dur": 7.39
+  },
+  "A small number set low is only a name: x two is the second number in a list.": {
+    "file": "a-small-number-set-low-is-only-a-name-x--8c5a4f.mp3",
+    "dur": 5.57
+  },
+  "When we mean any one of them, the subscript can be a letter too. We read it: x I.": {
+    "file": "when-we-mean-any-one-of-them-the-subscri-30a658.mp3",
+    "dur": 5.76
+  },
+  "If I is two, x I is x two: the second number.": {
+    "file": "if-i-is-two-x-i-is-x-two-the-second-numb-e625d3.mp3",
+    "dur": 3.94
+  },
+  "If I is five, it is x five: the fifth.": {
+    "file": "if-i-is-five-it-is-x-five-the-fifth-02e90a.mp3",
+    "dur": 3.1
+  },
+  "Subscripts name any list. A plant’s height, measured every day, is H one, H two, H three, H four.": {
+    "file": "subscripts-name-any-list-a-plant-s-heigh-8dcca3.mp3",
+    "dur": 9.29
+  },
+  "Many lists start at zero. H zero is the height at the start, before the first day.": {
+    "file": "many-lists-start-at-zero-h-zero-is-the-h-b84fbf.mp3",
+    "dur": 5.11
+  },
+  "And they go in sums like any letters. x one plus x two plus x three: three plus one plus four equals eight.": {
+    "file": "and-they-go-in-sums-like-any-letters-x-o-832825.mp3",
+    "dur": 8.16
+  },
+  "Which one is the third number in a list?": {
+    "file": "which-one-is-the-third-number-in-a-list-b7f033.mp3",
+    "dur": 1.9
+  },
+  "Make x two equal five. Put beads on the second pile.": {
+    "file": "make-x-two-equal-five-put-beads-on-the-s-1e997d.mp3",
+    "dur": 3.55
+  },
+  "x one plus x two equals seven.": {
+    "file": "x-one-plus-x-two-equals-seven-315552.mp3",
+    "dur": 2.23
+  },
+  "Here is a machine. It doubles whatever goes in: three goes in, and six comes out.": {
+    "file": "here-is-a-machine-it-doubles-whatever-go-a81fd8.mp3",
+    "dur": 5.3
+  },
+  "How can we write a machine’s rule?": {
+    "file": "how-can-we-write-a-machine-s-rule-445e76.mp3",
+    "dur": 1.68
+  },
+  "This machine doubles every number that goes in. Four goes in. What comes out?": {
+    "file": "this-machine-doubles-every-number-that-g-67f3ea.mp3",
+    "dur": 5.62
+  },
+  "Eight. Double four is eight.": {
+    "file": "eight-double-four-is-eight-417906.mp3",
+    "dur": 1.66
+  },
+  "Three goes in, and six comes out.": {
+    "file": "three-goes-in-and-six-comes-out-fd6bed.mp3",
+    "dur": 2.26
+  },
+  "We need a way to write the machine’s rule: a name for the machine, and what it does to any number.": {
+    "file": "we-need-a-way-to-write-the-machine-s-rul-b70e87.mp3",
+    "dur": 5.9
+  },
+  "So we give the machine a name: F. A machine like this is called a function.": {
+    "file": "so-we-give-the-machine-a-name-f-a-machin-c22e7d.mp3",
+    "dur": 5.66
+  },
+  "What goes in is written in brackets, after the name. Here it is x: any number at all. We read it: F of x.": {
+    "file": "what-goes-in-is-written-in-brackets-afte-710356.mp3",
+    "dur": 9.34
+  },
+  "F of x equals two x. Whatever goes in, two times that comes out.": {
+    "file": "f-of-x-equals-two-x-whatever-goes-in-two-70507b.mp3",
+    "dur": 5.64
+  },
+  "Put three where x was. F of three equals two times three, which is six.": {
+    "file": "put-three-where-x-was-f-of-three-equals--9bd83e.mp3",
+    "dur": 5.52
+  },
+  "Take care. These brackets do not mean times: F of three is not F times three.": {
+    "file": "take-care-these-brackets-do-not-mean-tim-94e59f.mp3",
+    "dur": 5.16
+  },
+  "And a function is dependable. The same number in always gives the same number out.": {
+    "file": "and-a-function-is-dependable-the-same-nu-b910b8.mp3",
+    "dur": 5.54
+  },
+  "Another machine gets another letter. G of x equals x plus one: it adds one to whatever goes in.": {
+    "file": "another-machine-gets-another-letter-g-of-3a6dec.mp3",
+    "dur": 7.51
+  },
+  "G of four equals five.": {
+    "file": "g-of-four-equals-five-2f137a.mp3",
+    "dur": 1.32
+  },
+  "You have met a function before: the root sign. Nine goes in, and three comes out.": {
+    "file": "you-have-met-a-function-before-the-root--041cde.mp3",
+    "dur": 5.47
+  },
+  "Functions are used whenever one number depends on another. Apples cost two coins each, so the price depends on how many: P of N equals two N.": {
+    "file": "functions-are-used-whenever-one-number-d-354601.mp3",
+    "dur": 10.34
+  },
+  "P of three equals six: three apples cost six coins.": {
+    "file": "p-of-three-equals-six-three-apples-cost--62b80b.mp3",
+    "dur": 3.82
+  },
+  "Here, F of x equals x plus three. Which one is true?": {
+    "file": "here-f-of-x-equals-x-plus-three-which-on-1ff54d.mp3",
+    "dur": 3.74
+  },
+  "G of x equals two x. Three goes in. Build what comes out.": {
+    "file": "g-of-x-equals-two-x-three-goes-in-build--0de3bf.mp3",
+    "dur": 3.96
+  },
+  "F of five equals ten.": {
+    "file": "f-of-five-equals-ten-133191.mp3",
+    "dur": 1.51
+  },
+  "Here is a wheel, one step across. Roll it once round, along the line.": {
+    "file": "here-is-a-wheel-one-step-across-roll-it--bf9657.mp3",
+    "dur": 5.06
+  },
+  "How far will it go?": {
+    "file": "how-far-will-it-go-b7ac21.mp3",
+    "dur": 1.32
+  },
+  "This wheel is one across. Roll it once round. How far will it go?": {
+    "file": "this-wheel-is-one-across-roll-it-once-ro-6927bd.mp3",
+    "dur": 3.86
+  },
+  "A bit more than three. And it is the same for every circle, big or small: round is that many times across.": {
+    "file": "a-bit-more-than-three-and-it-is-the-same-7472b8.mp3",
+    "dur": 7.58
+  },
+  "The number starts three point one four one five nine, and its digits never end. It needs a name.": {
+    "file": "the-number-starts-three-point-one-four-o-575c25.mp3",
+    "dur": 6.86
+  },
+  "Its name is this letter: pi.": {
+    "file": "its-name-is-this-letter-pi-42705c.mp3",
+    "dur": 1.92
+  },
+  "We read it: pi is approximately equal to three point one four.": {
+    "file": "we-read-it-pi-is-approximately-equal-to--4ec3ca.mp3",
+    "dur": 4.22
+  },
+  "Pi is not a variable. It is one number, always the same, like three or ten.": {
+    "file": "pi-is-not-a-variable-it-is-one-number-al-41e002.mp3",
+    "dur": 5.83
+  },
+  "Take any circle. C is the distance round it, and D is the distance across. C divided by D equals pi.": {
+    "file": "take-any-circle-c-is-the-distance-round--576de9.mp3",
+    "dur": 8.42
+  },
+  "This letter is theta, the usual name for an angle. Here an arm, one long, has turned by theta.": {
+    "file": "this-letter-is-theta-the-usual-name-for--9a41df.mp3",
+    "dur": 9.02
+  },
+  "Cosine of theta is how far across the end of the arm is. Here, zero point eight.": {
+    "file": "cosine-of-theta-is-how-far-across-the-en-0d6b21.mp3",
+    "dur": 6
+  },
+  "Sine of theta is how far up it is. Here, zero point six.": {
+    "file": "sine-of-theta-is-how-far-up-it-is-here-z-590d8f.mp3",
+    "dur": 4.39
+  },
+  "Tangent of theta is sine divided by cosine: up, divided by across. It tells how steep the arm is.": {
+    "file": "tangent-of-theta-is-sine-divided-by-cosi-2bda0f.mp3",
+    "dur": 7.87
+  },
+  "All three are functions, like f of x. An angle goes in, and a number comes out. Turn the arm, and the numbers change.": {
+    "file": "all-three-are-functions-like-f-of-x-an-a-b0c092.mp3",
+    "dur": 8.16
+  },
+  "Pi is used for anything round.": {
+    "file": "pi-is-used-for-anything-round-f9fbf7.mp3",
+    "dur": 2.02
+  },
+  "If a wheel is D across, one turn takes it pi times D.": {
+    "file": "if-a-wheel-is-d-across-one-turn-takes-it-5aca6b.mp3",
+    "dur": 3.74
+  },
+  "Sine and cosine are used for anything that turns or swings.": {
+    "file": "sine-and-cosine-are-used-for-anything-th-ebe8d4.mp3",
+    "dur": 3.46
+  },
+  "As the arm goes round, its height rises and falls in a wave.": {
+    "file": "as-the-arm-goes-round-its-height-rises-a-b872c8.mp3",
+    "dur": 3.14
+  },
+  "Sound and light move in waves like this one.": {
+    "file": "sound-and-light-move-in-waves-like-this--39fadc.mp3",
+    "dur": 2.16
+  },
+  "And tangent is used for slopes. This ramp goes up three for every four across, so its tangent is three quarters.": {
+    "file": "and-tangent-is-used-for-slopes-this-ramp-980eb9.mp3",
+    "dur": 8.21
+  },
+  "Your turn. Which one tells how far up the end of the arm is?": {
+    "file": "your-turn-which-one-tells-how-far-up-the-04bf8b.mp3",
+    "dur": 3.24
+  },
+  "Sine. Sine of theta is how far up.": {
+    "file": "sine-sine-of-theta-is-how-far-up-bef087.mp3",
+    "dur": 2.33
+  },
+  "Cosine of theta equals zero point eight.": {
+    "file": "cosine-of-theta-equals-zero-point-eight-1a053d.mp3",
+    "dur": 2.28
+  },
+  "One bead doubles, and doubles again: two, four, eight, sixteen.": {
+    "file": "one-bead-doubles-and-doubles-again-two-f-b688c2.mp3",
+    "dur": 3.89
+  },
+  "Two to which power is sixteen? Is there a function that finds the power?": {
+    "file": "two-to-which-power-is-sixteen-is-there-a-3e2723.mp3",
+    "dur": 5.11
+  },
+  "Ten to which power is one thousand?": {
+    "file": "ten-to-which-power-is-one-thousand-f156e9.mp3",
+    "dur": 1.97
+  },
+  "Three. Ten times ten times ten is one thousand.": {
+    "file": "three-ten-times-ten-times-ten-is-one-tho-233058.mp3",
+    "dur": 4.25
+  },
+  "We found the power by counting the tens. Is there a function that finds it for us?": {
+    "file": "we-found-the-power-by-counting-the-tens--2b13f1.mp3",
+    "dur": 5.11
+  },
+  "There is. This is log, short for logarithm.": {
+    "file": "there-is-this-is-log-short-for-logarithm-2adf3b.mp3",
+    "dur": 2.78
+  },
+  "We read it: log of one thousand equals three.": {
+    "file": "we-read-it-log-of-one-thousand-equals-th-762821.mp3",
+    "dur": 3.19
+  },
+  "Log asks one question: ten to which power makes this number?": {
+    "file": "log-asks-one-question-ten-to-which-power-885656.mp3",
+    "dur": 4.32
+  },
+  "Here is a function: f of x equals ten to the x. Three goes in, and one thousand comes out.": {
+    "file": "here-is-a-function-f-of-x-equals-ten-to--78b54f.mp3",
+    "dur": 6.74
+  },
+  "Log runs it backwards. One thousand goes in, and three comes out.": {
+    "file": "log-runs-it-backwards-one-thousand-goes--93a7a3.mp3",
+    "dur": 4.06
+  },
+  "The root sign undoes a power too. From one hundred, it gives back the ten.": {
+    "file": "the-root-sign-undoes-a-power-too-from-on-4221f7.mp3",
+    "dur": 5.06
+  },
+  "Log gives back the two: the power.": {
+    "file": "log-gives-back-the-two-the-power-abdee3.mp3",
+    "dur": 2.5
+  },
+  "This letter is the number E. Like pi, it is one number, always the same: about two point seven one eight.": {
+    "file": "this-letter-is-the-number-e-like-pi-it-i-e8f7b1.mp3",
+    "dur": 7.85
+  },
+  "It comes from growing. Let one grow by its whole self in a single step. It doubles: two.": {
+    "file": "it-comes-from-growing-let-one-grow-by-it-9c6fbd.mp3",
+    "dur": 7.32
+  },
+  "Grow it by half, and then by half again, and it reaches two and a quarter.": {
+    "file": "grow-it-by-half-and-then-by-half-again-a-830a4d.mp3",
+    "dur": 4.99
+  },
+  "Grow it a little at every moment, and it reaches E.": {
+    "file": "grow-it-a-little-at-every-moment-and-it--eede5e.mp3",
+    "dur": 3.55
+  },
+  "This sign is the natural log. It works like log, but it asks: the number E to which power?": {
+    "file": "this-sign-is-the-natural-log-it-works-li-13b710.mp3",
+    "dur": 6.67
+  },
+  "Logs are used when numbers get very big. Log of a million is only six.": {
+    "file": "logs-are-used-when-numbers-get-very-big--77c7df.mp3",
+    "dur": 5.09
+  },
+  "Loud sounds and earthquakes are measured on a scale like this. One more on the scale means ten times as strong.": {
+    "file": "loud-sounds-and-earthquakes-are-measured-d47341.mp3",
+    "dur": 6.02
+  },
+  "E is used for steady growth: anything that grows a little at every moment, like money in a bank.": {
+    "file": "e-is-used-for-steady-growth-anything-tha-2dc3c4.mp3",
+    "dur": 6
+  },
+  "Your turn. Which one is true?": {
+    "file": "your-turn-which-one-is-true-f60074.mp3",
+    "dur": 1.58
+  },
+  "Find the log of ten thousand. Put on a bead for every ten you multiply in.": {
+    "file": "find-the-log-of-ten-thousand-put-on-a-be-987618.mp3",
+    "dur": 5.02
+  },
+  "Log of ten equals one.": {
+    "file": "log-of-ten-equals-one-62be59.mp3",
+    "dur": 1.73
+  },
+  "Here are three beads: red, blue and green.": {
+    "file": "here-are-three-beads-red-blue-and-green-f0e5c7.mp3",
+    "dur": 2.74
+  },
+  "They can swap places. In how many orders can they stand in a row?": {
+    "file": "they-can-swap-places-in-how-many-orders--8fd3c5.mp3",
+    "dur": 4.03
+  },
+  "Three beads: red, blue and green. In how many orders can they stand in a row?": {
+    "file": "three-beads-red-blue-and-green-in-how-ma-1188b6.mp3",
+    "dur": 5.74
+  },
+  "Six. Here is every order.": {
+    "file": "six-here-is-every-order-fc3b69.mp3",
+    "dur": 1.73
+  },
+  "Three beads can stand first. Then two are left to stand next, and one to stand last. Three times two times one.": {
+    "file": "three-beads-can-stand-first-then-two-are-8f7d31.mp3",
+    "dur": 7.8
+  },
+  "With four beads, it is four times three times two times one: twenty-four orders.": {
+    "file": "with-four-beads-it-is-four-times-three-t-b5bf83.mp3",
+    "dur": 5.86
+  },
+  "With ten beads, the line gets long. We need a short way to write: multiply all the way down to one.": {
+    "file": "with-ten-beads-the-line-gets-long-we-nee-c4a2c6.mp3",
+    "dur": 6.74
+  },
+  "This is the factorial sign. It is written after its number.": {
+    "file": "this-is-the-factorial-sign-it-is-written-1decb5.mp3",
+    "dur": 3.62
+  },
+  "We read it: four factorial equals twenty-four.": {
+    "file": "we-read-it-four-factorial-equals-twenty--74451f.mp3",
+    "dur": 3.24
+  },
+  "Factorial means: multiply the number by every whole number below it, down to one.": {
+    "file": "factorial-means-multiply-the-number-by-e-b99154.mp3",
+    "dur": 4.78
+  },
+  "Each factorial is built from the one before. Five factorial is five times four factorial.": {
+    "file": "each-factorial-is-built-from-the-one-bef-498cb4.mp3",
+    "dur": 6.36
+  },
+  "Five times twenty-four: one hundred and twenty.": {
+    "file": "five-times-twenty-four-one-hundred-and-t-c0141e.mp3",
+    "dur": 2.45
+  },
+  "With a letter, we can write that rule for every number: N factorial equals N times the factorial of the number before.": {
+    "file": "with-a-letter-we-can-write-that-rule-for-e6a0af.mp3",
+    "dur": 8.33
+  },
+  "The sign belongs to the number just before it. Two times three factorial is two times six: twelve.": {
+    "file": "the-sign-belongs-to-the-number-just-befo-1f359c.mp3",
+    "dur": 6.79
+  },
+  "With brackets, the inside comes first: six factorial, seven hundred and twenty.": {
+    "file": "with-brackets-the-inside-comes-first-six-4d70f3.mp3",
+    "dur": 4.54
+  },
+  "Factorial is used for counting orders, and the count grows very fast.": {
+    "file": "factorial-is-used-for-counting-orders-an-eb37f9.mp3",
+    "dur": 4.32
+  },
+  "Ten books can stand on a shelf in more than three million orders.": {
+    "file": "ten-books-can-stand-on-a-shelf-in-more-t-d0bdbe.mp3",
+    "dur": 3.62
+  },
+  "A pack of fifty-two cards can be shuffled in fifty-two factorial ways: a number sixty-eight digits long.": {
+    "file": "a-pack-of-fifty-two-cards-can-be-shuffle-b9ce53.mp3",
+    "dur": 6.55
+  },
+  "Make four factorial. Put on sixes: each six is three factorial.": {
+    "file": "make-four-factorial-put-on-sixes-each-si-fca54c.mp3",
+    "dur": 4.87
+  },
+  "Five factorial equals one hundred and twenty.": {
+    "file": "five-factorial-equals-one-hundred-and-tw-66dd70.mp3",
+    "dur": 2.76
+  },
+  "x one plus x two plus x three, and on, all the way to x one hundred.": {
+    "file": "x-one-plus-x-two-plus-x-three-and-on-all-4d0118.mp3",
+    "dur": 5.62
+  },
+  "Is there a shorter way to write a long sum?": {
+    "file": "is-there-a-shorter-way-to-write-a-long-s-92c451.mp3",
+    "dur": 1.97
+  },
+  "Five piles, named x one to x five. How many beads are there in all?": {
+    "file": "five-piles-named-x-one-to-x-five-how-man-e406c2.mp3",
+    "dur": 4.56
+  },
+  "Fifteen. Three plus one plus four plus two plus five.": {
+    "file": "fifteen-three-plus-one-plus-four-plus-tw-ba5797.mp3",
+    "dur": 3.77
+  },
+  "Five piles already make a long line. With a hundred piles, the line would never fit on the paper.": {
+    "file": "five-piles-already-make-a-long-line-with-24f2a8.mp3",
+    "dur": 6.91
+  },
+  "We need a short way to write: add them all.": {
+    "file": "we-need-a-short-way-to-write-add-them-al-2b12c2.mp3",
+    "dur": 2.28
+  },
+  "This sign is sigma.": {
+    "file": "this-sign-is-sigma-783f94.mp3",
+    "dur": 1.18
+  },
+  "Sigma is the Greek letter S. S is for sum.": {
+    "file": "sigma-is-the-greek-letter-s-s-is-for-sum-cfbb3d.mp3",
+    "dur": 2.78
+  },
+  "Under it is where the counting starts: I equals one. On top is where it stops: five.": {
+    "file": "under-it-is-where-the-counting-starts-i--6319fd.mp3",
+    "dur": 6.31
+  },
+  "Beside it is what to add: x I. So we add x one, x two, x three, x four and x five.": {
+    "file": "beside-it-is-what-to-add-x-i-so-we-add-x-016598.mp3",
+    "dur": 6.41
+  },
+  "We read it: the sum of x I, as I goes from one to five, equals fifteen.": {
+    "file": "we-read-it-the-sum-of-x-i-as-i-goes-from-d58a76.mp3",
+    "dur": 6.22
+  },
+  "What we add can be I itself. As I goes from one to four, that is one plus two plus three plus four.": {
+    "file": "what-we-add-can-be-i-itself-as-i-goes-fr-d9674c.mp3",
+    "dur": 8.71
+  },
+  "The sum is ten.": {
+    "file": "the-sum-is-ten-c5808b.mp3",
+    "dur": 1.08
+  },
+  "Change the number on top, and the sum goes further. Up to five, it is fifteen.": {
+    "file": "change-the-number-on-top-and-the-sum-goe-0a0121.mp3",
+    "dur": 4.78
+  },
+  "Sigma is used wherever many numbers are added into one total.": {
+    "file": "sigma-is-used-wherever-many-numbers-are--38825f.mp3",
+    "dur": 3.74
+  },
+  "Share that total evenly between the five piles, and each has three. That is the average.": {
+    "file": "share-that-total-evenly-between-the-five-b02406.mp3",
+    "dur": 6.38
+  },
+  "Make the sum of I, as I goes from one to four. Fill the steps.": {
+    "file": "make-the-sum-of-i-as-i-goes-from-one-to--fd180a.mp3",
+    "dur": 4.51
+  },
+  "The sum of I, as I goes from one to three, equals six.": {
+    "file": "the-sum-of-i-as-i-goes-from-one-to-three-7fd52a.mp3",
+    "dur": 3.41
+  },
+  "One plus two plus three plus four: sigma writes that sum.": {
+    "file": "one-plus-two-plus-three-plus-four-sigma--a47599.mp3",
+    "dur": 3.19
+  },
+  "But what if we multiply them instead? Is there a sign for that too?": {
+    "file": "but-what-if-we-multiply-them-instead-is--682254.mp3",
+    "dur": 3.94
+  },
+  "One plus two plus three plus four is ten. Now multiply them instead. Will that make more than ten, or less than ten?": {
+    "file": "one-plus-two-plus-three-plus-four-is-ten-69eceb.mp3",
+    "dur": 9.53
+  },
+  "More: twenty-four. Multiplying grows much faster than adding.": {
+    "file": "more-twenty-four-multiplying-grows-much--632464.mp3",
+    "dur": 3.55
+  },
+  "Sigma is the short way to write the sum.": {
+    "file": "sigma-is-the-short-way-to-write-the-sum-a49c3f.mp3",
+    "dur": 1.92
+  },
+  "We need a sign like it, that multiplies a whole list.": {
+    "file": "we-need-a-sign-like-it-that-multiplies-a-9229c7.mp3",
+    "dur": 3.34
+  },
+  "This sign is capital pi.": {
+    "file": "this-sign-is-capital-pi-9ea39b.mp3",
+    "dur": 1.44
+  },
+  "Capital pi is the Greek letter P. P is for product: the answer when we multiply.": {
+    "file": "capital-pi-is-the-greek-letter-p-p-is-fo-114a72.mp3",
+    "dur": 6.12
+  },
+  "It works just as sigma does. Under it, where I starts. On top, where I stops. Beside it, what to multiply.": {
+    "file": "it-works-just-as-sigma-does-under-it-whe-28ca9e.mp3",
+    "dur": 8.95
+  },
+  "We read it: the product of I, as I goes from one to four, equals twenty-four.": {
+    "file": "we-read-it-the-product-of-i-as-i-goes-fr-4d1e01.mp3",
+    "dur": 5.69
+  },
+  "Do not mix it up with small pi. Small pi is the name of one number. Capital pi is an instruction: multiply.": {
+    "file": "do-not-mix-it-up-with-small-pi-small-pi--3b913e.mp3",
+    "dur": 8.69
+  },
+  "You have met one product already. Multiply every number from one up to n, and that is n factorial.": {
+    "file": "you-have-met-one-product-already-multipl-69c61c.mp3",
+    "dur": 7.46
+  },
+  "What is multiplied can be a list of numbers: x one times x two times x three.": {
+    "file": "what-is-multiplied-can-be-a-list-of-numb-65cec5.mp3",
+    "dur": 5.26
+  },
+  "Here that is three times two times two: twelve.": {
+    "file": "here-that-is-three-times-two-times-two-t-c0f528.mp3",
+    "dur": 2.52
+  },
+  "And when the same number is multiplied each time, the product is a power. Two times two times two is two cubed.": {
+    "file": "and-when-the-same-number-is-multiplied-e-e84592.mp3",
+    "dur": 7.82
+  },
+  "The product of two, as I goes from one to three, is two times two times two. Put on that many beads.": {
+    "file": "the-product-of-two-as-i-goes-from-one-to-c0bf23.mp3",
+    "dur": 8.38
+  },
+  "The product of I, as I goes from one to three, equals six.": {
+    "file": "the-product-of-i-as-i-goes-from-one-to-t-c9196b.mp3",
+    "dur": 3.84
+  },
+  "Count: one, two, three, four, and on, and on.": {
+    "file": "count-one-two-three-four-and-on-and-on-5d10dd.mp3",
+    "dur": 2.52
+  },
+  "Is there a last number?": {
+    "file": "is-there-a-last-number-28a31d.mp3",
+    "dur": 1.32
+  },
+  "Count as far as you like: a hundred, a thousand, a million. Is there a biggest number?": {
+    "file": "count-as-far-as-you-like-a-hundred-a-tho-2530f5.mp3",
+    "dur": 5.64
+  },
+  "No. Take any number at all, and call it n. Then n plus one is bigger.": {
+    "file": "no-take-any-number-at-all-and-call-it-n--98f328.mp3",
+    "dur": 5.33
+  },
+  "Try a million. A million and one is bigger.": {
+    "file": "try-a-million-a-million-and-one-is-bigge-9ece4e.mp3",
+    "dur": 2.4
+  },
+  "So the numbers go on without end. We need a sign for that.": {
+    "file": "so-the-numbers-go-on-without-end-we-need-615b2c.mp3",
+    "dur": 3.55
+  },
+  "This sign is infinity.": {
+    "file": "this-sign-is-infinity-1bca85.mp3",
+    "dur": 1.49
+  },
+  "Look at its shape: a loop. Follow it round, and you never reach an end.": {
+    "file": "look-at-its-shape-a-loop-follow-it-round-eb3d2c.mp3",
+    "dur": 4.99
+  },
+  "Infinity is not a number. You cannot count up to it. It means: going on for ever.": {
+    "file": "infinity-is-not-a-number-you-cannot-coun-2b45ff.mp3",
+    "dur": 5.76
+  },
+  "Whatever number n is, it is less than infinity. We read it: n is less than infinity.": {
+    "file": "whatever-number-n-is-it-is-less-than-inf-d9112c.mp3",
+    "dur": 6.22
+  },
+  "On a number line, the numbers go on for ever both ways: towards infinity, and towards minus infinity.": {
+    "file": "on-a-number-line-the-numbers-go-on-for-e-591637.mp3",
+    "dur": 6.82
+  },
+  "Infinity is used for a sum that never stops.": {
+    "file": "infinity-is-used-for-a-sum-that-never-st-0d16bd.mp3",
+    "dur": 2.83
+  },
+  "Fill half a square. Then half of what is left. Then half again, and again.": {
+    "file": "fill-half-a-square-then-half-of-what-is--c48e62.mp3",
+    "dur": 4.68
+  },
+  "The pieces never stop, yet together they never pass one whole square. With sigma, we write: the sum, as I goes from one to infinity, equals one.": {
+    "file": "the-pieces-never-stop-yet-together-they--b00882.mp3",
+    "dur": 13.54
+  },
+  "Minus infinity is less than zero.": {
+    "file": "minus-infinity-is-less-than-zero-fc36b8.mp3",
+    "dur": 2.45
+  },
+  "Two apples cost four coins. Four apples cost eight coins.": {
+    "file": "two-apples-cost-four-coins-four-apples-c-e3a95c.mp3",
+    "dur": 3.82
+  },
+  "Double the apples, double the coins. How do we write that two amounts move in step?": {
+    "file": "double-the-apples-double-the-coins-how-d-b5f585.mp3",
+    "dur": 4.97
+  },
+  "One apple costs two coins. Two apples cost four coins. How many coins for four apples?": {
+    "file": "one-apple-costs-two-coins-two-apples-cos-cb0427.mp3",
+    "dur": 6.94
+  },
+  "Eight. Double the apples, and the coins double too.": {
+    "file": "eight-double-the-apples-and-the-coins-do-cc3522.mp3",
+    "dur": 3.48
+  },
+  "Halve the apples, and the coins halve. The two amounts move in step.": {
+    "file": "halve-the-apples-and-the-coins-halve-the-5cb5a0.mp3",
+    "dur": 5.21
+  },
+  "We need a way to write that.": {
+    "file": "we-need-a-way-to-write-that-90e03f.mp3",
+    "dur": 1.39
+  },
+  "Call the number of apples x, and the number of coins y.": {
+    "file": "call-the-number-of-apples-x-and-the-numb-46d5b4.mp3",
+    "dur": 3.34
+  },
+  "This sign means: is proportional to.": {
+    "file": "this-sign-means-is-proportional-to-855781.mp3",
+    "dur": 2.38
+  },
+  "We read it: Y is proportional to X.": {
+    "file": "we-read-it-y-is-proportional-to-x-8c5f9a.mp3",
+    "dur": 3.1
+  },
+  "Do not mix it up with infinity. Infinity is a closed loop. This sign is open at one end.": {
+    "file": "do-not-mix-it-up-with-infinity-infinity--304267.mp3",
+    "dur": 5.86
+  },
+  "It says: when x doubles, y doubles. When x halves, y halves.": {
+    "file": "it-says-when-x-doubles-y-doubles-when-x--4d4589.mp3",
+    "dur": 4.3
+  },
+  "Here is the test. Divide y by x. If the answer is always the same number, y is proportional to x.": {
+    "file": "here-is-the-test-divide-y-by-x-if-the-an-c728a4.mp3",
+    "dur": 8.9
+  },
+  "Here, y is always two times x. The equals sign says exactly how much. The proportional sign says only that they move in step.": {
+    "file": "here-y-is-always-two-times-x-the-equals--53059e.mp3",
+    "dur": 10.18
+  },
+  "Not everything moves in step. Here, y is x plus two.": {
+    "file": "not-everything-moves-in-step-here-y-is-x-bcdc66.mp3",
+    "dur": 4.15
+  },
+  "Double x, from one to two. But Y goes only from three to four. So Y is not proportional to X.": {
+    "file": "double-x-from-one-to-two-but-y-goes-only-590997.mp3",
+    "dur": 7.99
+  },
+  "At a steady speed, distance is proportional to time: twice as long, twice as far.": {
+    "file": "at-a-steady-speed-distance-is-proportion-e9c4e7.mp3",
+    "dur": 5.21
+  },
+  "For a circle, double the distance across, and the distance round doubles.": {
+    "file": "for-a-circle-double-the-distance-across--27c1e0.mp3",
+    "dur": 5.14
+  },
+  "The distance round is proportional to the distance across. The number that links them is pi.": {
+    "file": "the-distance-round-is-proportional-to-th-867c95.mp3",
+    "dur": 5.78
+  },
+  "In which one is Y proportional to X?": {
+    "file": "in-which-one-is-y-proportional-to-x-8ab8bf.mp3",
+    "dur": 2.59
+  },
+  "Here, Y is proportional to X. When x is two, y is four. Now x is four. Put on the coins for y.": {
+    "file": "here-y-is-proportional-to-x-when-x-is-tw-060f22.mp3",
+    "dur": 8.04
+  },
+  "C is proportional to D.": {
+    "file": "c-is-proportional-to-d-bc7ef4.mp3",
+    "dur": 1.56
+  },
+  "Three is less than five: true. Five is less than three: false.": {
+    "file": "three-is-less-than-five-true-five-is-les-14325c.mp3",
+    "dur": 4.63
+  },
+  "Can we do sums with true and false?": {
+    "file": "can-we-do-sums-with-true-and-false-f21728.mp3",
+    "dur": 2.38
+  },
   "Write what you see.": {
     "file": "write-what-you-see-c8d289.mp3",
     "dur": 1.03

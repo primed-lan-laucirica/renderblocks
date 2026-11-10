@@ -286,7 +286,7 @@ export function line(toks: Tok[], o: LineOpts = {}): Sprite[] {
   const bead = o.bead ?? underBead(list, xs, size)
   const out: Sprite[] = []
   list.forEach((it, i) => {
-    const has = (names?: string[]) => !!names && (names.includes(it.k) || names.includes(it.g))
+    const has = (names?: string[]) => !!names && (names.includes(it.k) || names.includes(it.g) || (!!it.ch && names.includes(it.ch)))
     out.push({ k: it.k, type: 'tok', n: { x: x + xs[i], y, size, o: fade * (has(o.faint) ? 0.3 : 1), gold: has(o.gold) ? 1 : 0 }, d: { it } })
     if (o.under && counted(it)) {
       const cols = underCols(it.n!)

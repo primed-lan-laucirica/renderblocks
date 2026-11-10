@@ -159,6 +159,6 @@ describe('the voice', () => {
   })
 
   it('narration never writes a sign out: it is spoken, so it uses the sign’s name', () => {
-    for (const text of LINES) expect(/[=+−×÷·<>≤≥≠/()√%≈|]/.test(text), text).toBe(false)
+    for (const text of LINES) expect(/[=+−×÷·<>≤≥≠/()√%≈|±∞∝ΣΠπθ]/.test(text), text).toBe(false)
   })
 })

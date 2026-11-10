@@ -41,6 +41,12 @@ const fileFor = (text) => {
   const hash = createHash('sha1').update(`${voice.id}|${voice.model}|${text}`).digest('hex').slice(0, 6)
   return `${slug}-${hash}.mp3`
 }
+// Words the voice misreads, as they are sent to it (the line itself, and so its clip's name, keeps its spelling).
+const SPOKEN = [
+  [/\bSine\b/g, 'Sign'],
+  [/\bsine\b/g, 'sign'],
+]
+const spoken = (text) => SPOKEN.reduce((t, [from, to]) => t.replace(from, to), text)
 const duration = (f) => Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]).toString().trim())
 
 fs.mkdirSync(outDir, { recursive: true })
@@ -53,7 +59,7 @@ for (const text of lines) {
     const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice.id}`, {
       method: 'POST',
       headers: { 'xi-api-key': apiKey(), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, model_id: voice.model, voice_settings: voice.settings }),
+      body: JSON.stringify({ text: spoken(text), model_id: voice.model, voice_settings: voice.settings }),
     })
     if (!res.ok) throw new Error(`${res.status} ${(await res.text()).slice(0, 200)} for "${text}"`)
     const raw = `${dest}.raw.mp3`

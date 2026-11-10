@@ -11,5 +11,16 @@ import { r08 } from './r08-roots'
 import { r09 } from './r09-point-percent'
 import { r10 } from './r10-approx'
 import { r11 } from './r11-absolute'
+import { r12 } from './r12-letters'
+import { r13 } from './r13-plus-or-minus'
+import { r14 } from './r14-subscripts'
+import { r15 } from './r15-functions'
+import { r16 } from './r16-circle'
+import { r17 } from './r17-logs'
+import { r18 } from './r18-factorial'
+import { r19 } from './r19-sigma'
+import { r20 } from './r20-product'
+import { r21 } from './r21-infinity'
+import { r22 } from './r22-proportional'
 
-export const SPECS: Spec[] = [r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11]
+export const SPECS: Spec[] = [r01, r02, r03, r04, r05, r06, r07, r08, r09, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22]

@@ -7,26 +7,42 @@
  * them, so tokens can slide and swap between two lines.
  */
 import type { ReactNode } from 'react'
-import { GOLD_EDGE, INK, SANS, SOFT } from './look'
+import { GOLD_EDGE, INK, SANS, SERIF, SOFT } from './look'
 
 /**
  * One thing on an equation line: a numeral ("5", "1,000,000", "0.25",
  * "−3"), a sign ("=", "+"), "?" (not known yet), "_" (a gap for a sign), a
  * tally, a Roman numeral, a fraction, something raised (the 5 of 2⁵, set
- * against the token before it) or a root over what it reaches. `k` names
- * it, so it can move to another place on the next line (5 = V becomes
- * V = 5).
+ * against the token before it) or a root over what it reaches. From rank
+ * 12 on a line also holds letters ("x", "n": a number's name), the letters
+ * that are one number's own name ("π", "e") or an angle's ("θ"), a
+ * function's words ("sin", "log") and its name (the f of f(x)), a label
+ * set low (the i of xᵢ), and the big Σ and Π with where they start below
+ * and where they stop above. `k` names a token, so it can move to another
+ * place on the next line (5 = V becomes V = 5).
  */
-export type Tok = string | { g: string; k: string } | { tally: number; k?: string } | { roman: string; n: number; k?: string } | { frac: [Part, Part]; k?: string } | { sup: Part; k?: string } | { root: Part; k?: string }
+export type Tok =
+  | string
+  | { g: string; k: string }
+  | { tally: number; k?: string }
+  | { roman: string; n: number; k?: string }
+  | { frac: [Part, Part]; k?: string }
+  | { sup: Part; k?: string }
+  | { root: Part; k?: string }
+  | { sub: Part; k?: string }
+  | { fn: string; k?: string }
+  | { big: 'Σ' | 'Π'; from?: Part; to?: Part; k?: string }
 
 /** What a token holds inside it, itself a little line: one token, or several. */
 export type Part = string | Tok[]
 
 export interface Item {
   k: string
-  kind: 'num' | 'sign' | 'unknown' | 'gap' | 'tally' | 'roman' | 'frac' | 'sup' | 'root'
-  /** What it shows (a sign's name on the line: "=", "frac", "pow"). */
+  kind: 'num' | 'sign' | 'unknown' | 'gap' | 'tally' | 'roman' | 'frac' | 'sup' | 'root' | 'letter' | 'word' | 'sub' | 'fn' | 'big'
+  /** What it shows (a sign's name on the line: "=", "frac", "pow", "var", "sub", "fn"). */
   g: string
+  /** The letter a variable or a function is written with. */
+  ch?: string
   /** The amount a numeral or mark stands for. */
   n?: number
   /** The little lines inside it: a fraction's top and bottom, what is raised, what is under the root. */
@@ -62,11 +78,20 @@ const WIDTH: Record<string, number> = {
   '%': 0.74,
   '≈': 0.7,
   '|': 0.1,
+  '±': 0.7,
+  '!': 0.22,
+  '∞': 0.94,
+  '∝': 0.8,
 }
 export const isSign = (g: string) => g in WIDTH
 
 /** A numeral: digits, with commas, a point or a minus before it. */
 const NUMERAL = /^−?[\d,]+(\.\d+)?$/
+/** A letter standing for a number (any but e, which is one number's own name, as π is; θ is the angle's letter). */
+const LETTER = /^[A-Za-df-z]$/
+const NAMED = ['π', 'θ', 'e']
+/** A function's name written as a word, and its width as type. */
+const WORDS: Record<string, number> = { sin: 1.34, cos: 1.62, tan: 1.52, log: 1.46, ln: 0.88 }
 const number = (g: string) => Number(g.replace(/,/g, '').replace('−', '-'))
 const within = (part: Part) => items(typeof part === 'string' ? [part] : part)
 /** The amount of a part that is one numeral. */
@@ -86,9 +111,13 @@ export function items(toks: Tok[]): Item[] {
       if (g === '?') it = { kind: 'unknown', g }
       else if (g === '_') it = { kind: 'gap', g }
       else if (g === '|') it = { kind: 'sign', g, opens: bars++ % 2 === 0 }
-      else if (g === '−') it = { kind: 'sign', g, unary: !before || (before.kind === 'sign' && !closes(before) && before.g !== '%') }
+      else if (g === '−' || g === '±') it = { kind: 'sign', g, unary: !before || (before.kind === 'sign' && !closes(before) && !['%', '!', '∞'].includes(before.g)) }
       else if (isSign(g)) it = { kind: 'sign', g }
       else if (NUMERAL.test(g)) it = { kind: 'num', g, n: number(g) }
+      else if (LETTER.test(g)) it = { kind: 'letter', g: 'var', ch: g }
+      else if (NAMED.includes(g)) it = { kind: 'letter', g, ch: g }
+      else if (g in WORDS) it = { kind: 'word', g }
+      else if (g === 'Σ' || g === 'Π') it = { kind: 'big', g, parts: [[], []] }
       else throw new Error(`No such token: "${g}"`)
     } else if ('tally' in t) {
       it = { kind: 'tally', g: `tally${t.tally}`, n: t.tally }
@@ -104,18 +133,28 @@ export function items(toks: Tok[]): Item[] {
     } else if ('sup' in t) {
       it = { kind: 'sup', g: 'pow', parts: [within(t.sup)] }
       k = t.k
-    } else {
+    } else if ('root' in t) {
       it = { kind: 'root', g: '√', parts: [within(t.root)] }
+      k = t.k
+    } else if ('sub' in t) {
+      it = { kind: 'sub', g: 'sub', parts: [within(t.sub)] }
+      k = t.k
+    } else if ('fn' in t) {
+      it = { kind: 'fn', g: 'fn', ch: t.fn }
+      k = t.k
+    } else {
+      it = { kind: 'big', g: t.big, parts: [t.from === undefined ? [] : within(t.from), t.to === undefined ? [] : within(t.to)] }
       k = t.k
     }
     if (!k) {
-      const i = seen.get(it.g) ?? 0
-      seen.set(it.g, i + 1)
-      k = `${it.g}#${i}`
+      const name = it.ch ?? it.g
+      const i = seen.get(name) ?? 0
+      seen.set(name, i + 1)
+      k = `${name}#${i}`
     }
     const inner = (it.parts ?? []).flat()
-    const own = it.kind === 'num' ? ['−', '.'].filter((c) => it.g.includes(c)) : it.kind === 'sign' || it.parts ? [it.g] : []
-    const id = `${it.kind}:${it.g}` + (it.parts ? `[${it.parts.map((part) => part.map((x) => x.id).join(' ')).join(' | ')}]` : '')
+    const own = it.kind === 'num' ? ['−', '.'].filter((c) => it.g.includes(c)) : it.kind === 'unknown' || it.kind === 'gap' || it.kind === 'tally' || it.kind === 'roman' ? [] : [it.g]
+    const id = `${it.kind}:${it.ch ?? it.g}` + (it.parts ? `[${it.parts.map((part) => part.map((x) => x.id).join(' ')).join(' | ')}]` : '')
     return (before = { ...it, k, signs: [...own, ...inner.flatMap((x) => x.signs)], id })
   })
 }
@@ -123,10 +162,16 @@ export function items(toks: Tok[]): Item[] {
 /** Type is set to these widths whatever font the device has (see Token), so a line's layout never depends on it. */
 const CHAR: Record<string, number> = { ',': 0.3, '.': 0.24, '−': 0.5 }
 const digits = (g: string) => [...g].reduce((w, c) => w + (CHAR[c] ?? 0.62), 0)
+/** A letter's width (serif italic), where it is not the usual. */
+const LETTERS: Record<string, number> = { i: 0.36, j: 0.38, l: 0.36, t: 0.42, f: 0.44, r: 0.48, s: 0.5, e: 0.52, c: 0.52, m: 0.9, w: 0.82, π: 0.66, θ: 0.58 }
+const letter = (ch: string) => LETTERS[ch] ?? (/[A-Z]/.test(ch) ? 0.76 : 0.6)
 
 /** A fraction's numerals, and what is raised, as a part of the line's size. */
 const FRAC = 0.66
 const SUP = 0.56
+const SUB = 0.5
+/** The big Σ and Π: how much taller than the line they stand, their width, and their limits' size and distance. */
+const BIG = { s: 1.2, w: 0.92, lim: 0.38, off: 0.88 }
 /** The root's own strokes before what it reaches, and the line's run past it. */
 const ROOT = { lead: 0.46, tail: 0.08 }
 
@@ -135,10 +180,20 @@ const closes = (it: Item) => it.g === ')' || (it.g === '|' && !it.opens)
 const opens = (it: Item) => it.g === '(' || (it.g === '|' && !!it.opens)
 /** The room between two neighbours: none to speak of inside a pair, under a raised number, or round a point. */
 function space(a: Item, b: Item) {
-  if (b.kind === 'sup' || a.g === '.' || b.g === '.') return 0.03
+  if (b.kind === 'sup' || b.kind === 'sub' || b.g === '!' || a.g === '.' || b.g === '.') return 0.03
+  // A function's name stands against its brackets; its word stands a little off what it takes.
+  // An italic f leans over its bracket, so it stands a little further off.
+  if (a.kind === 'fn' && b.g === '(') return a.ch === 'f' ? 0.1 : 0.03
+  if (a.kind === 'word') return b.g === '(' ? 0.05 : 0.14
+  if (a.kind === 'big') return 0.12
   // A bar is a plain stroke, so it stands a little further off than a bracket (a minus next to it must not run into it).
   if ((a.g === '|' && opens(a)) || (b.g === '|' && closes(b))) return 0.13
   if (opens(a) || closes(b) || a.unary || b.g === '%') return 0.05
+  // A number or a letter right against a letter or a bracket: times, with its sign left out (2x, πd, 2(x + 1)).
+  if (a.kind === 'num' || a.kind === 'letter' || a.kind === 'sup' || a.kind === 'sub' || closes(a)) {
+    if (b.kind === 'letter' || b.kind === 'fn' || b.g === '(') return 0.05
+    if (b.kind === 'word') return 0.14
+  }
   return SPACE
 }
 
@@ -166,6 +221,15 @@ export function widthOf(it: Item): number {
       return span(it.parts![0]) * SUP + 0.02
     case 'root':
       return ROOT.lead + span(it.parts![0]) + ROOT.tail
+    case 'letter':
+    case 'fn':
+      return letter(it.ch!)
+    case 'word':
+      return WORDS[it.g]
+    case 'sub':
+      return span(it.parts![0]) * SUB + 0.02
+    case 'big':
+      return Math.max(BIG.w, span(it.parts![0]) * BIG.lim, span(it.parts![1]) * BIG.lim)
   }
 }
 
@@ -291,6 +355,23 @@ export function Sign({ g, size, colour = INK }: { g: string; size: number; colou
     case '|':
       d = L(0, -0.44, 0, 0.44)
       break
+    case '±':
+      d = [L(-0.25, -0.1, 0.25, -0.1, 0), L(0, -0.35, 0, 0.15, 1), L(-0.25, 0.34, 0.25, 0.34, 2)]
+      break
+    case '!':
+      d = (
+        <>
+          <line x1={0} y1={-0.4 * S} x2={0} y2={0.1 * S} {...st} strokeWidth={S * 0.11} />
+          {dot(0, 0.33, 0.08)}
+        </>
+      )
+      break
+    case '∞':
+      d = <path d={`M 0 0 C ${0.13 * S} ${-0.25 * S} ${0.4 * S} ${-0.25 * S} ${0.4 * S} 0 C ${0.4 * S} ${0.25 * S} ${0.13 * S} ${0.25 * S} 0 0 C ${-0.13 * S} ${-0.25 * S} ${-0.4 * S} ${-0.25 * S} ${-0.4 * S} 0 C ${-0.4 * S} ${0.25 * S} ${-0.13 * S} ${0.25 * S} 0 0 Z`} {...st} strokeWidth={S * 0.08} />
+      break
+    case '∝':
+      d = <path d={`M ${0.32 * S} ${-0.2 * S} C ${0.1 * S} ${-0.2 * S} ${0.02 * S} ${0.2 * S} ${-0.16 * S} ${0.2 * S} C ${-0.28 * S} ${0.2 * S} ${-0.34 * S} ${0.1 * S} ${-0.34 * S} 0 C ${-0.34 * S} ${-0.1 * S} ${-0.28 * S} ${-0.2 * S} ${-0.16 * S} ${-0.2 * S} C ${0.02 * S} ${-0.2 * S} ${0.1 * S} ${0.2 * S} ${0.32 * S} ${0.2 * S}`} {...st} strokeWidth={S * 0.08} />
+      break
     default:
       // A sign with no drawing yet (the later stages): type.
       d = (
@@ -303,6 +384,55 @@ export function Sign({ g, size, colour = INK }: { g: string; size: number; colou
 }
 
 const type = (size: number, colour: string) => ({ fontFamily: SANS, fontWeight: 800, fontSize: size, fill: colour, textAnchor: 'middle', dominantBaseline: 'central' }) as const
+/** Letters are set as mathematics sets them, in a serif italic, so x is never taken for the times sign. */
+const italic = (size: number, colour: string) => ({ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: size, fill: colour, textAnchor: 'middle', dominantBaseline: 'central' }) as const
+
+/** The big Σ or Π alone, its middle at (0, 0): drawn, like every sign. */
+function Big({ g, size, colour }: { g: string; size: number; colour: string }) {
+  const S = size * BIG.s
+  const st = { stroke: colour, strokeWidth: size * 0.085, strokeLinecap: 'round', strokeLinejoin: 'round', fill: 'none' } as const
+  const pts = (list: [number, number][]) => list.map(([x, y]) => `${x * S},${y * S}`).join(' ')
+  if (g === 'Σ')
+    return (
+      <polyline
+        points={pts([
+          [0.3, -0.33],
+          [0.3, -0.45],
+          [-0.3, -0.45],
+          [0.04, 0],
+          [-0.3, 0.45],
+          [0.3, 0.45],
+          [0.3, 0.33],
+        ])}
+        {...st}
+      />
+    )
+  return (
+    <>
+      <polyline
+        points={pts([
+          [-0.36, -0.45],
+          [0.36, -0.45],
+        ])}
+        {...st}
+      />
+      <polyline
+        points={pts([
+          [-0.22, -0.45],
+          [-0.22, 0.45],
+        ])}
+        {...st}
+      />
+      <polyline
+        points={pts([
+          [0.22, -0.45],
+          [0.22, 0.45],
+        ])}
+        {...st}
+      />
+    </>
+  )
+}
 
 /** A little line inside a token, centred on (0, 0). */
 function Row({ list, size, colour }: { list: Item[]; size: number; colour: string }) {
@@ -425,6 +555,52 @@ export function Token({ it, x, y, size, o = 1, s = 1, colour = INK }: { it: Item
       )
       break
     }
+    case 'letter':
+    case 'fn':
+      // π is drawn (a tablet's serif may not have a good one); it sits where a small letter sits.
+      d =
+        it.ch === 'π' ? (
+          <g data-sign="π" stroke={colour} strokeWidth={S * 0.09} strokeLinecap="round" strokeLinejoin="round" fill="none">
+            <path d={`M ${-0.3 * S} ${-0.01 * S} C ${-0.27 * S} ${-0.1 * S} ${-0.22 * S} ${-0.12 * S} ${-0.14 * S} ${-0.12 * S} L ${0.3 * S} ${-0.12 * S}`} />
+            <path d={`M ${-0.08 * S} ${-0.12 * S} C ${-0.08 * S} ${0.1 * S} ${-0.12 * S} ${0.24 * S} ${-0.2 * S} ${0.33 * S}`} />
+            <path d={`M ${0.12 * S} ${-0.12 * S} L ${0.12 * S} ${0.22 * S} C ${0.12 * S} ${0.3 * S} ${0.16 * S} ${0.34 * S} ${0.26 * S} ${0.31 * S}`} />
+          </g>
+        ) : (
+          <text data-sign={it.g} {...italic(S, colour)}>
+            {it.ch}
+          </text>
+        )
+      break
+    case 'word':
+      d = (
+        <text data-sign={it.g} {...type(S, colour)} textLength={WORDS[it.g] * S} lengthAdjust="spacingAndGlyphs">
+          {it.g}
+        </text>
+      )
+      break
+    case 'sub':
+      d = (
+        <g data-sign="sub" transform={`translate(0 ${0.32 * S})`}>
+          <Row list={it.parts![0]} size={S * SUB} colour={colour} />
+        </g>
+      )
+      break
+    case 'big':
+      d = (
+        <>
+          <g data-sign={it.g}>
+            <Big g={it.g} size={S} colour={colour} />
+          </g>
+          {/* Where it starts, below; where it stops, above. */}
+          <g transform={`translate(0 ${BIG.off * S})`}>
+            <Row list={it.parts![0]} size={S * BIG.lim} colour={colour} />
+          </g>
+          <g transform={`translate(0 ${-BIG.off * S})`}>
+            <Row list={it.parts![1]} size={S * BIG.lim} colour={colour} />
+          </g>
+        </>
+      )
+      break
   }
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`} opacity={o}>

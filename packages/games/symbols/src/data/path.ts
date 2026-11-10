@@ -34,8 +34,10 @@ export const STAGES: StageInfo[] = [...new Set(RANKS.map((r) => r.stage))].map((
 /**
  * Which rank owns each sign an equation line can show. The sheet writes a
  * few signs in words ("(fraction bar)"), as a pair ("( )") or round a
- * letter that is not theirs ("xⁿ" is the raised number, "pow"); SHEET_NAMES
- * says which of these each stands for, and a test checks the two agree.
+ * letter that is not theirs ("xⁿ" is the raised number, "pow"; "xᵢ" the
+ * label set low, "sub"; "f(x)" the function's name, "fn"; any letter for a
+ * number is "var"); SHEET_NAMES says which of these each stands for, and a
+ * test checks the two agree.
  */
 export const OWNER: Record<string, number> = {
   '=': 1,
@@ -59,6 +61,23 @@ export const OWNER: Record<string, number> = {
   '%': 9,
   '≈': 10,
   '|': 11,
+  var: 12,
+  '±': 13,
+  sub: 14,
+  fn: 15,
+  π: 16,
+  θ: 16,
+  sin: 16,
+  cos: 16,
+  tan: 16,
+  e: 17,
+  log: 17,
+  ln: 17,
+  '!': 18,
+  Σ: 19,
+  Π: 20,
+  '∞': 21,
+  '∝': 22,
 }
 
 export const SHEET_NAMES: Record<string, string[]> = {
@@ -67,6 +86,10 @@ export const SHEET_NAMES: Record<string, string[]> = {
   'xⁿ': ['pow'],
   '(decimal point)': ['.'],
   '|x|': ['|'],
+  'x, y, n …': ['var'],
+  'xᵢ': ['sub'],
+  'f(x)': ['fn'],
+  'n!': ['!'],
 }
 
 /** The signs of one rank, as the equation line names them. */
