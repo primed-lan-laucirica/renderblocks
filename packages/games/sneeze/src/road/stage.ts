@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier2d-compat'
-import { count, high, unitOf, valueOf, type Outcome, type Part, type Shape } from './chains'
+import { cellOf, count, high, valueOf, type Outcome, type Part, type Shape } from './chains'
 
 export const STEP = 1 / 60
 /** The biggest shape is about this many physics units across, as the sneezer always is in Sneeze² (same floaty gravity). */
@@ -57,13 +57,13 @@ export interface RPiece {
 
 /** A piece's box in blocks, from its middle (or from where he holds it). */
 export function boxOf(p: { shape: Shape; k: number; x: number; y: number }, x = p.x, y = p.y) {
-  const u = unitOf(p.k)
+  const u = cellOf(p.shape, p.k)
   const [w, h] = [p.shape.length * u, high(p.shape) * u]
   return { x0: x - w / 2, x1: x + w / 2, y0: y - h / 2, y1: y + h / 2 }
 }
 
 /** The bigger of a piece's width and height, in blocks. */
-const sizeOf = (p: { shape: Shape; k: number }) => Math.max(p.shape.length, high(p.shape)) * unitOf(p.k)
+const sizeOf = (p: { shape: Shape; k: number }) => Math.max(p.shape.length, high(p.shape)) * cellOf(p.shape, p.k)
 
 /**
  * The chains' stage: a floor, and shapes of blocks. Any of them can sneeze
@@ -104,7 +104,7 @@ export class RoadStage {
   }
 
   private add(shape: Shape, k: number, x: number, y: number, id = this.nextId++): RPiece {
-    const f = this.f * unitOf(k)
+    const f = this.f * cellOf(shape, k)
     const rb = this.world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(x * this.f, y * this.f).lockRotations().setCcdEnabled(true).setLinearDamping(0.05))
     const p: RPiece = { id, shape, k, from: null, path: [], rb, x, y, settled: false, still: 0, airborne: 0, spin: null, held: false, lastThud: -1 }
     // A box for each run of columns of one height.
@@ -140,7 +140,7 @@ export class RoadStage {
     const { x0, y0 } = boxOf(p)
     this.remove(p)
     const f = this.f
-    const u = unitOf(p.k)
+    const u = cellOf(p.shape, p.k)
     // A little one hops as far for its size as a big one does (a hundredth doesn't fly off the stage).
     const size = Math.min(SPAN, Math.max(4 * u, sizeOf(p) * f))
     const base = LAUNCH * Math.sqrt(GRAVITY * size)
@@ -176,7 +176,7 @@ export class RoadStage {
     const { y0 } = boxOf(p)
     const x = p.x
     this.remove(p)
-    const q = this.add(shape, k, x, y0 + (high(shape) * unitOf(k)) / 2 + 0.05 * unitOf(k), p.id)
+    const q = this.add(shape, k, x, y0 + (high(shape) * cellOf(shape, k)) / 2 + 0.05 * cellOf(shape, k), p.id)
     Object.assign(q, { from: p.from, path: p.path })
     return q
   }
@@ -199,7 +199,7 @@ export class RoadStage {
 
   /** Where he's holding it (blocks; never below the floor). */
   holdAt(x: number, y: number) {
-    if (this.holding) Object.assign(this.holding, { x, y: Math.max(y, (high(this.holding.p.shape) * unitOf(this.holding.p.k)) / 2) })
+    if (this.holding) Object.assign(this.holding, { x, y: Math.max(y, (high(this.holding.p.shape) * cellOf(this.holding.p.shape, this.holding.p.k)) / 2) })
   }
 
   /** Where the whole that `p` flew out of stands (its bottom-left corner), if every piece that stayed is still there and at rest. */
@@ -208,7 +208,7 @@ export class RoadStage {
     const stays = p.from.stays.map((id) => this.piece(id))
     if (stays.some((q) => !q || !q.settled || q.held)) return null
     const b = boxOf(stays[0]!)
-    const u = unitOf(p.from.k)
+    const u = cellOf(p.from.whole, p.from.k)
     return { x0: b.x0 - p.from.stayAt.x * u, y0: b.y0 - p.from.stayAt.y * u }
   }
 
@@ -218,7 +218,7 @@ export class RoadStage {
     const home = h && this.homeOf(h.p)
     if (!h || !home) return false
     const a = boxOf(h.p, h.x, h.y)
-    const u = unitOf(h.p.from!.k)
+    const u = cellOf(h.p.from!.whole, h.p.from!.k)
     const [w, t] = [h.p.from!.whole.length * u, high(h.p.from!.whole) * u]
     const m = 0.6 * u
     return !(a.x1 < home.x0 - m || a.x0 > home.x0 + w + m || a.y1 < home.y0 - m || a.y0 > home.y0 + t + m)
@@ -236,7 +236,7 @@ export class RoadStage {
         if (q === p) continue
         const a = boxOf(p, h.x, y)
         const b = boxOf(q)
-        if (a.x1 > b.x0 && a.x0 < b.x1 && a.y1 > b.y0 && a.y0 < b.y1) y = b.y1 + (a.y1 - a.y0) / 2 + 0.02 * unitOf(p.k)
+        if (a.x1 > b.x0 && a.x0 < b.x1 && a.y1 > b.y0 && a.y0 < b.y1) y = b.y1 + (a.y1 - a.y0) / 2 + 0.02 * cellOf(p.shape, p.k)
       }
     p.rb.setBodyType(RAPIER.RigidBodyType.Dynamic, true)
     for (let i = 0; i < p.rb.numColliders(); i++) p.rb.collider(i).setCollisionGroups(0xffffffff)
@@ -256,7 +256,7 @@ export class RoadStage {
     const from = p.from
     for (const id of from.stays) this.remove(this.piece(id)!)
     this.remove(p)
-    const u = unitOf(from.k)
+    const u = cellOf(from.whole, from.k)
     const w = this.add(from.whole, from.k, home.x0 + (from.whole.length * u) / 2, home.y0 + (high(from.whole) * u) / 2, from.id)
     Object.assign(w, { from: from.from, path: from.path })
     this.sneezes = Math.max(0, this.sneezes - 1)
@@ -279,7 +279,7 @@ export class RoadStage {
         touched.add(p)
         if (this.time - p.lastThud < 0.15) continue
         const v = p.rb.linvel()
-        const strength = Math.min(1, Math.hypot(v.x, v.y) / (2 * Math.sqrt(GRAVITY * Math.max(unitOf(p.k), sizeOf(p) * this.f))))
+        const strength = Math.min(1, Math.hypot(v.x, v.y) / (2 * Math.sqrt(GRAVITY * Math.max(cellOf(p.shape, p.k), sizeOf(p) * this.f))))
         if (strength < 0.1) continue
         p.lastThud = this.time
         thuds.push({ strength, size: valueOf(count(p.shape), p.k) })
@@ -295,12 +295,12 @@ export class RoadStage {
       if (p.settled) {
         // Knocked by another: it has to come to rest again.
         const v = p.rb.linvel()
-        if (Math.hypot(v.x, v.y) > 0.6 * this.f * Math.sqrt(unitOf(p.k))) Object.assign(p, { settled: false, still: 0, airborne: 0 })
+        if (Math.hypot(v.x, v.y) > 0.6 * this.f * Math.sqrt(cellOf(p.shape, p.k))) Object.assign(p, { settled: false, still: 0, airborne: 0 })
         continue
       }
       const v = p.rb.linvel()
       p.airborne += STEP
-      p.still = Math.hypot(v.x, v.y) < 0.15 * this.f * Math.sqrt(unitOf(p.k)) ? p.still + STEP : 0
+      p.still = Math.hypot(v.x, v.y) < 0.15 * this.f * Math.sqrt(cellOf(p.shape, p.k)) ? p.still + STEP : 0
       if (p.still > 0.25 || p.airborne > FOREVER) {
         p.settled = true
         p.spin = null

@@ -3,7 +3,7 @@ import { usePan } from '@renderblocks/scene/usePan'
 import type { Look } from '@renderblocks/designer/look'
 import { drawPiece } from '../draw'
 import { drawShape } from './draw'
-import { count, high, type ChainId } from './chains'
+import { count, DEPTH, high, type ChainId } from './chains'
 import { NAMES, scene, stageOf, STAGES, WINDOWS, type Placed, type Window } from './windows'
 
 /** Shapes drawn to fit a box, standing on its bottom edge (in blocks, bottom-left corners). */
@@ -20,8 +20,10 @@ export function Picture({ parts, lookFor }: { parts: Placed[]; lookFor: (n: bigi
       if (!w || !h) return
       el.width = Math.round(w * dpr)
       el.height = Math.round(h * dpr)
-      const x1 = Math.max(...parts.map((p) => p.x + p.shape.length))
-      const y1 = Math.max(...parts.map((p) => p.y + high(p.shape)))
+      // A deep shape's far side shows up and to the right of its front.
+      const far = (p: Placed) => (p.shape.deep ? p.shape.length * DEPTH : 0)
+      const x1 = Math.max(...parts.map((p) => p.x + p.shape.length + far(p)))
+      const y1 = Math.max(...parts.map((p) => p.y + high(p.shape) + far(p)))
       // Room round them for arms and tilted corners.
       const scale = Math.min(w / (x1 + 2.4), h / (y1 + 1.6))
       for (const p of parts) {

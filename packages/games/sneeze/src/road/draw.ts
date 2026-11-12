@@ -5,9 +5,9 @@
  * and on each other.
  */
 import { drawBlocksAt, drawBody, drawFeatures } from '@renderblocks/designer/draw'
-import type { Shape as Body } from '@renderblocks/designer/shapes'
+import { colourOf, type Shape as Body } from '@renderblocks/designer/shapes'
 import type { Look } from '@renderblocks/designer/look'
-import { count, high, isRect, type Shape } from './chains'
+import { count, DEPTH, high, isRect, type Shape } from './chains'
 
 const bodyOf = (rows: number, cols: number): Body => ({ kind: cols === 1 ? 'tower' : cols === rows ? 'square' : 'rectangle', cols: BigInt(cols), rows: BigInt(rows), left: 0n })
 
@@ -28,7 +28,83 @@ function features(ctx: CanvasRenderingContext2D, n: bigint, rows: number, cols: 
   drawFeatures(ctx, n, s, [], { ...look, arms: 'none', legs: 'none' }, 0)
 }
 
+type Pt = [number, number]
+const lerp = (a: Pt, b: Pt, u: number): Pt => [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u]
+
+/**
+ * A deep shape (the cubes chain), seen a little from above and from the
+ * right: a cube, or a cube with a smaller one gone from its top right front
+ * corner, so the floor and two walls that stay show. Drawn face by face, back
+ * to front, in the colour of its number, each face ruled into its blocks.
+ */
+function drawDeep(ctx: CanvasRenderingContext2D, s: Shape, look: Look, px: number) {
+  const n = s.length
+  const t = s[n - 1]
+  const out = n - t
+  const N = BigInt(count(s))
+  const { fill, edge } = colourOf(N, 0n)
+  const grid = Math.min(0.35, (px - 3) / 20)
+  /** A face p0 p1 p2 p3, `cu` blocks along p0→p1 and `cv` along p0→p3; `shade`: lighter above 0, darker below. */
+  const face = (p: Pt[], cu: number, cv: number, shade: number) => {
+    ctx.beginPath()
+    p.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)))
+    ctx.closePath()
+    ctx.fillStyle = fill
+    ctx.fill()
+    if (shade) {
+      ctx.fillStyle = shade > 0 ? `rgba(255,255,255,${shade})` : `rgba(0,0,0,${-shade})`
+      ctx.fill()
+    }
+    ctx.lineJoin = 'round'
+    ctx.lineWidth = 2 / px
+    ctx.strokeStyle = edge ?? 'rgba(0,0,0,0.5)'
+    ctx.stroke()
+    if (grid <= 0) return
+    ctx.beginPath()
+    for (let i = 1; i < cu; i++) {
+      ctx.moveTo(...lerp(p[0], p[1], i / cu))
+      ctx.lineTo(...lerp(p[3], p[2], i / cu))
+    }
+    for (let j = 1; j < cv; j++) {
+      ctx.moveTo(...lerp(p[0], p[3], j / cv))
+      ctx.lineTo(...lerp(p[1], p[2], j / cv))
+    }
+    ctx.lineWidth = 1.2 / px
+    // In its own edge colour (a ten's red), and dark as well, so the blocks show on a strong colour too.
+    if (edge) {
+      ctx.strokeStyle = edge
+      ctx.globalAlpha = Math.min(1, grid * 2.5)
+      ctx.stroke()
+      ctx.globalAlpha = 1
+    }
+    ctx.strokeStyle = `rgba(0,0,0,${edge ? grid * 0.6 : grid})`
+    ctx.stroke()
+  }
+  /** A box from x, y, z (z back from the front), w wide, h high and dz deep: its front, top and right faces. */
+  const box = (x: number, y: number, z: number, w: number, h: number, dz: number) => {
+    const [a, b] = [z * DEPTH, (z + dz) * DEPTH]
+    face([[x + a, y + h + a], [x + w + a, y + h + a], [x + w + b, y + h + b], [x + b, y + h + b]], w, dz, 0.3)
+    face([[x + w + a, y + a], [x + w + b, y + b], [x + w + b, y + h + b], [x + w + a, y + h + a]], dz, h, -0.2)
+    face([[x + a, y + a], [x + w + a, y + a], [x + w + a, y + h + a], [x + a, y + h + a]], w, h, 0)
+  }
+  if (!out) box(0, 0, 0, n, n, n)
+  else {
+    // The back wall, then the left wall and the floor in front of it.
+    box(0, 0, out, n, n, t)
+    box(0, 0, 0, t, n, out)
+    box(t, 0, 0, out, t, out)
+  }
+  // Its face on the front, at the top of what stands full height.
+  const cols = out ? t : n
+  const rows = Math.max(1, Math.min(n, cols))
+  ctx.save()
+  ctx.translate(0, n - rows)
+  features(ctx, N, rows, cols, look)
+  ctx.restore()
+}
+
 export function drawShape(ctx: CanvasRenderingContext2D, s: Shape, look: Look, px: number) {
+  if (s.deep) return drawDeep(ctx, s, look, px)
   const n = BigInt(count(s))
   if (isRect(s)) {
     drawBody(ctx, n, bodyOf(s[0], s.length), [], px)

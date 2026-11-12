@@ -9,6 +9,7 @@ export const NAMES: Record<Window, string> = {
   classic: 'Sneeze²',
   corner: 'Corner squares',
   steps: 'Step triangles',
+  cubes: 'Corner cubes',
   factors: 'Factors',
   powers: 'Powers',
   rect: 'Biggest square',

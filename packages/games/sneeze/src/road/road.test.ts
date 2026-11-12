@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { arrange, CHAINS, choicesFor, count, factorsOf, hasStar, isRect, labelOf, MAX_K, optionsFor, rect, same, sidesOf, sliderOf, sneezeOf, spanOf, stairs, startsOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Shape } from './chains'
+import { arrange, cellOf, CHAINS, choicesFor, count, cube, isCube, shell, factorsOf, hasStar, isRect, labelOf, MAX_K, optionsFor, rect, same, sidesOf, sliderOf, sneezeOf, spanOf, stairs, startsOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Shape } from './chains'
 import { initPhysics } from '../sim'
 import { boxOf, RoadStage, STEP } from './stage'
 
@@ -46,7 +46,8 @@ describe('every chain', () => {
           // Every cell of the whole is covered once.
           const seen = new Set<string>()
           for (const p of res.parts) p.shape.forEach((h, i) => Array.from({ length: h }, (_, j) => seen.add(`${p.x + i},${p.y + j}`)))
-          expect(seen.size).toBe(count(whole))
+          // (A deep shape is covered as it is seen from the front.)
+          expect(seen.size).toBe(whole.reduce((x, h) => x + h, 0))
           whole.forEach((h, i) => expect(seen.has(`${i},${h - 1}`)).toBe(true))
         }
       }
@@ -162,6 +163,54 @@ describe('step triangles', () => {
       ...['0.001 − 0.0004 = 0.0006', '0.0006 − 0.0003 = 0.0003', '0.0003 − 0.0002 = 0.0001'],
     ])
     expect(k).toBe(4)
+  })
+})
+
+describe('corner cubes', () => {
+  it('a cube is its side three times over, and what stays is the cube less the one that left', () => {
+    expect(count(cube(3))).toBe(27)
+    expect(count(shell(3, 2))).toBe(19)
+    expect(count(shell(4, 1))).toBe(63)
+    expect(isCube(cube(1))).toBe(true)
+    expect(isCube(shell(3, 2))).toBe(false)
+    expect(isCube(rect(3, 3))).toBe(false)
+  })
+
+  it('a cube pops the next cube down and keeps a floor and two walls', () => {
+    const { says, stays, left } = run('cubes', cube(4), { whole: true })
+    expect(says).toEqual(['64 − 37 = 27', '27 − 19 = 8', '8 − 7 = 1'])
+    expect(stays.every((x) => x.deep && !isCube(x))).toBe(true)
+    expect(written(sumOf(left)!)).toBe('64 = 37 + 19 + 7 + 1')
+  })
+
+  it('the slider picks any smaller cube', () => {
+    expect(sliderOf('cubes', cube(4))!.labels).toEqual(['27', '8', '1'])
+    expect(written(sneezeOf('cubes', cube(4), 2)!.says)).toBe('64 − 56 = 8')
+    expect(written(sneezeOf('cubes', cube(4), 2)!.back.says)).toBe('8 + 56 = 64')
+  })
+
+  it('what stays cannot sneeze, and a flat square is not a cube', () => {
+    expect(sneezeOf('cubes', shell(3, 2))).toBeNull()
+    expect(sneezeOf('cubes', rect(3, 3))).toBeNull()
+  })
+
+  it('below one it goes on in thousandths, a tenth of a block across, and ends at a thousandth', () => {
+    const res = sneezeOf('cubes', cube(1))!
+    expect(written(res.says)).toBe('1 − 0.271 = 0.729')
+    expect(res.k).toBe(3)
+    expect(count(res.as!)).toBe(1000)
+    expect(cellOf(res.as!, 3)).toBeCloseTo(0.1)
+    expect(sliderOf('cubes', cube(1))!.labels.slice(0, 2)).toEqual(['0.729', '0.512'])
+    const { last, k } = run('cubes', cube(2))
+    expect(valueOf(count(last), k)).toBeCloseTo(0.001)
+    expect(sneezeOf('cubes', last, undefined, k)).toBeNull()
+  })
+
+  it('is labelled by its number, a whole cube with its sides', () => {
+    expect(written(labelOf('cubes', cube(3)))).toBe('27')
+    expect(written(sidesOf('cubes', cube(3))!)).toBe('3 × 3 × 3')
+    expect(sidesOf('cubes', shell(3, 2))).toBeNull()
+    expect(sidesOf('cubes', cube(9), 3)).toBeNull()
   })
 })
 
@@ -320,7 +369,7 @@ describe('the stage', () => {
       expect(total(st), chain).toBeCloseTo(count(start), 6)
       for (const p of st.pieces) {
         expect(p.settled, chain).toBe(true)
-        expect(boxOf(p).y0, chain).toBeGreaterThan(-0.1 * unitOf(p.k))
+        expect(boxOf(p).y0, chain).toBeGreaterThan(-0.1 * cellOf(p.shape, p.k))
       }
       if (chain === 'corner' || chain === 'steps' || chain === 'powers') expect(cur.k, chain).toBe(MAX_K)
       st.free()

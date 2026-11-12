@@ -7,6 +7,7 @@
  *
  *   corner   a square pops a smaller square from its corner; an L stays (25 − 9 = 16)
  *   steps    a staircase pops a smaller staircase; its tallest columns stay (15 − 5 = 10)
+ *   cubes    a cube pops a smaller cube from its corner; three walls stay (27 − 19 = 8)
  *   factors  a rectangle splits into equal copies and one pops out (60 ÷ 2 = 30); a prime can't
  *   powers   the same, with the number's own base (64 ÷ 2, 100 ÷ 10), down to 1
  *   rect     a rectangle keeps its biggest square and pops the rest (8 − 5 = 3), down to a square
@@ -16,6 +17,7 @@
  * cells, each worth 10^-k (`k` decimal places, to 0.0001), and drawn smaller
  * to match. A one on the corner chain is a 10 × 10 of hundredths
  * (1 − 0.19 = 0.81); on the steps a staircase of four tenths (1 − 0.4 = 0.6);
+ * on the cubes a 10 × 10 × 10 of thousandths (1 − 0.271 = 0.729, to 0.001);
  * on powers it is divided again (1 ÷ 2 = 0.5, 1 ÷ 10 = 0.1). Factors still
  * end at a prime and the rectangles at a square: that is what they are for.
  *
@@ -23,8 +25,13 @@
  * Sneeze² itself (rules.ts, sim.ts) is the first window on the path, unchanged.
  */
 
-/** A shape of blocks standing on the floor: the height of each column, left to right. */
-export type Shape = number[]
+/**
+ * A shape of blocks standing on the floor: the height of each column, left to
+ * right. `deep`: seen from the front, and as many blocks deep as it is wide
+ * (the cubes chain): a square is then a cube, and an L is a cube with a
+ * smaller cube gone from its top right front corner (a floor and two walls).
+ */
+export type Shape = number[] & { deep?: true }
 
 /** The smallest cell is a ten-thousandth, as in Sneeze². */
 export const MAX_K = 4
@@ -32,20 +39,31 @@ export const MAX_K = 4
 export const valueOf = (cells: number, k: number) => cells / 10 ** k
 /** How wide a cell is, in blocks: a hundredth is a tenth of a block across, so areas stay true. */
 export const unitOf = (k: number) => 10 ** (-k / 2)
+/** The same for this shape: a deep one's cell is a cube, so a thousandth is a tenth of a block across. */
+export const cellOf = (s: Shape, k: number) => (s.deep ? 10 ** (-k / 3) : unitOf(k))
+/** How far up and to the right each block of depth is drawn, in blocks. */
+export const DEPTH = 0.3
 const tidy = (x: number) => Number(x.toFixed(MAX_K))
 
-export const count = (s: Shape) => s.reduce((a, b) => a + b, 0)
+/** How many blocks: a deep shape is its whole cube less the cube gone from its corner. */
+export const count = (s: Shape) => (s.deep ? s.length ** 3 - (s.length - s[s.length - 1]) ** 3 : s.reduce((a, b) => a + b, 0))
 export const high = (s: Shape) => Math.max(...s)
 /** `rows` rows of `cols`. */
 export const rect = (rows: number, cols: number): Shape => Array.from({ length: cols }, () => rows)
 /** A staircase down from `n`: its tallest column at the left. */
 export const stairs = (n: number): Shape => Array.from({ length: n }, (_, i) => n - i)
 export const isRect = (s: Shape) => s.every((h) => h === s[0])
-export const same = (a: Shape, b: Shape) => a.length === b.length && a.every((h, i) => h === b[i])
+export const same = (a: Shape, b: Shape) => a.length === b.length && !a.deep === !b.deep && a.every((h, i) => h === b[i])
+const deep = (s: Shape): Shape => Object.assign(s, { deep: true as const })
+/** A cube `n` each way. */
+export const cube = (n: number): Shape => deep(rect(n, n))
+/** A cube `n` each way with a cube of `out` gone from its corner. */
+export const shell = (n: number, out: number): Shape => deep([...rect(n, n - out), ...rect(n - out, out)])
+export const isCube = (s: Shape) => !!s.deep && isRect(s) && s[0] === s.length
 const isStairs = (s: Shape) => s.every((h, i) => h === s.length - i)
 const triangle = (k: number) => (k * (k + 1)) / 2
 
-export const CHAINS = ['corner', 'steps', 'factors', 'powers', 'rect'] as const
+export const CHAINS = ['corner', 'steps', 'cubes', 'factors', 'powers', 'rect'] as const
 export type ChainId = (typeof CHAINS)[number]
 
 /** A piece of a sneeze: where its bottom-left corner is, in blocks from the sneezer's, and whether it flies. */
@@ -203,6 +221,22 @@ export function sneezeOf(chain: ChainId, s: Shape, pick?: number, k = 0, last?: 
         ...taking(triangle(top), triangle(top) - triangle(out), fine ? k + 1 : k),
       }
     }
+    case 'cubes': {
+      if (!isCube(s)) return null
+      // A single cell is a 10 × 10 × 10 of cells a thousandth of it.
+      const fine = s.length === 1
+      if (fine && k + 3 > MAX_K) return null
+      const side = fine ? 10 : s.length
+      const out = clamp(pick ?? side - 1, 1, side - 1)
+      return {
+        as: fine ? cube(10) : undefined,
+        parts: [
+          { shape: shell(side, out), x: 0, y: 0, fly: false },
+          { shape: cube(out), x: side - out, y: side - out, fly: true },
+        ],
+        ...taking(side ** 3, side ** 3 - out ** 3, fine ? k + 3 : k),
+      }
+    }
     case 'factors':
     case 'powers': {
       if (!isRect(s)) return null
@@ -284,6 +318,8 @@ export function sliderOf(chain: ChainId, s: Shape, k = 0, last?: number): Slider
       return make(down(whole.length - 1), (v) => String(valueOf(v * v, now.k)))
     case 'steps':
       return make(down(whole.length - 1), (v) => String(valueOf(triangle(v), now.k)))
+    case 'cubes':
+      return make(down(whole.length - 1), (v) => String(valueOf(v ** 3, now.k)))
     case 'factors':
     case 'powers':
       return make(factorsOf(chain, n, k), (f) => `÷ ${f}`, now.factor)
@@ -299,8 +335,9 @@ export function labelOf(_chain: ChainId, s: Shape, k = 0): Says {
   return [valueOf(count(s), k)]
 }
 
-/** Written small with the number on the rectangle chain: a rectangle's sides (5 × 8), which the chain is about. */
-export function sidesOf(chain: ChainId, s: Shape): Says | null {
+/** Written small with the number: a rectangle's sides on the rectangle chain (5 × 8), a whole cube's on the cubes (3 × 3 × 3). */
+export function sidesOf(chain: ChainId, s: Shape, k = 0): Says | null {
+  if (chain === 'cubes') return isCube(s) && !k && s.length > 1 ? [s.length, '×', s.length, '×', s.length] : null
   return chain === 'rect' && isRect(s) ? [s[0], '×', s.length] : null
 }
 
@@ -323,12 +360,13 @@ const dividing = (chain: ChainId, ns: number[]): Start[] =>
 const STARTS: Record<ChainId, Start[]> = {
   corner: Array.from({ length: 9 }, (_, i) => i + 2).map((k) => ({ key: k * k, shape: rect(k, k), title: String(k * k), sub: `${k} × ${k}` })),
   steps: Array.from({ length: 9 }, (_, i) => i + 2).map((k) => ({ key: triangle(k), shape: stairs(k), title: String(triangle(k)), sub: k <= 4 ? stairs(k).reverse().join(' + ') : `1 + 2 + … + ${k}` })),
+  cubes: Array.from({ length: 9 }, (_, i) => i + 2).map((k) => ({ key: k ** 3, shape: cube(k), title: String(k ** 3), sub: `${k} × ${k} × ${k}` })),
   factors: dividing('factors', [12, 16, 18, 20, 24, 30, 36, 48, 60, 72, 100]),
   powers: dividing('powers', [4, 8, 16, 32, 64, 9, 27, 81, 25, 125, 100]),
   rect: RECTS.map(([r, c]) => ({ key: r * 100 + c, shape: rect(r, c), title: `${r} × ${c}`, sub: String(r * c) })),
 }
 /** The one each chain opens on the first time. */
-const FIRST: Record<ChainId, number> = { corner: 25, steps: 15, factors: 24, powers: 16, rect: 508 }
+const FIRST: Record<ChainId, number> = { corner: 25, steps: 15, cubes: 64, factors: 24, powers: 16, rect: 508 }
 
 export const startsOf = (chain: ChainId) => STARTS[chain]
 export const startOf = (chain: ChainId, key: number): Start => STARTS[chain].find((s) => s.key === key) ?? STARTS[chain].find((s) => s.key === FIRST[chain])!
@@ -337,6 +375,7 @@ export const startOf = (chain: ChainId, key: number): Start => STARTS[chain].fin
 export function spanOf(chain: ChainId, s: Shape): number {
   const n = count(s)
   const forms = factorsOf(chain, n).map((f) => arrange(n, f))
+  if (s.deep) return s.length * (1 + DEPTH)
   return Math.max(s.length, high(s), ...forms.map((q) => Math.max(q.a * q.r, q.b * q.c)))
 }
 

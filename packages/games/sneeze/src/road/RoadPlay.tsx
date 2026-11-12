@@ -3,7 +3,7 @@ import { numberToClips, playClips } from '@renderblocks/kernel'
 import type { Look } from '@renderblocks/designer/look'
 import { choo, correct, pop, sniff, thud, wake, windup, wrong } from '../sound'
 import { drawShape, outline } from './draw'
-import { choicesFor, count, high, labelOf, same, sidesOf, sliderOf, sneezeOf, spanOf, startOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Fact, type Outcome, type Says, type Shape, type Sneezed, type Slider } from './chains'
+import { cellOf, choicesFor, count, DEPTH, high, labelOf, same, sidesOf, sliderOf, sneezeOf, spanOf, startOf, sumOf, trailOf, valueOf, written, type ChainId, type Fact, type Outcome, type Says, type Shape, type Sneezed, type Slider } from './chains'
 import { boxOf, RoadStage, STEP, type RPiece } from './stage'
 import { initPhysics } from '../sim'
 
@@ -236,7 +236,7 @@ export function RoadPlay({
       }
       sniff(BigInt(Math.max(1, Math.round(valueOf(count(h.from.whole), h.from.k)))))
       // Back to where it was in the whole.
-      const [u, mine] = [unitOf(h.from.k), unitOf(h.k)]
+      const [u, mine] = [cellOf(h.from.whole, h.from.k), cellOf(h.shape, h.k)]
       snap = { at: performance.now() / 1000, from: { x: h.x, y: h.y }, to: { x: home.x0 + h.from.outAt.x * u + (h.shape.length * mine) / 2, y: home.y0 + h.from.outAt.y * u + (high(h.shape) * mine) / 2 } }
       setP('snapping')
     }
@@ -489,7 +489,7 @@ export function RoadPlay({
         const cx = sx(p.x)
         const cy = sy(p.y)
         // Pixels per cell of this piece.
-        const cell = scale * unitOf(p.k)
+        const cell = scale * cellOf(p.shape, p.k)
         const pw = p.shape.length * cell
         const phh = high(p.shape) * cell
         if (cx + pw < -80 || cx - pw > w + 80 || Math.max(pw, phh) < 0.5) continue
@@ -533,13 +533,13 @@ export function RoadPlay({
           }
         // A number over each, unless it is too small to see or one of a crowd of ones.
         const nn = count(p.shape)
-        if (!p.spin && !(crowd && nn === 1) && (Math.max(pw, phh) >= 12 || p === cur)) labels.push({ x: cx, y: sy(boxOf(p).y1) + phh * 0.12 * squash - (base.hat !== 'none' ? 0.4 * cell : 0), size: Math.max(16, Math.min(40, 0.55 * scale, 0.9 * Math.max(pw, phh))), says: labelOf(stop, p.shape, p.k), sides: sidesOf(stop, p.shape) })
+        if (!p.spin && !(crowd && nn === 1) && (Math.max(pw, phh) >= 12 || p === cur)) labels.push({ x: cx, y: sy(boxOf(p).y1) + phh * 0.12 * squash - (base.hat !== 'none' ? 0.4 * cell : 0) - (p.shape.deep ? p.shape.length * DEPTH * cell : 0), size: Math.max(16, Math.min(40, 0.55 * scale, 0.9 * Math.max(pw, phh))), says: labelOf(stop, p.shape, p.k), sides: sidesOf(stop, p.shape, p.k) })
       }
       if (home && held?.from) {
         // Where the one he carries goes back: the whole it came out of.
         g.setTransform(dpr, 0, 0, dpr, 0, 0)
         g.translate(sx(home.x0), sy(home.y0))
-        const cell = scale * unitOf(held.from.k)
+        const cell = scale * cellOf(held.from.whole, held.from.k)
         g.scale(cell, -cell)
         g.lineWidth = 5 / cell
         g.setLineDash([10 / cell, 7 / cell])
