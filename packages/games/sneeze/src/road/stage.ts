@@ -123,14 +123,16 @@ export class RoadStage {
     return out
   }
 
-  /** The same blocks in a new shape, standing where the old one stood, with a little hop. */
-  reform(p: RPiece, block: Block): RPiece {
+  /** The same blocks in a new shape, standing where the old one stood, with a little hop (none when he is sliding it into shape). */
+  reform(p: RPiece, block: Block, hop = true): RPiece {
     const { y0 } = boxOf(p.block, p.x, p.y)
     const x = p.x
     this.remove(p)
     const q = this.add(block, x, y0 + block.rows / 2 + 0.05)
-    q.rb.setLinvel({ x: 0, y: Math.sqrt(2 * GRAVITY * 0.6 * this.f) }, true)
-    this.sneezes++
+    if (hop) {
+      q.rb.setLinvel({ x: 0, y: Math.sqrt(2 * GRAVITY * 0.6 * this.f) }, true)
+      this.sneezes++
+    }
     return q
   }
 

@@ -68,11 +68,13 @@ const TIMES = '3.OA.C.7'
 export const divisors = (n: number) => Array.from({ length: n }, (_, i) => i + 1).filter((d) => n % d === 0)
 
 /**
- * What this shape sneezes at this stop (null: it can't). `row` is the row he
- * tapped, counted from the bottom (Split: that block and all above it fly);
- * with no row (a tap beside it), `seed` picks.
+ * What this shape sneezes at this stop (null: it can't). `pick` is what he
+ * chose on the slider (Split: how many blocks fly; Rows: how many rows), and
+ * comes first. Without it, `row` is the row he tapped, counted from the
+ * bottom (Split: that block and all above it fly); with neither (a tap
+ * beside it), `seed` picks.
  */
-export function sneezeOf(stop: StopId, b: Block, row?: number, seed = 0): Sneezed | null {
+export function sneezeOf(stop: StopId, b: Block, row?: number, seed = 0, pick?: number): Sneezed | null {
   const n = count(b)
   const isTower = b.cols === 1 && b.left === 0
   switch (stop) {
@@ -92,7 +94,7 @@ export function sneezeOf(stop: StopId, b: Block, row?: number, seed = 0): Sneeze
     case 'split':
     case 'join': {
       if (!isTower || n < 2) return null
-      const out = Math.min(n - 1, Math.max(1, row === undefined ? 1 + (Math.abs(seed) % (n - 1)) : n - Math.floor(row)))
+      const out = Math.min(n - 1, Math.max(1, pick ?? (row === undefined ? 1 + (Math.abs(seed) % (n - 1)) : n - Math.floor(row))))
       return {
         parts: [
           { block: tower(n - out), x: 0, y: 0, fly: false },
@@ -123,15 +125,18 @@ export function sneezeOf(stop: StopId, b: Block, row?: number, seed = 0): Sneeze
     case 'rows':
     case 'build': {
       if (b.left || b.rows < 2) return null
+      // One row, or as many as he picked (never all of them).
+      const k = Math.min(b.rows - 1, Math.max(1, pick ?? 1))
+      const out = k * b.cols
       return {
         parts: [
-          { block: rect(b.rows - 1, b.cols), x: 0, y: 0, fly: false },
-          { block: rect(1, b.cols), x: 0, y: b.rows - 1, fly: true },
+          { block: rect(b.rows - k, b.cols), x: 0, y: 0, fly: false },
+          { block: rect(k, b.cols), x: 0, y: b.rows - k, fly: true },
         ],
-        says: [n, '−', b.cols, '=', n - b.cols],
-        ask: [n, '−', b.cols, '=', '?'],
-        answer: n - b.cols,
-        fact: { concept: ADD, item: `${n}−${b.cols}` },
+        says: [n, '−', out, '=', n - out],
+        ask: [n, '−', out, '=', '?'],
+        answer: n - out,
+        fact: { concept: ADD, item: `${n}−${out}` },
       }
     }
     case 'burst':
@@ -180,6 +185,57 @@ export function sneezeOf(stop: StopId, b: Block, row?: number, seed = 0): Sneeze
       }
     }
   }
+}
+
+/** No shape on the road is wider than this (a slider never offers more). */
+export const MAX_COLS = 12
+
+/**
+ * The slider (Lan, Nov 12: as in Sneeze², it is how he chooses what the
+ * sneeze will be). Two kinds. `pick`: how much flies off at the next sneeze,
+ * for that one sneeze (Split: so many blocks; Rows: so many rows, labelled by
+ * their blocks), the most at the left as in Sneeze². `form`: the shape itself
+ * changes as he slides (All at once and One left over: rows of so many, so
+ * 12 can be shared by 2, 3, 4 or 6, and 13 by anything; Same number, new
+ * shape: each of its rectangles). `at` is where the thumb rests: what a tap
+ * would do now (-1: on none of them). Null: nothing to choose.
+ */
+export interface Slider {
+  kind: 'pick' | 'form'
+  values: number[]
+  at: number
+  labels: string[]
+}
+
+export function sliderOf(stop: StopId, b: Block, seed = 0): Slider | null {
+  const n = count(b)
+  const make = (kind: Slider['kind'], values: number[], at: number, label: (v: number) => string): Slider | null => (values.length < 2 && values[0] === at ? null : values.length ? { kind, values, at, labels: values.map(label) } : null)
+  const down = (from: number, to: number) => Array.from({ length: Math.max(0, from - to + 1) }, (_, i) => from - i)
+  switch (stop) {
+    case 'split':
+    case 'join': {
+      const now = sneezeOf(stop, b, undefined, seed)
+      return now ? make('pick', down(n - 1, 1), count(now.parts[1].block), String) : null
+    }
+    case 'rows':
+    case 'build':
+      return b.left || b.rows < 2 ? null : make('pick', down(b.rows - 1, 1), 1, (k) => String(k * b.cols))
+    case 'burst':
+      return b.left ? null : make('form', divisors(n).filter((d) => d > 1 && d < n && d <= MAX_COLS).reverse(), b.cols, (d) => `÷ ${d}`)
+    case 'over':
+      return make('form', down(Math.min(n - 1, MAX_COLS), 2), b.cols, (d) => `÷ ${d}`)
+    case 'shapes':
+      return b.left ? null : make('form', divisors(n).filter((r) => n / r <= MAX_COLS * 2), b.rows, (r) => `${r} × ${n / r}`)
+    default:
+      return null
+  }
+}
+
+/** The shape he slid to (a `form` slider), and the sentence it shows: 12 = 4 × 3, 13 = 2 × 5 + 3. */
+export function formOf(stop: StopId, b: Block, v: number): { block: Block; says: Says } {
+  const n = count(b)
+  const block = stop === 'shapes' ? rect(v, n / v) : rect(Math.floor(n / v), v, n % v)
+  return { block, says: [n, '=', block.rows, '×', block.cols, ...(block.left ? ['+', block.left] : [])] }
 }
 
 /**
@@ -250,6 +306,8 @@ export function startOf(stop: StopId, n: number): Block[] {
 export function spanOf(stop: StopId, n: number): number {
   if (stop === 'shapes') return n
   if (stop === 'join') return n
+  // The slider can stand these in rows of two (half as tall as the number) or of up to MAX_COLS.
+  if (stop === 'burst' || stop === 'over') return Math.max(Math.ceil(n / 2) + 1, Math.min(n - 1, MAX_COLS))
   return Math.max(...startOf(stop, n).map((b) => Math.max(b.cols, b.rows + (b.left ? 1 : 0))), stop === 'build' ? RECTS[n][0] : 0)
 }
 

@@ -3,7 +3,7 @@ import { numberToClips, playClips } from '@renderblocks/kernel'
 import type { Look } from '@renderblocks/designer/look'
 import { choo, correct, pop, sniff, thud, wake, windup, wrong } from '../sound'
 import { drawBlock } from './draw'
-import { count, joinOf, optionsFor, sneezeOf, spanOf, spoken, startOf, STARTS, sumOf, written, type Block, type Fact, type Joined, type Says, type Sneezed, type StopId } from './ops'
+import { count, formOf, joinOf, optionsFor, sliderOf, sneezeOf, spanOf, spoken, startOf, STARTS, sumOf, written, type Block, type Fact, type Joined, type Says, type Sneezed, type Slider, type StopId } from './ops'
 import { boxOf, RoadStage, STEP, type RPiece } from './stage'
 import { initPhysics } from '../sim'
 
@@ -21,6 +21,71 @@ const clipsOf = (s: Says) => spoken(s).flatMap((t) => (typeof t === 'number' ? n
 
 type Phase = 'ready' | 'windup' | 'guessing' | 'choo' | 'held' | 'snapping'
 type Pending = { kind: 'sneeze'; p: RPiece; res: Sneezed } | { kind: 'join'; q: RPiece; res: Joined }
+
+/**
+ * The slider, as in Sneeze²: what the shape whose turn it is will do. The
+ * stops are evenly spaced whatever their values; − and + step one at a time;
+ * the thumb rests on what a tap would do now.
+ */
+function RoadSlider({ slider, pick, onPick, onSliding }: { slider: Slider; pick: number | null; onPick: (v: number) => void; onSliding: (on: boolean) => void }) {
+  const track = useRef<HTMLDivElement>(null)
+  const { values, labels } = slider
+  const last = values.length - 1
+  const on = values.indexOf(pick ?? slider.at)
+  const left = (i: number) => `${last ? (i / last) * 100 : 50}%`
+  const nearest = (e: React.PointerEvent) => {
+    const box = track.current!.getBoundingClientRect()
+    return values[Math.min(last, Math.max(0, Math.round(((e.clientX - box.left) / box.width) * last)))]
+  }
+  // Every label if they fit; else every second or third (and always the one he's on).
+  const every = Math.ceil(values.length / 12)
+  const step = (d: number) => {
+    const i = on < 0 ? (d > 0 ? 0 : last) : on + d
+    if (i >= 0 && i <= last) onPick(values[i])
+  }
+  const end = 'shrink-0 w-12 h-12 rounded-full bg-white/90 shadow text-2xl font-black text-slate-600 disabled:opacity-30'
+  return (
+    <div className="flex items-start gap-3 w-full max-w-3xl" aria-label="Slider">
+      <button type="button" onClick={() => step(-1)} disabled={on === 0} className={end} aria-label="One to the left">
+        ‹
+      </button>
+      <div className="relative flex-1 h-[4.5rem] mx-5">
+        <div
+          ref={track}
+          className="absolute inset-x-0 top-0 h-12 touch-none"
+          onPointerDown={(e) => {
+            e.currentTarget.setPointerCapture(e.pointerId)
+            onSliding(true)
+            onPick(nearest(e))
+          }}
+          onPointerMove={(e) => {
+            if (!e.currentTarget.hasPointerCapture(e.pointerId)) return
+            const v = nearest(e)
+            if (v !== values[on]) onPick(v)
+          }}
+          onPointerUp={() => onSliding(false)}
+          onPointerCancel={() => onSliding(false)}
+        >
+          <div className="absolute inset-x-0 top-5 h-2 rounded-full bg-orange-200" />
+          {values.map((v, i) => (
+            <div key={v} className="absolute top-4 w-1 h-4 -ml-0.5 rounded bg-orange-300" style={{ left: left(i) }} />
+          ))}
+          {on >= 0 && <div className="absolute top-0 w-12 h-12 -ml-6 rounded-xl bg-orange-500 shadow-lg border-4 border-white" style={{ left: left(on) }} data-thumb={values[on]} />}
+        </div>
+        {values.map((v, i) =>
+          i === on || (i % every === 0 && (on < 0 || Math.abs(i - on) >= every)) ? (
+            <span key={v} className={`absolute top-12 -translate-x-1/2 text-sm sm:text-base font-black tabular-nums whitespace-nowrap ${i === on ? 'text-orange-600' : 'text-slate-500'}`} style={{ left: left(i) }}>
+              {labels[i]}
+            </span>
+          ) : null,
+        )}
+      </div>
+      <button type="button" onClick={() => step(1)} disabled={on === last} className={end} aria-label="One to the right">
+        ›
+      </button>
+    </div>
+  )
+}
 
 export interface Guess {
   stop: StopId
@@ -63,11 +128,15 @@ export function RoadPlay({
   const [ruledOut, setRuledOut] = useState<number[]>([])
   // What's on the stage, for the line that adds it all up.
   const [blocks, setBlocks] = useState<Block[]>([])
-  const live = useRef({ guess, lookFor, onGuess })
+  // The shape whose turn it is (the slider is about that one), and what he has picked on the slider for its next sneeze.
+  const [turn, setTurn] = useState<{ block: Block; seed: number } | null>(null)
+  const [pick, setPick] = useState<number | null>(null)
+  const [sliding, setSliding] = useState(false)
+  const live = useRef({ guess, lookFor, onGuess, pick, sliding })
   useEffect(() => {
-    live.current = { guess, lookFor, onGuess }
-  }, [guess, lookFor, onGuess])
-  const cmd = useRef<{ pick: (n: number) => void } | null>(null)
+    live.current = { guess, lookFor, onGuess, pick, sliding }
+  }, [guess, lookFor, onGuess, pick, sliding])
+  const cmd = useRef<{ pick: (n: number) => void; form: (v: number) => void } | null>(null)
 
   useEffect(() => {
     const el = canvas.current
@@ -95,6 +164,8 @@ export function RoadPlay({
     let wiggle = { id: 0, until: 0 }
     let sneezed = { id: 0, at: -10 }
     let press: { id: number; x: number; y: number; p: RPiece | null; dx: number; dy: number; drag: boolean; v: { x: number; y: number }; at: number; sx: number; sy: number } | null = null
+    // Stops with a slider keep room for it under the floor.
+    const hasSlider = startOf(stop, n).some((b) => !!sliderOf(stop, b)) || stop === 'build' || stop === 'join'
     let snap: { at: number; from: { x: number; y: number }; to: { x: number; y: number } } | null = null
     const view = { scale: 1, x: 0, w: 1, floorY: 0 }
     const toStage = (px: number, py: number) => ({ x: view.x + (px - view.w / 2) / view.scale, y: (view.floorY - py) / view.scale })
@@ -105,13 +176,25 @@ export function RoadPlay({
       phaseAt = performance.now() / 1000
       setPhase(p)
     }
-    const sync = () => stage && setBlocks(stage.pieces.map((p) => p.block))
-    const can = (p: RPiece) => !!sneezeOf(stop, p.block)
+    const can = (p: RPiece) => !!sneezeOf(stop, p.block) || !!sliderOf(stop, p.block)
     const current = () => {
       if (!stage) return null
       const mine = stage.pieces.find((p) => p.id === currentId)
       if (mine && can(mine)) return mine
       return stage.pieces.filter(can).sort((a, b) => count(b.block) - count(a.block))[0] ?? null
+    }
+    /** What a tap beside them picks by, when he has chosen nothing (the slider's thumb rests on it). */
+    const seedOf = (p: RPiece) => (stage ? stage.sneezes * 7 + count(p.block) : 0)
+    const sync = () => {
+      if (!stage) return
+      setBlocks(stage.pieces.map((p) => p.block))
+      const p = current()
+      setTurn(p ? { block: p.block, seed: seedOf(p) } : null)
+    }
+    // A pick on the slider is for one sneeze of the shape it was made for.
+    const unpick = () => {
+      live.current = { ...live.current, pick: null }
+      setPick(null)
     }
     const ask = (res: Sneezed | Joined) => {
       askedAt = performance.now()
@@ -141,6 +224,7 @@ export function RoadPlay({
         if (res.again) cascade = true
       }
       setSaid({ says: res.says, right })
+      unpick()
       sync()
       setP('ready')
     }
@@ -173,7 +257,8 @@ export function RoadPlay({
       const p = target ?? current()
       if (!p) return thud(0.3, 0)
       if (!p.settled) return void (queued = true)
-      const res = sneezeOf(stop, p.block, row, stage.sneezes * 7 + count(p.block))
+      // What he picked on the slider comes first (it is about the shape whose turn it is).
+      const res = sneezeOf(stop, p.block, row, seedOf(p), p === current() ? (live.current.pick ?? undefined) : undefined)
       if (!res) {
         // It can't sneeze: a little shake.
         wiggle = { id: p.id, until: performance.now() / 1000 + 0.5 }
@@ -187,6 +272,17 @@ export function RoadPlay({
       later(soon ? WINDUP_SOON : WINDUP, doChoo)
     }
     cmd.current = {
+      // A `form` slider: the shape whose turn it is stands in rows of so many, there and then.
+      form: (v) => {
+        const p = current()
+        if (!stage || ph !== 'ready' || !p || !p.settled) return
+        const to = formOf(stop, p.block, v)
+        if (to.block.cols === p.block.cols && to.block.rows === p.block.rows) return
+        currentId = stage.reform(p, to.block, false).id
+        pop(0.3)
+        setSaid({ says: to.says, right: false })
+        sync()
+      },
       pick: (x) => {
         if (ph !== 'guessing' || !pending) return
         const ok = x === pending.res.answer
@@ -260,6 +356,7 @@ export function RoadPlay({
       if (!p.drag) {
         // The row he tapped, from the bottom (Split: that block and all above it).
         const s = toStage(p.x, p.y)
+        if (p.p) turnTo(p.p)
         return tickle(p.p, p.p ? s.y - boxOf(p.p.block, p.p.x, p.p.y).y0 : undefined)
       }
       const held = stage.held
@@ -274,6 +371,13 @@ export function RoadPlay({
         stage.release(performance.now() - p.at < 100 ? p.v : { x: 0, y: 0 })
         setP('ready')
       }
+    }
+    // A tap on a shape other than the one whose turn it was makes it that shape's turn (the slider follows).
+    const turnTo = (p: RPiece) => {
+      if (p.id === currentId || !can(p)) return
+      currentId = p.id
+      unpick()
+      sync()
     }
     el.addEventListener('pointerdown', down)
     el.addEventListener('pointermove', move)
@@ -335,6 +439,7 @@ export function RoadPlay({
             sneezed = { id: whole.id, at: t }
             setSaid({ says: res.says, right })
           } else stage.release()
+          unpick()
           sync()
           setP('ready')
         }
@@ -349,7 +454,7 @@ export function RoadPlay({
       }
       // Camera: everything on the stage, with room above for the sentence and below for the floor and the numbers.
       const b = stage.bounds()
-      const low = ph === 'guessing' ? Math.min(0.42, 190 / h) : Math.max(0.16, Math.min(0.3, 120 / h))
+      const low = ph === 'guessing' ? Math.min(0.42, 190 / h) : hasSlider ? Math.min(0.42, 200 / h) : Math.max(0.16, Math.min(0.3, 120 / h))
       const top = Math.min(0.3 * h, 150)
       const fit = Math.min(w / (b.x1 - b.x0 + 4), (h - low * h - top) / (b.y1 + 2), 90)
       const want = { x: (b.x0 + b.x1) / 2, low, logScale: Math.log(Math.max(2, fit)) }
@@ -382,6 +487,9 @@ export function RoadPlay({
       const held = stage.held
       const over = held && ph === 'held' ? stage.under((o) => o.settled && !!joinOf(stop, o.block, held.block)) : null
       const target = pending?.kind === 'sneeze' ? pending.p : null
+      // What he has picked on the slider, shown on the shape whose turn it is: the part that will fly.
+      const chosen = live.current.pick !== null && ph === 'ready' ? current() : null
+      const willFly = chosen ? (sneezeOf(stop, chosen.block, undefined, 0, live.current.pick ?? undefined)?.parts.filter((x) => x.fly) ?? []) : []
       // The one he carries is drawn last, over the rest.
       for (const p of [...stage.pieces].sort((a, c) => Number(a.held) - Number(c.held))) {
         const cx = sx(p.x)
@@ -407,6 +515,16 @@ export function RoadPlay({
         g.scale(scale, -scale)
         g.translate(-p.block.cols / 2, -p.block.rows / 2)
         drawBlock(g, p.block, look, scale)
+        if (p === chosen)
+          for (const part of willFly) {
+            g.lineWidth = 4 / scale
+            g.setLineDash([10 / scale, 7 / scale])
+            g.fillStyle = 'rgba(249,115,22,0.18)'
+            g.fillRect(part.x, part.y, part.block.cols, part.block.rows)
+            g.strokeStyle = '#ea580c'
+            g.strokeRect(part.x, part.y, part.block.cols, part.block.rows)
+            g.setLineDash([])
+          }
         if (p === over) {
           // Where the one he carries can go back.
           g.lineWidth = 5 / scale
@@ -459,6 +577,9 @@ export function RoadPlay({
   const line = said?.says ?? opening
   const sum = sumOf(blocks)
   const starts = STARTS[stop].all
+  const slider = turn ? sliderOf(stop, turn.block, turn.seed) : null
+  // While he slides, the sentence it would make.
+  const preview = slider?.kind === 'pick' && pick !== null && turn ? sneezeOf(stop, turn.block, undefined, turn.seed, pick) : null
   return (
     <div className="h-dvh w-full relative overflow-hidden select-none bg-orange-50">
       <canvas ref={canvas} className="absolute inset-0 w-full h-full touch-none" />
@@ -488,8 +609,14 @@ export function RoadPlay({
           className="max-w-full h-14 px-4 rounded-2xl bg-white/90 shadow font-black tabular-nums text-2xl sm:text-3xl text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis active:scale-95 transition-transform"
           aria-label="The sum"
         >
-          <span className={said?.right ? 'text-emerald-600' : ''}>{written(line)}</span>
-          {said?.right && ' ✓'}
+          {preview ? (
+            <span className="text-orange-600">{written(guess ? preview.ask : preview.says)}</span>
+          ) : (
+            <>
+              <span className={said?.right ? 'text-emerald-600' : ''}>{written(line)}</span>
+              {said?.right && ' ✓'}
+            </>
+          )}
         </button>
         {/* Everything on the stage, added up: the blocks are all still there. */}
         {sum && written(sum) !== written(line) && (
@@ -526,7 +653,19 @@ export function RoadPlay({
         </div>
       ) : (
         /* The numbers this stop can start from. */
-        <div className="absolute bottom-3 inset-x-3 flex justify-center" onPointerDown={(e) => e.stopPropagation()}>
+        <div className="absolute bottom-3 inset-x-3 flex flex-col items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
+          {slider && (phase === 'ready' || phase === 'windup' || phase === 'choo') && (
+            <RoadSlider
+              slider={slider}
+              pick={slider.kind === 'pick' ? pick : null}
+              onPick={(v) => {
+                wake()
+                if (slider.kind === 'pick') setPick(v)
+                else cmd.current?.form(v)
+              }}
+              onSliding={setSliding}
+            />
+          )}
           <div className="flex gap-2 overflow-x-auto max-w-full px-1 py-1">
             {starts.map((s) => (
               <button

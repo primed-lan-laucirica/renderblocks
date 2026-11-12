@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 import { initPhysics } from '../sim'
-import { count, divisors, hasStar, joinOf, optionsFor, rect, sneezeOf, spanOf, spoken, startOf, STARTS, STOPS, sumOf, tower, written, type Block, type StopId } from './ops'
+import { count, divisors, formOf, hasStar, joinOf, MAX_COLS, optionsFor, rect, sliderOf, sneezeOf, spanOf, spoken, startOf, STARTS, STOPS, sumOf, tower, written, type Block, type StopId } from './ops'
 import { scene } from './windows'
 import { boxOf, RoadStage } from './stage'
 
@@ -105,6 +105,59 @@ describe('putting back is the opposite', () => {
       if (stop === 'chain' && res.parts[1].x) continue
       expect(joinOf(stop, res.parts[0].block, res.parts[1].block)!.whole, stop).toEqual(b)
     }
+  })
+})
+
+describe('the slider', () => {
+  it('Split: how many blocks fly, the most at the left; the thumb rests on what a tap beside it would do', () => {
+    const sl = sliderOf('split', tower(10), 3)!
+    expect(sl.kind).toBe('pick')
+    expect(sl.values).toEqual([9, 8, 7, 6, 5, 4, 3, 2, 1])
+    expect(sl.at).toBe(count(sneezeOf('split', tower(10), undefined, 3)!.parts[1].block))
+    for (const v of sl.values) expect(written(sneezeOf('split', tower(10), 2, 3, v)!.says)).toBe(`10 − ${v} = ${10 - v}`)
+    expect(sliderOf('split', tower(2))).toBeNull()
+    expect(sliderOf('one', tower(9))).toBeNull()
+  })
+  it('Rows: how many rows fly, named by their blocks', () => {
+    const sl = sliderOf('rows', rect(4, 5))!
+    expect([sl.values, sl.labels, sl.at]).toEqual([[3, 2, 1], ['15', '10', '5'], 1])
+    expect(written(sneezeOf('rows', rect(4, 5), undefined, 0, 3)!.says)).toBe('20 − 15 = 5')
+    expect(sneezeOf('rows', rect(4, 5), undefined, 0, 3)!.parts.map((p) => [p.block.rows, p.y])).toEqual([[1, 0], [3, 1]])
+    expect(sliderOf('rows', rect(2, 5))).toBeNull()
+  })
+  it('All at once: rows of any size that shares it out; One left over: rows of any size at all', () => {
+    const sl = sliderOf('burst', rect(3, 4))!
+    expect([sl.kind, sl.values, sl.at, sl.labels[0]]).toEqual(['form', [6, 4, 3, 2], 4, '÷ 6'])
+    expect(formOf('burst', rect(3, 4), 3)).toEqual({ block: rect(4, 3), says: [12, '=', 4, '×', 3] })
+    expect(written(sneezeOf('burst', formOf('burst', rect(3, 4), 3).block)!.says)).toBe('12 ÷ 3 = 4')
+    // A row left after a burst can be stood up again and burst again.
+    expect(sliderOf('burst', rect(1, 4))!.values).toEqual([2])
+    const over = sliderOf('over', rect(3, 4, 1))!
+    expect([over.values[0], over.values.at(-1), over.at]).toEqual([12, 2, 4])
+    expect(formOf('over', rect(3, 4, 1), 5)).toEqual({ block: rect(2, 5, 3), says: [13, '=', 2, '×', 5, '+', 3] })
+    expect(written(sneezeOf('over', rect(2, 5, 3))!.says)).toBe('13 ÷ 5 = 2 r 3')
+  })
+  it('Same number, new shape: every rectangle, straight to it', () => {
+    const sl = sliderOf('shapes', tower(12))!
+    expect([sl.values, sl.at, sl.labels[2]]).toEqual([[1, 2, 3, 4, 6, 12], 12, '3 × 4'])
+    expect(formOf('shapes', tower(12), 3).block).toEqual(rect(3, 4))
+  })
+  it('whatever it offers keeps every block, fits the stage, and can be sneezed', () => {
+    for (const stop of STOPS)
+      for (const n of STARTS[stop].all)
+        for (const b of startOf(stop, n)) {
+          const sl = sliderOf(stop, b, n)
+          if (!sl) continue
+          for (const v of sl.values) {
+            const made = sl.kind === 'form' ? formOf(stop, b, v).block : b
+            expect(count(made), `${stop} ${n} ${v}`).toBe(count(b))
+            expect(made.cols, `${stop} ${n} ${v}`).toBeLessThanOrEqual(2 * MAX_COLS)
+            expect(Math.max(made.cols, made.rows + (made.left ? 1 : 0)), `${stop} ${n} ${v} span`).toBeLessThanOrEqual(spanOf(stop, n))
+            const res = sneezeOf(stop, made, undefined, n, sl.kind === 'pick' ? v : undefined)
+            expect(!!res, `${stop} ${n} ${v} sneezes`).toBe(stop !== 'burst' || made.rows > 1)
+            if (res) expect(total(res.parts.map((p) => p.block))).toBe(count(b))
+          }
+        }
   })
 })
 
