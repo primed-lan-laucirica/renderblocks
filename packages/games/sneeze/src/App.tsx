@@ -6,7 +6,7 @@ import { drawPiece, LIMB, squareShape } from './draw'
 import { choices, fmt, ROUNDS, show, sizesOf, sneeze, sqrt, squaresAround, stopsOf, value, wears, type Choice, type Rule, type Sneeze } from './rules'
 import { initPhysics, Stage, STEP, type Piece } from './sim'
 import { choo, correct, pop, sniff, squarePower, thud, wake, windup, wrong } from './sound'
-import { hasStar, MASH_MS, STARTS, STOPS, type StopId } from './road/ops'
+import { CHAINS, hasStar, MASH_MS, startOf, type ChainId } from './road/chains'
 import { Road } from './road/Road'
 import { Starts } from './road/Starts'
 import { WINDOWS, type Window } from './road/windows'
@@ -77,7 +77,7 @@ function App({ services }: GameProps) {
   // The sneeze road (Lan, Nov 12) is the way in, as the paths are in Symbols and the Story of Numbers: the tile opens
   // on it, and a window's own page (Sneeze²'s squares, a stop's start numbers) shows only once its window is picked.
   const [at, setAt] = useState<'road' | Window>('road')
-  const [stop, setStop] = useState<{ id: StopId; n: number; key: number } | null>(null)
+  const [stop, setStop] = useState<{ id: ChainId; n: number; key: number } | null>(null)
   const [lastWindow, setLastWindow] = useState<Window>(() => ((WINDOWS as string[]).includes(storage.get('window') ?? '') ? (storage.get('window') as Window) : 'classic'))
   // The days (YYYY-MM-DD) of each right-first-time guess, by stop: three, on more than one day, is a star.
   const [rights, setRights] = useState<Record<string, string[]>>(() => {
@@ -87,14 +87,13 @@ function App({ services }: GameProps) {
       return {}
     }
   })
-  const stars = useMemo(() => new Set(STOPS.filter((s) => hasStar(rights[s] ?? []))), [rights])
+  const stars = useMemo(() => new Set(CHAINS.filter((s) => hasStar(rights[s] ?? []))), [rights])
   useEffect(() => storage.set('rule3', rule), [storage, rule])
   useEffect(() => storage.set('guess', guess ? 'on' : 'off'), [storage, guess])
   const lookFor = useCallback((n: bigint) => looks.get(n.toString()) ?? DEFAULT_LOOK, [looks])
-  const openStop = (id: StopId, n?: number) => {
+  const openStop = (id: ChainId, n?: number) => {
     wake()
-    const saved = Number(storage.get(`start:${id}`))
-    const from = n ?? (STARTS[id].all.includes(saved) ? saved : STARTS[id].first)
+    const from = startOf(id, n ?? Number(storage.get(`start:${id}`))).key
     storage.set(`start:${id}`, String(from))
     setStop((s) => ({ id, n: from, key: (s?.key ?? 0) + 1 }))
   }
@@ -151,8 +150,8 @@ function App({ services }: GameProps) {
     )
 
   if (at !== 'classic') {
-    const saved = Number(storage.get(`start:${at}`))
-    return <Starts stop={at} starred={stars.has(at)} guess={guess} last={STARTS[at].all.includes(saved) ? saved : null} lookFor={lookFor} onGuess={setGuess} onPick={(n) => openStop(at, n)} onBack={() => setAt('road')} />
+    const saved = storage.get(`start:${at}`)
+    return <Starts stop={at} starred={stars.has(at)} guess={guess} last={saved ? startOf(at, Number(saved)).key : null} lookFor={lookFor} onGuess={setGuess} onPick={(n) => openStop(at, n)} onBack={() => setAt('road')} />
   }
 
   const card = (side: bigint, top?: string) => (

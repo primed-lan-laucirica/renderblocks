@@ -2,8 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { usePan } from '@renderblocks/scene/usePan'
 import type { Look } from '@renderblocks/designer/look'
 import { drawPiece } from '../draw'
-import { drawBlock } from './draw'
-import type { StopId } from './ops'
+import { drawShape } from './draw'
+import { count, high, type ChainId } from './chains'
 import { NAMES, scene, stageOf, STAGES, WINDOWS, type Placed, type Window } from './windows'
 
 /** Shapes drawn to fit a box, standing on its bottom edge (in blocks, bottom-left corners). */
@@ -20,19 +20,19 @@ export function Picture({ parts, lookFor }: { parts: Placed[]; lookFor: (n: bigi
       if (!w || !h) return
       el.width = Math.round(w * dpr)
       el.height = Math.round(h * dpr)
-      const x1 = Math.max(...parts.map((p) => p.x + p.block.cols))
-      const y1 = Math.max(...parts.map((p) => p.y + p.block.rows + (p.block.left ? 1 : 0)))
+      const x1 = Math.max(...parts.map((p) => p.x + p.shape.length))
+      const y1 = Math.max(...parts.map((p) => p.y + high(p.shape)))
       // Room round them for arms and tilted corners.
       const scale = Math.min(w / (x1 + 2.4), h / (y1 + 1.6))
       for (const p of parts) {
-        const cx = w / 2 + (p.x + p.block.cols / 2 - x1 / 2) * scale
-        const cy = h * 0.9 - (p.y + p.block.rows / 2) * scale
+        const cx = w / 2 + (p.x + p.shape.length / 2 - x1 / 2) * scale
+        const cy = h * 0.9 - (p.y + high(p.shape) / 2) * scale
         g.setTransform(dpr, 0, 0, dpr, 0, 0)
         g.translate(cx, cy)
         g.rotate(p.tilt ?? 0)
         g.scale(scale, -scale)
-        g.translate(-p.block.cols / 2, -p.block.rows / 2)
-        drawBlock(g, p.block, lookFor(BigInt(p.block.cols * p.block.rows + p.block.left)), scale)
+        g.translate(-p.shape.length / 2, -high(p.shape) / 2)
+        drawShape(g, p.shape, lookFor(BigInt(count(p.shape))), scale)
       }
     }
     draw()
@@ -117,15 +117,15 @@ function layout(vw: number, vh: number) {
 }
 
 /**
- * Home: the sneeze road (Lan, Nov 12: the way in is a path, as in Symbols and
- * the Story of Numbers). Every kind of sneeze is a window on one road, in
+ * Home: the sneeze path (Lan, Nov 12: the way in is a path, as in Symbols and
+ * the Story of Numbers). Every chain of sneezes is a window on one road, in
  * order, Sneeze² first; each stretch of the road is its own colour. A tap on
- * a window opens that sneeze's own page, where he picks what to start with.
+ * a window opens that chain's own page, where he picks what to start with.
  * Every window is open from the start (he is two and a half: a locked door
  * would end the play); a star marks the ones he has guessed right in, and the
  * one he was last in glows.
  */
-export function Road({ stars, lookFor, last, onOpen, onExit }: { stars: Set<StopId>; lookFor: (n: bigint) => Look; last: Window; onOpen: (w: Window) => void; onExit: () => void }) {
+export function Road({ stars, lookFor, last, onOpen, onExit }: { stars: Set<ChainId>; lookFor: (n: bigint) => Look; last: Window; onOpen: (w: Window) => void; onExit: () => void }) {
   const [size, setSize] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }))
   useEffect(() => {
     const on = () => setSize({ w: window.innerWidth, h: window.innerHeight })

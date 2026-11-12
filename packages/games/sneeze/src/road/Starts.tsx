@@ -1,29 +1,28 @@
 import { useMemo } from 'react'
 import type { Look } from '@renderblocks/designer/look'
-import { STARTS, type StopId } from './ops'
+import { startsOf, type ChainId, type Start } from './chains'
 import { Picture } from './Road'
-import { laid, madeOf, NAMES, stageOf, STAGES, WINDOWS } from './windows'
+import { NAMES, stageOf, STAGES, WINDOWS } from './windows'
 
-function Card({ stop, n, on, lookFor, onPick }: { stop: StopId; n: number; on: boolean; lookFor: (n: bigint) => Look; onPick: () => void }) {
-  const parts = useMemo(() => laid(stop, n), [stop, n])
-  const made = madeOf(stop, n)
+function Card({ start, on, lookFor, onPick }: { start: Start; on: boolean; lookFor: (n: bigint) => Look; onPick: () => void }) {
+  const parts = useMemo(() => [{ shape: start.shape, x: 0, y: 0 }], [start])
   return (
-    <button type="button" data-start={n} onClick={onPick} className={`relative h-48 rounded-2xl shadow p-2 flex flex-col items-center bg-white text-slate-700 active:scale-95 transition-transform ${on ? 'ring-4 ring-yellow-400' : ''}`}>
+    <button type="button" data-start={start.key} onClick={onPick} className={`relative h-48 rounded-2xl shadow p-2 flex flex-col items-center bg-white text-slate-700 active:scale-95 transition-transform ${on ? 'ring-4 ring-yellow-400' : ''}`}>
       <div className="flex-1 w-full min-h-0">
         <Picture parts={parts} lookFor={lookFor} />
       </div>
-      <span className="font-black tabular-nums text-2xl leading-tight">{n}</span>
-      <span className="text-sm font-bold tabular-nums text-slate-400 leading-none h-4">{made}</span>
+      <span className="font-black tabular-nums text-2xl leading-tight">{start.title}</span>
+      <span className="text-sm font-bold tabular-nums text-slate-400 leading-none h-4">{start.sub}</span>
     </button>
   )
 }
 
 /**
- * A sneeze's own page, reached from its window on the road (as the squares
- * are from Sneeze²'s): every number it can start from, each drawn as it will
+ * A chain's own page, reached from its window on the path (as the squares
+ * are from Sneeze²'s): everything it can start from, each drawn as it will
  * stand. A tap on one starts it.
  */
-export function Starts({ stop, starred, guess, last, lookFor, onGuess, onPick, onBack }: { stop: StopId; starred: boolean; guess: boolean; /** The number he started from last time. */ last: number | null; lookFor: (n: bigint) => Look; onGuess: (on: boolean) => void; onPick: (n: number) => void; onBack: () => void }) {
+export function Starts({ stop, starred, guess, last, lookFor, onGuess, onPick, onBack }: { stop: ChainId; starred: boolean; guess: boolean; /** The number he started from last time. */ last: number | null; lookFor: (n: bigint) => Look; onGuess: (on: boolean) => void; onPick: (n: number) => void; onBack: () => void }) {
   const colour = STAGES[stageOf(stop)].colour
   return (
     <div className="h-dvh flex flex-col bg-gradient-to-b from-orange-100 to-amber-50 text-slate-900 select-none">
@@ -51,8 +50,8 @@ export function Starts({ stop, starred, guess, last, lookFor, onGuess, onPick, o
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6">
         <div className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-3">
-          {STARTS[stop].all.map((n) => (
-            <Card key={n} stop={stop} n={n} on={n === last} lookFor={lookFor} onPick={() => onPick(n)} />
+          {startsOf(stop).map((s) => (
+            <Card key={s.key} start={s} on={s.key === last} lookFor={lookFor} onPick={() => onPick(s.key)} />
           ))}
         </div>
       </div>
