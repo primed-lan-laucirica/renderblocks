@@ -3,7 +3,7 @@ import { numberToClips, playClips } from '@renderblocks/kernel'
 import type { Look } from '@renderblocks/designer/look'
 import { choo, correct, pop, sniff, thud, wake, windup, wrong } from '../sound'
 import { drawShape, outline } from './draw'
-import { choicesFor, count, high, labelOf, same, sliderOf, sneezeOf, spanOf, startOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Fact, type Outcome, type Says, type Shape, type Sneezed, type Slider } from './chains'
+import { choicesFor, count, high, labelOf, same, sidesOf, sliderOf, sneezeOf, spanOf, startOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Fact, type Outcome, type Says, type Shape, type Sneezed, type Slider } from './chains'
 import { boxOf, RoadStage, STEP, type RPiece } from './stage'
 import { initPhysics } from '../sim'
 
@@ -471,7 +471,7 @@ export function RoadPlay({
       g.fillStyle = '#C9AE88'
       g.fillRect(0, floorY, w, 3)
 
-      const labels: { x: number; y: number; size: number; says: Says }[] = []
+      const labels: { x: number; y: number; size: number; says: Says; sides: Says | null }[] = []
       const crowd = stage.pieces.length > 20
       const held = stage.held
       const home = held && ph === 'held' && stage.overHome() ? stage.homeOf(held) : null
@@ -533,7 +533,7 @@ export function RoadPlay({
           }
         // A number over each, unless it is too small to see or one of a crowd of ones.
         const nn = count(p.shape)
-        if (!p.spin && !(crowd && nn === 1) && (Math.max(pw, phh) >= 12 || p === cur)) labels.push({ x: cx, y: sy(boxOf(p).y1) + phh * 0.12 * squash - (base.hat !== 'none' ? 0.4 * cell : 0), size: Math.max(16, Math.min(40, 0.55 * scale, 0.9 * Math.max(pw, phh))), says: labelOf(stop, p.shape, p.k) })
+        if (!p.spin && !(crowd && nn === 1) && (Math.max(pw, phh) >= 12 || p === cur)) labels.push({ x: cx, y: sy(boxOf(p).y1) + phh * 0.12 * squash - (base.hat !== 'none' ? 0.4 * cell : 0), size: Math.max(16, Math.min(40, 0.55 * scale, 0.9 * Math.max(pw, phh))), says: labelOf(stop, p.shape, p.k), sides: sidesOf(stop, p.shape) })
       }
       if (home && held?.from) {
         // Where the one he carries goes back: the whole it came out of.
@@ -559,6 +559,13 @@ export function RoadPlay({
         const text = written(l.says)
         g.fillText(text, l.x, y)
         const half = g.measureText(text).width / 2 + 12
+        if (l.sides) {
+          // Its sides, small, over its number.
+          g.font = `800 ${Math.round(Math.max(13, l.size * 0.55))}px Nunito, system-ui, sans-serif`
+          g.fillStyle = '#475569'
+          g.fillText(written(l.sides), l.x, y - l.size * 0.95)
+          g.fillStyle = '#000'
+        }
         hits.push({ x0: l.x - half, x1: l.x + half, y0: y - l.size - 8, y1: y + 10, says: l.says })
       }
       ;(window as unknown as { __roadHits?: typeof hits }).__roadHits = hits
@@ -587,7 +594,8 @@ export function RoadPlay({
     }
   }, [stop, n])
 
-  const opening: Says = labelOf(stop, start.shape)
+  const sides = sidesOf(stop, start.shape)
+  const opening: Says = sides ? [...sides, '=', ...labelOf(stop, start.shape)] : labelOf(stop, start.shape)
   const line = said?.says ?? opening
   // Everything there is, as one sentence: what it has been divided by on the way (60 = 2 × 2 × 15), or the pieces added up.
   const sum = (turn && trailOf(turn.path, valueOf(count(turn.shape), turn.k))) ?? sumOf(blocks)

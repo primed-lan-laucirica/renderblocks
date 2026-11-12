@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { arrange, CHAINS, choicesFor, count, factorsOf, hasStar, isRect, labelOf, MAX_K, optionsFor, rect, same, sliderOf, sneezeOf, spanOf, stairs, startsOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Shape } from './chains'
+import { arrange, CHAINS, choicesFor, count, factorsOf, hasStar, isRect, labelOf, MAX_K, optionsFor, rect, same, sidesOf, sliderOf, sneezeOf, spanOf, stairs, startsOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Shape } from './chains'
 import { initPhysics } from '../sim'
 import { boxOf, RoadStage, STEP } from './stage'
 
@@ -254,7 +254,9 @@ describe('the biggest square', () => {
     expect(written(sneezeOf('rect', rect(12, 5), 2)!.says)).toBe('12 − 10 = 2')
   })
   it('is labelled by its sides', () => {
-    expect(written(labelOf('rect', rect(5, 8)))).toBe('5 × 8')
+    expect(written(labelOf('rect', rect(5, 8)))).toBe('40')
+    expect(written(sidesOf('rect', rect(5, 8))!)).toBe('5 × 8')
+    expect(sidesOf('corner', rect(5, 5))).toBeNull()
     expect(written(labelOf('corner', rect(5, 5)))).toBe('25')
   })
 })

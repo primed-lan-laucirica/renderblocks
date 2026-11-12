@@ -294,9 +294,14 @@ export function sliderOf(chain: ChainId, s: Shape, k = 0, last?: number): Slider
   }
 }
 
-/** What is written over a shape: how many blocks; a rectangle on the rectangle chain by its sides (5 × 8). */
-export function labelOf(chain: ChainId, s: Shape, k = 0): Says {
-  return chain === 'rect' && isRect(s) ? [s[0], '×', s.length] : [valueOf(count(s), k)]
+/** What is written over a shape: its number, how many blocks it is (Lan, Nov 12: on every one, never only a sum). */
+export function labelOf(_chain: ChainId, s: Shape, k = 0): Says {
+  return [valueOf(count(s), k)]
+}
+
+/** Written small with the number on the rectangle chain: a rectangle's sides (5 × 8), which the chain is about. */
+export function sidesOf(chain: ChainId, s: Shape): Says | null {
+  return chain === 'rect' && isRect(s) ? [s[0], '×', s.length] : null
 }
 
 /** Something to start from: `key` is how it is remembered, `title` and `sub` what its card says. */
