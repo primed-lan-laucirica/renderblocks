@@ -15,6 +15,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "@renderblocks/designer": "workspace:*",
+    "@renderblocks/scene": "workspace:*",
     "@dimforge/rapier2d-compat": "^0.20.0"
   },
   "devDependencies": {

@@ -508,6 +508,9 @@ importers:
       '@renderblocks/kernel':
         specifier: workspace:*
         version: link:../../kernel
+      '@renderblocks/scene':
+        specifier: workspace:*
+        version: link:../../scene
       react:
         specifier: ^19.2.0
         version: 19.2.7
