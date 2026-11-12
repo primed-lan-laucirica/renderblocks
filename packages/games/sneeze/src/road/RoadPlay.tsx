@@ -3,7 +3,7 @@ import { numberToClips, playClips } from '@renderblocks/kernel'
 import type { Look } from '@renderblocks/designer/look'
 import { choo, correct, pop, sniff, thud, wake, windup, wrong } from '../sound'
 import { drawShape, outline } from './draw'
-import { count, high, labelOf, optionsFor, same, sliderOf, sneezeOf, spanOf, startOf, startsOf, sumOf, trailOf, written, type ChainId, type Fact, type Outcome, type Says, type Shape, type Sneezed, type Slider } from './chains'
+import { choicesFor, count, high, labelOf, same, sliderOf, sneezeOf, spanOf, startOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Fact, type Outcome, type Says, type Shape, type Sneezed, type Slider } from './chains'
 import { boxOf, RoadStage, STEP, type RPiece } from './stage'
 import { initPhysics } from '../sim'
 
@@ -17,7 +17,7 @@ const DRAG_PX = 10
 
 const WORDS: Record<string, string> = { '+': 'plus', '−': 'minus', '×': 'times', '÷': 'dividedBy', '=': 'equals' }
 /** A sentence as number-voice clips. */
-const clipsOf = (s: Says) => s.flatMap((t) => (typeof t === 'number' ? numberToClips(t) : WORDS[t] ? [WORDS[t]] : []))
+const clipsOf = (s: Says) => s.flatMap((t) => (typeof t === 'number' ? numberToClips(t, (String(t).split('.')[1] ?? '').length) : WORDS[t] ? [WORDS[t]] : []))
 
 type Phase = 'ready' | 'windup' | 'guessing' | 'choo' | 'held' | 'snapping'
 type Pending = { kind: 'sneeze'; p: RPiece; res: Sneezed } | { kind: 'join'; res: Outcome }
@@ -129,15 +129,17 @@ export function RoadPlay({
   const [asking, setAsking] = useState<{ says: Says; options: number[] } | null>(null)
   const [ruledOut, setRuledOut] = useState<number[]>([])
   // What's on the stage, for the line that adds it all up.
-  const [blocks, setBlocks] = useState<Shape[]>([])
+  const [blocks, setBlocks] = useState<number[]>([])
   // The shape whose turn it is (the slider is about that one), and what he has picked on the slider for its next sneeze.
-  const [turn, setTurn] = useState<{ shape: Shape; path: number[] } | null>(null)
+  const [turn, setTurn] = useState<{ shape: Shape; k: number; path: number[] } | null>(null)
   const [pick, setPick] = useState<number | null>(null)
   const [sliding, setSliding] = useState(false)
-  const live = useRef({ guess, lookFor, onGuess, pick, sliding })
+  // The camera follows the one whose turn it is once it is smaller than a block (as Sneeze² does); 🔭 shows them all.
+  const [seeAll, setSeeAll] = useState(false)
+  const live = useRef({ guess, lookFor, onGuess, pick, sliding, seeAll })
   useEffect(() => {
-    live.current = { guess, lookFor, onGuess, pick, sliding }
-  }, [guess, lookFor, onGuess, pick, sliding])
+    live.current = { guess, lookFor, onGuess, pick, sliding, seeAll }
+  }, [guess, lookFor, onGuess, pick, sliding, seeAll])
   const cmd = useRef<{ pick: (n: number) => void; form: (v: number) => void } | null>(null)
   const start = startOf(stop, n)
 
@@ -174,17 +176,20 @@ export function RoadPlay({
       phaseAt = performance.now() / 1000
       setPhase(p)
     }
-    const can = (p: RPiece) => !!sneezeOf(stop, p.shape)
+    /** What a piece would sneeze now (`pick`: what he chose on the slider). Below one, powers go on dividing by what they were divided by. */
+    const plan = (p: RPiece, pick?: number) => sneezeOf(stop, p.shape, pick, p.k, p.path[p.path.length - 1])
+    const can = (p: RPiece) => !!plan(p)
+    const amount = (p: RPiece) => valueOf(count(p.shape), p.k)
     // Whose turn: the one that flew out last (even when it can sneeze no more: a prime, a one), as in Sneeze².
     const current = () => {
       if (!stage) return null
-      return stage.piece(currentId) ?? stage.pieces.filter(can).sort((a, b) => count(b.shape) - count(a.shape))[0] ?? stage.pieces[0] ?? null
+      return stage.piece(currentId) ?? stage.pieces.filter(can).sort((a, b) => amount(b) - amount(a))[0] ?? stage.pieces[0] ?? null
     }
     const sync = () => {
       if (!stage) return
-      setBlocks(stage.pieces.map((p) => p.shape))
+      setBlocks(stage.pieces.map(amount))
       const p = current()
-      setTurn(p ? { shape: p.shape, path: p.path } : null)
+      setTurn(p ? { shape: p.shape, k: p.k, path: p.path } : null)
     }
     // A pick on the slider is for one sneeze of the shape it was made for.
     const unpick = () => {
@@ -196,7 +201,7 @@ export function RoadPlay({
       first = true
       missed = false
       setRuledOut([])
-      setAsking({ says: res.ask, options: optionsFor(res.answer, res.answer * 7 + (stage?.sneezes ?? 0)) })
+      setAsking({ says: res.ask, options: choicesFor(res.answer, res.k, Math.round(res.answer * 10 ** res.k) * 7 + (stage?.sneezes ?? 0)) })
       setP('guessing')
     }
 
@@ -219,7 +224,7 @@ export function RoadPlay({
       if (!stage || pending?.kind !== 'sneeze') return setP('ready')
       setP('choo')
       punch = 1
-      later(choo(BigInt(count(pending.p.shape))), apply)
+      later(choo(BigInt(Math.max(1, Math.round(amount(pending.p))))), apply)
     }
     const doJoin = () => {
       const h = stage?.held
@@ -229,9 +234,10 @@ export function RoadPlay({
         pending = null
         return setP('ready')
       }
-      sniff(BigInt(count(h.from.whole)))
+      sniff(BigInt(Math.max(1, Math.round(valueOf(count(h.from.whole), h.from.k)))))
       // Back to where it was in the whole.
-      snap = { at: performance.now() / 1000, from: { x: h.x, y: h.y }, to: { x: home.x0 + h.from.outAt.x + h.shape.length / 2, y: home.y0 + h.from.outAt.y + high(h.shape) / 2 } }
+      const [u, mine] = [unitOf(h.from.k), unitOf(h.k)]
+      snap = { at: performance.now() / 1000, from: { x: h.x, y: h.y }, to: { x: home.x0 + h.from.outAt.x * u + (h.shape.length * mine) / 2, y: home.y0 + h.from.outAt.y * u + (high(h.shape) * mine) / 2 } }
       setP('snapping')
     }
     const tickle = (target: RPiece | null = null, soon = false) => {
@@ -243,21 +249,21 @@ export function RoadPlay({
       if (!p) return thud(0.3, 0)
       if (!p.settled) return void (queued = true)
       // What he picked on the slider is about the shape whose turn it is.
-      const res = sneezeOf(stop, p.shape, p === current() ? (live.current.pick ?? undefined) : undefined)
+      const res = plan(p, p === current() ? (live.current.pick ?? undefined) : undefined)
       if (!res) {
-        // It can't sneeze (a prime, a one, a square with nothing left over): a little shake.
+        // It can't sneeze (a prime, a ten-thousandth, a square with nothing left over): a little shake.
         wiggle = { id: p.id, until: performance.now() / 1000 + 0.5 }
         return thud(0.3, 0)
       }
-      // It stands as its copies first, so he sees what is about to come apart.
+      // It stands as its copies (or its smaller cells) first, so he sees what is about to come apart.
       if (res.as) {
-        p = stage.reform(p, res.as)
+        p = stage.reform(p, res.as, res.k)
         p.settled = true
         sync()
       }
       pending = { kind: 'sneeze', p, res }
       missed = false
-      windup(BigInt(count(p.shape)))
+      windup(BigInt(Math.max(1, Math.round(amount(p)))))
       if (live.current.guess) return ask(res)
       setP('windup')
       later(soon ? WINDUP_SOON : WINDUP, doChoo)
@@ -267,9 +273,9 @@ export function RoadPlay({
       form: (v) => {
         const p = current()
         if (!stage || ph !== 'ready' || !p || !p.settled) return
-        const as = sneezeOf(stop, p.shape, v)?.as
-        if (!as || same(as, p.shape)) return
-        stage.reform(p, as).settled = true
+        const to = plan(p, v)
+        if (!to?.as || (to.k === p.k && same(to.as, p.shape))) return
+        stage.reform(p, to.as, to.k).settled = true
         pop(0.3)
         sync()
       },
@@ -310,13 +316,16 @@ export function RoadPlay({
       if (!stage || ph !== 'ready') return tickle()
       // On a shape (a little generously, the smallest first): a tap sneezes it, a drag carries it.
       const s = toStage(x, y)
-      const m = Math.max(0.15, 14 / view.scale)
-      const on = stage.pieces
-        .filter((p) => {
-          const b = boxOf(p.shape, p.x, p.y)
-          return s.x > b.x0 - m && s.x < b.x1 + m && s.y > b.y0 - m && s.y < b.y1 + m
-        })
-        .sort((a, b) => count(a.shape) - count(b.shape))[0]
+      const m = 14 / view.scale
+      const within = (grace: number) =>
+        stage!.pieces
+          .filter((p) => {
+            const b = boxOf(p)
+            return s.x > b.x0 - grace && s.x < b.x1 + grace && s.y > b.y0 - grace && s.y < b.y1 + grace
+          })
+          .sort((a, b) => amount(a) - amount(b))[0]
+      // The one his finger is on; failing that, one a fingertip away.
+      const on = within(0) ?? within(m)
       if (!on) return tickle()
       wake()
       el.setPointerCapture(e.pointerId)
@@ -405,7 +414,7 @@ export function RoadPlay({
           snap = null
           const whole = stage.joinBack()
           if (whole) {
-            pop(Math.min(1, Math.log10(1 + count(whole.shape)) / 2))
+            pop(Math.min(1, Math.log10(1 + amount(whole)) / 2))
             currentId = whole.id
             sneezed = { id: whole.id, at: t }
             setSaid({ says: res.says, right })
@@ -423,11 +432,20 @@ export function RoadPlay({
         el.width = Math.round(w * dpr)
         el.height = Math.round(h * dpr)
       }
-      // Camera: everything on the stage, with room above for the sentence and below for the floor and the numbers.
-      const b = stage.bounds()
+      // Camera: everything on the stage, with room above for the sentence and below for the floor and the slider.
+      // Once the one whose turn it is is smaller than a block, it follows that one and what it came out of.
+      const cur = current()
+      const small = cur && cur.k > 0 && !live.current.seeAll ? cur : null
+      let b = stage.bounds()
+      let room = 1
+      if (small) {
+        const near = [small, ...(small.from?.stays.map((id) => stage!.piece(id)).filter((q): q is RPiece => !!q) ?? [])].map((q) => boxOf(q))
+        b = { x0: Math.min(...near.map((q) => q.x0)), x1: Math.max(...near.map((q) => q.x1)), y1: Math.max(...near.map((q) => q.y1)) }
+        room = Math.max(b.x1 - b.x0, b.y1) / 5
+      }
       const low = ph === 'guessing' ? Math.min(0.42, 190 / h) : Math.min(0.42, 200 / h)
       const top = Math.min(0.3 * h, 150)
-      const fit = Math.min(w / (b.x1 - b.x0 + 4), (h - low * h - top) / (b.y1 + 2), 90)
+      const fit = Math.min(w / (b.x1 - b.x0 + 4 * room), (h - low * h - top) / (b.y1 + 2 * room), 90 / Math.min(1, room))
       const want = { x: (b.x0 + b.x1) / 2, low, logScale: Math.log(Math.max(2, fit)) }
       if (!cam) cam = want
       else if (ph !== 'held' && ph !== 'snapping' && !(ph === 'guessing' && pending?.kind === 'join')) {
@@ -462,17 +480,19 @@ export function RoadPlay({
       // On a dividing chain its copies are always marked off, so he sees what it is made of before it comes apart.
       const dividing = stop === 'factors' || stop === 'powers'
       const chosen = (live.current.pick !== null || live.current.sliding || dividing) && ph === 'ready' ? current() : null
-      const plan = chosen ? sneezeOf(stop, chosen.shape, live.current.pick ?? undefined) : null
+      const next = chosen ? plan(chosen, live.current.pick ?? undefined) : null
       const marked = live.current.pick !== null || live.current.sliding
-      const willFly = plan && !plan.as && marked ? plan.parts.filter((x) => x.fly) : []
-      const copies = plan && !plan.as && dividing ? plan.parts : []
+      const willFly = next && !next.as && marked ? next.parts.filter((x) => x.fly) : []
+      const copies = next && !next.as && dividing ? next.parts : []
       // The one he carries is drawn last, over the rest.
       for (const p of [...stage.pieces].sort((a, c) => Number(a.held) - Number(c.held))) {
         const cx = sx(p.x)
         const cy = sy(p.y)
-        const pw = p.shape.length * scale
-        const phh = high(p.shape) * scale
-        if (cx + pw < -80 || cx - pw > w + 80) continue
+        // Pixels per cell of this piece.
+        const cell = scale * unitOf(p.k)
+        const pw = p.shape.length * cell
+        const phh = high(p.shape) * cell
+        if (cx + pw < -80 || cx - pw > w + 80 || Math.max(pw, phh) < 0.5) continue
         const since = t - phaseAt
         const mine = p === target
         let squash = 0
@@ -480,6 +500,7 @@ export function RoadPlay({
         if (mine && ph === 'choo') squash = 1
         let angle = stage.angleOf(p)
         if (p.id === wiggle.id && t < wiggle.until) angle += Math.sin(t * 40) * 0.05
+        // Below one it wears the look of the number of its cells (0.81 is a small 81), as in Sneeze².
         const base = live.current.lookFor(BigInt(count(p.shape)))
         const look: Look = mine && ph !== 'ready' ? { ...base, eyes: 'sleepy', mouth: 'o' } : p.id === sneezed.id && t - sneezed.at < 0.8 ? { ...base, eyes: 'sleepy', mouth: 'grin' } : base
         g.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -488,11 +509,11 @@ export function RoadPlay({
         g.translate(0, phh / 2)
         g.scale(1 + 0.07 * squash, 1 - 0.12 * squash)
         g.translate(0, -phh / 2)
-        g.scale(scale, -scale)
+        g.scale(cell, -cell)
         g.translate(-p.shape.length / 2, -high(p.shape) / 2)
-        drawShape(g, p.shape, look, scale)
+        drawShape(g, p.shape, look, cell)
         if (p === chosen) {
-          g.lineWidth = 3.5 / scale
+          g.lineWidth = 3.5 / cell
           g.strokeStyle = 'rgba(30,41,59,0.75)'
           for (const part of copies) {
             outline(g, part.shape, part.x, part.y)
@@ -501,8 +522,8 @@ export function RoadPlay({
         }
         if (p === chosen)
           for (const part of willFly) {
-            g.lineWidth = 4 / scale
-            g.setLineDash([10 / scale, 7 / scale])
+            g.lineWidth = 4 / cell
+            g.setLineDash([10 / cell, 7 / cell])
             outline(g, part.shape, part.x, part.y)
             g.fillStyle = 'rgba(249,115,22,0.18)'
             g.fill()
@@ -510,16 +531,18 @@ export function RoadPlay({
             g.stroke()
             g.setLineDash([])
           }
+        // A number over each, unless it is too small to see or one of a crowd of ones.
         const nn = count(p.shape)
-        if (!p.spin && !(crowd && nn === 1)) labels.push({ x: cx, y: sy(boxOf(p.shape, p.x, p.y).y1) + phh * 0.12 * squash - (base.hat !== 'none' ? 0.4 * scale : 0), size: Math.max(16, Math.min(40, 0.55 * scale)), says: labelOf(stop, p.shape) })
+        if (!p.spin && !(crowd && nn === 1) && (Math.max(pw, phh) >= 12 || p === cur)) labels.push({ x: cx, y: sy(boxOf(p).y1) + phh * 0.12 * squash - (base.hat !== 'none' ? 0.4 * cell : 0), size: Math.max(16, Math.min(40, 0.55 * scale, 0.9 * Math.max(pw, phh))), says: labelOf(stop, p.shape, p.k) })
       }
       if (home && held?.from) {
         // Where the one he carries goes back: the whole it came out of.
         g.setTransform(dpr, 0, 0, dpr, 0, 0)
         g.translate(sx(home.x0), sy(home.y0))
-        g.scale(scale, -scale)
-        g.lineWidth = 5 / scale
-        g.setLineDash([10 / scale, 7 / scale])
+        const cell = scale * unitOf(held.from.k)
+        g.scale(cell, -cell)
+        g.lineWidth = 5 / cell
+        g.setLineDash([10 / cell, 7 / cell])
         g.strokeStyle = '#16a34a'
         outline(g, held.from.whole, 0, 0)
         g.stroke()
@@ -567,11 +590,11 @@ export function RoadPlay({
   const opening: Says = labelOf(stop, start.shape)
   const line = said?.says ?? opening
   // Everything there is, as one sentence: what it has been divided by on the way (60 = 2 × 2 × 15), or the pieces added up.
-  const sum = (turn && trailOf(turn.path, count(turn.shape))) ?? sumOf(blocks)
-  const starts = startsOf(stop)
-  const slider = turn ? sliderOf(stop, turn.shape) : null
+  const sum = (turn && trailOf(turn.path, valueOf(count(turn.shape), turn.k))) ?? sumOf(blocks)
+  const last = turn?.path[turn.path.length - 1]
+  const slider = turn ? sliderOf(stop, turn.shape, turn.k, last) : null
   // While he slides, the sentence it would make.
-  const preview = slider && pick !== null && turn ? sneezeOf(stop, turn.shape, pick) : null
+  const preview = slider && pick !== null && turn ? sneezeOf(stop, turn.shape, pick, turn.k, last) : null
   return (
     <div className="h-dvh w-full relative overflow-hidden select-none bg-orange-50">
       <canvas ref={canvas} className="absolute inset-0 w-full h-full touch-none" />
@@ -586,6 +609,14 @@ export function RoadPlay({
             ⭐
           </span>
         )}
+        <button
+          type="button"
+          onClick={() => setSeeAll((v) => !v)}
+          className={`w-12 h-12 rounded-full shadow text-2xl ${seeAll ? 'bg-orange-500' : 'bg-white/90'}`}
+          aria-label={seeAll ? 'Follow the sneezer' : 'See them all'}
+        >
+          🔭
+        </button>
         <button type="button" onClick={() => onStart(start.key)} className="w-12 h-12 rounded-full bg-white/90 shadow text-2xl font-bold" aria-label="Start again">
           ↺
         </button>
@@ -644,7 +675,7 @@ export function RoadPlay({
           </div>
         </div>
       ) : (
-        /* The numbers this stop can start from. */
+        /* The slider. What to start from is chosen on the chain's own page, before play (Lan, Nov 12). */
         <div className="absolute bottom-3 inset-x-3 flex flex-col items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
           {slider && (phase === 'ready' || phase === 'windup' || phase === 'choo') && (
             <RoadSlider
@@ -658,19 +689,6 @@ export function RoadPlay({
               onSliding={setSliding}
             />
           )}
-          <div className="flex gap-2 overflow-x-auto max-w-full px-1 py-1">
-            {starts.map((s) => (
-              <button
-                key={s.key}
-                type="button"
-                onClick={() => onStart(s.key)}
-                aria-pressed={s.key === start.key}
-                className={`shrink-0 min-w-12 h-12 px-3 rounded-2xl shadow font-black tabular-nums text-xl whitespace-nowrap active:scale-95 transition-transform ${s.key === start.key ? 'bg-orange-500 text-white' : 'bg-white/90 text-slate-600'}`}
-              >
-                {s.title}
-              </button>
-            ))}
-          </div>
         </div>
       )}
     </div>

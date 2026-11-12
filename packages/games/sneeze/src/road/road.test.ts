@@ -1,21 +1,33 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { arrange, CHAINS, count, factorsOf, hasStar, isRect, labelOf, optionsFor, rect, same, sliderOf, sneezeOf, spanOf, stairs, startsOf, sumOf, trailOf, written, type ChainId, type Shape } from './chains'
+import { arrange, CHAINS, choicesFor, count, factorsOf, hasStar, isRect, labelOf, MAX_K, optionsFor, rect, same, sliderOf, sneezeOf, spanOf, stairs, startsOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Shape } from './chains'
 import { initPhysics } from '../sim'
 import { boxOf, RoadStage, STEP } from './stage'
 
-/** Sneeze all the way down, always by the first thing on the slider (or `pick`). */
-function run(chain: ChainId, start: Shape, pick?: (s: Shape) => number | undefined) {
+/**
+ * Sneeze all the way down, always by the first thing on the slider (or
+ * `pick`). `whole`: stop where the decimals would begin. `left` is what is
+ * on the stage at the end, as amounts.
+ */
+function run(chain: ChainId, start: Shape, opts: { pick?: (s: Shape) => number | undefined; whole?: boolean } = {}) {
   const says: string[] = []
   const stays: Shape[] = []
+  const left: number[] = []
   let s = start
+  let k = 0
+  let last: number | undefined
   for (let i = 0; i < 100; i++) {
-    const res = sneezeOf(chain, s, pick?.(s))
-    if (!res) break
+    const res = sneezeOf(chain, s, opts.pick?.(s), k, last)
+    if (!res || (opts.whole && res.k > 0)) break
     says.push(written(res.says))
-    stays.push(...res.parts.filter((p) => !p.fly).map((p) => p.shape))
+    for (const p of res.parts.filter((q) => !q.fly)) {
+      stays.push(p.shape)
+      left.push(valueOf(count(p.shape), res.k))
+    }
     s = res.parts.find((p) => p.fly)!.shape
+    k = res.k
+    last = res.factor
   }
-  return { says, stays, last: s }
+  return { says, stays, last: s, k, factor: last, left: [...left, valueOf(count(s), k)] }
 }
 
 describe('every chain', () => {
@@ -30,6 +42,7 @@ describe('every chain', () => {
           expect(res.parts.filter((p) => p.fly)).toHaveLength(1)
           expect(res.parts[res.parts.length - 1].fly).toBe(true)
           expect(res.parts.reduce((a, p) => a + count(p.shape), 0)).toBe(count(start.shape))
+          expect(res.k).toBe(0)
           // Every cell of the whole is covered once.
           const seen = new Set<string>()
           for (const p of res.parts) p.shape.forEach((h, i) => Array.from({ length: h }, (_, j) => seen.add(`${p.x + i},${p.y + j}`)))
@@ -42,9 +55,11 @@ describe('every chain', () => {
   it('what pops out is the same kind of thing, so it can go all the way down', () => {
     for (const chain of CHAINS)
       for (const start of startsOf(chain)) {
-        const { stays, last } = run(chain, start.shape)
-        expect(sneezeOf(chain, last)).toBeNull()
-        expect(count(last) + stays.reduce((a, s) => a + count(s), 0)).toBe(count(start.shape))
+        const { last, k, factor, left } = run(chain, start.shape)
+        expect(sneezeOf(chain, last, undefined, k, factor), `${chain} ${start.title}`).toBeNull()
+        expect(k).toBeLessThanOrEqual(MAX_K)
+        // Nothing is lost on the way, decimals and all.
+        expect(left.reduce((a, b) => a + b, 0)).toBeCloseTo(count(start.shape), 6)
       }
   })
 
@@ -82,12 +97,12 @@ describe('every chain', () => {
 
 describe('corner squares', () => {
   it('a square pops the next square down and keeps an L: the odd numbers', () => {
-    const { says, stays, last } = run('corner', rect(5, 5))
+    const { says, stays, last } = run('corner', rect(5, 5), { whole: true })
     expect(says).toEqual(['25 − 9 = 16', '16 − 7 = 9', '9 − 5 = 4', '4 − 3 = 1'])
     expect(stays.map(count)).toEqual([9, 7, 5, 3])
     expect(stays[0]).toEqual([5, 1, 1, 1, 1])
     expect(last).toEqual([1])
-    expect(written(sumOf([...stays, last])!)).toBe('25 = 9 + 7 + 5 + 3 + 1')
+    expect(written(sumOf([...stays, last].map(count))!)).toBe('25 = 9 + 7 + 5 + 3 + 1')
   })
   it('the slider picks any smaller square', () => {
     expect(sliderOf('corner', rect(5, 5))).toEqual({ values: [4, 3, 2, 1], at: 4, labels: ['16', '9', '4', '1'] })
@@ -97,20 +112,35 @@ describe('corner squares', () => {
     expect(res.parts[1]).toEqual({ shape: rect(3, 3), x: 2, y: 2, fly: true })
     expect(written(res.back.says)).toBe('9 + 16 = 25')
   })
-  it('an L and a one cannot sneeze', () => {
+  it('an L cannot sneeze', () => {
     expect(sneezeOf('corner', [5, 1, 1, 1, 1])).toBeNull()
-    expect(sneezeOf('corner', [1])).toBeNull()
     expect(sneezeOf('corner', rect(2, 3))).toBeNull()
+  })
+  it('below one it goes on in hundredths, as Sneeze² does, to a ten-thousandth', () => {
+    const one = sneezeOf('corner', [1])!
+    expect(one.as).toEqual(rect(10, 10))
+    expect(one.k).toBe(2)
+    expect(written(one.says)).toBe('1 − 0.19 = 0.81')
+    expect(written(one.back.says)).toBe('0.81 + 0.19 = 1')
+    expect(one.fact).toBeUndefined()
+    expect(sliderOf('corner', [1])?.labels.slice(0, 3)).toEqual(['0.81', '0.64', '0.49'])
+    const { says, last, k } = run('corner', rect(2, 2))
+    expect(says.slice(0, 3)).toEqual(['4 − 3 = 1', '1 − 0.19 = 0.81', '0.81 − 0.17 = 0.64'])
+    expect(says[9]).toBe('0.04 − 0.03 = 0.01')
+    expect(says[10]).toBe('0.01 − 0.0019 = 0.0081')
+    expect(says.at(-1)).toBe('0.0004 − 0.0003 = 0.0001')
+    expect([last, k]).toEqual([[1], 4])
+    expect(sneezeOf('corner', [1], undefined, 4)).toBeNull()
   })
 })
 
 describe('step triangles', () => {
   it('a staircase pops the next one down and keeps its tallest column', () => {
-    const { says, stays, last } = run('steps', stairs(5))
+    const { says, stays, last } = run('steps', stairs(5), { whole: true })
     expect(says).toEqual(['15 − 5 = 10', '10 − 4 = 6', '6 − 3 = 3', '3 − 2 = 1'])
     expect(stays).toEqual([[5], [4], [3], [2]])
     expect(last).toEqual([1])
-    expect(written(sumOf([...stays, last])!)).toBe('15 = 5 + 4 + 3 + 2 + 1')
+    expect(written(sumOf([...stays, last].map(count))!)).toBe('15 = 5 + 4 + 3 + 2 + 1')
   })
   it('the slider picks any smaller staircase, and a run of columns stays', () => {
     expect(sliderOf('steps', stairs(5))?.labels).toEqual(['10', '6', '3', '1'])
@@ -118,6 +148,20 @@ describe('step triangles', () => {
     expect(written(res.says)).toBe('15 − 12 = 3')
     expect(res.parts.map((p) => p.shape)).toEqual([[5, 4, 3], [2, 1]])
     expect(res.parts[1].x).toBe(3)
+  })
+  it('below one, a one is ten tenths: a staircase of four', () => {
+    const one = sneezeOf('steps', [1])!
+    expect(one.as).toEqual(stairs(4))
+    expect(one.k).toBe(1)
+    const { says, k } = run('steps', stairs(2))
+    expect(says).toEqual([
+      '3 − 2 = 1',
+      ...['1 − 0.4 = 0.6', '0.6 − 0.3 = 0.3', '0.3 − 0.2 = 0.1'],
+      ...['0.1 − 0.04 = 0.06', '0.06 − 0.03 = 0.03', '0.03 − 0.02 = 0.01'],
+      ...['0.01 − 0.004 = 0.006', '0.006 − 0.003 = 0.003', '0.003 − 0.002 = 0.001'],
+      ...['0.001 − 0.0004 = 0.0006', '0.0006 − 0.0003 = 0.0003', '0.0003 − 0.0002 = 0.0001'],
+    ])
+    expect(k).toBe(4)
   })
 })
 
@@ -159,9 +203,28 @@ describe('factors and powers', () => {
     expect(factorsOf('powers', 2)).toEqual([2])
     // A number that is no smaller number's power is its own base: into ones.
     expect(factorsOf('powers', 12)).toEqual([12])
-    expect(run('powers', [16]).says).toEqual(['16 ÷ 2 = 8', '8 ÷ 2 = 4', '4 ÷ 2 = 2', '2 ÷ 2 = 1'])
-    expect(run('powers', [100]).says).toEqual(['100 ÷ 10 = 10', '10 ÷ 10 = 1'])
-    expect(run('powers', [64], () => 4).says).toEqual(['64 ÷ 4 = 16', '16 ÷ 4 = 4', '4 ÷ 2 = 2', '2 ÷ 2 = 1'])
+    expect(run('powers', [16], { whole: true }).says).toEqual(['16 ÷ 2 = 8', '8 ÷ 2 = 4', '4 ÷ 2 = 2', '2 ÷ 2 = 1'])
+    expect(run('powers', [100], { whole: true }).says).toEqual(['100 ÷ 10 = 10', '10 ÷ 10 = 1'])
+    expect(run('powers', [64], { whole: true, pick: (s) => (count(s) > 4 ? 4 : undefined) }).says).toEqual(['64 ÷ 4 = 16', '16 ÷ 4 = 4', '4 ÷ 2 = 2', '2 ÷ 2 = 1'])
+  })
+  it('below one, powers go on dividing by what they were divided by', () => {
+    expect(run('powers', [4]).says).toEqual(['4 ÷ 2 = 2', '2 ÷ 2 = 1', '1 ÷ 2 = 0.5', '0.5 ÷ 2 = 0.25', '0.25 ÷ 2 = 0.125', '0.125 ÷ 2 = 0.0625'])
+    expect(run('powers', [100]).says).toEqual(['100 ÷ 10 = 10', '10 ÷ 10 = 1', '1 ÷ 10 = 0.1', '0.1 ÷ 10 = 0.01', '0.01 ÷ 10 = 0.001', '0.001 ÷ 10 = 0.0001'])
+    expect(run('powers', [25]).says.slice(2)).toEqual(['1 ÷ 5 = 0.2', '0.2 ÷ 5 = 0.04', '0.04 ÷ 5 = 0.008', '0.008 ÷ 5 = 0.0016'])
+    // Thirds never come out even: 9 ends at one, unless he picks something that does.
+    expect(run('powers', [9]).says).toEqual(['9 ÷ 3 = 3', '3 ÷ 3 = 1'])
+    expect(sneezeOf('powers', [1], undefined, 0, 3)).toBeNull()
+    expect(sliderOf('powers', [1], 0, 3)?.at).toBe(-1)
+    expect(written(sneezeOf('powers', [1], 5, 0, 3)!.says)).toBe('1 ÷ 5 = 0.2')
+    expect(sliderOf('powers', [1], 0, 10)).toEqual({ values: [2, 4, 5, 8, 10], at: 10, labels: ['÷ 2', '÷ 4', '÷ 5', '÷ 8', '÷ 10'] })
+    const half = sneezeOf('powers', [1], 2)!
+    expect([half.as, half.k, half.parts.length]).toEqual([rect(2, 5), 1, 2])
+    expect(written(half.back.says)).toBe('2 × 0.5 = 1')
+    expect(written(trailOf([2, 2, 2], 0.5)!)).toBe('4 = 2 × 2 × 2 × 0.5')
+  })
+  it('factors do not: a prime is where they end', () => {
+    expect(run('factors', [12]).says).toEqual(['12 ÷ 2 = 6', '6 ÷ 2 = 3'])
+    expect(sneezeOf('factors', [3])).toBeNull()
   })
   it('only the times tables are recorded as facts', () => {
     expect(sneezeOf('factors', [12])!.fact).toEqual({ concept: '3.OA.C.7', item: '12÷2' })
@@ -197,6 +260,14 @@ describe('the biggest square', () => {
 })
 
 describe('guesses and stars', () => {
+  it('makes a decimal answer near misses in its own places', () => {
+    const o = choicesFor(0.81, 2, 5)
+    expect(o).toContain(0.81)
+    expect(new Set(o).size).toBe(3)
+    expect(o.every((x) => Number.isInteger(Math.round(x * 100 * 1e6) / 1e6))).toBe(true)
+    expect(unitOf(2)).toBeCloseTo(0.1)
+    expect(sumOf([0.81, 0.19])).toEqual([1, '=', 0.81, '+', 0.19])
+  })
   it('offers the answer among three different numbers', () => {
     for (let a = 1; a < 40; a++)
       for (let seed = 0; seed < 12; seed++) {
@@ -220,29 +291,59 @@ describe('the stage', () => {
   const settle = (st: RoadStage, s = 8) => {
     for (let i = 0; i < s / STEP; i++) st.step()
   }
-  const total = (st: RoadStage) => st.pieces.reduce((a, p) => a + count(p.shape), 0)
+  const total = (st: RoadStage) => st.pieces.reduce((a, p) => a + valueOf(count(p.shape), p.k), 0)
 
-  it('a whole chain lands, with every block, on the floor', () => {
+  it('a whole chain lands, decimals and all, with every block, on the floor', () => {
     for (const chain of CHAINS) {
-      const start = startsOf(chain)[3].shape
+      const start = startsOf(chain)[0].shape
       const st = new RoadStage([start], spanOf(chain, start))
       let cur = st.pieces[0]
-      for (let i = 0; i < 30; i++) {
-        const res = sneezeOf(chain, cur.shape)
+      let slowest = 0
+      for (let i = 0; i < 40; i++) {
+        const res = sneezeOf(chain, cur.shape, undefined, cur.k, cur.path.at(-1))
         if (!res) break
-        if (res.as) cur = st.reform(cur, res.as)
+        if (res.as) cur = st.reform(cur, res.as, res.k)
         const made = st.sneeze(cur, res.parts, res.back, res.factor)
         cur = made[made.length - 1]
-        settle(st, 4)
+        // How long until it has landed (he taps fast: it must not hang in the air).
+        let t = 0
+        while (!cur.settled && t < 8) {
+          st.step()
+          t += STEP
+        }
+        slowest = Math.max(slowest, t)
       }
       settle(st)
-      expect(total(st), chain).toBe(count(start))
+      expect(slowest, `${chain} lands in time`).toBeLessThan(4)
+      expect(total(st), chain).toBeCloseTo(count(start), 6)
       for (const p of st.pieces) {
         expect(p.settled, chain).toBe(true)
-        expect(boxOf(p.shape, p.x, p.y).y0, chain).toBeGreaterThan(-0.1)
+        expect(boxOf(p).y0, chain).toBeGreaterThan(-0.1 * unitOf(p.k))
       }
+      if (chain === 'corner' || chain === 'steps' || chain === 'powers') expect(cur.k, chain).toBe(MAX_K)
       st.free()
     }
+  })
+
+  it('a one goes back together from its hundredths', () => {
+    const st = new RoadStage([rect(2, 2)], 2)
+    let cur = st.pieces[0]
+    for (let i = 0; i < 2; i++) {
+      const res = sneezeOf('corner', cur.shape, undefined, cur.k)!
+      if (res.as) cur = st.reform(cur, res.as, res.k)
+      cur = st.sneeze(cur, res.parts, res.back).at(-1)!
+      settle(st, 4)
+    }
+    expect([count(cur.shape), cur.k]).toEqual([81, 2])
+    expect(boxOf(cur).x1 - boxOf(cur).x0).toBeCloseTo(0.9)
+    st.grab(cur)
+    const home = st.homeOf(cur)!
+    st.holdAt(home.x0 + 0.5, home.y0 + 0.5)
+    expect(st.overHome()).toBe(true)
+    const one = st.joinBack()!
+    expect([count(one.shape), one.k]).toEqual([100, 2])
+    expect(total(st)).toBeCloseTo(4)
+    st.free()
   })
 
   it('carried back where it came from, it is the whole again, and that can go back in turn', () => {

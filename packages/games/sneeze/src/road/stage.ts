@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier2d-compat'
-import { count, high, type Outcome, type Part, type Shape } from './chains'
+import { count, high, unitOf, valueOf, type Outcome, type Part, type Shape } from './chains'
 
 export const STEP = 1 / 60
 /** The biggest shape is about this many physics units across, as the sneezer always is in Sneeze² (same floaty gravity). */
@@ -16,6 +16,8 @@ export interface Home {
   /** The pieces that stayed. */
   stays: number[]
   whole: Shape
+  /** The decimal places the whole's cells are counted in. */
+  k: number
   /** The whole's own id, home and path, given back to it. */
   id: number
   from: Home | null
@@ -35,6 +37,8 @@ export interface Home {
 export interface RPiece {
   id: number
   shape: Shape
+  /** The decimal places its cells are counted in: each is 10^-k, and that much smaller. */
+  k: number
   /** If it flew out of another: where it goes back. */
   from: Home | null
   /** What it has been divided by on the way here (factors, powers). */
@@ -51,11 +55,15 @@ export interface RPiece {
   lastThud: number
 }
 
-/** A shape's box in blocks, from its middle. */
-export function boxOf(s: Shape, x: number, y: number) {
-  const h = high(s)
-  return { x0: x - s.length / 2, x1: x + s.length / 2, y0: y - h / 2, y1: y + h / 2 }
+/** A piece's box in blocks, from its middle (or from where he holds it). */
+export function boxOf(p: { shape: Shape; k: number; x: number; y: number }, x = p.x, y = p.y) {
+  const u = unitOf(p.k)
+  const [w, h] = [p.shape.length * u, high(p.shape) * u]
+  return { x0: x - w / 2, x1: x + w / 2, y0: y - h / 2, y1: y + h / 2 }
 }
+
+/** The bigger of a piece's width and height, in blocks. */
+const sizeOf = (p: { shape: Shape; k: number }) => Math.max(p.shape.length, high(p.shape)) * unitOf(p.k)
 
 /**
  * The chains' stage: a floor, and shapes of blocks. Any of them can sneeze
@@ -86,7 +94,7 @@ export class RoadStage {
     const width = start.reduce((w, b) => w + b.length, 0) + gap * (start.length - 1)
     let x = -width / 2
     for (const b of start) {
-      this.add(b, x + b.length / 2, high(b) / 2).settled = true
+      this.add(b, 0, x + b.length / 2, high(b) / 2).settled = true
       x += b.length + gap
     }
   }
@@ -95,10 +103,10 @@ export class RoadStage {
     return this.pieces.find((p) => p.id === id)
   }
 
-  private add(shape: Shape, x: number, y: number, id = this.nextId++): RPiece {
-    const f = this.f
-    const rb = this.world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(x * f, y * f).lockRotations().setCcdEnabled(true).setLinearDamping(0.05))
-    const p: RPiece = { id, shape, from: null, path: [], rb, x, y, settled: false, still: 0, airborne: 0, spin: null, held: false, lastThud: -1 }
+  private add(shape: Shape, k: number, x: number, y: number, id = this.nextId++): RPiece {
+    const f = this.f * unitOf(k)
+    const rb = this.world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(x * this.f, y * this.f).lockRotations().setCcdEnabled(true).setLinearDamping(0.05))
+    const p: RPiece = { id, shape, k, from: null, path: [], rb, x, y, settled: false, still: 0, airborne: 0, spin: null, held: false, lastThud: -1 }
     // A box for each run of columns of one height.
     const top = high(shape)
     const descs: RAPIER.ColliderDesc[] = []
@@ -129,17 +137,19 @@ export class RoadStage {
    * from; the ones that stay jerk back. Returns the new pieces, in the parts' order.
    */
   sneeze(p: RPiece, parts: Part[], back: Outcome, factor?: number): RPiece[] {
-    const { x0, y0 } = boxOf(p.shape, p.x, p.y)
+    const { x0, y0 } = boxOf(p)
     this.remove(p)
     const f = this.f
-    const size = Math.min(SPAN, Math.max(4, Math.max(p.shape.length, high(p.shape)) * f))
+    const u = unitOf(p.k)
+    // A little one hops as far for its size as a big one does (a hundredth doesn't fly off the stage).
+    const size = Math.min(SPAN, Math.max(4 * u, sizeOf(p) * f))
     const base = LAUNCH * Math.sqrt(GRAVITY * size)
     // A little different each time, so a run of them doesn't land in one heap.
     const vary = 0.85 + 0.4 * ((this.sneezes * 0.618) % 1)
     let flying = 0
     const path = factor ? [...p.path, factor] : p.path
     const out = parts.map((part) => {
-      const q = this.add(part.shape, x0 + part.x + part.shape.length / 2, y0 + part.y + high(part.shape) / 2)
+      const q = this.add(part.shape, p.k, x0 + (part.x + part.shape.length / 2) * u, y0 + (part.y + high(part.shape) / 2) * u)
       q.path = path
       if (!part.fly) {
         q.rb.setLinvel({ x: -0.12 * base, y: 0 }, true)
@@ -148,25 +158,25 @@ export class RoadStage {
       const speed = base * vary * (1 + 0.22 * flying++)
       const vy = speed * Math.sin(ANGLE)
       q.rb.setLinvel({ x: speed * Math.cos(ANGLE), y: vy }, true)
-      const drop = (q.y - high(part.shape) / 2) * f
+      const drop = (q.y - (high(part.shape) * u) / 2) * f
       q.spin = { at: this.time, flight: Math.max(0.3, (vy + Math.sqrt(vy * vy + 2 * GRAVITY * drop)) / GRAVITY) }
       return q
     })
     const stay = parts.findIndex((x) => !x.fly)
     parts.forEach((part, i) => {
       if (!part.fly || stay < 0) return
-      out[i].from = { stays: out.filter((_, j) => !parts[j].fly).map((q) => q.id), whole: p.shape, id: p.id, from: p.from, path: p.path, back, outAt: { x: part.x, y: part.y }, stayAt: { x: parts[stay].x, y: parts[stay].y } }
+      out[i].from = { stays: out.filter((_, j) => !parts[j].fly).map((q) => q.id), whole: p.shape, k: p.k, id: p.id, from: p.from, path: p.path, back, outAt: { x: part.x, y: part.y }, stayAt: { x: parts[stay].x, y: parts[stay].y } }
     })
     this.sneezes++
     return out
   }
 
-  /** The same piece in a new shape (its copies stood another way), where it stood. */
-  reform(p: RPiece, shape: Shape): RPiece {
-    const { y0 } = boxOf(p.shape, p.x, p.y)
+  /** The same piece in a new shape (its copies stood another way, or counted in smaller cells), where it stood. */
+  reform(p: RPiece, shape: Shape, k = p.k): RPiece {
+    const { y0 } = boxOf(p)
     const x = p.x
     this.remove(p)
-    const q = this.add(shape, x, y0 + high(shape) / 2 + 0.05, p.id)
+    const q = this.add(shape, k, x, y0 + (high(shape) * unitOf(k)) / 2 + 0.05 * unitOf(k), p.id)
     Object.assign(q, { from: p.from, path: p.path })
     return q
   }
@@ -189,7 +199,7 @@ export class RoadStage {
 
   /** Where he's holding it (blocks; never below the floor). */
   holdAt(x: number, y: number) {
-    if (this.holding) Object.assign(this.holding, { x, y: Math.max(y, high(this.holding.p.shape) / 2) })
+    if (this.holding) Object.assign(this.holding, { x, y: Math.max(y, (high(this.holding.p.shape) * unitOf(this.holding.p.k)) / 2) })
   }
 
   /** Where the whole that `p` flew out of stands (its bottom-left corner), if every piece that stayed is still there and at rest. */
@@ -197,8 +207,9 @@ export class RoadStage {
     if (!p.from) return null
     const stays = p.from.stays.map((id) => this.piece(id))
     if (stays.some((q) => !q || !q.settled || q.held)) return null
-    const b = boxOf(stays[0]!.shape, stays[0]!.x, stays[0]!.y)
-    return { x0: b.x0 - p.from.stayAt.x, y0: b.y0 - p.from.stayAt.y }
+    const b = boxOf(stays[0]!)
+    const u = unitOf(p.from.k)
+    return { x0: b.x0 - p.from.stayAt.x * u, y0: b.y0 - p.from.stayAt.y * u }
   }
 
   /** Is the one he holds over the whole it came out of (a little generously)? */
@@ -206,9 +217,10 @@ export class RoadStage {
     const h = this.holding
     const home = h && this.homeOf(h.p)
     if (!h || !home) return false
-    const a = boxOf(h.p.shape, h.x, h.y)
-    const [w, t] = [h.p.from!.whole.length, high(h.p.from!.whole)]
-    const m = 0.6
+    const a = boxOf(h.p, h.x, h.y)
+    const u = unitOf(h.p.from!.k)
+    const [w, t] = [h.p.from!.whole.length * u, high(h.p.from!.whole) * u]
+    const m = 0.6 * u
     return !(a.x1 < home.x0 - m || a.x0 > home.x0 + w + m || a.y1 < home.y0 - m || a.y0 > home.y0 + t + m)
   }
 
@@ -222,9 +234,9 @@ export class RoadStage {
     for (let pass = 0; pass < 4; pass++)
       for (const q of this.pieces) {
         if (q === p) continue
-        const a = boxOf(p.shape, h.x, y)
-        const b = boxOf(q.shape, q.x, q.y)
-        if (a.x1 > b.x0 && a.x0 < b.x1 && a.y1 > b.y0 && a.y0 < b.y1) y = b.y1 + high(p.shape) / 2 + 0.02
+        const a = boxOf(p, h.x, y)
+        const b = boxOf(q)
+        if (a.x1 > b.x0 && a.x0 < b.x1 && a.y1 > b.y0 && a.y0 < b.y1) y = b.y1 + (a.y1 - a.y0) / 2 + 0.02 * unitOf(p.k)
       }
     p.rb.setBodyType(RAPIER.RigidBodyType.Dynamic, true)
     for (let i = 0; i < p.rb.numColliders(); i++) p.rb.collider(i).setCollisionGroups(0xffffffff)
@@ -244,7 +256,8 @@ export class RoadStage {
     const from = p.from
     for (const id of from.stays) this.remove(this.piece(id)!)
     this.remove(p)
-    const w = this.add(from.whole, home.x0 + from.whole.length / 2, home.y0 + high(from.whole) / 2, from.id)
+    const u = unitOf(from.k)
+    const w = this.add(from.whole, from.k, home.x0 + (from.whole.length * u) / 2, home.y0 + (high(from.whole) * u) / 2, from.id)
     Object.assign(w, { from: from.from, path: from.path })
     this.sneezes = Math.max(0, this.sneezes - 1)
     return w
@@ -266,10 +279,10 @@ export class RoadStage {
         touched.add(p)
         if (this.time - p.lastThud < 0.15) continue
         const v = p.rb.linvel()
-        const strength = Math.min(1, Math.hypot(v.x, v.y) / (2 * Math.sqrt(GRAVITY * Math.max(1, Math.max(p.shape.length, high(p.shape)) * this.f))))
+        const strength = Math.min(1, Math.hypot(v.x, v.y) / (2 * Math.sqrt(GRAVITY * Math.max(unitOf(p.k), sizeOf(p) * this.f))))
         if (strength < 0.1) continue
         p.lastThud = this.time
-        thuds.push({ strength, size: count(p.shape) })
+        thuds.push({ strength, size: valueOf(count(p.shape), p.k) })
       }
     })
     for (const p of this.pieces) {
@@ -282,12 +295,12 @@ export class RoadStage {
       if (p.settled) {
         // Knocked by another: it has to come to rest again.
         const v = p.rb.linvel()
-        if (Math.hypot(v.x, v.y) > 0.6 * this.f) Object.assign(p, { settled: false, still: 0, airborne: 0 })
+        if (Math.hypot(v.x, v.y) > 0.6 * this.f * Math.sqrt(unitOf(p.k))) Object.assign(p, { settled: false, still: 0, airborne: 0 })
         continue
       }
       const v = p.rb.linvel()
       p.airborne += STEP
-      p.still = Math.hypot(v.x, v.y) < 0.15 * this.f ? p.still + STEP : 0
+      p.still = Math.hypot(v.x, v.y) < 0.15 * this.f * Math.sqrt(unitOf(p.k)) ? p.still + STEP : 0
       if (p.still > 0.25 || p.airborne > FOREVER) {
         p.settled = true
         p.spin = null
@@ -308,7 +321,7 @@ export class RoadStage {
     let x1 = -Infinity
     let y1 = 0
     for (const p of this.pieces) {
-      const b = boxOf(p.shape, p.x, p.y)
+      const b = boxOf(p)
       x0 = Math.min(x0, b.x0)
       x1 = Math.max(x1, b.x1)
       y1 = Math.max(y1, b.y1)

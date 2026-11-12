@@ -11,12 +11,28 @@
  *   powers   the same, with the number's own base (64 ÷ 2, 100 ÷ 10), down to 1
  *   rect     a rectangle keeps its biggest square and pops the rest (8 − 5 = 3), down to a square
  *
+ * Below one they go on into decimals, as Sneeze² does (Lan, Nov 12: a chain
+ * from a low start is over too soon): a shape is then counted in smaller
+ * cells, each worth 10^-k (`k` decimal places, to 0.0001), and drawn smaller
+ * to match. A one on the corner chain is a 10 × 10 of hundredths
+ * (1 − 0.19 = 0.81); on the steps a staircase of four tenths (1 − 0.4 = 0.6);
+ * on powers it is divided again (1 ÷ 2 = 0.5, 1 ÷ 10 = 0.1). Factors still
+ * end at a prime and the rectangles at a square: that is what they are for.
+ *
  * Pure rules: what a shape becomes, the sentence, and what "Guess first" asks.
  * Sneeze² itself (rules.ts, sim.ts) is the first window on the path, unchanged.
  */
 
 /** A shape of blocks standing on the floor: the height of each column, left to right. */
 export type Shape = number[]
+
+/** The smallest cell is a ten-thousandth, as in Sneeze². */
+export const MAX_K = 4
+/** What `cells` cells are worth when each is 10^-k. */
+export const valueOf = (cells: number, k: number) => cells / 10 ** k
+/** How wide a cell is, in blocks: a hundredth is a tenth of a block across, so areas stay true. */
+export const unitOf = (k: number) => 10 ** (-k / 2)
+const tidy = (x: number) => Number(x.toFixed(MAX_K))
 
 export const count = (s: Shape) => s.reduce((a, b) => a + b, 0)
 export const high = (s: Shape) => Math.max(...s)
@@ -54,11 +70,13 @@ export interface Outcome {
   /** Guess first: the sentence with a ? in it, and the number that goes there. */
   ask: Says
   answer: number
+  /** The decimal places the numbers are counted in (Guess first makes its near misses in those). */
+  k: number
   fact?: Fact
 }
 
 export interface Sneezed extends Outcome {
-  /** The shape it stands in to do this (its copies side by side or stacked), if not as it stands now. */
+  /** The shape it stands in to do this (its copies side by side or stacked; a one as its smaller cells), if not as it stands now. */
   as?: Shape
   /** The ones that stay, then the one that flies: that one sneezes next. */
   parts: Part[]
@@ -75,20 +93,36 @@ const minus = (whole: number, off: number): Fact | undefined => (whole <= 20 ? {
 const plus = (a: number, b: number): Fact | undefined => (a + b <= 20 ? { concept: ADD, item: `${a}+${b}` } : undefined)
 const table = (a: number, b: number, item: string): Fact | undefined => (a <= 10 && b <= 10 ? { concept: TIMES, item } : undefined)
 
-const taking = (whole: number, stays: number, out: number): Pick<Sneezed, 'says' | 'ask' | 'answer' | 'fact' | 'back'> => ({
-  says: [whole, '−', stays, '=', out],
-  ask: [whole, '−', stays, '=', '?'],
-  answer: out,
-  fact: minus(whole, stays),
-  back: { says: [out, '+', stays, '=', whole], ask: [out, '+', stays, '=', '?'], answer: whole, fact: plus(out, stays) },
-})
+/** whole − stays = out, counted in cells of 10^-k. */
+function taking(wholeCells: number, staysCells: number, k: number): Pick<Sneezed, 'says' | 'ask' | 'answer' | 'k' | 'fact' | 'back'> {
+  const [whole, stays, out] = [wholeCells, staysCells, wholeCells - staysCells].map((c) => valueOf(c, k))
+  return {
+    says: [whole, '−', stays, '=', out],
+    ask: [whole, '−', stays, '=', '?'],
+    answer: out,
+    k,
+    fact: k ? undefined : minus(whole, stays),
+    back: { says: [out, '+', stays, '=', whole], ask: [out, '+', stays, '=', '?'], answer: whole, k, fact: k ? undefined : plus(out, stays) },
+  }
+}
 
 export const divisors = (n: number) => Array.from({ length: n }, (_, i) => i + 1).filter((d) => n % d === 0)
 
-/** What a number can be divided by here. Factors: anything between 1 and itself (a prime: nothing). Powers: its bases (64: 2, 4, 8). */
-export function factorsOf(chain: ChainId, n: number): number[] {
-  if (chain === 'factors') return divisors(n).filter((d) => d > 1 && d < n)
+/** How many more decimal places `n` cells need before they divide by f (null: more than there are). */
+function placesFor(n: number, k: number, f: number): number | null {
+  for (let j = 0; k + j <= MAX_K; j++) if ((n * 10 ** j) % f === 0) return j
+  return null
+}
+
+/**
+ * What a number can be divided by here. Factors: anything between 1 and
+ * itself (a prime: nothing). Powers: its bases (64: 2, 4, 8); at one and
+ * below, whatever still comes out even within four decimal places.
+ */
+export function factorsOf(chain: ChainId, n: number, k = 0): number[] {
+  if (chain === 'factors') return k ? [] : divisors(n).filter((d) => d > 1 && d < n)
   if (chain !== 'powers') return []
+  if (k > 0 || n === 1) return [2, 4, 5, 8, 10].filter((f) => placesFor(n, k, f) !== null)
   const bases = divisors(n).filter((b) => {
     if (b < 2) return false
     let x = n
@@ -126,77 +160,98 @@ const mostSquares = (short: number, long: number) => (long % short ? Math.floor(
  * What this shape sneezes on this chain (null: it can't). `pick` is what he
  * chose on the slider: the side of the square or staircase that pops out, the
  * number to divide by, or how many squares the rectangle keeps. Without it,
- * the first thing on the slider: the biggest one out, the smallest factor.
+ * the first thing on the slider: the biggest one out, the smallest factor
+ * (below one: `last`, what it was divided by before). `k`: the decimal
+ * places its cells are counted in; the answer's may be more (`.k`, with `.as`
+ * the shape in those cells).
  */
-export function sneezeOf(chain: ChainId, s: Shape, pick?: number): Sneezed | null {
+export function sneezeOf(chain: ChainId, s: Shape, pick?: number, k = 0, last?: number): Sneezed | null {
   const n = count(s)
   switch (chain) {
     case 'corner': {
-      const side = s.length
-      if (!isRect(s) || s[0] !== side || side < 2) return null
-      const k = clamp(pick ?? side - 1, 1, side - 1)
+      if (!isRect(s) || s[0] !== s.length) return null
+      // A single cell is a 10 × 10 of cells a hundredth of it.
+      const fine = s.length === 1
+      if (fine && k + 2 > MAX_K) return null
+      const side = fine ? 10 : s.length
+      const out = clamp(pick ?? side - 1, 1, side - 1)
       // The L that stays: full columns, then the ones under the square that left.
-      const stays = [...rect(side, side - k), ...rect(side - k, k)]
+      const stays = [...rect(side, side - out), ...rect(side - out, out)]
       return {
+        as: fine ? rect(10, 10) : undefined,
         parts: [
           { shape: stays, x: 0, y: 0, fly: false },
-          { shape: rect(k, k), x: side - k, y: side - k, fly: true },
+          { shape: rect(out, out), x: side - out, y: side - out, fly: true },
         ],
-        ...taking(n, n - k * k, k * k),
+        ...taking(side * side, side * side - out * out, fine ? k + 2 : k),
       }
     }
     case 'steps': {
-      const top = s.length
-      if (!isStairs(s) || top < 2) return null
-      const k = clamp(pick ?? top - 1, 1, top - 1)
+      if (!isStairs(s)) return null
+      // A single cell is ten tenths: a staircase of four.
+      const fine = s.length === 1
+      if (fine && k + 1 > MAX_K) return null
+      const whole = fine ? stairs(4) : s
+      const top = whole.length
+      const out = clamp(pick ?? top - 1, 1, top - 1)
       return {
+        as: fine ? whole : undefined,
         parts: [
-          { shape: s.slice(0, top - k), x: 0, y: 0, fly: false },
-          { shape: stairs(k), x: top - k, y: 0, fly: true },
+          { shape: whole.slice(0, top - out), x: 0, y: 0, fly: false },
+          { shape: stairs(out), x: top - out, y: 0, fly: true },
         ],
-        ...taking(n, n - triangle(k), triangle(k)),
+        ...taking(triangle(top), triangle(top) - triangle(out), fine ? k + 1 : k),
       }
     }
     case 'factors':
     case 'powers': {
       if (!isRect(s)) return null
-      const fs = factorsOf(chain, n)
+      const fs = factorsOf(chain, n, k)
       if (!fs.length) return null
-      const f = pick !== undefined && fs.includes(pick) ? pick : fs[0]
-      const m = n / f
-      const { r, c, a, b } = arrange(n, f)
+      // Below one it goes on by what it was divided by, for as long as that comes out even (thirds never do: 9 ends at one).
+      const below = k > 0 || n === 1
+      const f = pick !== undefined && fs.includes(pick) ? pick : below && last !== undefined ? last : fs[0]
+      if (!fs.includes(f)) return null
+      // In as many more decimal places as it takes to come out even.
+      const more = placesFor(n, k, f) ?? 0
+      const [cells, k2] = [n * 10 ** more, k + more]
+      const m = cells / f
+      const { r, c, a, b } = arrange(cells, f)
       const as = rect(a * r, b * c)
       const parts: Part[] = []
       for (let i = 0; i < a; i++) for (let j = 0; j < b; j++) parts.push({ shape: rect(r, c), x: j * c, y: i * r, fly: i === a - 1 && j === b - 1 })
+      const [whole, each] = [valueOf(cells, k2), valueOf(m, k2)]
       return {
-        as: same(as, s) ? undefined : as,
+        as: more === 0 && same(as, s) ? undefined : as,
         parts,
         factor: f,
-        says: [n, '÷', f, '=', m],
-        ask: [n, '÷', f, '=', '?'],
-        answer: m,
-        fact: table(f, m, `${n}÷${f}`),
-        back: { says: [f, '×', m, '=', n], ask: [f, '×', m, '=', '?'], answer: n, fact: table(f, m, `${f}×${m}`) },
+        says: [whole, '÷', f, '=', each],
+        ask: [whole, '÷', f, '=', '?'],
+        answer: each,
+        k: k2,
+        fact: k2 ? undefined : table(f, m, `${n}÷${f}`),
+        back: { says: [f, '×', each, '=', whole], ask: [f, '×', each, '=', '?'], answer: whole, k: k2, fact: k2 ? undefined : table(f, m, `${f}×${m}`) },
       }
     }
     case 'rect': {
       const [rows, cols] = [s[0], s.length]
       if (!isRect(s) || rows === cols) return null
       const [short, long] = [Math.min(rows, cols), Math.max(rows, cols)]
-      const k = clamp(pick ?? 1, 1, mostSquares(short, long))
+      const keep = clamp(pick ?? 1, 1, mostSquares(short, long))
       const wide = cols > rows
-      const off = k * short
+      const off = keep * short
       return {
         parts: [
-          ...Array.from({ length: k }, (_, i) => ({ shape: rect(short, short), x: wide ? i * short : 0, y: wide ? 0 : i * short, fly: false })),
+          ...Array.from({ length: keep }, (_, i) => ({ shape: rect(short, short), x: wide ? i * short : 0, y: wide ? 0 : i * short, fly: false })),
           { shape: wide ? rect(rows, cols - off) : rect(rows - off, cols), x: wide ? off : 0, y: wide ? 0 : off, fly: true },
         ],
         // The long side loses the short side: 8 − 5 = 3.
         says: [long, '−', off, '=', long - off],
         ask: [long, '−', off, '=', '?'],
         answer: long - off,
+        k: 0,
         fact: minus(long, off),
-        back: { says: [long - off, '+', off, '=', long], ask: [long - off, '+', off, '=', '?'], answer: long, fact: plus(long - off, off) },
+        back: { says: [long - off, '+', off, '=', long], ask: [long - off, '+', off, '=', '?'], answer: long, k: 0, fact: plus(long - off, off) },
       }
     }
   }
@@ -214,19 +269,24 @@ export interface Slider {
   labels: string[]
 }
 
-export function sliderOf(chain: ChainId, s: Shape): Slider | null {
-  if (!sneezeOf(chain, s)) return null
+export function sliderOf(chain: ChainId, s: Shape, k = 0, last?: number): Slider | null {
+  const now = sneezeOf(chain, s, undefined, k, last)
   const n = count(s)
   const down = (from: number) => Array.from({ length: from }, (_, i) => from - i)
-  const make = (values: number[], label: (v: number) => string): Slider | null => (values.length < 2 ? null : { values, at: values[0], labels: values.map(label) })
+  const make = (values: number[], label: (v: number) => string, at = values[0]): Slider | null => (values.length < 2 ? null : { values, at, labels: values.map(label) })
+  // Powers below one: he can still pick another number to divide by when the one it was going by no longer comes out even (the thumb is then on none).
+  if (chain === 'powers' && isRect(s)) return make(factorsOf(chain, n, k), (f) => `÷ ${f}`, now?.factor ?? -1)
+  if (!now) return null
+  // What would pop out, as it will be written: in the cells the sneeze is counted in.
+  const whole = now.as ?? s
   switch (chain) {
     case 'corner':
-      return make(down(s.length - 1), (k) => String(k * k))
+      return make(down(whole.length - 1), (v) => String(valueOf(v * v, now.k)))
     case 'steps':
-      return make(down(s.length - 1), (k) => String(triangle(k)))
+      return make(down(whole.length - 1), (v) => String(valueOf(triangle(v), now.k)))
     case 'factors':
     case 'powers':
-      return make(factorsOf(chain, n), (f) => `÷ ${f}`)
+      return make(factorsOf(chain, n, k), (f) => `÷ ${f}`, now.factor)
     case 'rect': {
       const [short, long] = [Math.min(s[0], s.length), Math.max(s[0], s.length)]
       return make(Array.from({ length: mostSquares(short, long) }, (_, i) => i + 1), (k) => `− ${k * short}`)
@@ -235,8 +295,8 @@ export function sliderOf(chain: ChainId, s: Shape): Slider | null {
 }
 
 /** What is written over a shape: how many blocks; a rectangle on the rectangle chain by its sides (5 × 8). */
-export function labelOf(chain: ChainId, s: Shape): Says {
-  return chain === 'rect' && isRect(s) ? [s[0], '×', s.length] : [count(s)]
+export function labelOf(chain: ChainId, s: Shape, k = 0): Says {
+  return chain === 'rect' && isRect(s) ? [s[0], '×', s.length] : [valueOf(count(s), k)]
 }
 
 /** Something to start from: `key` is how it is remembered, `title` and `sub` what its card says. */
@@ -275,6 +335,11 @@ export function spanOf(chain: ChainId, s: Shape): number {
   return Math.max(s.length, high(s), ...forms.map((q) => Math.max(q.a * q.r, q.b * q.c)))
 }
 
+/** Guess first for an answer counted in 10^-k: its near misses are in those too (0.81: 0.82, 0.8). */
+export function choicesFor(answer: number, k: number, seed: number): number[] {
+  return optionsFor(Math.round(answer * 10 ** k), seed).map((c) => valueOf(c, k))
+}
+
 /** Guess first: the answer and two near misses, shuffled by a seed so it's the same each time. */
 export function optionsFor(answer: number, seed: number): number[] {
   const near = [...new Set([answer + 1, answer - 1, answer + 2, answer - 2, answer * 2, answer + 10])].filter((x) => x >= 1 && x !== answer)
@@ -290,10 +355,10 @@ export function optionsFor(answer: number, seed: number): number[] {
 }
 
 /** What is on the stage, as one sentence: 25 = 9 + 7 + 5 + 3 + 1, or 16 = 8 × 2 when there are many alike. Null for one piece. */
-export function sumOf(pieces: Shape[]): Says | null {
-  if (pieces.length < 2) return null
-  const ns = pieces.map(count).sort((a, b) => b - a)
-  const total = ns.reduce((a, b) => a + b, 0)
+export function sumOf(values: number[]): Says | null {
+  if (values.length < 2) return null
+  const ns = [...values].sort((a, b) => b - a)
+  const total = tidy(ns.reduce((a, b) => a + b, 0))
   if (ns.length > 3 && ns.every((x) => x === ns[0])) return [total, '=', ns.length, '×', ns[0]]
   if (ns.length > 8) return null
   return [total, '=', ...ns.flatMap((x, i) => (i ? ['+', x] : [x]))]
@@ -302,7 +367,7 @@ export function sumOf(pieces: Shape[]): Says | null {
 /** A piece on a dividing chain, as what it has been divided by on the way: 60 = 2 × 2 × 15. Null before the first sneeze. */
 export function trailOf(path: number[], n: number): Says | null {
   if (!path.length) return null
-  const whole = path.reduce((a, b) => a * b, n)
+  const whole = tidy(path.reduce((a, b) => a * b, n))
   // Down at one, the ones it was divided by are all of it: 32 = 2 × 2 × 2 × 2 × 2.
   return n === 1 ? [whole, '=', ...path.flatMap((f, i) => (i ? ['×', f] : [f]))] : [whole, '=', ...path.flatMap((f) => [f, '×']), n]
 }
