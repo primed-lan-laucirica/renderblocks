@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { numberToClips, playClips, type GameProps } from '@renderblocks/kernel'
 import { bounds } from '@renderblocks/designer/draw'
 import { DEFAULT_LOOK, fromDesign, type Design, type Look } from '@renderblocks/designer/look'
@@ -6,6 +6,10 @@ import { drawPiece, LIMB, squareShape } from './draw'
 import { choices, fmt, ROUNDS, show, sizesOf, sneeze, sqrt, squaresAround, stopsOf, value, wears, type Choice, type Rule, type Sneeze } from './rules'
 import { initPhysics, Stage, STEP, type Piece } from './sim'
 import { choo, correct, pop, sniff, squarePower, thud, wake, windup, wrong } from './sound'
+import { hasStar, MASH_MS, STARTS, STOPS, type StopId } from './road/ops'
+import { Road, RoadDoor } from './road/Road'
+import type { Window } from './road/windows'
+import { RoadPlay, type Guess } from './road/RoadPlay'
 
 /** His Designer looks, by number (from the shared "designs" record): a square or ring wears the look he made for its number. */
 function looksFrom(raw: string | null): Map<string, Look> {
@@ -69,13 +73,53 @@ function App({ services }: GameProps) {
   const [guess, setGuess] = useState(() => storage.get('guess') === 'on')
   const [start, setStart] = useState<{ side: bigint; key: number } | null>(null)
   const [keypad, setKeypad] = useState(false)
+  // The sneeze road (Lan, Nov 12): Sneeze² is its first window and is untouched; the tile opens wherever he last was.
+  const [onRoad, setOnRoad] = useState(() => storage.get('where') === 'road')
+  const [stop, setStop] = useState<{ id: StopId; n: number; key: number } | null>(null)
+  const [lastWindow, setLastWindow] = useState<Window | null>(() => (STOPS as readonly string[]).includes(storage.get('window') ?? '') ? (storage.get('window') as StopId) : null)
+  // The days (YYYY-MM-DD) of each right-first-time guess, by stop: three, on more than one day, is a star.
+  const [rights, setRights] = useState<Record<string, string[]>>(() => {
+    try {
+      return JSON.parse(storage.get('roadRights') ?? '{}') as Record<string, string[]>
+    } catch {
+      return {}
+    }
+  })
+  const stars = useMemo(() => new Set(STOPS.filter((s) => hasStar(rights[s] ?? []))), [rights])
   useEffect(() => storage.set('rule3', rule), [storage, rule])
   useEffect(() => storage.set('guess', guess ? 'on' : 'off'), [storage, guess])
-  const lookFor = (n: bigint) => looks.get(n.toString()) ?? DEFAULT_LOOK
+  useEffect(() => storage.set('where', onRoad ? 'road' : 'menu'), [storage, onRoad])
+  const lookFor = useCallback((n: bigint) => looks.get(n.toString()) ?? DEFAULT_LOOK, [looks])
+  const openStop = (id: StopId, n?: number) => {
+    wake()
+    const saved = Number(storage.get(`start:${id}`))
+    const from = n ?? (STARTS[id].all.includes(saved) ? saved : STARTS[id].first)
+    storage.set(`start:${id}`, String(from))
+    storage.set('window', id)
+    setLastWindow(id)
+    setStop((s) => ({ id, n: from, key: (s?.key ?? 0) + 1 }))
+  }
+  // A guess: evidence for the Progress tile and towards the stop's star, unless it came too fast to be a guess (a mash).
+  const onGuess = useCallback(
+    (g: Guess) => {
+      if (g.ms < MASH_MS) return
+      if (g.fact) services.progress.record({ concept: g.fact.concept, item: g.fact.item, ok: g.ok, how: 'choose', ms: Math.round(g.ms) })
+      if (!g.ok) return
+      setRights((r) => {
+        const next = { ...r, [g.stop]: [...(r[g.stop] ?? []), new Date().toLocaleDateString('en-CA')].slice(-20) }
+        storage.set('roadRights', JSON.stringify(next))
+        return next
+      })
+    },
+    [services, storage],
+  )
   const go = (side: bigint) => {
     wake()
     setStart((s) => ({ side, key: (s?.key ?? 0) + 1 }))
   }
+
+  if (stop)
+    return <RoadPlay key={stop.key} stop={stop.id} n={stop.n} guess={guess} starred={stars.has(stop.id)} lookFor={lookFor} onStart={(n) => openStop(stop.id, n)} onGuess={onGuess} onBack={() => setStop(null)} />
 
   if (start)
     return (
@@ -88,6 +132,24 @@ function App({ services }: GameProps) {
         lookFor={lookFor}
         onAgain={() => go(start.side)}
         onBack={() => setStart(null)}
+      />
+    )
+
+  if (onRoad)
+    return (
+      <Road
+        stars={stars}
+        guess={guess}
+        lookFor={lookFor}
+        last={lastWindow}
+        onGuess={setGuess}
+        onOpen={(w) => {
+          if (w !== 'classic') return openStop(w)
+          storage.set('window', 'classic')
+          setLastWindow('classic')
+          setOnRoad(false)
+        }}
+        onBack={() => setOnRoad(false)}
       />
     )
 
@@ -125,6 +187,7 @@ function App({ services }: GameProps) {
         </button>
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-6 flex flex-col gap-4">
+        <RoadDoor lookFor={lookFor} onOpen={() => setOnRoad(true)} />
         <section>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(6.5rem,1fr))] gap-2">{SQUARES.map((s) => card(s))}</div>
         </section>
