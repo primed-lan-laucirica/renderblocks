@@ -59,7 +59,7 @@ function drawDeep(ctx: CanvasRenderingContext2D, s: Shape, look: Look, px: numbe
     ctx.lineWidth = 2 / px
     ctx.strokeStyle = edge ?? 'rgba(0,0,0,0.5)'
     ctx.stroke()
-    if (grid <= 0) return
+    if (grid <= 0 || cu + cv > 2 * MOST_LINES) return
     ctx.beginPath()
     for (let i = 1; i < cu; i++) {
       ctx.moveTo(...lerp(p[0], p[1], i / cu))
@@ -103,6 +103,41 @@ function drawDeep(ctx: CanvasRenderingContext2D, s: Shape, look: Look, px: numbe
   ctx.restore()
 }
 
+/** More blocks than this are not drawn one by one. */
+const BLOCK_BY_BLOCK = 600
+/** No more ruled lines than this across a shape (a big one seen close is mostly off the screen). */
+const MOST_LINES = 400
+
+function drawBig(ctx: CanvasRenderingContext2D, s: Shape, n: bigint, px: number) {
+  const { fill, edge } = colourOf(n, 0n)
+  outline(ctx, s, 0, 0, px)
+  ctx.fillStyle = fill
+  ctx.fill()
+  const top = high(s)
+  if (px >= 4 && s.length <= MOST_LINES && top <= MOST_LINES) {
+    ctx.save()
+    ctx.clip()
+    ctx.beginPath()
+    for (let x = 1; x < s.length; x++) {
+      ctx.moveTo(x, 0)
+      ctx.lineTo(x, top)
+    }
+    for (let y = 1; y < top; y++) {
+      ctx.moveTo(0, y)
+      ctx.lineTo(s.length, y)
+    }
+    ctx.lineWidth = 1.2 / px
+    ctx.strokeStyle = `rgba(0,0,0,${Math.min(0.25, (px - 4) / 40)})`
+    ctx.stroke()
+    ctx.restore()
+    outline(ctx, s, 0, 0, px)
+  }
+  ctx.lineJoin = 'round'
+  ctx.lineWidth = 1.5 / px
+  ctx.strokeStyle = edge ?? 'rgba(0,0,0,0.35)'
+  ctx.stroke()
+}
+
 export function drawShape(ctx: CanvasRenderingContext2D, s: Shape, look: Look, px: number) {
   if (s.deep) return drawDeep(ctx, s, look, px)
   const n = BigInt(count(s))
@@ -116,8 +151,10 @@ export function drawShape(ctx: CanvasRenderingContext2D, s: Shape, look: Look, p
     }
     return features(ctx, n, s[0], s.length, look)
   }
+  // A big one (Lan, Nov 13: much higher numbers): its outline filled in its colour, ruled into blocks while they are big enough to see.
+  if (count(s) > BLOCK_BY_BLOCK) drawBig(ctx, s, n, px)
   // Block by block, column by column from the left, in the number's colours.
-  drawBlocksAt(ctx, n, s.flatMap((h, x) => Array.from({ length: h }, (_, y) => ({ x, y }))), px)
+  else drawBlocksAt(ctx, n, s.flatMap((h, x) => Array.from({ length: h }, (_, y) => ({ x, y }))), px)
   // The face goes at the top of its tallest columns.
   const top = high(s)
   const from = s.indexOf(top)
@@ -131,14 +168,22 @@ export function drawShape(ctx: CanvasRenderingContext2D, s: Shape, look: Look, p
   ctx.restore()
 }
 
-/** A shape's outline as a path (for the dashed "this part will fly"), its bottom-left corner at x, y. */
-export function outline(ctx: CanvasRenderingContext2D, s: Shape, x: number, y: number) {
+/**
+ * A shape's outline as a path (for the dashed "this part will fly"), its
+ * bottom-left corner at x, y. `px`: how big a block is drawn; steps smaller
+ * than a pixel are taken several at a time (a staircase of ten thousand).
+ */
+export function outline(ctx: CanvasRenderingContext2D, s: Shape, x: number, y: number, px = 1) {
+  const step = Math.max(1, Math.floor(1 / px))
   ctx.beginPath()
   ctx.moveTo(x, y)
-  s.forEach((h, i) => {
-    ctx.lineTo(x + i, y + h)
-    ctx.lineTo(x + i + 1, y + h)
-  })
+  for (let i = 0; i < s.length; ) {
+    let j = i + 1
+    while (j < s.length && (s[j] === s[i] || j - i < step)) j++
+    ctx.lineTo(x + i, y + s[i])
+    ctx.lineTo(x + j, y + s[i])
+    i = j
+  }
   ctx.lineTo(x + s.length, y)
   ctx.closePath()
 }

@@ -10,6 +10,8 @@ const ANGLE = (55 * Math.PI) / 180
 const FRICTION = 0.7
 /** Nothing waits longer than this to count as landed (s). */
 const FOREVER = 6
+/** A shape's body is never more boxes than this. */
+const MOST_BOXES = 48
 
 /** Where a piece that flew out came from: enough to put it back and have the whole again, exactly as it was. */
 export interface Home {
@@ -117,10 +119,13 @@ export class RoadStage {
     // A box for each run of columns of one height.
     const top = high(shape)
     const descs: RAPIER.ColliderDesc[] = []
+    // (A staircase of thousands of steps: several steps to a box, as tall as the tallest of them.)
+    const least = Math.ceil(shape.length / MOST_BOXES)
     for (let i = 0; i < shape.length; ) {
       let j = i
-      while (shape[j + 1] === shape[i]) j++
-      descs.push(RAPIER.ColliderDesc.cuboid(((j - i + 1) * f) / 2, (shape[i] * f) / 2).setTranslation(((i + j + 1 - shape.length) * f) / 2, ((shape[i] - top) * f) / 2))
+      let tall = shape[i]
+      while (j + 1 < shape.length && (shape[j + 1] === shape[i] || j + 1 - i < least)) tall = Math.max(tall, shape[++j])
+      descs.push(RAPIER.ColliderDesc.cuboid(((j - i + 1) * f) / 2, (tall * f) / 2).setTranslation(((i + j + 1 - shape.length) * f) / 2, ((tall - top) * f) / 2))
       i = j + 1
     }
     for (const d of descs) {

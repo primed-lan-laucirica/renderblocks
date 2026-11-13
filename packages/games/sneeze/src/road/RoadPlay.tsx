@@ -37,8 +37,9 @@ function RoadSlider({ slider, pick, onPick, onSliding }: { slider: Slider; pick:
     const box = track.current!.getBoundingClientRect()
     return values[Math.min(last, Math.max(0, Math.round(((e.clientX - box.left) / box.width) * last)))]
   }
-  // Every label if they fit; else every second or third (and always the one he's on).
-  const every = Math.ceil(values.length / 12)
+  // Every label if they fit; else every second or third (and always the one he's on). Long numbers take more room each.
+  const longest = labels.reduce((n, l) => Math.max(n, l.length), 1)
+  const every = Math.ceil(values.length / Math.max(2, Math.min(12, Math.floor(64 / (longest + 2)))))
   const step = (d: number) => {
     const i = on < 0 ? (d > 0 ? 0 : last) : on + d
     if (i >= 0 && i <= last) onPick(values[i])
@@ -67,9 +68,7 @@ function RoadSlider({ slider, pick, onPick, onSliding }: { slider: Slider; pick:
           onPointerCancel={() => onSliding(false)}
         >
           <div className="absolute inset-x-0 top-5 h-2 rounded-full bg-orange-200" />
-          {values.map((v, i) => (
-            <div key={v} className="absolute top-4 w-1 h-4 -ml-0.5 rounded bg-orange-300" style={{ left: left(i) }} />
-          ))}
+          {values.length <= 60 && values.map((v, i) => <div key={v} className="absolute top-4 w-1 h-4 -ml-0.5 rounded bg-orange-300" style={{ left: left(i) }} />)}
           {on >= 0 && <div className="absolute top-0 w-12 h-12 -ml-6 rounded-xl bg-orange-500 shadow-lg border-4 border-white" style={{ left: left(on) }} data-thumb={values[on]} />}
         </div>
         {values.map((v, i) =>
@@ -456,7 +455,7 @@ export function RoadPlay({
         room = Math.max(b.x1 - b.x0, b.y1 - base) / 5
       }
       const fit = fitOf()
-      const want = { x: (b.x0 + b.x1) / 2, y: base, low, logScale: Math.log(Math.max(2, fit)) }
+      const want = { x: (b.x0 + b.x1) / 2, y: base, low, logScale: Math.log(Math.max(0.002, fit)) }
       if (!cam) cam = want
       else if (ph !== 'held' && ph !== 'snapping' && !(ph === 'guessing' && pending?.kind === 'join')) {
         const k = 1 - Math.exp(-STEP * 60 * 0.06)
@@ -526,7 +525,7 @@ export function RoadPlay({
           g.lineWidth = 3.5 / cell
           g.strokeStyle = 'rgba(30,41,59,0.75)'
           for (const part of copies) {
-            outline(g, part.shape, part.x, part.y)
+            outline(g, part.shape, part.x, part.y, cell)
             g.stroke()
           }
         }
@@ -534,7 +533,7 @@ export function RoadPlay({
           for (const part of willFly) {
             g.lineWidth = 4 / cell
             g.setLineDash([10 / cell, 7 / cell])
-            outline(g, part.shape, part.x, part.y)
+            outline(g, part.shape, part.x, part.y, cell)
             g.fillStyle = 'rgba(249,115,22,0.18)'
             g.fill()
             g.strokeStyle = '#ea580c'
@@ -554,7 +553,7 @@ export function RoadPlay({
         g.lineWidth = 5 / cell
         g.setLineDash([10 / cell, 7 / cell])
         g.strokeStyle = '#16a34a'
-        outline(g, held.from.whole, 0, 0)
+        outline(g, held.from.whole, 0, 0, cell)
         g.stroke()
         g.setLineDash([])
       }

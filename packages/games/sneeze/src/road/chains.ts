@@ -47,7 +47,7 @@ const tidy = (x: number) => Number(x.toFixed(MAX_K))
 
 /** How many blocks: a deep shape is its whole cube less the cube gone from its corner. */
 export const count = (s: Shape) => (s.deep ? s.length ** 3 - (s.length - s[s.length - 1]) ** 3 : s.reduce((a, b) => a + b, 0))
-export const high = (s: Shape) => Math.max(...s)
+export const high = (s: Shape) => s.reduce((a, b) => (b > a ? b : a), 0)
 /** `rows` rows of `cols`. */
 export const rect = (rows: number, cols: number): Shape => Array.from({ length: cols }, () => rows)
 /** A staircase down from `n`: its tallest column at the left. */
@@ -124,7 +124,28 @@ function taking(wholeCells: number, staysCells: number, k: number): Pick<Sneezed
   }
 }
 
-export const divisors = (n: number) => Array.from({ length: n }, (_, i) => i + 1).filter((d) => n % d === 0)
+export function divisors(n: number): number[] {
+  const [lo, hi]: number[][] = [[], []]
+  for (let d = 1; d * d <= n; d++)
+    if (n % d === 0) {
+      lo.push(d)
+      if (d * d < n) hi.unshift(n / d)
+    }
+  return [...lo, ...hi]
+}
+
+/** Never more copies than this from one sneeze (a million ÷ 1,000 would be a thousand pieces on the stage). */
+export const MOST_COPIES = 100
+
+/** What n is a power of, smallest first (64: 2, 4, 8, 64; 12: only itself). */
+export function basesOf(n: number): number[] {
+  const out: number[] = []
+  for (let e = Math.floor(Math.log2(n)) + 1; e >= 1; e--) {
+    const b = Math.round(n ** (1 / e))
+    if (b >= 2 && b ** e === n && !out.includes(b)) out.push(b)
+  }
+  return out
+}
 
 /** How many more decimal places `n` cells need before they divide by f (null: more than there are). */
 function placesFor(n: number, k: number, f: number): number | null {
@@ -138,16 +159,11 @@ function placesFor(n: number, k: number, f: number): number | null {
  * below, whatever still comes out even within four decimal places.
  */
 export function factorsOf(chain: ChainId, n: number, k = 0): number[] {
-  if (chain === 'factors') return k ? [] : divisors(n).filter((d) => d > 1 && d < n)
+  if (chain === 'factors') return k ? [] : divisors(n).filter((d) => d > 1 && d < n && d <= MOST_COPIES)
   if (chain !== 'powers') return []
   if (k > 0 || n === 1) return [2, 4, 5, 8, 10].filter((f) => placesFor(n, k, f) !== null)
-  const bases = divisors(n).filter((b) => {
-    if (b < 2) return false
-    let x = n
-    while (x % b === 0) x /= b
-    return x === 1
-  })
-  return bases.length > 1 ? bases.filter((b) => b < n) : bases
+  const bases = basesOf(n)
+  return bases.length > 1 ? bases.filter((b) => b < n && (b <= MOST_COPIES || b === bases[0])) : bases
 }
 
 /**
@@ -315,17 +331,17 @@ export function sliderOf(chain: ChainId, s: Shape, k = 0, last?: number): Slider
   const whole = now.as ?? s
   switch (chain) {
     case 'corner':
-      return make(down(whole.length - 1), (v) => String(valueOf(v * v, now.k)))
+      return make(down(whole.length - 1), (v) => fmt(valueOf(v * v, now.k)))
     case 'steps':
-      return make(down(whole.length - 1), (v) => String(valueOf(triangle(v), now.k)))
+      return make(down(whole.length - 1), (v) => fmt(valueOf(triangle(v), now.k)))
     case 'cubes':
-      return make(down(whole.length - 1), (v) => String(valueOf(v ** 3, now.k)))
+      return make(down(whole.length - 1), (v) => fmt(valueOf(v ** 3, now.k)))
     case 'factors':
     case 'powers':
       return make(factorsOf(chain, n, k), (f) => `÷ ${f}`, now.factor)
     case 'rect': {
       const [short, long] = [Math.min(s[0], s.length), Math.max(s[0], s.length)]
-      return make(Array.from({ length: mostSquares(short, long) }, (_, i) => i + 1), (k) => `− ${k * short}`)
+      return make(Array.from({ length: mostSquares(short, long) }, (_, i) => i + 1), (k) => `− ${fmt(k * short)}`)
     }
   }
 }
@@ -352,26 +368,117 @@ export interface Start {
 const RECTS: [number, number][] = [[2, 3], [3, 5], [5, 8], [8, 13], [13, 21], [4, 6], [6, 9], [6, 10], [8, 12], [3, 7], [4, 10], [5, 12], [21, 34], [34, 55], [12, 20], [15, 25], [16, 24], [9, 24], [20, 30], [7, 20], [10, 26], [18, 48]]
 /** Sides 2 to 20, as the Square Club's are in Sneeze² (Lan, Nov 12: bigger numbers in every chain's set). */
 const SIDES = Array.from({ length: 19 }, (_, i) => i + 2)
-const standing = (chain: ChainId, n: number): Shape => sneezeOf(chain, [n])?.as ?? [n]
-const dividing = (chain: ChainId, ns: number[]): Start[] =>
-  ns.map((n) => {
-    const shape = standing(chain, n)
-    return { key: n, shape, title: String(n), sub: `${shape[0]} × ${shape.length}` }
-  })
+/** The big ones, in round numbers, as Sneeze²'s Rounds are (Lan, Nov 13: much higher, and any number he types). */
+const BIG_SIDES = [25, 30, 40, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
+const BIG_RECTS: [number, number][] = [[55, 89], [89, 144], [144, 233], [233, 377], [100, 160], [30, 100], [100, 250], [120, 200], [360, 1000], [610, 987], [1000, 1600], [1000, 1001], [2584, 4181], [6000, 10000]]
+
+/** The biggest side a shape can have (a square of 100,000,000; a cube of 1,000,000,000,000), and the biggest number to divide. */
+export const MAX_SIDE = 10000
+export const MOST: Record<ChainId, number> = { corner: MAX_SIDE ** 2, steps: triangle(MAX_SIDE), cubes: MAX_SIDE ** 3, factors: 10000, powers: 10 ** 9, rect: MAX_SIDE }
+
+/** A number with its thousands apart: 1,000,000. */
+export const fmt = (n: number) => n.toLocaleString('en-US', { maximumFractionDigits: MAX_K })
+
+/** A rectangle's two sides as one key (the ones saved before Nov 13 were rows × 100 + columns). */
+const RECT_KEY = 100000
+const rectKey = (r: number, c: number) => r * RECT_KEY + c
+const sidesOfKey = (key: number): [number, number] => (key >= RECT_KEY ? [Math.floor(key / RECT_KEY), key % RECT_KEY] : [Math.floor(key / 100), key % 100])
+
+const whole = (x: number) => Number.isSafeInteger(x) && x > 0
+const squareStart = (k: number): Start => ({ key: k * k, shape: rect(k, k), title: fmt(k * k), sub: `${fmt(k)} × ${fmt(k)}` })
+const stairsStart = (k: number): Start => ({ key: triangle(k), shape: stairs(k), title: fmt(triangle(k)), sub: k <= 4 ? stairs(k).reverse().join(' + ') : `1 + 2 + … + ${fmt(k)}` })
+const cubeStart = (k: number): Start => ({ key: k ** 3, shape: cube(k), title: fmt(k ** 3), sub: `${fmt(k)} × ${fmt(k)} × ${fmt(k)}` })
+const rectStart = (r: number, c: number): Start => ({ key: rectKey(r, c), shape: rect(r, c), title: `${fmt(r)} × ${fmt(c)}`, sub: fmt(r * c) })
+function dividingStart(chain: ChainId, n: number): Start {
+  const shape = sneezeOf(chain, [n])?.as ?? [n]
+  return { key: n, shape, title: fmt(n), sub: `${fmt(shape[0])} × ${fmt(shape.length)}` }
+}
 
 const STARTS: Record<ChainId, Start[]> = {
-  corner: SIDES.map((k) => ({ key: k * k, shape: rect(k, k), title: String(k * k), sub: `${k} × ${k}` })),
-  steps: SIDES.map((k) => ({ key: triangle(k), shape: stairs(k), title: String(triangle(k)), sub: k <= 4 ? stairs(k).reverse().join(' + ') : `1 + 2 + … + ${k}` })),
-  cubes: SIDES.map((k) => ({ key: k ** 3, shape: cube(k), title: String(k ** 3), sub: `${k} × ${k} × ${k}` })),
-  factors: dividing('factors', [12, 16, 18, 20, 24, 30, 36, 48, 60, 72, 100, 120, 144, 180, 200, 240, 360, 400]),
-  powers: dividing('powers', [4, 8, 16, 32, 64, 9, 27, 81, 25, 125, 100, 128, 256, 512, 1024, 243, 729, 625, 1000, 10000]),
-  rect: RECTS.map(([r, c]) => ({ key: r * 100 + c, shape: rect(r, c), title: `${r} × ${c}`, sub: String(r * c) })),
+  corner: SIDES.map(squareStart),
+  steps: SIDES.map(stairsStart),
+  cubes: SIDES.map(cubeStart),
+  factors: [12, 16, 18, 20, 24, 30, 36, 48, 60, 72, 100, 120, 144, 180, 200, 240, 360, 400].map((n) => dividingStart('factors', n)),
+  powers: [4, 8, 16, 32, 64, 9, 27, 81, 25, 125, 100, 128, 256, 512, 1024, 243, 729, 625, 1000, 10000].map((n) => dividingStart('powers', n)),
+  rect: RECTS.map(([r, c]) => rectStart(r, c)),
+}
+const BIG: Record<ChainId, Start[]> = {
+  corner: BIG_SIDES.map(squareStart),
+  steps: BIG_SIDES.map(stairsStart),
+  cubes: BIG_SIDES.map(cubeStart),
+  factors: [500, 600, 720, 840, 1000, 1200, 2000, 2520, 3600, 5000, 5040, 7200, 10000].map((n) => dividingStart('factors', n)),
+  powers: [2048, 4096, 65536, 1048576, 2187, 6561, 59049, 3125, 15625, 100000, 1000000, 100000000, 1000000000].map((n) => dividingStart('powers', n)),
+  rect: BIG_RECTS.map(([r, c]) => rectStart(r, c)),
 }
 /** The one each chain opens on the first time. */
-const FIRST: Record<ChainId, number> = { corner: 25, steps: 15, cubes: 64, factors: 24, powers: 16, rect: 508 }
+const FIRST: Record<ChainId, number> = { corner: 25, steps: 15, cubes: 64, factors: 24, powers: 16, rect: rectKey(5, 8) }
 
 export const startsOf = (chain: ChainId) => STARTS[chain]
-export const startOf = (chain: ChainId, key: number): Start => STARTS[chain].find((s) => s.key === key) ?? STARTS[chain].find((s) => s.key === FIRST[chain])!
+/** The big ones, in round numbers. */
+export const bigStartsOf = (chain: ChainId) => BIG[chain]
+
+/** The side of the square, staircase or cube that `n` blocks make here, if they make one. */
+function sideFor(chain: ChainId, n: number): number | null {
+  const k = chain === 'corner' ? Math.round(Math.sqrt(n)) : chain === 'cubes' ? Math.round(Math.cbrt(n)) : Math.round((Math.sqrt(8 * n + 1) - 1) / 2)
+  const back = chain === 'corner' ? k * k : chain === 'cubes' ? k ** 3 : triangle(k)
+  return back === n && k >= 2 && k <= MAX_SIDE ? k : null
+}
+
+/**
+ * Any number he types (Lan, Nov 13), if it is one of this chain's: a square,
+ * a staircase number, a cube, a number that divides, a power, or (`b`) the
+ * two sides of a rectangle that isn't a square. Null: it isn't one.
+ */
+export function typedStart(chain: ChainId, a: number, b?: number): Start | null {
+  if (!whole(a)) return null
+  if (chain === 'rect') return b !== undefined && whole(b) && a !== b && Math.max(a, b) <= MAX_SIDE ? rectStart(a, b) : null
+  if (a > MOST[chain]) return null
+  if (chain === 'factors') return factorsOf(chain, a).length ? dividingStart(chain, a) : null
+  if (chain === 'powers') return basesOf(a).some((x) => x < a && x <= MOST_COPIES) ? dividingStart(chain, a) : null
+  const k = sideFor(chain, a)
+  return k === null ? null : chain === 'corner' ? squareStart(k) : chain === 'cubes' ? cubeStart(k) : stairsStart(k)
+}
+
+/** When what he typed isn't one of the chain's: the nearest below and above that are. */
+export function nearStarts(chain: ChainId, n: number): Start[] {
+  if (!whole(n) || chain === 'rect') return []
+  const ok = (x: number) => typedStart(chain, x)
+  let found: (Start | null)[]
+  if (chain === 'factors') {
+    const seek = (d: number) => {
+      for (let x = n + d; x >= 4 && x <= MOST.factors; x += d) if (ok(x)) return ok(x)
+      return null
+    }
+    found = [seek(-1), seek(1)]
+  } else if (chain === 'powers') {
+    // The powers either side, of any base up to a hundred.
+    let [lo, hi] = [0, Infinity]
+    for (let e = 2; e <= 30; e++) {
+      const base = Math.floor(n ** (1 / e))
+      for (const x of [base - 1, base, base + 1, base + 2]) {
+        const v = x ** e
+        if (x < 2 || x > MOST_COPIES || v > MOST.powers) continue
+        if (v < n && v > lo) lo = v
+        if (v > n && v < hi) hi = v
+      }
+    }
+    found = [lo ? ok(lo) : null, hi < Infinity ? ok(hi) : null]
+  } else {
+    const root = chain === 'corner' ? Math.sqrt(n) : chain === 'cubes' ? Math.cbrt(n) : (Math.sqrt(8 * n + 1) - 1) / 2
+    const k = Math.min(MAX_SIDE - 1, Math.max(1, Math.floor(root + 1e-9)))
+    const make = chain === 'corner' ? squareStart : chain === 'cubes' ? cubeStart : stairsStart
+    found = [k >= 2 ? make(k) : null, make(k + 1)]
+  }
+  return found.filter((s): s is Start => !!s && s.key !== n)
+}
+
+/** What a remembered key starts: one of the cards, or a number he typed; else the chain's first. */
+export function startOf(chain: ChainId, key: number): Start {
+  const card = [...STARTS[chain], ...BIG[chain]].find((s) => s.key === key)
+  if (card) return card
+  const typed = chain === 'rect' ? typedStart(chain, ...sidesOfKey(key)) : typedStart(chain, key)
+  return typed ?? startOf(chain, FIRST[chain])
+}
 
 /** The most blocks across or up that a shape can reach on this chain (the stage is scaled to it). */
 export function spanOf(chain: ChainId, s: Shape): number {
@@ -418,7 +525,7 @@ export function trailOf(path: number[], n: number): Says | null {
   return n === 1 ? [whole, '=', ...path.flatMap((f, i) => (i ? ['×', f] : [f]))] : [whole, '=', ...path.flatMap((f) => [f, '×']), n]
 }
 
-export const written = (s: Says) => s.join(' ')
+export const written = (s: Says) => s.map((t) => (typeof t === 'number' ? fmt(t) : t)).join(' ')
 
 /**
  * Stars: a chain's star is earned by guessing right first time, on more than

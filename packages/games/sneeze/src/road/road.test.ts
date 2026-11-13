@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from 'vitest'
-import { arrange, cellOf, CHAINS, choicesFor, count, cube, isCube, shell, factorsOf, hasStar, isRect, labelOf, MAX_K, optionsFor, rect, same, sidesOf, sliderOf, sneezeOf, spanOf, stairs, startsOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Shape } from './chains'
+import { basesOf, bigStartsOf, divisors, MAX_SIDE, MOST_COPIES, nearStarts, startOf, typedStart, arrange, cellOf, CHAINS, choicesFor, count, cube, isCube, shell, factorsOf, hasStar, isRect, labelOf, MAX_K, optionsFor, rect, same, sidesOf, sliderOf, sneezeOf, spanOf, stairs, startsOf, sumOf, trailOf, unitOf, valueOf, written, type ChainId, type Shape } from './chains'
 import { initPhysics } from '../sim'
 import { boxOf, RoadStage, STEP } from './stage'
 
@@ -450,5 +450,88 @@ describe('the stage', () => {
     settle(st)
     expect(out.settled).toBe(true)
     st.free()
+  })
+})
+
+describe('bigger numbers and typed ones', () => {
+  it('every big start is one of its chain, sneezes, and is found again by its key', () => {
+    for (const chain of CHAINS)
+      for (const s of bigStartsOf(chain)) {
+        const res = sneezeOf(chain, s.shape)
+        expect(res, `${chain} ${s.title}`).not.toBeNull()
+        expect(same(startOf(chain, s.key).shape, s.shape)).toBe(true)
+        // What it becomes is all of it.
+        expect(res!.parts.reduce((n, q) => n + count(q.shape), 0)).toBe(count(res!.as ?? s.shape))
+        expect(res!.parts.length).toBeLessThanOrEqual(MOST_COPIES)
+      }
+  })
+
+  it('a typed number starts its chain only if it is one of the chain\'s', () => {
+    expect(typedStart('corner', 1000000)!.sub).toBe('1,000 × 1,000')
+    expect(typedStart('corner', 1000001)).toBeNull()
+    expect(typedStart('corner', (MAX_SIDE + 1) ** 2)).toBeNull()
+    expect(typedStart('steps', 5050)!.shape.length).toBe(100)
+    expect(typedStart('steps', 5051)).toBeNull()
+    expect(typedStart('cubes', 1728)!.sub).toBe('12 × 12 × 12')
+    expect(isCube(typedStart('cubes', 10 ** 12)!.shape)).toBe(true)
+    expect(typedStart('cubes', 1729)).toBeNull()
+    expect(typedStart('factors', 91)!.title).toBe('91')
+    expect(typedStart('factors', 97)).toBeNull()
+    expect(typedStart('powers', 3 ** 12)!.title).toBe('531,441')
+    expect(typedStart('powers', 12)).toBeNull()
+    expect(typedStart('rect', 123, 456)!.title).toBe('123 × 456')
+    expect(typedStart('rect', 7, 7)).toBeNull()
+    expect(typedStart('rect', 7)).toBeNull()
+  })
+
+  it('a typed start is remembered by its key, and a rectangle saved the old way still opens', () => {
+    for (const [chain, a, b] of [['corner', 1234 ** 2], ['steps', 5050], ['cubes', 1728], ['factors', 91], ['powers', 3 ** 12], ['rect', 123, 456]] as [ChainId, number, number?][]) {
+      const t = typedStart(chain, a, b)!
+      expect(same(startOf(chain, t.key).shape, t.shape), chain).toBe(true)
+    }
+    expect(startOf('rect', 508).title).toBe('5 × 8')
+    expect(startOf('rect', 1321).title).toBe('13 × 21')
+    expect(startOf('corner', 26).title).toBe('25')
+  })
+
+  it('offers the ones either side of a number that is not one of the chain\'s', () => {
+    expect(nearStarts('corner', 1000).map((s) => s.key)).toEqual([961, 1024])
+    expect(nearStarts('cubes', 2000).map((s) => s.key)).toEqual([1728, 2197])
+    expect(nearStarts('steps', 100).map((s) => s.key)).toEqual([91, 105])
+    expect(nearStarts('factors', 97).map((s) => s.key)).toEqual([96, 98])
+    expect(nearStarts('powers', 1000001).map((s) => s.key)).toEqual([1000000, 1048576])
+    expect(nearStarts('powers', 30).map((s) => s.key)).toEqual([27, 32])
+  })
+
+  it('finds divisors and bases without counting all the way up', () => {
+    expect(divisors(36)).toEqual([1, 2, 3, 4, 6, 9, 12, 18, 36])
+    expect(divisors(10 ** 9).length).toBe(100)
+    expect(basesOf(64)).toEqual([2, 4, 8, 64])
+    expect(basesOf(10 ** 9)).toEqual([10, 1000, 10 ** 9])
+    expect(factorsOf('powers', 10 ** 9)).toEqual([10])
+    expect(factorsOf('factors', 10000).every((d) => d <= MOST_COPIES)).toBe(true)
+  })
+
+  it('a cube of a thousand a side and a staircase of ten thousand steps go down and back', () => {
+    for (const [chain, start] of [['cubes', cube(1000)], ['steps', stairs(MAX_SIDE)], ['corner', rect(MAX_SIDE, MAX_SIDE)]] as [ChainId, Shape][]) {
+      const half = Math.floor(start.length / 2)
+      const res = sneezeOf(chain, start, half)!
+      expect(count(res.parts[0].shape) + count(res.parts[1].shape)).toBe(count(start))
+      expect(res.says[0]).toBe(count(start))
+      expect(res.back.answer).toBe(count(start))
+      expect(sliderOf(chain, start)!.values.length).toBe(start.length - 1)
+    }
+  })
+
+  it('the stage holds a big staircase in a few boxes', () => {
+    const stage = new RoadStage([stairs(5000)], 5000)
+    const p = stage.pieces[0]
+    expect(p.rb.numColliders()).toBeLessThanOrEqual(64)
+    const res = sneezeOf('steps', p.shape, 2500)!
+    const out = stage.sneeze(p, res.parts, res.back)
+    for (let i = 0; i < 600; i++) stage.step()
+    expect(out.every((q) => q.settled)).toBe(true)
+    expect(out.every((q) => boxOf(q).y0 > -50)).toBe(true)
+    stage.free()
   })
 })
