@@ -1,5 +1,5 @@
 import RAPIER from '@dimforge/rapier2d-compat'
-import { cellOf, count, high, valueOf, type Outcome, type Part, type Shape } from './chains'
+import { cellOf, count, DEPTH, high, valueOf, type Outcome, type Part, type Shape } from './chains'
 
 export const STEP = 1 / 60
 /** The biggest shape is about this many physics units across, as the sneezer always is in Sneeze² (same floaty gravity). */
@@ -60,6 +60,13 @@ export function boxOf(p: { shape: Shape; k: number; x: number; y: number }, x = 
   const u = cellOf(p.shape, p.k)
   const [w, h] = [p.shape.length * u, high(p.shape) * u]
   return { x0: x - w / 2, x1: x + w / 2, y0: y - h / 2, y1: y + h / 2 }
+}
+
+/** A piece's box as it is seen: a deep one's far side shows up and to the right of its front. */
+export function seenBox(p: { shape: Shape; k: number; x: number; y: number }) {
+  const b = boxOf(p)
+  const far = p.shape.deep ? p.shape.length * DEPTH * cellOf(p.shape, p.k) : 0
+  return { ...b, x1: b.x1 + far, y1: b.y1 + far }
 }
 
 /** The bigger of a piece's width and height, in blocks. */
@@ -142,7 +149,7 @@ export class RoadStage {
     const f = this.f
     const u = cellOf(p.shape, p.k)
     // A little one hops as far for its size as a big one does (a hundredth doesn't fly off the stage).
-    const size = Math.min(SPAN, Math.max(4 * u, sizeOf(p) * f))
+    const size = Math.min(SPAN, Math.max(4 * u, sizeOf(p)) * f)
     const base = LAUNCH * Math.sqrt(GRAVITY * size)
     // A little different each time, so a run of them doesn't land in one heap.
     const vary = 0.85 + 0.4 * ((this.sneezes * 0.618) % 1)
@@ -321,7 +328,7 @@ export class RoadStage {
     let x1 = -Infinity
     let y1 = 0
     for (const p of this.pieces) {
-      const b = boxOf(p)
+      const b = seenBox(p)
       x0 = Math.min(x0, b.x0)
       x1 = Math.max(x1, b.x1)
       y1 = Math.max(y1, b.y1)

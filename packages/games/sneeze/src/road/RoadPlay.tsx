@@ -4,7 +4,7 @@ import type { Look } from '@renderblocks/designer/look'
 import { choo, correct, pop, sniff, thud, wake, windup, wrong } from '../sound'
 import { drawShape, outline } from './draw'
 import { cellOf, choicesFor, count, DEPTH, high, labelOf, same, sidesOf, sliderOf, sneezeOf, spanOf, startOf, sumOf, trailOf, valueOf, written, type ChainId, type Fact, type Outcome, type Says, type Shape, type Sneezed, type Slider } from './chains'
-import { boxOf, RoadStage, STEP, type RPiece } from './stage'
+import { boxOf, RoadStage, seenBox, STEP, type RPiece } from './stage'
 import { initPhysics } from '../sim'
 
 /** How long the "ah… ah…" lasts before the CHOO (s); shorter when he tapped ahead. */
@@ -134,7 +134,7 @@ export function RoadPlay({
   const [turn, setTurn] = useState<{ shape: Shape; k: number; path: number[] } | null>(null)
   const [pick, setPick] = useState<number | null>(null)
   const [sliding, setSliding] = useState(false)
-  // The camera follows the one whose turn it is once it is smaller than a block (as Sneeze² does); 🔭 shows them all.
+  // The camera follows the one whose turn it is once it is smaller than a block (as Sneeze² does) or lost among the rest; 🔭 shows them all.
   const [seeAll, setSeeAll] = useState(false)
   const live = useRef({ guess, lookFor, onGuess, pick, sliding, seeAll })
   useEffect(() => {
@@ -152,7 +152,8 @@ export function RoadPlay({
     let stage: RoadStage | null = null
     let acc = 0
     let prevNow = performance.now()
-    let cam: { x: number; low: number; logScale: number } | null = null
+    /** `y`: how high up the stage the camera stands (blocks): 0 on the floor, or where the piece it follows stands (on top of another). */
+    let cam: { x: number; y: number; low: number; logScale: number } | null = null
     let ph: Phase = 'ready'
     let phaseAt = 0
     let punch = 0
@@ -433,28 +434,37 @@ export function RoadPlay({
         el.height = Math.round(h * dpr)
       }
       // Camera: everything on the stage, with room above for the sentence and below for the floor and the slider.
-      // Once the one whose turn it is is smaller than a block, it follows that one and what it came out of.
+      // Once the one whose turn it is is smaller than a block, or would be too small to see among all the
+      // rest (a long chain from a big number spreads far), it follows that one and what it came out of.
       const cur = current()
-      const small = cur && cur.k > 0 && !live.current.seeAll ? cur : null
       let b = stage.bounds()
       let room = 1
-      if (small) {
-        const near = [small, ...(small.from?.stays.map((id) => stage!.piece(id)).filter((q): q is RPiece => !!q) ?? [])].map((q) => boxOf(q))
-        b = { x0: Math.min(...near.map((q) => q.x0)), x1: Math.max(...near.map((q) => q.x1)), y1: Math.max(...near.map((q) => q.y1)) }
-        room = Math.max(b.x1 - b.x0, b.y1) / 5
-      }
       const low = ph === 'guessing' ? Math.min(0.42, 190 / h) : Math.min(0.42, 200 / h)
       const top = Math.min(0.3 * h, 150)
-      const fit = Math.min(w / (b.x1 - b.x0 + 4 * room), (h - low * h - top) / (b.y1 + 2 * room), 90 / Math.min(1, room))
-      const want = { x: (b.x0 + b.x1) / 2, low, logScale: Math.log(Math.max(2, fit)) }
+      let base = 0
+      const fitOf = () => Math.min(w / (b.x1 - b.x0 + 4 * room), (h - low * h - top) / (b.y1 - base + 2 * room), 90 / Math.min(1, room))
+      const lost = (p: RPiece) => {
+        const q = boxOf(p)
+        return Math.max(q.x1 - q.x0, q.y1 - q.y0) * fitOf() < 70
+      }
+      const small = cur && !live.current.seeAll && (cur.k > 0 || lost(cur)) ? cur : null
+      if (small) {
+        const near = [small, ...(small.from?.stays.map((id) => stage!.piece(id)).filter((q): q is RPiece => !!q) ?? [])].map((q) => seenBox(q))
+        b = { x0: Math.min(...near.map((q) => q.x0)), x1: Math.max(...near.map((q) => q.x1)), y1: Math.max(...near.map((q) => q.y1)) }
+        // From where they stand, not from the floor: a little one may have landed on top of a big one.
+        base = Math.min(...near.map((q) => q.y0))
+        room = Math.max(b.x1 - b.x0, b.y1 - base) / 5
+      }
+      const fit = fitOf()
+      const want = { x: (b.x0 + b.x1) / 2, y: base, low, logScale: Math.log(Math.max(2, fit)) }
       if (!cam) cam = want
       else if (ph !== 'held' && ph !== 'snapping' && !(ph === 'guessing' && pending?.kind === 'join')) {
         const k = 1 - Math.exp(-STEP * 60 * 0.06)
-        cam = { x: cam.x + (want.x - cam.x) * k, low: cam.low + (want.low - cam.low) * k, logScale: cam.logScale + (want.logScale - cam.logScale) * k }
+        cam = { x: cam.x + (want.x - cam.x) * k, y: cam.y + (want.y - cam.y) * k, low: cam.low + (want.low - cam.low) * k, logScale: cam.logScale + (want.logScale - cam.logScale) * k }
       }
       punch *= 0.9
       const scale = Math.exp(cam.logScale) * (1 + 0.05 * punch)
-      const floorY = h - cam.low * h
+      const floorY = h - cam.low * h + cam.y * scale
       Object.assign(view, { scale, x: cam.x, w, floorY })
       const sx = (x: number) => w / 2 + (x - cam!.x) * scale
       const sy = (y: number) => floorY - y * scale
@@ -467,7 +477,7 @@ export function RoadPlay({
       g.fillStyle = sky
       g.fillRect(0, 0, w, h)
       g.fillStyle = '#E7D3B5'
-      g.fillRect(0, floorY, w, h - floorY)
+      g.fillRect(0, floorY, w, Math.max(0, h - floorY))
       g.fillStyle = '#C9AE88'
       g.fillRect(0, floorY, w, 3)
 
@@ -533,7 +543,7 @@ export function RoadPlay({
           }
         // A number over each, unless it is too small to see or one of a crowd of ones.
         const nn = count(p.shape)
-        if (!p.spin && !(crowd && nn === 1) && (Math.max(pw, phh) >= 12 || p === cur)) labels.push({ x: cx, y: sy(boxOf(p).y1) + phh * 0.12 * squash - (base.hat !== 'none' ? 0.4 * cell : 0) - (p.shape.deep ? p.shape.length * DEPTH * cell : 0), size: Math.max(16, Math.min(40, 0.55 * scale, 0.9 * Math.max(pw, phh))), says: labelOf(stop, p.shape, p.k), sides: sidesOf(stop, p.shape, p.k) })
+        if (!p.spin && !(crowd && nn === 1) && (Math.max(pw, phh) >= 12 || p === cur)) labels.push({ x: cx, y: sy(boxOf(p).y1) + phh * 0.12 * squash - (base.hat !== 'none' ? 0.4 * cell : 0) - (p.shape.deep ? p.shape.length * DEPTH * cell : 0), size: Math.max(Math.max(pw, phh) >= 60 ? 24 : 16, Math.min(40, 0.55 * scale, 0.9 * Math.max(pw, phh))), says: labelOf(stop, p.shape, p.k), sides: sidesOf(stop, p.shape, p.k) })
       }
       if (home && held?.from) {
         // Where the one he carries goes back: the whole it came out of.

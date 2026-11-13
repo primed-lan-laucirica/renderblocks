@@ -108,6 +108,12 @@ export function drawShape(ctx: CanvasRenderingContext2D, s: Shape, look: Look, p
   const n = BigInt(count(s))
   if (isRect(s)) {
     drawBody(ctx, n, bodyOf(s[0], s.length), [], px)
+    // Too small for its blocks' own outlines: one round the whole, so a pale one (a thousand is white) still shows.
+    if (px < 5) {
+      ctx.lineWidth = 1.5 / px
+      ctx.strokeStyle = 'rgba(0,0,0,0.35)'
+      ctx.strokeRect(0, 0, s.length, s[0])
+    }
     return features(ctx, n, s[0], s.length, look)
   }
   // Block by block, column by column from the left, in the number's colours.

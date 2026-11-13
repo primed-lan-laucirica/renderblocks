@@ -349,7 +349,9 @@ export interface Start {
   sub: string
 }
 
-const RECTS: [number, number][] = [[2, 3], [3, 5], [5, 8], [8, 13], [13, 21], [4, 6], [6, 9], [6, 10], [8, 12], [3, 7], [4, 10], [5, 12]]
+const RECTS: [number, number][] = [[2, 3], [3, 5], [5, 8], [8, 13], [13, 21], [4, 6], [6, 9], [6, 10], [8, 12], [3, 7], [4, 10], [5, 12], [21, 34], [34, 55], [12, 20], [15, 25], [16, 24], [9, 24], [20, 30], [7, 20], [10, 26], [18, 48]]
+/** Sides 2 to 20, as the Square Club's are in Sneeze² (Lan, Nov 12: bigger numbers in every chain's set). */
+const SIDES = Array.from({ length: 19 }, (_, i) => i + 2)
 const standing = (chain: ChainId, n: number): Shape => sneezeOf(chain, [n])?.as ?? [n]
 const dividing = (chain: ChainId, ns: number[]): Start[] =>
   ns.map((n) => {
@@ -358,11 +360,11 @@ const dividing = (chain: ChainId, ns: number[]): Start[] =>
   })
 
 const STARTS: Record<ChainId, Start[]> = {
-  corner: Array.from({ length: 9 }, (_, i) => i + 2).map((k) => ({ key: k * k, shape: rect(k, k), title: String(k * k), sub: `${k} × ${k}` })),
-  steps: Array.from({ length: 9 }, (_, i) => i + 2).map((k) => ({ key: triangle(k), shape: stairs(k), title: String(triangle(k)), sub: k <= 4 ? stairs(k).reverse().join(' + ') : `1 + 2 + … + ${k}` })),
-  cubes: Array.from({ length: 9 }, (_, i) => i + 2).map((k) => ({ key: k ** 3, shape: cube(k), title: String(k ** 3), sub: `${k} × ${k} × ${k}` })),
-  factors: dividing('factors', [12, 16, 18, 20, 24, 30, 36, 48, 60, 72, 100]),
-  powers: dividing('powers', [4, 8, 16, 32, 64, 9, 27, 81, 25, 125, 100]),
+  corner: SIDES.map((k) => ({ key: k * k, shape: rect(k, k), title: String(k * k), sub: `${k} × ${k}` })),
+  steps: SIDES.map((k) => ({ key: triangle(k), shape: stairs(k), title: String(triangle(k)), sub: k <= 4 ? stairs(k).reverse().join(' + ') : `1 + 2 + … + ${k}` })),
+  cubes: SIDES.map((k) => ({ key: k ** 3, shape: cube(k), title: String(k ** 3), sub: `${k} × ${k} × ${k}` })),
+  factors: dividing('factors', [12, 16, 18, 20, 24, 30, 36, 48, 60, 72, 100, 120, 144, 180, 200, 240, 360, 400]),
+  powers: dividing('powers', [4, 8, 16, 32, 64, 9, 27, 81, 25, 125, 100, 128, 256, 512, 1024, 243, 729, 625, 1000, 10000]),
   rect: RECTS.map(([r, c]) => ({ key: r * 100 + c, shape: rect(r, c), title: `${r} × ${c}`, sub: String(r * c) })),
 }
 /** The one each chain opens on the first time. */

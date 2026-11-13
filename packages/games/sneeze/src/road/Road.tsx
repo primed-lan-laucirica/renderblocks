@@ -25,7 +25,8 @@ export function Picture({ parts, lookFor }: { parts: Placed[]; lookFor: (n: bigi
       const x1 = Math.max(...parts.map((p) => p.x + p.shape.length + far(p)))
       const y1 = Math.max(...parts.map((p) => p.y + high(p.shape) + far(p)))
       // Room round them for arms and tilted corners.
-      const scale = Math.min(w / (x1 + 2.4), h / (y1 + 1.6))
+      // (A big one's arms and face are as big as it is: room in proportion.)
+      const scale = Math.min(w / (x1 + Math.max(2.4, 0.3 * x1)), h / (y1 + 1.6), (0.8 * h) / y1)
       for (const p of parts) {
         const cx = w / 2 + (p.x + p.shape.length / 2 - x1 / 2) * scale
         const cy = h * 0.9 - (p.y + high(p.shape) / 2) * scale
