@@ -8,7 +8,8 @@
  * written in it. A full page earns a star and is kept in the gallery.
  *
  * The pages go along a path (Lan, Nov 13): one box first, then more and
- * more, then bigger numbers, words, sums and other things.
+ * more, then bigger numbers, words, sums and other things. A box holds a
+ * string (Lan, Nov 13): 10, cat, 1000 and 2+3=5 are each one box.
  *
  * Pure rules: the path, where the boxes sit, whose turn it is.
  */
@@ -35,13 +36,11 @@ export interface PageDef {
   stage: string
   items: string[]
   perRow: number
-  /** Each item in one box, however many digits (10 is one box on the chalkboard); else one character a box. */
-  whole?: boolean
 }
 
 const upTo = (n: number, f: (i: number) => string) => Array.from({ length: n }, (_, i) => f(i))
 const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-const page = (stage: string, items: string[], perRow = 8, whole = false): PageDef => ({ stage, items, perRow, ...(whole ? { whole } : {}) })
+const page = (stage: string, items: string[], perRow = 8): PageDef => ({ stage, items, perRow })
 /** The date, as written at the top of the chalkboard: Fri 13 Nov 2026. */
 export const dateItems = (d: Date) => [d.toLocaleDateString('en-GB', { weekday: 'short' }).slice(0, 3), String(d.getDate()), d.toLocaleDateString('en-GB', { month: 'short' }).slice(0, 3), String(d.getFullYear())]
 
@@ -53,7 +52,7 @@ export const dateItems = (d: Date) => [d.toLocaleDateString('en-GB', { weekday: 
  */
 export function pathPages(now = new Date()): PageDef[] {
   return [
-    ...[1, 2, 3, 4, 5, 6, 8, 10].map((n) => page('Numbers', upTo(n, (i) => String(i + 1)), 5, true)),
+    ...[1, 2, 3, 4, 5, 6, 8, 10].map((n) => page('Numbers', upTo(n, (i) => String(i + 1)), 5)),
     ...[1, 2, 3, 4, 6, 8].map((n) => page('Letters', upTo(n, (i) => ABC[i]), 4)),
     ...[4, 8].map((n) => page('Small letters', upTo(n, (i) => ABC[i].toLowerCase()), 4)),
     page('Bigger numbers', ['10']),
@@ -96,17 +95,15 @@ export const PATH_LENGTH = pathPages().length
 /** How long after his last stroke a box counts as done (ms), when the turn passes by itself. */
 export const DONE_PAUSE_MS = 1600
 
-/** A grown-up's own: words apart, each its own run of boxes; single characters in rows of five, anything longer in rows of eight. */
-export const MOST_CUSTOM = 24
+/** A grown-up's own: each word (or number, or sum) its own box; single characters in rows of five, anything longer in rows of eight. */
+export const MOST_CUSTOM = 12
+export const LONGEST = 12
 export function customPage(text: string): PageDef {
-  const items: string[] = []
-  let left = MOST_CUSTOM
-  for (const w of text.split(/\s+/).filter(Boolean)) {
-    const cs = [...w].slice(0, left)
-    if (!cs.length) break
-    items.push(cs.join(''))
-    left -= cs.length
-  }
+  const items = text
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, MOST_CUSTOM)
+    .map((w) => [...w].slice(0, LONGEST).join(''))
   return page('My own', items, items.every((w) => [...w].length === 1) ? 5 : 8)
 }
 
@@ -117,21 +114,29 @@ export function pageOf(s: Settings, now = new Date()): PageDef {
   return all[Math.max(0, Math.min(all.length - 1, s.level))]
 }
 
-/** Layout, in units of one box side. */
-export const GAP = 0.16
-/** Between two items of more than one character (a word and the next). */
-export const ITEM_GAP = 0.55
+/** Layout, in units of one box's height. */
+export const GAP = 0.18
 /** The band above each box where its example is written. */
 export const PROMPT = 0.62
 const ROW_GAP = 0.2
 
-/** A box: its character, which item it belongs to (and whether it is that item's first), and its top-left corner. */
+/**
+ * How wide a box is for a string (Lan, Nov 13: "think of the box as
+ * representing a string"): one character, a square; 10 a little wider;
+ * cat, 1000 or 2+3=5 wider still, so the whole of it fits.
+ */
+export const boxWidth = (s: string) => {
+  const n = [...s].length
+  return n <= 1 ? 1 : 0.25 + 0.55 * n
+}
+
+/** A box: its string, which item it is, its top-left corner and its width (its height is 1). */
 export interface Cell {
   ch: string
   item: number
-  first: boolean
   x: number
   y: number
+  w: number
 }
 export interface Layout {
   boxes: Cell[]
@@ -140,38 +145,33 @@ export interface Layout {
 }
 
 /**
- * Where the boxes go: items in rows of at most `perRow` boxes (an item is
- * never split, unless it is longer than a row on its own), each row centred,
- * each box with the band for its example just above it.
+ * Where the boxes go: one box per item, in rows at most about `perRow`
+ * squares wide (1–10 in two rows of five, A–H in two rows of four), each row
+ * centred, each box with the band for its example just above it.
  */
-export function layoutOf(items: string[], perRow: number, whole = false): Layout {
-  const split = (it: string) => (whole ? [it] : [...it])
+export function layoutOf(items: string[], perRow: number): Layout {
   const rows: number[][] = []
   let used = 0
   items.forEach((it, i) => {
-    const n = split(it).length
-    if (!rows.length || (used > 0 && used + n > perRow)) {
+    const w = boxWidth(it)
+    if (!rows.length || (used > 0 && used + w > perRow + 0.5)) {
       rows.push([])
       used = 0
     }
     rows[rows.length - 1].push(i)
-    used += n
+    used += w
   })
-  const gapAfter = (a: string, b: string) => (split(a).length === 1 && split(b).length === 1 ? GAP : ITEM_GAP)
-  const widthOf = (row: number[]) => row.reduce((w, i, j) => w + split(items[i]).length + (split(items[i]).length - 1) * GAP + (j ? gapAfter(items[row[j - 1]], items[i]) : 0), 0)
+  const widthOf = (row: number[]) => row.reduce((w, i) => w + boxWidth(items[i]), 0) + (row.length - 1) * GAP
   const wide = Math.max(1, ...rows.map(widthOf))
   const boxes: Cell[] = []
   rows.forEach((row, r) => {
     let x = GAP + (wide - widthOf(row)) / 2
     const y = GAP + PROMPT + r * (PROMPT + 1 + ROW_GAP)
-    row.forEach((i, j) => {
-      if (j) x += gapAfter(items[row[j - 1]], items[i])
-      split(items[i]).forEach((ch, k) => {
-        boxes.push({ ch, item: i, first: k === 0, x, y })
-        x += 1 + GAP
-      })
-      x -= GAP
-    })
+    for (const i of row) {
+      const w = boxWidth(items[i])
+      boxes.push({ ch: items[i], item: i, x, y, w })
+      x += w + GAP
+    }
   })
   return { boxes, w: wide + 2 * GAP, h: GAP + rows.length * (PROMPT + 1) + (rows.length - 1) * ROW_GAP + GAP }
 }
@@ -179,11 +179,11 @@ export function layoutOf(items: string[], perRow: number, whole = false): Layout
 /** The box a stroke that starts at x, y is written in (a little outside its edge still counts), or -1. */
 export function boxAt(lay: Layout, x: number, y: number): number {
   const m = GAP / 2
-  return lay.boxes.findIndex((b) => x >= b.x - m && x <= b.x + 1 + m && y >= b.y - m && y <= b.y + 1 + m)
+  return lay.boxes.findIndex((b) => x >= b.x - m && x <= b.x + b.w + m && y >= b.y - m && y <= b.y + 1 + m)
 }
 
 /** The box whose example is at x, y (the band above it), or -1. */
-export const promptAt = (lay: Layout, x: number, y: number) => lay.boxes.findIndex((b) => x >= b.x && x <= b.x + 1 && y >= b.y - PROMPT && y < b.y - GAP / 2)
+export const promptAt = (lay: Layout, x: number, y: number) => lay.boxes.findIndex((b) => x >= b.x && x <= b.x + b.w && y >= b.y - PROMPT && y < b.y - GAP / 2)
 
 /** One stroke of his: the box it was begun in, and its points in page units (x, y, x, y …). */
 export interface Stroke {
@@ -231,9 +231,9 @@ export function charClips(ch: string, numberWords: (n: number) => string[] = (n)
 }
 
 /**
- * What is said for a whole item of more than one character, before its first
- * box: the number (one thousand), the word (cat), the sum (two plus two
- * equals four). Null: a single character, or nothing that can be said whole.
+ * What is said for a box of more than one character, whole: the number (one
+ * thousand), the word (cat), the sum (two plus two equals four). Null: a
+ * single character, or nothing that can be said whole.
  */
 export function itemClips(item: string, numberWords: (n: number) => string[]): Clip[] | null {
   if ([...item].length < 2) return null
@@ -245,19 +245,28 @@ export function itemClips(item: string, numberWords: (n: number) => string[]): C
   return parts.flatMap((p) => (SIGNS[p] ? [{ kind: 'number' as const, name: SIGNS[p] }] : numberWords(Number(p)).map((name) => ({ kind: 'number' as const, name }))))
 }
 
-/** A finished page in the gallery. */
+/** What is said for a box: the whole of it (cat, ten, two plus two equals four), or else each character it has (seven three zero). */
+export function boxClips(s: string, numberWords: (n: number) => string[]): Clip[] {
+  return itemClips(s, numberWords) ?? [...s].flatMap((c) => charClips(c, numberWords))
+}
+
+/** A finished page in the gallery. `v` 2: a box a string (v1.106.0 on). */
 export interface Saved {
   id: string
   /** When it was finished (ms). */
   at: number
   items: string[]
   perRow: number
-  whole?: boolean
+  /** Which page of the path it was (none for a grown-up's own). */
+  level?: number
+  v?: 2
   ink: Stroke[]
 }
 export const GALLERY_MAX = 60
 
-/** A page saved by v1.104.0 (one character a box, `tokens`), read as items. */
-export function savedPage(s: Saved & { tokens?: string[] }): Saved {
-  return s.items ? s : { ...s, items: (s.tokens ?? []).map((t) => t || ' '), perRow: s.perRow ?? 5 }
+/** A page saved before v1.106.0, when every character had its own box: read as one item a character, so his writing stays in its boxes. */
+export function savedPage(s: Saved & { tokens?: string[]; whole?: boolean }): Saved {
+  if (s.v === 2) return s
+  if (!s.items) return { ...s, items: (s.tokens ?? []).map((t) => t || ' '), perRow: s.perRow ?? 5, v: 2 }
+  return { ...s, items: s.whole ? s.items : s.items.flatMap((i) => [...i]), perRow: s.whole ? s.perRow : Math.max(5, s.perRow), v: 2 }
 }

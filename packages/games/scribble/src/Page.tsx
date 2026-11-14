@@ -18,7 +18,7 @@ export function Page({ lay, ink, live, current, examples = true, svgRef, classNa
         <g fontFamily="Nunito, system-ui, sans-serif" fontWeight={800} textAnchor="middle">
           {lay.boxes.map((b, i) =>
             b.ch.trim() ? (
-              <text key={i} data-example={i} x={b.x + 0.5} y={b.y - 0.17} fontSize={PROMPT * 0.78 * (b.ch.length > 2 ? 2 / b.ch.length : 1)} fill={i === current ? '#FDE047' : CHALK} fillOpacity={i === current ? 1 : 0.8}>
+              <text key={i} data-example={i} x={b.x + b.w / 2} y={b.y - 0.17} fontSize={PROMPT * 0.78} fill={i === current ? '#FDE047' : CHALK} fillOpacity={i === current ? 1 : 0.8}>
                 {b.ch}
               </text>
             ) : null,
@@ -26,7 +26,7 @@ export function Page({ lay, ink, live, current, examples = true, svgRef, classNa
         </g>
       )}
       {lay.boxes.map((b, i) => (
-        <rect key={i} data-box={i} data-current={i === current || undefined} x={b.x} y={b.y} width={1} height={1} rx={0.03} fill={i === current ? 'rgba(253,224,71,0.07)' : 'none'} stroke={i === current ? '#FDE047' : CHALK} strokeOpacity={i === current ? 1 : 0.75} strokeWidth={i === current ? 0.045 : 0.025} />
+        <rect key={i} data-box={i} data-current={i === current || undefined} x={b.x} y={b.y} width={b.w} height={1} rx={0.03} fill={i === current ? 'rgba(253,224,71,0.07)' : 'none'} stroke={i === current ? '#FDE047' : CHALK} strokeOpacity={i === current ? 1 : 0.75} strokeWidth={i === current ? 0.045 : 0.025} />
       ))}
       <g fill="none" stroke={CHALK} strokeWidth={NIB} strokeLinecap="round" strokeLinejoin="round" strokeOpacity={0.95}>
         {ink.map((k, i) => (

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { boxAt, charClips, clearBox, customPage, dateItems, DEFAULT_SETTINGS, filled, isFull, itemClips, layoutOf, nextEmpty, pageOf, pathOf, pathPages, PATH_LENGTH, PROMPT, promptAt, savedPage, undo, type Settings, type Stroke } from './model'
+import { boxAt, boxClips, boxWidth, charClips, clearBox, customPage, dateItems, DEFAULT_SETTINGS, filled, isFull, itemClips, layoutOf, nextEmpty, pageOf, pathOf, pathPages, PATH_LENGTH, PROMPT, promptAt, savedPage, undo, type Settings, type Stroke } from './model'
 
 const at = (box: number): Stroke => ({ box, pts: [0, 0, 1, 1] })
 const level = (n: number): Settings => ({ ...DEFAULT_SETTINGS, level: n })
-const rowsOf = (items: string[], perRow: number, whole?: boolean) => {
-  const ys = layoutOf(items, perRow, whole).boxes.map((b) => b.y)
+const rowsOf = (items: string[], perRow: number) => {
+  const ys = layoutOf(items, perRow).boxes.map((b) => b.y)
   return [...new Set(ys)].map((y) => ys.filter((v) => v === y).length)
 }
 const words = (n: number) => [String(n)]
@@ -19,8 +19,8 @@ describe('the path', () => {
 
   it('has the chalkboard\'s two sets: 1–10 in two rows of five, A–H in two rows of four', () => {
     const ten = pages.find((p) => p.items.join('') === '12345678910')!
-    expect(rowsOf(ten.items, ten.perRow, ten.whole)).toEqual([5, 5])
-    expect(layoutOf(ten.items, ten.perRow, ten.whole).boxes[9].ch).toBe('10')
+    expect(rowsOf(ten.items, ten.perRow)).toEqual([5, 5])
+    expect(layoutOf(ten.items, ten.perRow).boxes[9].ch).toBe('10')
     const ah = pages.find((p) => p.items.join('') === 'ABCDEFGH')!
     expect(rowsOf(ah.items, ah.perRow)).toEqual([4, 4])
   })
@@ -43,21 +43,21 @@ describe('the path', () => {
     expect(pageOf(level(-3)).items).toEqual(['1'])
   })
 
-  it('a grown-up\'s own text is split into words, one character a box', () => {
+  it('a grown-up\'s own text is split into words, each one box', () => {
     expect(customPage('Fri 13 Nov').items).toEqual(['Fri', '13', 'Nov'])
     expect(customPage('a b c').perRow).toBe(5)
     expect(customPage('cat').perRow).toBe(8)
-    expect(customPage('x'.repeat(40)).items[0].length).toBe(24)
+    expect(customPage('x'.repeat(40)).items[0].length).toBe(12)
   })
 })
 
 describe('the page', () => {
   it('each example sits directly above its own box: same left and right edges, just above it', () => {
     for (const p of pathPages()) {
-      const lay = layoutOf(p.items, p.perRow, p.whole)
+      const lay = layoutOf(p.items, p.perRow)
       for (const [i, b] of lay.boxes.entries()) {
-        expect(promptAt(lay, b.x + 0.5, b.y - PROMPT / 2)).toBe(i)
-        expect(promptAt(lay, b.x + 0.5, b.y + 0.5)).toBe(-1)
+        expect(promptAt(lay, b.x + b.w / 2, b.y - PROMPT / 2)).toBe(i)
+        expect(promptAt(lay, b.x + b.w / 2, b.y + 0.5)).toBe(-1)
         expect(b.y - PROMPT).toBeGreaterThanOrEqual(0)
       }
     }
@@ -65,29 +65,31 @@ describe('the page', () => {
 
   it('boxes do not overlap, examples do not run into the row above, and all sit inside the page', () => {
     for (const p of pathPages()) {
-      const lay = layoutOf(p.items, p.perRow, p.whole)
+      const lay = layoutOf(p.items, p.perRow)
       for (const [i, a] of lay.boxes.entries()) {
         expect(a.x).toBeGreaterThanOrEqual(0)
-        expect(a.x + 1).toBeLessThanOrEqual(lay.w)
-        expect(a.y + 1).toBeLessThanOrEqual(lay.h)
-        for (const b of lay.boxes.slice(i + 1)) expect(Math.abs(a.x - b.x) >= 1 || Math.abs(a.y - b.y) >= 1 + PROMPT).toBe(true)
+        expect(a.x + a.w).toBeLessThanOrEqual(lay.w + 1e-9)
+        expect(a.y + 1).toBeLessThanOrEqual(lay.h + 1e-9)
+        for (const b of lay.boxes.slice(i + 1)) expect(b.x >= a.x + a.w || a.x >= b.x + b.w || Math.abs(a.y - b.y) >= 1 + PROMPT).toBe(true)
       }
     }
   })
 
-  it('a word stays on one row, its letters close together and apart from the next word', () => {
-    const lay = layoutOf(['run', 'hop', 'jump'], 8)
-    expect(rowsOf(['run', 'hop', 'jump'], 8)).toEqual([6, 4])
-    const [r, u] = lay.boxes
-    const h = lay.boxes[3]
-    expect(u.x - r.x).toBeLessThan(h.x - lay.boxes[2].x)
-    expect(lay.boxes.filter((b) => b.first).length).toBe(3)
+  it('a box holds a whole string: 10, cat, 1000 and a sum are one box each, wider as they are longer', () => {
+    for (const items of [['10'], ['cat'], ['1000'], ['12÷4=3'], ['run', 'hop', 'jump']]) {
+      const lay = layoutOf(items, 8)
+      expect(lay.boxes.map((b) => b.ch)).toEqual(items)
+    }
+    expect(boxWidth('7')).toBe(1)
+    expect(boxWidth('cat')).toBeGreaterThan(boxWidth('10'))
+    expect(boxWidth('1,000,000')).toBeGreaterThan(boxWidth('cat'))
+    for (const p of pathPages()) expect(layoutOf(p.items, p.perRow).boxes.length).toBe(p.items.length)
   })
 
   it('a stroke belongs to the box it starts in, a little outside the edge included', () => {
-    const lay = layoutOf(['1', '2', '3'], 5)
+    const lay = layoutOf(['1', 'cat', '3'], 5)
     const b = lay.boxes[1]
-    expect(boxAt(lay, b.x + 0.5, b.y + 0.5)).toBe(1)
+    expect(boxAt(lay, b.x + b.w - 0.1, b.y + 0.5)).toBe(1)
     expect(boxAt(lay, b.x - 0.05, b.y + 0.5)).toBe(1)
     expect(boxAt(lay, b.x + 0.5, b.y - PROMPT / 2)).toBe(-1)
   })
@@ -122,12 +124,16 @@ describe('what is said and drawn', () => {
     expect(charClips('10', (n) => [String(n)])).toEqual([{ kind: 'number', name: '10' }])
   })
 
-  it('a whole number, word or sum is said before its first box', () => {
+  it('a box is said whole: the number, the word, the sum; else character by character', () => {
+    const names = (s: string) => boxClips(s, words).map((c) => (c.kind === 'number' ? c.name : c.kind === 'letter' ? c.letter : c.word))
+    expect(names('7')).toEqual(['seven'])
+    expect(names('10')).toEqual(['10'])
+    expect(names('1,000,000')).toEqual(['1000000'])
+    expect(names('cat')).toEqual(['cat'])
+    expect(names('A')).toEqual(['A'])
+    expect(names('12÷4=3')).toEqual(['12', 'dividedBy', '4', 'equals', '3'])
+    expect(names('7:30')).toEqual(['seven', 'three', 'zero'])
     expect(itemClips('7', words)).toBeNull()
-    expect(itemClips('1,000,000', words)).toEqual([{ kind: 'number', name: '1000000' }])
-    expect(itemClips('cat', words)).toEqual([{ kind: 'word', word: 'cat' }])
-    expect(itemClips('12÷4=3', words)!.map((c) => (c.kind === 'number' ? c.name : ''))).toEqual(['12', 'dividedBy', '4', 'equals', '3'])
-    expect(itemClips('7:30', words)).toBeNull()
   })
 
   it('a stroke of one point is a dot, and a longer one a path through all of it', () => {
@@ -135,8 +141,10 @@ describe('what is said and drawn', () => {
     expect(pathOf([0, 0, 1, 0, 1, 1, 2, 1]).match(/Q/g)!.length).toBe(2)
   })
 
-  it('reads pages saved before the path', () => {
-    const old = savedPage({ id: '1', at: 0, ink: [], perRow: 5, tokens: ['1', '2', ''] } as never)
-    expect(old.items).toEqual(['1', '2', ' '])
+  it('reads pages saved when every character had its own box', () => {
+    expect(savedPage({ id: '1', at: 0, ink: [], perRow: 5, tokens: ['1', '2', ''] } as never).items).toEqual(['1', '2', ' '])
+    expect(savedPage({ id: '1', at: 0, ink: [], perRow: 8, items: ['cat', 'dog'] }).items).toEqual(['c', 'a', 't', 'd', 'o', 'g'])
+    expect(savedPage({ id: '1', at: 0, ink: [], perRow: 5, items: ['9', '10'], whole: true } as never).items).toEqual(['9', '10'])
+    expect(savedPage({ id: '1', at: 0, ink: [], perRow: 8, items: ['cat'], v: 2 }).items).toEqual(['cat'])
   })
 })

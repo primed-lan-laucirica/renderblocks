@@ -1,5 +1,5 @@
 import { numberToClips } from '@renderblocks/kernel'
-import { charClips, itemClips, type Cell, type Clip } from './model'
+import { boxClips, type Clip } from './model'
 
 const urlOf = (c: Clip) => (c.kind === 'number' ? `/games/shared/number/${c.name}.mp3` : c.kind === 'letter' ? `/games/shapes/audio/${c.letter}.mp3` : `/games/words/audio/${c.word}.mp3`)
 
@@ -32,16 +32,12 @@ function playAll(urls: string[]) {
 }
 
 /**
- * Say what a box asks for: the digit, the letter's name, the sign. Before the
- * first box of a number, word or sum, the whole of it first (cat … c).
- * Numbers in the app's number voice; letters and words in the Letters and
- * Words tiles' clips.
+ * Say what a box asks for, whole: the number, the letter's name, the word,
+ * the sum. Numbers and signs in the app's number voice; letters and words in
+ * the Shapes and Words tiles' clips (a word with no clip is not said).
  */
-export function say(cell: Cell, item: string, whole = cell.first) {
-  const words = (n: number) => numberToClips(n, 0)
-  // A whole number in one box (10) is said once.
-  const before = whole && cell.ch !== item ? (itemClips(item, words) ?? []) : []
-  playAll([...before, ...charClips(cell.ch, words)].map(urlOf))
+export function say(s: string) {
+  playAll(boxClips(s, (n) => numberToClips(n, 0)).map(urlOf))
 }
 
 export function effect(name: 'celebrate' | 'pop', volume = 0.5) {

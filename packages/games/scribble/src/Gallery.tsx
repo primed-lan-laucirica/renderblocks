@@ -5,7 +5,7 @@ import { layoutOf, savedPage, type Saved } from './model'
 const day = (at: number) => new Date(at).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 
 function Sheet({ s, className }: { s: Saved; className?: string }) {
-  return <Page lay={layoutOf(s.items, s.perRow, s.whole)} ink={s.ink} className={className} />
+  return <Page lay={layoutOf(s.items, s.perRow)} ink={s.ink} className={className} />
 }
 
 /** His finished pages, newest first, kept as the chalkboard keeps the day's work: the examples and his writing. To look at, not to write on again. */

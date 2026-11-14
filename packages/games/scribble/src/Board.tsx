@@ -4,7 +4,6 @@ import { boxAt, clearBox, DONE_PAUSE_MS, isFull, nextEmpty, promptAt, undo, type
 import { say } from './speak'
 
 interface Props {
-  items: string[]
   lay: Layout
   ink: Stroke[]
   onInk: (ink: Stroke[]) => void
@@ -30,7 +29,7 @@ interface Props {
  * to the next empty box a moment after he stops writing (or with Next), and
  * a stroke begun in any other box makes it that box's turn: nothing is locked.
  */
-export function Board({ items, lay, ink, onInk, prompt, advance, finished, onFinished, onNext, onAgain, stars, label, left, right }: Props) {
+export function Board({ lay, ink, onInk, prompt, advance, finished, onFinished, onNext, onAgain, stars, label, left, right }: Props) {
   const count = lay.boxes.length
   const [current, setCurrent] = useState(() => (ink.length ? Math.max(0, nextEmpty(ink, count, count - 1)) : 0))
   const [live, setLive] = useState<number[] | null>(null)
@@ -45,12 +44,12 @@ export function Board({ items, lay, ink, onInk, prompt, advance, finished, onFin
   })
   const spoken = prompt !== 'shown'
   const shown = prompt !== 'spoken'
-  const sayBox = (i: number, whole?: boolean) => {
+  const sayBox = (i: number) => {
     const b = lay.boxes[i]
-    if (b) say(b, items[b.item], whole)
+    if (b) say(b.ch)
   }
 
-  // Whose turn it is, said aloud (a number, word or sum whole, before its first box).
+  // Whose turn it is, said aloud: what goes in its box, whole.
   useEffect(() => {
     if (spoken && !finished) sayBox(current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,7 +83,7 @@ export function Board({ items, lay, ink, onInk, prompt, advance, finished, onFin
     const p = at(e)
     // A tap on an example says it.
     const ex = shown ? promptAt(lay, p.x, p.y) : -1
-    if (ex >= 0) return sayBox(ex, true)
+    if (ex >= 0) return sayBox(ex)
     if (finished) return
     if (e.pointerType === 'pen') pen.current = true
     else if (pen.current && e.pointerType === 'touch') return
@@ -133,7 +132,7 @@ export function Board({ items, lay, ink, onInk, prompt, advance, finished, onFin
             {label}
           </span>
           {!shown && !finished && (
-            <button type="button" onClick={() => sayBox(current, true)} className="w-12 h-12 rounded-full bg-white shadow text-2xl" aria-label="Say it again">
+            <button type="button" onClick={() => sayBox(current)} className="w-12 h-12 rounded-full bg-white shadow text-2xl" aria-label="Say it again">
               🔊
             </button>
           )}

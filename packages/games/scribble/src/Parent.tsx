@@ -44,7 +44,7 @@ export function Parent({ settings, onSettings, onNewPage, onBack }: { settings: 
                   {here.stage}: {here.items.join(' ')}
                 </span>
               </div>
-              <p className={note}>One box first, then more, up to 1–10 and A–H as on the chalkboard; then bigger numbers, words, sums, and other things (the date, a sentence, a time). Each finished page moves him on one; he can do a page again.</p>
+              <p className={note}>One box first, then more, up to 1–10 and A–H as on the chalkboard; then bigger numbers, words, sums, and other things (the date, a sentence, a time). A box holds a whole string: 10, cat and 2+3=5 are one box each. He can also pick any page on the path.</p>
             </>
           )}
           {settings.mode === 'custom' && (
@@ -60,7 +60,7 @@ export function Parent({ settings, onSettings, onNewPage, onBack }: { settings: 
                 className="h-14 px-4 rounded-2xl bg-white shadow text-2xl font-black text-slate-700 outline-none focus:ring-4 ring-slate-300"
               />
               <p className={note}>
-                One character a box, each word its own row of boxes, up to {MOST_CUSTOM} boxes ({customPage(settings.custom).items.join('').length} now).
+                Each word, number or sum is one box (spaces between them), up to {MOST_CUSTOM} boxes ({customPage(settings.custom).items.length} now). It appears as the last window on the path.
               </p>
             </>
           )}
@@ -72,7 +72,7 @@ export function Parent({ settings, onSettings, onNewPage, onBack }: { settings: 
             {chip(settings.prompt === 'shown', 'Shown', () => set({ prompt: 'shown' }), 'shown')}
             {chip(settings.prompt === 'spoken', 'Spoken', () => set({ prompt: 'spoken' }), 'spoken')}
           </div>
-          <p className={note}>Shown directly above its box, never inside it. Numbers, letters, signs and words are spoken; other characters (: , /) are only shown.</p>
+          <p className={note}>Shown directly above its box, never inside it. Numbers, letters, sums and words are said whole; a word with no voice clip is only shown.</p>
         </section>
         <section className="flex flex-col gap-2">
           <h2 className={head}>The next box lights up…</h2>
