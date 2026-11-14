@@ -31,6 +31,7 @@
     "@renderblocks/windy": "workspace:*",
     "@renderblocks/sneeze": "workspace:*",
     "@renderblocks/paint": "workspace:*",
+    "@renderblocks/scribble": "workspace:*",
     "@renderblocks/blocks": "workspace:*",
     "@renderblocks/calendar": "workspace:*",
     "@renderblocks/combos": "workspace:*",

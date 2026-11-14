@@ -23,6 +23,7 @@ import { designerModule } from '@renderblocks/designer/module'
 import { windyModule } from '@renderblocks/windy/module'
 import { sneezeModule } from '@renderblocks/sneeze/module'
 import { paintModule } from '@renderblocks/paint/module'
+import { scribbleModule } from '@renderblocks/scribble/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
 
 export const games: GameModule[] = [
@@ -42,6 +43,7 @@ export const games: GameModule[] = [
   magcubesModule,
   base10Module,
   traceModule,
+  scribbleModule,
   skateModule,
   sortModule,
   story5Module,
