@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { Page } from './Page'
-import { layoutOf, type Saved } from './model'
+import { layoutOf, savedPage, type Saved } from './model'
 
 const day = (at: number) => new Date(at).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 
 function Sheet({ s, className }: { s: Saved; className?: string }) {
-  return <Page lay={layoutOf(s.tokens.length, s.perRow)} ink={s.ink} className={className} />
+  return <Page lay={layoutOf(s.items, s.perRow, s.whole)} ink={s.ink} className={className} />
 }
 
-/** His finished pages, newest first, kept as the chalkboard keeps the day's work. To look at, not to write on again. */
-export function Gallery({ pages, stars, onDelete, onBack }: { pages: Saved[]; stars: number; onDelete: (id: string) => void; onBack: () => void }) {
+/** His finished pages, newest first, kept as the chalkboard keeps the day's work: the examples and his writing. To look at, not to write on again. */
+export function Gallery({ pages: raw, stars, onDelete, onBack }: { pages: Saved[]; stars: number; onDelete: (id: string) => void; onBack: () => void }) {
+  const pages = raw.map(savedPage)
   const [open, setOpen] = useState<Saved | null>(null)
   if (open)
     return (
@@ -19,7 +20,7 @@ export function Gallery({ pages, stars, onDelete, onBack }: { pages: Saved[]; st
             ←
           </button>
           <div className="flex-1 text-center text-xl font-black text-slate-500 truncate">
-            ⭐ {day(open.at)} · {open.tokens.filter(Boolean).join(' ')}
+            ⭐ {day(open.at)} · {open.items.join(' ')}
           </div>
           <button
             type="button"
@@ -33,7 +34,7 @@ export function Gallery({ pages, stars, onDelete, onBack }: { pages: Saved[]; st
             🗑️
           </button>
         </div>
-        <div className="flex-1 min-h-0 m-2 mt-0 rounded-3xl bg-[#27323A] border-[10px] border-[#D9B382] p-2 flex items-center justify-center">
+        <div className="flex-1 min-h-0 m-2 mt-0 rounded-3xl bg-[#27323A] border-[10px] border-[#D9B382] p-3 flex items-center justify-center">
           <Sheet s={open} className="w-full h-full" />
         </div>
       </div>

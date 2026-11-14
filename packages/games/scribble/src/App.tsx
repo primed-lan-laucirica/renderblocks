@@ -3,7 +3,7 @@ import type { GameProps, NamespacedStorage } from '@renderblocks/kernel'
 import { Board } from './Board'
 import { Gallery } from './Gallery'
 import { Parent } from './Parent'
-import { DEFAULT_SETTINGS, GALLERY_MAX, layoutOf, perRowOf, tokensOf, type Saved, type Settings, type Stroke } from './model'
+import { DEFAULT_SETTINGS, GALLERY_MAX, layoutOf, pageOf, PATH_LENGTH, type Saved, type Settings, type Stroke } from './model'
 import { effect } from './speak'
 
 function read<T>(storage: NamespacedStorage, key: string, fallback: T): T {
@@ -19,7 +19,7 @@ function read<T>(storage: NamespacedStorage, key: string, fallback: T): T {
 
 /** The page he is on: kept as he writes, so leaving and coming back does not lose it. */
 interface Open {
-  /** What the boxes ask for (a page begun under other settings is started afresh). */
+  /** What the boxes ask for (a page begun for other boxes is started afresh). */
   key: string
   ink: Stroke[]
   finished: boolean
@@ -28,23 +28,27 @@ interface Open {
 type Screen = 'board' | 'gallery' | 'parent'
 
 /**
- * Scribble (model.ts): the tile opens straight on the board. The gallery and
- * the grown-ups' screen (hold the gear) are reached from its top bar.
+ * Scribble (model.ts): the tile opens straight on the board, at his place on
+ * the path. The gallery and the grown-ups' screen (hold the gear) are reached
+ * from its top bar.
  */
 function App({ services }: GameProps) {
   const { storage } = services
   const [screen, setScreen] = useState<Screen>('board')
-  const [settings, setSettings] = useState<Settings>(() => read(storage, 'settings', DEFAULT_SETTINGS))
+  // Settings saved by v1.104.0 (a set of 1–10 or A–H) start on the path from its beginning.
+  const [settings, setSettings] = useState<Settings>(() => {
+    const s = read<Settings & { set?: string }>(storage, 'settings', DEFAULT_SETTINGS)
+    return s.set ? { ...DEFAULT_SETTINGS, prompt: s.prompt, advance: s.advance, custom: s.set === 'custom' ? s.custom : '', mode: s.set === 'custom' ? 'custom' : 'path' } : s
+  })
   const [pages, setPages] = useState<Saved[]>(() => read<Saved[]>(storage, 'gallery', []))
   const [stars, setStars] = useState(() => Number(storage.get('stars')) || 0)
-  const tokens = useMemo(() => tokensOf(settings), [settings])
-  const perRow = perRowOf(settings)
-  const key = `${perRow}:${tokens.join('\u0001')}`
+  const def = useMemo(() => pageOf(settings), [settings])
+  const key = `${settings.mode}:${def.perRow}:${def.whole ? 'w' : ''}:${def.items.join('\u0001')}`
   const [open, setOpen] = useState<Open>(() => read<Open>(storage, 'page', { key, ink: [], finished: false }))
   // How many pages he has begun here: a new one is a new board (its turn starts at the first box).
   const [n, setN] = useState(0)
   const page = useMemo<Open>(() => (open.key === key ? open : { key, ink: [], finished: false }), [open, key])
-  const lay = useMemo(() => layoutOf(tokens.length, perRow), [tokens.length, perRow])
+  const lay = useMemo(() => layoutOf(def.items, def.perRow, def.whole), [def])
 
   useEffect(() => storage.set('settings', JSON.stringify(settings)), [storage, settings])
   useEffect(() => storage.set('gallery', JSON.stringify(pages)), [storage, pages])
@@ -61,17 +65,18 @@ function App({ services }: GameProps) {
     [services, screen],
   )
 
-  const newPage = () => {
+  const fresh = () => {
     setOpen({ key, ink: [], finished: false })
     setN((v) => v + 1)
   }
   const finish = (ink: Stroke[]) => {
     const at = Date.now()
     setOpen({ key, ink, finished: true })
-    setPages((p) => [{ id: String(at), at, tokens, perRow, ink }, ...p].slice(0, GALLERY_MAX))
+    setPages((p) => [{ id: String(at), at, items: def.items, perRow: def.perRow, whole: def.whole, ink }, ...p].slice(0, GALLERY_MAX))
     setStars((s) => s + 1)
     effect('celebrate')
   }
+  const level = Math.min(settings.level, PATH_LENGTH - 1)
 
   if (screen === 'gallery')
     return (
@@ -86,7 +91,7 @@ function App({ services }: GameProps) {
           settings={settings}
           onSettings={setSettings}
           onNewPage={() => {
-            newPage()
+            fresh()
             setScreen('board')
           }}
           onBack={() => setScreen('board')}
@@ -97,7 +102,7 @@ function App({ services }: GameProps) {
     <Shell>
       <Board
         key={`${key}#${n}`}
-        tokens={tokens}
+        items={def.items}
         lay={lay}
         ink={page.ink}
         onInk={(ink) => setOpen({ key, ink, finished: false })}
@@ -105,14 +110,25 @@ function App({ services }: GameProps) {
         advance={settings.advance}
         finished={page.finished}
         onFinished={finish}
-        onNew={newPage}
+        onAgain={fresh}
+        onNext={
+          settings.mode === 'path'
+            ? () => {
+                if (level + 1 < PATH_LENGTH) setSettings((s) => ({ ...s, level: level + 1 }))
+                else fresh()
+                setN((v) => v + 1)
+              }
+            : undefined
+        }
         stars={stars}
-        top={
+        label={settings.mode === 'path' ? `${def.stage} · ${level + 1}` : def.stage}
+        left={
+          <button type="button" onClick={services.exitToHome} className="w-12 h-12 rounded-full bg-white shadow text-2xl font-bold" aria-label="Home">
+            ←
+          </button>
+        }
+        right={
           <>
-            <button type="button" onClick={services.exitToHome} className="w-12 h-12 rounded-full bg-white shadow text-2xl font-bold" aria-label="Home">
-              ←
-            </button>
-            <div className="flex-1" />
             <button type="button" onClick={() => setScreen('gallery')} className="w-12 h-12 rounded-full bg-white shadow text-xl" aria-label="My pages">
               🖼️
             </button>

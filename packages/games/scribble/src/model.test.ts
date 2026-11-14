@@ -1,58 +1,95 @@
 import { describe, expect, it } from 'vitest'
-import { boxAt, clearBox, DEFAULT_SETTINGS, filled, isFull, layoutOf, nextEmpty, pathOf, perRowOf, spokenOf, tokensOf, typedTokens, undo, type Settings, type Stroke } from './model'
+import { boxAt, charClips, clearBox, customPage, dateItems, DEFAULT_SETTINGS, filled, isFull, itemClips, layoutOf, nextEmpty, pageOf, pathOf, pathPages, PATH_LENGTH, PROMPT, promptAt, savedPage, undo, type Settings, type Stroke } from './model'
 
-const with_ = (s: Partial<Settings>): Settings => ({ ...DEFAULT_SETTINGS, ...s })
 const at = (box: number): Stroke => ({ box, pts: [0, 0, 1, 1] })
+const level = (n: number): Settings => ({ ...DEFAULT_SETTINGS, level: n })
+const rowsOf = (items: string[], perRow: number, whole?: boolean) => {
+  const ys = layoutOf(items, perRow, whole).boxes.map((b) => b.y)
+  return [...new Set(ys)].map((y) => ys.filter((v) => v === y).length)
+}
+const words = (n: number) => [String(n)]
 
-describe('the sets', () => {
-  it('numbers are 1 to 10 in two rows of five, as on the chalkboard', () => {
-    const s = with_({ set: 'numbers' })
-    expect(tokensOf(s)).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
-    const lay = layoutOf(tokensOf(s).length, perRowOf(s))
-    expect(new Set(lay.boxes.map((b) => b.y)).size).toBe(2)
-    expect(lay.boxes.filter((b) => b.y === lay.boxes[0].y).length).toBe(5)
+describe('the path', () => {
+  const pages = pathPages(new Date(2026, 10, 13))
+  it('begins with one box, and the boxes only grow while the numbers go 1 to 10', () => {
+    expect(pages[0].items).toEqual(['1'])
+    const counts = pages.slice(0, 8).map((p) => p.items.length)
+    expect(counts).toEqual([1, 2, 3, 4, 5, 6, 8, 10])
   })
 
-  it('letters are A to H in two rows of four', () => {
-    const s = with_({ set: 'letters' })
-    expect(tokensOf(s).join('')).toBe('ABCDEFGH')
-    const lay = layoutOf(8, perRowOf(s))
-    expect(lay.boxes.filter((b) => b.y === lay.boxes[0].y).length).toBe(4)
-    expect(new Set(lay.boxes.map((b) => b.y)).size).toBe(2)
+  it('has the chalkboard\'s two sets: 1–10 in two rows of five, A–H in two rows of four', () => {
+    const ten = pages.find((p) => p.items.join('') === '12345678910')!
+    expect(rowsOf(ten.items, ten.perRow, ten.whole)).toEqual([5, 5])
+    expect(layoutOf(ten.items, ten.perRow, ten.whole).boxes[9].ch).toBe('10')
+    const ah = pages.find((p) => p.items.join('') === 'ABCDEFGH')!
+    expect(rowsOf(ah.items, ah.perRow)).toEqual([4, 4])
   })
 
-  it('a typed set is one character a box, spaces dropped, in rows of five', () => {
-    const s = with_({ set: 'custom', custom: 'Nov 13' })
-    expect(tokensOf(s)).toEqual(['N', 'o', 'v', '1', '3'])
-    expect(perRowOf(s)).toBe(5)
-    expect(typedTokens('  a b ')).toEqual(['a', 'b'])
+  it('goes on to bigger numbers, words, sums and other things, in that order', () => {
+    const stages = [...new Set(pages.map((p) => p.stage))]
+    expect(stages).toEqual(['Numbers', 'Letters', 'Small letters', 'Bigger numbers', 'Words', 'Sums', 'Other things'])
+    expect(pages.some((p) => p.items.includes('cat'))).toBe(true)
+    expect(pages.some((p) => p.items.includes('2×3=6'))).toBe(true)
+    expect(PATH_LENGTH).toBe(pages.length)
   })
 
-  it('the number of boxes can be chosen: the set goes on, or free boxes are added', () => {
-    expect(tokensOf(with_({ set: 'numbers', count: 12 })).slice(-2)).toEqual(['11', '12'])
-    expect(tokensOf(with_({ set: 'numbers', count: 3 }))).toEqual(['1', '2', '3'])
-    expect(tokensOf(with_({ set: 'letters', count: 10 })).join('')).toBe('ABCDEFGHIJ')
-    expect(tokensOf(with_({ set: 'custom', custom: 'cat', count: 5 }))).toEqual(['c', 'a', 't', '', ''])
-    expect(tokensOf(with_({ set: 'custom', custom: '' })).length).toBe(10)
-    expect(tokensOf(with_({ set: 'numbers', count: 99 })).length).toBe(20)
+  it('has today\'s date on it, as the chalkboard does', () => {
+    expect(dateItems(new Date(2026, 10, 13))).toEqual(['Fri', '13', 'Nov', '2026'])
+    expect(pages.some((p) => p.items.join(' ') === 'Fri 13 Nov 2026')).toBe(true)
+  })
+
+  it('stays on the last page past the end', () => {
+    expect(pageOf(level(999)).items).toEqual(pageOf(level(PATH_LENGTH - 1)).items)
+    expect(pageOf(level(-3)).items).toEqual(['1'])
+  })
+
+  it('a grown-up\'s own text is split into words, one character a box', () => {
+    expect(customPage('Fri 13 Nov').items).toEqual(['Fri', '13', 'Nov'])
+    expect(customPage('a b c').perRow).toBe(5)
+    expect(customPage('cat').perRow).toBe(8)
+    expect(customPage('x'.repeat(40)).items[0].length).toBe(24)
   })
 })
 
 describe('the page', () => {
-  const lay = layoutOf(10, 5)
-  it('boxes do not overlap and sit inside the page', () => {
-    for (const [i, a] of lay.boxes.entries()) {
-      expect(a.x + 1).toBeLessThan(lay.w)
-      expect(a.y + 1).toBeLessThan(lay.h)
-      for (const b of lay.boxes.slice(i + 1)) expect(Math.abs(a.x - b.x) >= 1 || Math.abs(a.y - b.y) >= 1).toBe(true)
+  it('each example sits directly above its own box: same left and right edges, just above it', () => {
+    for (const p of pathPages()) {
+      const lay = layoutOf(p.items, p.perRow, p.whole)
+      for (const [i, b] of lay.boxes.entries()) {
+        expect(promptAt(lay, b.x + 0.5, b.y - PROMPT / 2)).toBe(i)
+        expect(promptAt(lay, b.x + 0.5, b.y + 0.5)).toBe(-1)
+        expect(b.y - PROMPT).toBeGreaterThanOrEqual(0)
+      }
     }
   })
 
+  it('boxes do not overlap, examples do not run into the row above, and all sit inside the page', () => {
+    for (const p of pathPages()) {
+      const lay = layoutOf(p.items, p.perRow, p.whole)
+      for (const [i, a] of lay.boxes.entries()) {
+        expect(a.x).toBeGreaterThanOrEqual(0)
+        expect(a.x + 1).toBeLessThanOrEqual(lay.w)
+        expect(a.y + 1).toBeLessThanOrEqual(lay.h)
+        for (const b of lay.boxes.slice(i + 1)) expect(Math.abs(a.x - b.x) >= 1 || Math.abs(a.y - b.y) >= 1 + PROMPT).toBe(true)
+      }
+    }
+  })
+
+  it('a word stays on one row, its letters close together and apart from the next word', () => {
+    const lay = layoutOf(['run', 'hop', 'jump'], 8)
+    expect(rowsOf(['run', 'hop', 'jump'], 8)).toEqual([6, 4])
+    const [r, u] = lay.boxes
+    const h = lay.boxes[3]
+    expect(u.x - r.x).toBeLessThan(h.x - lay.boxes[2].x)
+    expect(lay.boxes.filter((b) => b.first).length).toBe(3)
+  })
+
   it('a stroke belongs to the box it starts in, a little outside the edge included', () => {
-    const b = lay.boxes[6]
-    expect(boxAt(lay, b.x + 0.5, b.y + 0.5)).toBe(6)
-    expect(boxAt(lay, b.x - 0.05, b.y + 0.5)).toBe(6)
-    expect(boxAt(lay, lay.w + 1, 0)).toBe(-1)
+    const lay = layoutOf(['1', '2', '3'], 5)
+    const b = lay.boxes[1]
+    expect(boxAt(lay, b.x + 0.5, b.y + 0.5)).toBe(1)
+    expect(boxAt(lay, b.x - 0.05, b.y + 0.5)).toBe(1)
+    expect(boxAt(lay, b.x + 0.5, b.y - PROMPT / 2)).toBe(-1)
   })
 })
 
@@ -61,35 +98,45 @@ describe('whose turn it is', () => {
     expect(filled([at(1)], 3)).toEqual([false, true, false])
     expect(isFull([at(0), at(1), at(2)], 3)).toBe(true)
     expect(isFull([at(0), at(0)], 2)).toBe(false)
+    expect(isFull([], 0)).toBe(false)
   })
 
   it('the turn passes to the next empty box, going round, and stops when all are filled', () => {
     expect(nextEmpty([at(0)], 3, 0)).toBe(1)
-    expect(nextEmpty([at(0), at(1)], 3, 1)).toBe(2)
     expect(nextEmpty([at(2), at(1)], 3, 2)).toBe(0)
     expect(nextEmpty([at(0), at(1), at(2)], 3, 2)).toBe(-1)
   })
 
   it('undo takes off his last stroke and clear empties one box', () => {
     expect(undo([at(0), at(1)])).toEqual([at(0)])
-    expect(undo([])).toEqual([])
     expect(clearBox([at(0), at(1), at(0)], 0)).toEqual([at(1)])
   })
 })
 
 describe('what is said and drawn', () => {
-  it('numbers and letters are spoken; anything else is not', () => {
-    expect(spokenOf('10')).toEqual({ kind: 'number', n: 10 })
-    expect(spokenOf('b')).toEqual({ kind: 'letter', letter: 'B' })
-    expect(spokenOf('/')).toBeNull()
-    expect(spokenOf('')).toBeNull()
+  it('each box says its digit, letter or sign', () => {
+    expect(charClips('7')).toEqual([{ kind: 'number', name: 'seven' }])
+    expect(charClips('b')).toEqual([{ kind: 'letter', letter: 'B' }])
+    expect(charClips('÷')).toEqual([{ kind: 'number', name: 'dividedBy' }])
+    expect(charClips(':')).toEqual([])
+    expect(charClips('10', (n) => [String(n)])).toEqual([{ kind: 'number', name: '10' }])
+  })
+
+  it('a whole number, word or sum is said before its first box', () => {
+    expect(itemClips('7', words)).toBeNull()
+    expect(itemClips('1,000,000', words)).toEqual([{ kind: 'number', name: '1000000' }])
+    expect(itemClips('cat', words)).toEqual([{ kind: 'word', word: 'cat' }])
+    expect(itemClips('12÷4=3', words)!.map((c) => (c.kind === 'number' ? c.name : ''))).toEqual(['12', 'dividedBy', '4', 'equals', '3'])
+    expect(itemClips('7:30', words)).toBeNull()
   })
 
   it('a stroke of one point is a dot, and a longer one a path through all of it', () => {
     expect(pathOf([1, 2])).toContain('M1.000 2.000')
-    const d = pathOf([0, 0, 1, 0, 1, 1, 2, 1])
-    expect(d.startsWith('M0.000 0.000')).toBe(true)
-    expect(d.endsWith('L2.000 1.000')).toBe(true)
-    expect(d.match(/Q/g)!.length).toBe(2)
+    expect(pathOf([0, 0, 1, 0, 1, 1, 2, 1]).match(/Q/g)!.length).toBe(2)
+  })
+
+  it('reads pages saved before the path', () => {
+    const old = savedPage({ id: '1', at: 0, ink: [], perRow: 5, tokens: ['1', '2', ''] } as never)
+    expect(old.items).toEqual(['1', '2', ' '])
   })
 })

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Page } from './Page'
-import { boxAt, clearBox, DONE_PAUSE_MS, isFull, nextEmpty, undo, type Advance, type Layout, type PromptMode, type Stroke } from './model'
+import { boxAt, clearBox, DONE_PAUSE_MS, isFull, nextEmpty, promptAt, undo, type Advance, type Layout, type PromptMode, type Stroke } from './model'
 import { say } from './speak'
 
 interface Props {
-  tokens: string[]
+  items: string[]
   lay: Layout
   ink: Stroke[]
   onInk: (ink: Stroke[]) => void
@@ -14,20 +14,24 @@ interface Props {
   finished: boolean
   /** Every box is written in and he has stopped: the page as it now is. */
   onFinished: (ink: Stroke[]) => void
-  onNew: () => void
+  /** On along the path (none when a grown-up's own page is up). */
+  onNext?: () => void
+  onAgain: () => void
   stars: number
-  top: React.ReactNode
+  /** Where he is: the stage and the page's number on the path. */
+  label: string
+  left: React.ReactNode
+  right: React.ReactNode
 }
 
 /**
- * The board: what to write is shown above the boxes (as the date is written
- * above them on the chalkboard) and/or spoken; he writes in the boxes with a
- * finger or a stylus. The turn passes to the next empty box a moment after he
- * stops writing (or with Next), and a stroke begun in any other box makes it
- * that box's turn: nothing is locked.
+ * The board: each box with its example written directly above it, and/or
+ * spoken; he writes in the boxes with a finger or a stylus. The turn passes
+ * to the next empty box a moment after he stops writing (or with Next), and
+ * a stroke begun in any other box makes it that box's turn: nothing is locked.
  */
-export function Board({ tokens, lay, ink, onInk, prompt, advance, finished, onFinished, onNew, stars, top }: Props) {
-  const count = tokens.length
+export function Board({ items, lay, ink, onInk, prompt, advance, finished, onFinished, onNext, onAgain, stars, label, left, right }: Props) {
+  const count = lay.boxes.length
   const [current, setCurrent] = useState(() => (ink.length ? Math.max(0, nextEmpty(ink, count, count - 1)) : 0))
   const [live, setLive] = useState<number[] | null>(null)
   const svg = useRef<SVGSVGElement>(null)
@@ -41,10 +45,14 @@ export function Board({ tokens, lay, ink, onInk, prompt, advance, finished, onFi
   })
   const spoken = prompt !== 'shown'
   const shown = prompt !== 'spoken'
+  const sayBox = (i: number, whole?: boolean) => {
+    const b = lay.boxes[i]
+    if (b) say(b, items[b.item], whole)
+  }
 
-  // Whose turn it is, said aloud.
+  // Whose turn it is, said aloud (a number, word or sum whole, before its first box).
   useEffect(() => {
-    if (spoken && !finished && tokens[current]) say(tokens[current])
+    if (spoken && !finished) sayBox(current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current, spoken, finished])
   useEffect(() => () => window.clearTimeout(timer.current), [])
@@ -72,10 +80,14 @@ export function Board({ tokens, lay, ink, onInk, prompt, advance, finished, onFi
     return { x: (e.clientX - m.e) / m.a, y: (e.clientY - m.f) / m.d }
   }
   const down = (e: React.PointerEvent) => {
-    if (finished || drawing.current) return
+    if (drawing.current) return
+    const p = at(e)
+    // A tap on an example says it.
+    const ex = shown ? promptAt(lay, p.x, p.y) : -1
+    if (ex >= 0) return sayBox(ex, true)
+    if (finished) return
     if (e.pointerType === 'pen') pen.current = true
     else if (pen.current && e.pointerType === 'touch') return
-    const p = at(e)
     const box = boxAt(lay, p.x, p.y)
     if (box < 0) return
     try {
@@ -114,31 +126,28 @@ export function Board({ tokens, lay, ink, onInk, prompt, advance, finished, onFi
   const tool = 'w-16 h-16 rounded-2xl bg-white/90 shadow text-3xl font-black text-slate-700 active:scale-95 transition-transform disabled:opacity-30'
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center gap-2 p-2">{top}</div>
-      {/* What to write: above the boxes, never in them. A tap on one says it. */}
-      <div className="min-h-16 px-3 flex items-center justify-center gap-x-3 gap-y-1 flex-wrap" data-strip>
-        {shown ? (
-          tokens.map((t, i) =>
-            t ? (
-              <button key={i} type="button" data-token={i} onClick={() => say(t)} className={`font-black tabular-nums leading-none transition-all ${i === current && !finished ? 'text-5xl text-amber-500' : 'text-3xl text-slate-400'}`}>
-                {t}
-              </button>
-            ) : null,
-          )
-        ) : tokens[current] && !finished ? (
-          <button type="button" onClick={() => say(tokens[current])} className="w-14 h-14 rounded-full bg-white shadow text-2xl" aria-label="Say it again">
-            🔊
-          </button>
-        ) : null}
-        {finished && (
-          <span className="text-5xl" data-star>
-            ⭐
+      <div className="flex items-center gap-2 p-2">
+        {left}
+        <div className="flex-1 flex items-center justify-center gap-3">
+          <span className="text-lg font-black text-slate-400" data-label>
+            {label}
           </span>
-        )}
+          {!shown && !finished && (
+            <button type="button" onClick={() => sayBox(current, true)} className="w-12 h-12 rounded-full bg-white shadow text-2xl" aria-label="Say it again">
+              🔊
+            </button>
+          )}
+          {finished && (
+            <span className="text-4xl leading-none" data-star>
+              ⭐
+            </span>
+          )}
+        </div>
+        {right}
       </div>
       <div className="flex-1 min-h-0 flex items-stretch gap-2 px-2 pb-2">
-        <div className="flex-1 min-w-0 rounded-3xl bg-[#27323A] shadow-inner border-[10px] border-[#D9B382] p-2 flex items-center justify-center">
-          <Page svgRef={svg} lay={lay} ink={ink} live={live} current={finished ? undefined : current} className="w-full h-full touch-none" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} />
+        <div className="flex-1 min-w-0 rounded-3xl bg-[#27323A] shadow-inner border-[10px] border-[#D9B382] p-3 flex items-center justify-center">
+          <Page svgRef={svg} lay={lay} ink={ink} live={live} current={finished ? undefined : current} examples={shown} className="w-full h-full touch-none" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} />
         </div>
         <div className="flex flex-col items-center justify-end gap-2">
           <div className="flex-1 flex flex-col items-center pt-1 font-black text-slate-500 tabular-nums" aria-label={`${stars} stars`}>
@@ -146,13 +155,20 @@ export function Board({ tokens, lay, ink, onInk, prompt, advance, finished, onFi
             {stars}
           </div>
           {finished ? (
-            <button type="button" onClick={onNew} className={`${tool} bg-amber-400 text-white animate-pulse`} aria-label="A new page">
-              ➕
-            </button>
+            <>
+              <button type="button" onClick={onAgain} className={tool} aria-label="This page again">
+                ↻
+              </button>
+              {onNext && (
+                <button type="button" onClick={onNext} className={`${tool} bg-amber-400 text-white animate-pulse`} aria-label="Next page">
+                  ➜
+                </button>
+              )}
+            </>
           ) : (
             <>
               {advance === 'button' && (
-                <button type="button" onClick={pass} disabled={!ink.some((k) => k.box === current)} className={`${tool} ${full ? 'bg-amber-400 text-white' : ''}`} aria-label={full ? 'Done' : 'Next box'}>
+                <button type="button" onClick={() => latest.current()} disabled={!ink.some((k) => k.box === current)} className={`${tool} ${full ? 'bg-amber-400 text-white' : ''}`} aria-label={full ? 'Done' : 'Next box'}>
                   {full ? '⭐' : '➜'}
                 </button>
               )}
