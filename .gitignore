@@ -44,3 +44,4 @@ elevenlabs-key*
 
 # Python build tools
 __pycache__/
+tools/proximal/cache/

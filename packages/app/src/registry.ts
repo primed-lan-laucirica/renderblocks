@@ -24,6 +24,7 @@ import { windyModule } from '@renderblocks/windy/module'
 import { sneezeModule } from '@renderblocks/sneeze/module'
 import { paintModule } from '@renderblocks/paint/module'
 import { scribbleModule } from '@renderblocks/scribble/module'
+import { proximalModule } from '@renderblocks/proximal/module'
 import type { GameModule, UpcomingGame } from '@renderblocks/kernel'
 
 export const games: GameModule[] = [
@@ -52,6 +53,7 @@ export const games: GameModule[] = [
   windyModule,
   sneezeModule,
   paintModule,
+  proximalModule,
   progressModule,
 ]
 
