@@ -63,6 +63,14 @@ export function passesTopicFilter(filterKind, title, description = '') {
     case 'math_logic':
       if (NON_MATH_EXCLUSION_RE.test(title)) return false
       return MATH_LOGIC_RE.test(title) || (MATH_LOGIC_RE.test(description) && !NON_MATH_EXCLUSION_RE.test(description))
+    case 'khan_kids_math':
+      if (/\b(read-aloud|story time|bedtime|halloween|valentine|meditation|yoga)\b/i.test(title)) return false
+      return (
+        MATH_LOGIC_RE.test(text) ||
+        /\b(1st grade|2nd grade|kindergarten|preschool|early math|tally|ten|twenty|shapes|colors|sorting|circle time.*math|circle time.*number|circle time.*count|circle time.*shape|circle time.*pattern)\b/i.test(
+          text,
+        )
+      )
     default:
       return true
   }
@@ -203,16 +211,45 @@ async function loadSymbolsDives() {
   return [...byId.values()]
 }
 
+const AUTHOR_MATCH_BY_KEY = {
+  numberblocks: /numberblocks/i,
+  wonderblocks: /wonderblocks/i,
+  'preschool-prep': /preschool prep/i,
+  'homeschool-pop': /homeschool pop/i,
+  alphablocks: /alphablocks/i,
+  colourblocks: /colourblocks/i,
+  'blocks-universe': /blocks universe/i,
+  'scratch-garden': /scratch garden/i,
+  numberjacks: /numberjacks/i,
+  'odd-squad': /odd squad|pbs kids/i,
+  'pbs-kids-math': /pbs kids/i,
+  'khan-kids': /khan academy kids/i,
+  'khan-math': /^khan academy$/i,
+  matholia: /matholia/i,
+  'smile-and-learn': /smile and learn/i,
+  'kids-academy': /kids academy/i,
+  'lets-do-math': /let'?s do math/i,
+  'math-antics': /mathantics|math antics/i,
+  'mashup-math': /mashup math/i,
+  numberock: /numberock/i,
+  'jack-hartmann': /jack hartmann/i,
+}
+
 async function checkOembed(video) {
   const url = `https://www.youtube.com/oembed?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${video.id}`)}&format=json`
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(10_000) })
     if (!res.ok) return null
     const data = await res.json()
+    const author = (data.author_name || video.channel || '').trim()
+    const expectedRe = AUTHOR_MATCH_BY_KEY[video.channelKey]
+    if (expectedRe && !expectedRe.test(author)) {
+      return null
+    }
     return {
       ...video,
       title: video.title || data.title,
-      channel: data.author_name || video.channel,
+      channel: author || video.channel,
     }
   } catch {
     return null

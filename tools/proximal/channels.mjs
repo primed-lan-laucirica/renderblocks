@@ -1,5 +1,5 @@
 /**
- * Proximal Research Channel Registry
+ * Proximal Research Channel Registry (v1.108.0 MVP)
  *
  * Tier 0 ("seed"): User-specified reference anchors defining the target pedagogical
  * & aesthetic space (Numberblocks, Wonderblocks, Preschool Prep / Primary School Prep
@@ -58,10 +58,12 @@ export const CHANNELS = [
     defaultStage: 'preschool',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/channel/UCPlwvN0w4qFSP1FllALB92w/videos', limit: 140 },
-      { kind: 'search', query: 'Numberblocks full episode counting addition subtraction', limit: 35 },
-      { kind: 'search', query: 'Numberblocks multiplication times tables squares arrays', limit: 35 },
-      { kind: 'search', query: 'Numberblocks numbers 1 to 20 100 place value', limit: 30 },
+      { kind: 'tab', url: 'https://www.youtube.com/channel/UCPlwvN0w4qFSP1FllALB92w/videos', limit: 150 },
+      { kind: 'search', query: 'Numberblocks full episode counting addition subtraction', limit: 40 },
+      { kind: 'search', query: 'Numberblocks multiplication times tables squares arrays', limit: 40 },
+      { kind: 'search', query: 'Numberblocks numbers 1 to 20 100 place value', limit: 35 },
+      { kind: 'search', query: 'Numberblocks Meet Number One Two Three Four Five Six Seven Eight Nine Ten', limit: 35 },
+      { kind: 'search', query: 'Numberblocks Stampolines Odd and Even Number Bonds Doubles Divide', limit: 35 },
     ],
   },
   {
@@ -75,8 +77,9 @@ export const CHANNELS = [
     defaultStage: 'preschool',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/channel/UCfn38Gen7fZgkWN1yLUK6iw/videos', limit: 120 },
-      { kind: 'search', query: 'Wonderblocks coding pattern sequence full episode', limit: 25 },
+      { kind: 'tab', url: 'https://www.youtube.com/channel/UCfn38Gen7fZgkWN1yLUK6iw/videos', limit: 130 },
+      { kind: 'search', query: 'Wonderblocks coding pattern sequence full episode', limit: 30 },
+      { kind: 'search', query: 'Wonderblocks Go Stop Again Do Block debugging', limit: 30 },
     ],
   },
   {
@@ -90,11 +93,11 @@ export const CHANNELS = [
     defaultStage: 'preschool',
     topicFilter: 'preschool_prep_math',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/channel/UC47Uh7XWApFNpCqQ80e61ug/videos', limit: 220 },
-      { kind: 'search', query: 'Preschool Prep Company Meet the Numbers Shapes', limit: 35 },
-      { kind: 'search', query: 'Preschool Prep Company Meet the Math Facts Addition Subtraction', limit: 40 },
-      { kind: 'search', query: 'Preschool Prep Company Meet the Math Facts Multiplication Division Drills', limit: 40 },
-      { kind: 'search', query: 'Primary School Prep Preschool Prep math', limit: 25 },
+      { kind: 'tab', url: 'https://www.youtube.com/channel/UC47Uh7XWApFNpCqQ80e61ug/videos', limit: 240 },
+      { kind: 'search', query: 'Preschool Prep Company Meet the Numbers Shapes', limit: 40 },
+      { kind: 'search', query: 'Preschool Prep Company Meet the Math Facts Addition Subtraction', limit: 45 },
+      { kind: 'search', query: 'Preschool Prep Company Meet the Math Facts Multiplication Division Drills', limit: 45 },
+      { kind: 'search', query: 'Primary School Prep Preschool Prep math', limit: 30 },
     ],
   },
   {
@@ -108,11 +111,14 @@ export const CHANNELS = [
     defaultStage: 'primary',
     topicFilter: 'math_strict',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/channel/UCfPyVJEBD7Di1YYjTdS2v8g/videos', limit: 200 },
-      { kind: 'search', query: 'Homeschool Pop math addition subtraction counting place value', limit: 40 },
-      { kind: 'search', query: 'Homeschool Pop math multiplication division fractions arrays', limit: 40 },
-      { kind: 'search', query: 'Homeschool Pop math telling time coins money measurement shapes geometry', limit: 40 },
-      { kind: 'search', query: 'Homeschool Pop Roman numerals tally marks bar graphs even odd greater than', limit: 30 },
+      { kind: 'tab', url: 'https://www.youtube.com/channel/UCfPyVJEBD7Di1YYjTdS2v8g/videos', limit: 220 },
+      { kind: 'search', query: 'Homeschool Pop math addition subtraction counting', limit: 40 },
+      { kind: 'search', query: 'Homeschool Pop place value skip counting number line', limit: 35 },
+      { kind: 'search', query: 'Homeschool Pop multiplication division arrays', limit: 40 },
+      { kind: 'search', query: 'Homeschool Pop fractions decimals halves fourths', limit: 35 },
+      { kind: 'search', query: 'Homeschool Pop telling time clock coins money', limit: 35 },
+      { kind: 'search', query: 'Homeschool Pop 2D 3D shapes geometry symmetry perimeter area', limit: 35 },
+      { kind: 'search', query: 'Homeschool Pop Kindergarten 1st 2nd 3rd grade math', limit: 35 },
     ],
   },
 
@@ -127,7 +133,8 @@ export const CHANNELS = [
     defaultStage: 'preschool',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/channel/UC_qs3c0ehDvZkbiEbOj6Drg/videos', limit: 70 },
+      { kind: 'tab', url: 'https://www.youtube.com/channel/UC_qs3c0ehDvZkbiEbOj6Drg/videos', limit: 75 },
+      { kind: 'search', query: 'Alphablocks phonics blending vowel sounds short episode', limit: 25 },
     ],
   },
   {
@@ -141,7 +148,7 @@ export const CHANNELS = [
     defaultStage: 'preschool',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/@Colourblocks/videos', limit: 70 },
+      { kind: 'tab', url: 'https://www.youtube.com/@Colourblocks/videos', limit: 75 },
     ],
   },
   {
@@ -170,9 +177,9 @@ export const CHANNELS = [
     defaultStage: 'primary',
     topicFilter: 'math_logic',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/@ScratchGarden/videos', limit: 160 },
-      { kind: 'search', query: 'Scratch Garden Mini Math Movies counting addition subtraction fractions', limit: 40 },
-      { kind: 'search', query: 'Scratch Garden skip counting coding patterns shapes measurement', limit: 40 },
+      { kind: 'tab', url: 'https://www.youtube.com/@ScratchGarden/videos', limit: 170 },
+      { kind: 'search', query: 'Scratch Garden Mini Math Movies counting addition subtraction fractions', limit: 45 },
+      { kind: 'search', query: 'Scratch Garden skip counting coding patterns shapes measurement', limit: 45 },
     ],
   },
   {
@@ -185,7 +192,7 @@ export const CHANNELS = [
     defaultStage: 'preschool',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/channel/UCWKuiktSh-V3E4ysPU0VC3Q/videos', limit: 90 },
+      { kind: 'tab', url: 'https://www.youtube.com/channel/UCWKuiktSh-V3E4ysPU0VC3Q/videos', limit: 95 },
     ],
   },
   {
@@ -200,21 +207,22 @@ export const CHANNELS = [
     topicFilter: 'all_clean',
     sources: [
       { kind: 'tab', url: 'https://www.youtube.com/@OddSquadOfficial/videos', limit: 80 },
-      { kind: 'search', query: 'Odd Squad math numbers patterns PBS', limit: 35 },
+      { kind: 'search', query: 'Odd Squad math numbers patterns PBS', limit: 40 },
     ],
   },
   {
     id: 'pbs-kids-math',
     name: 'PBS KIDS Math (Peg + Cat & Cyberchase)',
     handle: '@PBSKIDS',
-    channelId: 'UCrNnk0wFBnCS1awGjq_ijGQ',
+    channelId: null,
+    expectedChannelMatch: /pbs kids/i,
     role: 'candidate',
     group: 'visual_story',
     defaultStage: 'preschool',
-    topicFilter: 'math_logic',
+    topicFilter: 'all_clean',
     sources: [
-      { kind: 'search', query: 'PBS KIDS PEG + CAT math numbers shapes counting', limit: 40 },
-      { kind: 'search', query: 'PBS KIDS Cyberchase math fractions patterns geometry', limit: 30 },
+      { kind: 'search', query: 'PBS KIDS PEG + CAT', limit: 45 },
+      { kind: 'search', query: 'PBS KIDS Cyberchase math', limit: 35 },
     ],
   },
 
@@ -228,10 +236,10 @@ export const CHANNELS = [
     role: 'candidate',
     group: 'structured_k5',
     defaultStage: 'preschool',
-    topicFilter: 'math_logic',
+    topicFilter: 'khan_kids_math',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/@KhanAcademyKids/videos', limit: 140 },
-      { kind: 'search', query: 'Khan Academy Kids math counting numbers shapes patterns logic', limit: 40 },
+      { kind: 'tab', url: 'https://www.youtube.com/@KhanAcademyKids/videos', limit: 150 },
+      { kind: 'search', query: 'Khan Academy Kids math counting numbers shapes patterns Circle Time', limit: 45 },
     ],
   },
   {
@@ -245,9 +253,9 @@ export const CHANNELS = [
     defaultStage: 'primary',
     topicFilter: 'math_strict',
     sources: [
-      { kind: 'search', query: 'Khan Academy Early Math counting place value addition subtraction within 20 100', limit: 45 },
-      { kind: 'search', query: 'Khan Academy 1st 2nd 3rd grade math multiplication division fractions number line', limit: 45 },
-      { kind: 'search', query: 'Khan Academy elementary math geometry area perimeter measurement telling time', limit: 35 },
+      { kind: 'search', query: 'Khan Academy Early Math counting place value addition subtraction', limit: 45 },
+      { kind: 'search', query: 'Khan Academy 1st 2nd 3rd grade math multiplication division fractions', limit: 45 },
+      { kind: 'search', query: 'Khan Academy elementary math geometry area perimeter measurement time', limit: 40 },
     ],
   },
   {
@@ -261,8 +269,8 @@ export const CHANNELS = [
     defaultStage: 'primary',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/@MatholiaChannel/videos', limit: 120 },
-      { kind: 'search', query: 'Matholia Singapore Math bar model number bonds place value addition subtraction', limit: 35 },
+      { kind: 'tab', url: 'https://www.youtube.com/@MatholiaChannel/videos', limit: 130 },
+      { kind: 'search', query: 'Matholia Singapore Math bar model number bonds place value fractions', limit: 40 },
     ],
   },
   {
@@ -275,8 +283,8 @@ export const CHANNELS = [
     defaultStage: 'primary',
     topicFilter: 'math_strict',
     sources: [
-      { kind: 'search', query: 'Smile and Learn English math for kids addition subtraction multiplication division', limit: 40 },
-      { kind: 'search', query: 'Smile and Learn English fractions geometry shapes telling time numbers counting', limit: 40 },
+      { kind: 'search', query: 'Smile and Learn English math addition subtraction multiplication division', limit: 45 },
+      { kind: 'search', query: 'Smile and Learn English fractions geometry shapes telling time counting coins', limit: 45 },
     ],
   },
   {
@@ -291,7 +299,8 @@ export const CHANNELS = [
     topicFilter: 'math_logic',
     sources: [
       { kind: 'search', query: 'Kids Academy math preschool kindergarten 1st grade counting addition subtraction', limit: 45 },
-      { kind: 'search', query: 'Kids Academy place value geometry shapes telling time sorting logic', limit: 35 },
+      { kind: 'search', query: 'Kids Academy place value geometry shapes telling time sorting logic', limit: 45 },
+      { kind: 'search', query: 'Kids Academy multiplication fractions money measurement', limit: 35 },
     ],
   },
   {
@@ -305,7 +314,7 @@ export const CHANNELS = [
     defaultStage: 'elementary',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/@LetsDoMath/videos', limit: 110 },
+      { kind: 'tab', url: 'https://www.youtube.com/@LetsDoMath/videos', limit: 115 },
     ],
   },
   {
@@ -333,7 +342,7 @@ export const CHANNELS = [
     defaultStage: 'elementary',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/@MashupMath/videos', limit: 90 },
+      { kind: 'tab', url: 'https://www.youtube.com/@MashupMath/videos', limit: 95 },
     ],
   },
 
@@ -348,7 +357,7 @@ export const CHANNELS = [
     defaultStage: 'primary',
     topicFilter: 'all_clean',
     sources: [
-      { kind: 'tab', url: 'https://www.youtube.com/channel/UCt9SZgFExNwWTH5T_JnyF-A/videos', limit: 130 },
+      { kind: 'tab', url: 'https://www.youtube.com/channel/UCt9SZgFExNwWTH5T_JnyF-A/videos', limit: 135 },
     ],
   },
   {
@@ -362,7 +371,7 @@ export const CHANNELS = [
     defaultStage: 'preschool',
     topicFilter: 'math_strict',
     sources: [
-      { kind: 'search', query: 'Jack Hartmann subitize ten frame number bonds counting to 100', limit: 40 },
+      { kind: 'search', query: 'Jack Hartmann subitize ten frame number bonds counting to 100', limit: 45 },
       { kind: 'search', query: 'Jack Hartmann skip counting by 2 3 4 5 10 math facts addition subtraction multiplication', limit: 45 },
     ],
   },

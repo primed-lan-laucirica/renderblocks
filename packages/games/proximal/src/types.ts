@@ -29,6 +29,7 @@ export type ConceptId =
 export type StageId = 'preschool' | 'primary' | 'elementary' | 'horizon'
 export type VideoFormat = 'episode' | 'compilation'
 export type VideoRole = 'seed' | 'candidate'
+export type ConceptOverride = 'mastered' | 'frontier'
 
 export interface AnchorSims {
   nb: number
@@ -56,6 +57,7 @@ export interface ProximalVideo {
   needs: ConceptId[]
   views: number
   related: string[]
+  seasonal?: boolean
   start?: number
   end?: number
   symbolsRanks?: number[]
@@ -65,13 +67,16 @@ export interface ProximalVideo {
 export interface ProximalCatalog {
   generatedAt: string
   model: string
+  vecDim?: number
+  vectorsB64?: string
+  queryProtos?: Record<string, string>
   totalVideos: number
   seedCount: number
   candidateCount: number
   videos: ProximalVideo[]
 }
 
-export type FeedTab = 'explore' | 'seeds' | 'discover' | 'liked' | 'saved' | 'history'
+export type FeedTab = 'frontier' | 'explore' | 'seeds' | 'discover' | 'liked' | 'saved' | 'history'
 export type ThumbnailMode = 'midpoint' | 'poster'
 
 export interface WatchEntry {
@@ -84,6 +89,7 @@ export interface LearnerState {
   saved: string[]
   history: WatchEntry[]
   thumbMode: ThumbnailMode
+  conceptOverrides: Partial<Record<ConceptId, ConceptOverride>>
 }
 
 export interface BrowseQuery {
@@ -101,4 +107,5 @@ export interface BrowseQuery {
 export interface FeedCard {
   video: ProximalVideo
   reason?: string
+  frontierBadge?: boolean
 }

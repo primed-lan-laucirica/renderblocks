@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
-import type { GameProps, NamespacedStorage } from '@renderblocks/kernel'
+import type { GameProps, NamespacedStorage, ProgressEvent } from '@renderblocks/kernel'
 import rawCatalog from './data/catalog.json'
 import { CONCEPTS, SEED_ANCHORS, STAGES, channelCollectionLabel } from './data/taxonomy'
+import { computeFrontier } from './engine/frontier'
 import { buildBrowseFeed, findSimilarVideos } from './engine/search'
+import { getVectorIndex } from './engine/vectors'
+import { FrontierModal } from './FrontierModal'
 import { Player } from './Player'
 import type {
   BrowseQuery,
   ConceptId,
+  ConceptOverride,
   FeedTab,
   LearnerState,
   ProximalCatalog,
@@ -26,6 +30,7 @@ const DEFAULT_STATE: LearnerState = {
   saved: [],
   history: [],
   thumbMode: 'midpoint',
+  conceptOverrides: {},
 }
 
 function readState(storage: NamespacedStorage): LearnerState {
@@ -38,6 +43,8 @@ function readState(storage: NamespacedStorage): LearnerState {
       saved: Array.isArray(parsed.saved) ? parsed.saved : [],
       history: Array.isArray(parsed.history) ? parsed.history : [],
       thumbMode: parsed.thumbMode === 'poster' ? 'poster' : 'midpoint',
+      conceptOverrides:
+        parsed.conceptOverrides && typeof parsed.conceptOverrides === 'object' ? parsed.conceptOverrides : {},
     }
   } catch {
     return DEFAULT_STATE
@@ -47,7 +54,9 @@ function readState(storage: NamespacedStorage): LearnerState {
 export default function App({ services }: GameProps) {
   const { storage } = services
   const [learner, setLearner] = useState<LearnerState>(() => readState(storage))
+  const [progressEvents, setProgressEvents] = useState<ProgressEvent[]>([])
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null)
+  const [showFrontierMap, setShowFrontierMap] = useState(false)
 
   const [tab, setTab] = useState<FeedTab>('explore')
   const [search, setSearch] = useState('')
@@ -60,16 +69,30 @@ export default function App({ services }: GameProps) {
   const [shuffleSeed, setShuffleSeed] = useState<number>(() => Math.floor(Date.now() % 1_000_000))
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
+  // Load shared RenderBlocks IndexedDB progress log for live Learning Frontier detection
+  useEffect(() => {
+    let alive = true
+    void services.progress.all().then((events) => {
+      if (alive) setProgressEvents(events)
+    })
+    return () => {
+      alive = false
+    }
+  }, [services])
+
   useEffect(() => {
     storage.set('learner_state_v1', JSON.stringify(learner))
   }, [storage, learner])
 
-  // Hardware back button: close Player first, then clear similarity filter, else exit to RenderBlocks home
   useEffect(
     () =>
       services.onBack(() => {
         if (activeVideoId) {
           setActiveVideoId(null)
+          return true
+        }
+        if (showFrontierMap) {
+          setShowFrontierMap(false)
           return true
         }
         if (similarToId) {
@@ -78,10 +101,16 @@ export default function App({ services }: GameProps) {
         }
         return false
       }),
-    [services, activeVideoId, similarToId],
+    [services, activeVideoId, showFrontierMap, similarToId],
   )
 
   const videoById = useMemo(() => new Map(catalog.videos.map((v) => [v.id, v])), [])
+  const vecIndex = useMemo(() => getVectorIndex(catalog), [])
+
+  const frontier = useMemo(
+    () => computeFrontier(progressEvents, learner.conceptOverrides),
+    [progressEvents, learner.conceptOverrides],
+  )
 
   const channelOptions = useMemo(() => {
     const counts = new Map<string, { key: string; label: string; count: number; role: string }>()
@@ -115,7 +144,7 @@ export default function App({ services }: GameProps) {
     [tab, search, anchor, concept, stage, format, channelKey, similarToId, shuffleSeed],
   )
 
-  const cards = useMemo(() => buildBrowseFeed(catalog.videos, query, learner), [query, learner])
+  const cards = useMemo(() => buildBrowseFeed(catalog, query, learner, frontier), [query, learner, frontier])
 
   const likedSet = useMemo(() => new Set(learner.liked), [learner.liked])
   const savedSet = useMemo(() => new Set(learner.saved), [learner.saved])
@@ -135,13 +164,21 @@ export default function App({ services }: GameProps) {
     }))
   }
 
+  const setConceptOverride = (cid: ConceptId, next: ConceptOverride | undefined) => {
+    setLearner((prev) => {
+      const copy = { ...prev.conceptOverrides }
+      if (!next) delete copy[cid]
+      else copy[cid] = next
+      return { ...prev, conceptOverrides: copy }
+    })
+  }
+
   const openVideo = (v: ProximalVideo) => {
     const now = Date.now()
     setLearner((prev) => ({
       ...prev,
       history: [{ id: v.id, at: now }, ...prev.history.filter((h) => h.id !== v.id)].slice(0, HISTORY_MAX),
     }))
-    // Log exploratory watch evidence to shared RenderBlocks progress log (no `ok` field since exploratory)
     services.progress.record({
       concept: v.concepts[0] ?? 'number-sense',
       item: `watch:${v.id}`,
@@ -164,7 +201,7 @@ export default function App({ services }: GameProps) {
 
   const activeVideo = activeVideoId ? videoById.get(activeVideoId) ?? null : null
   if (activeVideo) {
-    const related = findSimilarVideos(catalog.videos, activeVideo.id, undefined, 8)
+    const related = findSimilarVideos(catalog.videos, activeVideo.id, undefined, 8, vecIndex)
     const nearestSeed = videoById.get(activeVideo.nearestSeedId)
     return (
       <Player
@@ -188,6 +225,7 @@ export default function App({ services }: GameProps) {
   }
 
   const similarTarget = similarToId ? videoById.get(similarToId) ?? null : null
+  const frontierNodes = frontier.nodes.filter((n) => n.zone === 'frontier')
   const hasActiveFilter =
     search.trim() !== '' ||
     anchor !== 'all' ||
@@ -221,8 +259,7 @@ export default function App({ services }: GameProps) {
             </span>
           </div>
 
-          {/* Search box */}
-          <div className="relative flex-1 min-w-[180px]">
+          <div className="relative flex-1 min-w-[170px]">
             <input
               type="search"
               value={search}
@@ -246,7 +283,16 @@ export default function App({ services }: GameProps) {
             )}
           </div>
 
-          {/* Shuffle & Midpoint thumbnail toggle */}
+          {/* Frontier Map button */}
+          <button
+            type="button"
+            onClick={() => setShowFrontierMap(true)}
+            title="Inspect or steer the Learning Frontier skill graph"
+            className="h-10 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 px-3.5 text-xs font-extrabold text-emerald-200 shrink-0"
+          >
+            ⚡ Map ({frontier.frontierIds.size})
+          </button>
+
           <button
             type="button"
             onClick={() => {
@@ -279,32 +325,42 @@ export default function App({ services }: GameProps) {
           {(
             [
               { id: 'explore', label: 'Explore' },
+              { id: 'frontier', label: `⚡ Frontier (${frontier.frontierIds.size})` },
               { id: 'seeds', label: `Seeds (${catalog.seedCount})` },
               { id: 'discover', label: `Discover (${catalog.candidateCount})` },
               { id: 'liked', label: `♥ Liked (${learner.liked.length})` },
               { id: 'saved', label: `Later (${learner.saved.length})` },
               { id: 'history', label: `History (${learner.history.length})` },
             ] as { id: FeedTab; label: string }[]
-          ).map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => {
-                setTab(t.id)
-                setSimilarToId(null)
-                setVisibleCount(PAGE_SIZE)
-              }}
-              className={`shrink-0 rounded-full px-3 py-1 text-xs font-extrabold transition-colors ${
-                tab === t.id ? 'bg-white text-slate-950' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+          ).map((t) => {
+            const active = tab === t.id
+            const isFrontierTab = t.id === 'frontier'
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  setTab(t.id)
+                  setSimilarToId(null)
+                  setVisibleCount(PAGE_SIZE)
+                }}
+                className={`shrink-0 rounded-full px-3 py-1 text-xs font-extrabold transition-colors ${
+                  active
+                    ? isFrontierTab
+                      ? 'bg-emerald-400 text-slate-950'
+                      : 'bg-white text-slate-950'
+                    : isFrontierTab
+                      ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-900/60'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'
+                }`}
+              >
+                {t.label}
+              </button>
+            )
+          })}
 
           <span className="mx-1 h-4 w-px bg-slate-700 shrink-0" />
 
-          {/* 4 Seed Reference Anchor pills */}
           <button
             type="button"
             onClick={() => {
@@ -396,6 +452,7 @@ export default function App({ services }: GameProps) {
 
           {CONCEPTS.map((c) => {
             const active = concept === c.id
+            const onFrontier = frontier.frontierIds.has(c.id)
             return (
               <button
                 key={c.id}
@@ -408,14 +465,32 @@ export default function App({ services }: GameProps) {
                 style={{
                   backgroundColor: active ? c.color : '#1E293B',
                   color: active ? '#FFFFFF' : '#CBD5E1',
-                  border: `1px solid ${active ? c.color : '#334155'}`,
+                  border: `1px solid ${active ? c.color : onFrontier ? '#34D39988' : '#334155'}`,
                 }}
               >
+                {onFrontier ? '⚡ ' : ''}
                 {c.label}
               </button>
             )
           })}
         </div>
+
+        {/* Frontier banner when in Frontier tab */}
+        {tab === 'frontier' && !similarTarget && (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-emerald-950/55 border border-emerald-500/40 px-3 py-1.5 text-xs">
+            <span className="text-emerald-100 truncate">
+              <strong>Active Learning Frontier:</strong>{' '}
+              {frontierNodes.map((n) => n.label).join(' · ') || 'Foundations'}
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowFrontierMap(true)}
+              className="shrink-0 rounded-full bg-emerald-500/25 hover:bg-emerald-500/40 px-2.5 py-0.5 font-bold text-emerald-200"
+            >
+              View Skill Map →
+            </button>
+          </div>
+        )}
 
         {/* Active similarity neighborhood banner */}
         {similarTarget && (
@@ -485,6 +560,20 @@ export default function App({ services }: GameProps) {
           </>
         )}
       </main>
+
+      {showFrontierMap && (
+        <FrontierModal
+          frontier={frontier}
+          onClose={() => setShowFrontierMap(false)}
+          onSelectConcept={(cid) => {
+            setConcept(cid)
+            setShowFrontierMap(false)
+            setVisibleCount(PAGE_SIZE)
+          }}
+          onCycleOverride={setConceptOverride}
+          onResetOverrides={() => setLearner((prev) => ({ ...prev, conceptOverrides: {} }))}
+        />
+      )}
     </div>
   )
 }
