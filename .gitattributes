@@ -1,0 +1,30 @@
+# Keep text files with LF line endings in every checkout, Windows included,
+# so a Windows editor doesn't turn each file it touches into a whole-file change.
+* text=auto eol=lf
+
+# Windows scripts keep their CRLF line endings byte for byte.
+*.bat -text
+*.cmd -text
+
+# These were committed with CRLF or mixed endings; keep them byte for byte.
+packages/games/symbols/data/learning-path.csv -text
+tools/words/sight_words.csv -text
+tools/words/phonemes_extra.csv -text
+
+# Binary files: never convert or diff them.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.mp3 binary
+*.wav binary
+*.ogg binary
+*.mp4 binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.jar binary
+*.keystore binary
+*.apk binary

@@ -23,85 +23,77 @@ Lan owns the project and decides anything this file doesn't cover.
 
 - **Lan hands out the work.** Any agent may be given any app, tile, feature or tool. No agent owns an area for good.
 - **One agent per area at a time.** An area is one app or tile package, one tool folder, or one shared package.
-- **Claim an area with a branch.** Name it `<agent>/<area>-<topic>`, for example `claude/scribble-path` or `cursor/proximal-frontier`.
-- **Check before you start.** Run `git fetch origin`, then `git branch -a --list '*/<area>-*'` and `git worktree list`. If another agent has an unmerged branch for that area, it's taken: ask Lan, don't start.
+- **Claim an area with a branch, and push it straight away.** Name it `<agent>/<area>-<topic>`, for example `claude/scribble-path` or `cursor/proximal-frontier`. Agents on different systems don't share a `.git`, so a branch that hasn't been pushed is invisible to them.
+- **Check before you start.** Run `git fetch --prune origin`, then `git branch -r --list 'origin/*/<area>-*'`. If another agent has an unmerged branch for that area, it's taken: ask Lan, don't start.
 - **Release the claim when you're done.** Once your work has landed on `master`, delete your branch, both locally and on `origin`. Only Lan releases a claim another agent left behind.
 - **Shared code** is used by many areas, so it needs Lan's OK before any change. Part B lists the shared packages for this repo. Claim it like any other area, for example `claude/shared-kernel-progress`.
 - **If your work needs a change in an area another agent has claimed,** stop and ask Lan. Don't make the change yourself.
 
-## A3. Sharing this machine
+## A3. Sharing one PC across Windows and Linux
 
-All agents run on Lan's PC, in the same repo, at the same time.
+Lan's PC runs agents on two systems at once:
+- **Windows desktop:** Cursor, using Windows tools.
+- **A Linux distro under WSL:** Claude Code, using Linux tools. It's also where builds run (A5).
 
-### Folders
+Part B names the exact folders and the distro.
 
-Each agent has its own git worktree. A worktree is a second working folder that shares the same `.git`.
+### Your own folder
 
-| Folder | Who works in it |
-| --- | --- |
-| the main checkout, `<repo>` | Lan's editor, and Cursor |
-| `<repo>-claude` | Claude Code |
-| `<repo>-<agent>` | any other agent |
-| your agent's scratch folder | temporary worktrees for clean builds |
-
-- Work, build and run servers only in your own folder.
+- Each agent works in its own folder, on its own system's disk:
+  - a Windows agent works in a clone on a Windows drive;
+  - a Linux agent works in a clone or worktree in the Linux file system.
+- Never work across the boundary, from Windows through `\\wsl$\...` or from Linux through `/mnt/c/...`. It's slow, file watching breaks, and installed packages are built for one system only.
 - Never edit, build in, `switch`, `reset`, `stash`, `clean` or `checkout` in another agent's folder, even to "help".
 - Never remove, move or `git worktree prune` a worktree you didn't create.
-- A new agent sets up its folder with `git worktree add <repo>-<agent> -b <agent>/<area>-<topic> origin/master`, then installs dependencies inside it.
+- GitHub (`origin`) is how agents on different systems see each other's work. Push your branch whenever you commit.
 
-### The shared `.git`
+### Agents on the same system
 
-- All agents see each other's commits and branches right away, without pushing.
-- Uncommitted work is invisible to the other agents, so commit to your branch often.
-- Git won't check out one branch in two folders. So nobody works on `master` directly. Start from `origin/master` and land with `git push origin HEAD:master`.
-- Don't rely on the local `master` branch; it may lag behind. `origin/master` after `git fetch origin` is the truth.
-- The stash is shared by every folder. Don't use it; make a temporary commit on your branch instead.
+When two agents work in the same system, they may share one `.git` through separate worktrees:
+- Git won't check out one branch in two worktrees. So nobody works on `master` directly: start from `origin/master` and land with `git push origin HEAD:master`.
+- The stash is shared by every worktree. Don't use it; make a temporary commit on your branch instead.
 - If git reports a `.lock` file, another agent is probably mid-command. Wait a few seconds and retry. Never delete a lock file.
+- Don't rely on the local `master` branch; it may lag behind. `origin/master` after `git fetch origin` is the truth.
+
+### Line endings
+
+- `.gitattributes` keeps text files with LF line endings on both systems. Don't change `core.autocrlf` or `.gitattributes` to work around a diff.
+- If a file you didn't touch shows up as changed, it's a line-ending problem. Stop and ask Lan rather than commit it.
 
 ### Ports
 
-Always pass `--strictPort` (or your tool's equivalent), so a clash fails instead of quietly using another agent's server.
+Windows and WSL share `localhost`, so a server on one system blocks that port on the other. Always pass `--strictPort` (or your tool's equivalent), so a clash fails instead of quietly using another agent's server.
 
 | Agent | Dev server | Preview server | Spare |
 | --- | --- | --- | --- |
-| Claude Code | 5173 | 4173 | 4175–4179 |
-| Cursor | 5174 | 4174 | 4180–4184 |
+| Claude Code (WSL) | 5173 | 4173 | 4175–4179 |
+| Cursor (Windows) | 5174 | 4174 | 4180–4184 |
 | Next agent | 5175 | 4185 | 4186–4189 |
-
-### Heavy builds
-
-Builds that share a global cache, such as Gradle, fight over it and the CPU when run at once. Take a lock named after the repo and the tool:
-
-```bash
-flock /tmp/<repo>-<tool>.lock <command>
-```
-
-If the lock is held, the command waits for the other build to finish.
 
 ### Shared caches and tools
 
-Package stores, build caches, Node versions and SDKs are shared by every folder. Don't clear, upgrade or reconfigure any of them without asking Lan.
+Package stores, build caches, Node versions and SDKs are set up separately on each system. Don't clear, upgrade or reconfigure any of them without asking Lan.
 
 ## A4. Git
 
 - `master` is the main line. Everything that ships is built from a commit on `master`.
-- Start each piece of work in your own folder from the latest `origin/master`: `git fetch origin && git switch -c <agent>/<area>-<topic> origin/master`.
+- Start each piece of work in your own folder from the latest `origin/master`: `git fetch origin && git switch -c <agent>/<area>-<topic> origin/master && git push -u origin HEAD`.
 - Never force-push `master`, and never rewrite history that is already on `master`.
 - Never delete another agent's branch.
 - End each commit message with your own co-author trailer, so `git log` shows which agent wrote each commit.
 - Never commit secrets, caches or downloaded media.
 
-## A5. Versions and landing
+## A5. Versions, landing and builds
 
-- If the project numbers its releases, take the next number at ship time, from `origin/master`. Never take it when you start: that's how two agents avoid shipping the same number.
-- To land your work:
+- **Version numbers:** if the project numbers its releases, take the next number at ship time, from `origin/master`. Never take it when you start: that's how two agents avoid shipping the same number.
+- **To land your work:**
   1. `git fetch origin`, then rebase your branch onto `origin/master`.
-  2. Run the checks.
-  3. Bump the version.
-  4. Build.
-  5. Run `git push origin HEAD:master`.
-- If the push is rejected, another agent landed first. Go back to step 1 and take the next number.
-- Only publish a build (to Drive or anywhere else) after it has landed. Never overwrite or delete a build that's already published.
+  2. Run the checks on your own system.
+  3. Bump the version and commit.
+  4. Run `git push origin HEAD:master`.
+- **If the push is rejected,** another agent landed first. Go back to step 1 and take the next number.
+- **One build place.** Everything that's published is built by one shared script, on one system, from a landed commit. Agents on other systems call that script; they never publish a build of their own. That keeps the toolchain and signing key the same for every release.
+- Never overwrite or delete a build that's already published.
 - **Files many changes touch** will conflict now and then:
   - lists such as registries, dependency lists and imports: keep both sides' lines;
   - version numbers: keep the higher one and add one;
@@ -133,52 +125,89 @@ Package stores, build caches, Node versions and SDKs are shared by every folder.
 ## B1. What this is
 
 - RenderBlocks is an Android tablet app of learning tiles for Render, Lan's son, who is 30 months old in November 2026.
-- It's a pnpm monorepo: React 19, TypeScript, Vite 7, Tailwind v4, Capacitor 8 and vitest, on Node 22.
+- It's a pnpm monorepo: React 19, TypeScript, Vite 7, Tailwind v4, Capacitor 8 and vitest.
   - `packages/app`: the launcher, the tile list (`src/registry.ts`) and the Android project.
   - `packages/kernel`, `packages/scene`, `packages/drill`: shared code.
   - `packages/games/<tile>`: one package per tile. Each tile is one area.
-  - `tools/<name>`: offline scripts (audio, data harvesting). Each one is an area.
-- The main checkout is `/home/primed/localcode/renderblocks`. Claude Code works in `/home/primed/localcode/renderblocks-claude`.
-- Remote: `origin` = `github.com/primed-lan-laucirica/renderblocks`. Ignore the `primedeviation` remote and the PrimeDeviation org copy.
-- Lan tests each build on the tablet from an APK in Google Drive (`/mnt/d/PrimeDSharedGDrive/RenderBlocks/`). There is no other test loop, so always say whether something has been tried on the tablet.
+  - `tools/<name>`: offline scripts (audio, data harvesting, shipping). Each one is an area.
+- Remote: `origin` = `https://github.com/primed-lan-laucirica/renderblocks`. Ignore the `primedeviation` remote and the PrimeDeviation org copy.
+- Lan tests each build on the tablet from an APK in the shared Drive folder. There is no other test loop, so always say whether something has been tried on the tablet.
 
-## B2. Shared code
+## B2. Machines and folders
+
+| Who | System | Folder |
+| --- | --- | --- |
+| Cursor | Windows | `D:\code\renderblocks` (its own clone) |
+| Claude Code | WSL distro `Ubuntu-22.04`, user `primed` | `/home/primed/localcode/renderblocks-claude` (a worktree) |
+| The build checkout | WSL `Ubuntu-22.04` | `/home/primed/localcode/renderblocks`. Nobody works here: `tools/ship/apk.sh` keeps it on `master` and builds from it. |
+
+**The Drive folder:**
+- `D:\PrimeDSharedGDrive\RenderBlocks` on Windows;
+- `/mnt/d/PrimeDSharedGDrive/RenderBlocks` in WSL.
+
+**Setting up the Windows clone** (once, in PowerShell):
+
+```powershell
+git clone https://github.com/primed-lan-laucirica/renderblocks D:\code\renderblocks
+cd D:\code\renderblocks
+corepack enable
+pnpm install
+```
+
+Notes on the systems:
+- Windows has Node 24 and WSL builds with Node 22. Both work for checks, but the APK is always built with WSL's Node 22.
+- The default WSL distro on this PC is not Ubuntu-22.04, so Windows commands must always name `-d Ubuntu-22.04`.
+
+## B3. Shared code
 
 These need Lan's OK before any change (A2):
 - `packages/kernel`, `packages/scene` and `packages/drill`;
-- `packages/app`, except the small edits that register a new tile: `src/registry.ts`, `package.json` and the `@source` line in `src/index.css`.
+- `packages/app`, except the small edits that register a new tile: `src/registry.ts`, `package.json` and the `@source` line in `src/index.css`;
+- `tools/ship`, `AGENTS.md` and `.gitattributes`.
 
-## B3. Versions
+## B4. Versions
 
 - Every change that alters the app gets a new `versionCode` (+1) and `versionName` in `packages/app/android/app/build.gradle`, in its own commit. Bump the minor version for something new and the patch version for a fix.
 - Changes to docs or tools alone (like this file) don't change the APK and don't need a version.
 - Commit messages: `<Tile> v<versionName>: <what changed, in plain words>`.
 
-## B4. Shipping a version
+## B5. Shipping a version
 
 1. **Catch up:** `git fetch origin`, then rebase your branch onto `origin/master`.
-2. **Check:**
+2. **Check** on your own system:
    - for each package you touched: `npx vitest run` and `npx tsc --noEmit -p .` from that package's folder;
    - `pnpm lint` and `pnpm build` from your folder's root;
    - for anything visual: `pnpm preview --port <yours> --strictPort`, then look at it in a browser at tablet (1280×800), portrait (800×1280) and phone (740×360) sizes.
 3. **Bump:** the version is `origin/master`'s plus one. Commit it.
-4. **Build the APK clean** from a fresh worktree of that commit in your scratch folder, so nothing stale gets in:
-   ```bash
-   git worktree add --detach <scratch>/wt HEAD && cd <scratch>/wt
-   pnpm install --offline --frozen-lockfile
-   cd packages/app && source ~/.nvm/nvm.sh && nvm use 22 && pnpm build && npx cap sync android
-   cd android && JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ANDROID_HOME=/home/primed/android-sdk \
-     flock /tmp/renderblocks-gradle.lock ./gradlew clean assembleDebug
-   ```
-   The APK is `packages/app/android/app/build/outputs/apk/debug/renderblocks-v<versionName>-debug.apk`.
-5. **Land:** `git push origin HEAD:master`. If the push is rejected, go back to step 1 and take the next number.
-6. **Publish:** copy the APK to Drive with `cp -n`. Never delete or replace an old APK. If an APK with your number is already there, another agent took that number, so go back to step 1.
-7. **Clean up:**
-   - remove your build worktree with `git worktree remove --force <scratch>/wt` (only the one you made);
-   - delete your branch if the work is finished.
-8. **Write it down:** add a section for this version to the tile's notes (B6), then report to Lan.
+4. **Land:** `git push origin HEAD:master`. If the push is rejected, go back to step 1 and take the next number.
+5. **Build and publish** with the shared script, giving it the commit you just landed:
+   - from WSL:
+     ```bash
+     /home/primed/localcode/renderblocks/tools/ship/apk.sh <commit>
+     ```
+   - from Windows (PowerShell or cmd):
+     ```powershell
+     wsl.exe -d Ubuntu-22.04 -u primed -- bash /home/primed/localcode/renderblocks/tools/ship/apk.sh <commit>
+     ```
 
-## B5. Data contracts
+   For `<commit>`, pass a full or short SHA, or `origin/master`. Don't pass `HEAD` or a branch name: the script would read them in the build checkout, not in your folder.
+
+   The script:
+   - waits if another build is running;
+   - refuses a commit that isn't on `origin/master`;
+   - builds the commit clean in a temporary worktree, with WSL's Java 21, Android SDK and debug signing key;
+   - checks that the APK's version matches `build.gradle`;
+   - copies `renderblocks-v<versionName>-debug.apk` into the Drive folder without overwriting.
+
+   If it says the APK already exists, another agent took that number: go back to step 1.
+
+   For a test build of a commit that hasn't landed, add `--out <folder>`; nothing goes to Drive.
+6. **Clean up:** delete your branch if the work is finished.
+7. **Write it down:** add a section for this version to the tile's notes (B7), then report to Lan.
+
+**Never publish an APK built on Windows.** It would be signed with a different key, so the tablet would refuse to install it over the current app. Uninstalling first would wipe Render's saved progress.
+
+## B6. Data contracts
 
 The shared progress log is the preferred channel. It's IndexedDB `renderblocks-progress`, written and read through `createProgressLog` / `readAll` in `packages/kernel/src/services/progress.ts`.
 
@@ -196,12 +225,12 @@ These private keys are read by an area that doesn't own them:
 
 Add a row whenever a new reader appears.
 
-## B6. Notes
+## B7. Notes
 
-- Each tile has a notes file in its folder in Drive (`/mnt/d/PrimeDSharedGDrive/RenderBlocks/<Tile>/`), for example `Scribble/Scribble-MVP-v1.104.md` or `Proximal/Proximal-MVP-v1.108.md`.
+- Each tile has a notes file in its folder in Drive (`RenderBlocks/<Tile>/`), for example `Scribble/Scribble-MVP-v1.104.md` or `Proximal/Proximal-MVP-v1.108.md`.
 - LavaBlocks and Words keep theirs at the top of the RenderBlocks folder.
 
-## B7. Rules for the product
+## B8. Rules for the product
 
 **Everywhere:**
 - Number-forward, not remedial. Keep graphics to the minimum that teaches; numbers are the motivation.
@@ -224,7 +253,8 @@ Add a row whenever a new reader appears.
 - **Symbols:** teach what each sign does and where it's used. History comes in only as links between signs.
 - **Proximal:** curated videos sit just past Render's learning frontier.
 
-## B8. Keys and tools
+## B9. Keys and Linux-only tools
 
+These live in WSL. From Windows, run any job that needs them through `wsl.exe -d Ubuntu-22.04 -u primed -- …`.
 - The ElevenLabs key is in `~/.config/elevenlabs/key`.
-- yt-dlp is at `~/.local/bin/yt-dlp`. Use it for metadata only.
+- yt-dlp is at `~/.local/bin/yt-dlp`. Use it for metadata only. Proximal's harvest script also accepts the path through the `YTDLP` setting.
