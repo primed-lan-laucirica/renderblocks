@@ -47,8 +47,8 @@ export default defineConfig({
       workbox: {
         // Cache all static assets
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,mp3}'],
-        // LavaBlocks' chunk carries Rapier's inlined WASM (~2.1 MB); still precache it for offline play.
-        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+        // LavaBlocks carries Rapier's WASM (~2.1 MB) and Proximal carries its 7.5k-video vector catalog (~5.3 MB).
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         // Runtime caching for API calls (if needed later)
         runtimeCaching: [
           {
