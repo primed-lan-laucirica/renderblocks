@@ -1,14 +1,11 @@
 export type SeedAnchorId = 'numberblocks' | 'wonderblocks' | 'preschool-prep' | 'homeschool-pop'
 
-export type ChannelGroupId =
-  | 'seed'
-  | 'structured_k5'
-  | 'visual_story'
-  | 'fluency_songs'
-  | 'learningblocks_siblings'
-  | 'symbols_bridge'
+export type SubjectId = 'math' | 'ela' | 'science' | 'cs-logic' | 'world-history' | 'arts-music'
+
+export type LevelBandId = 'prek' | 'k_2' | 'g3_5' | 'g6_8' | 'hs' | 'university'
 
 export type ConceptId =
+  // Mathematics
   | 'counting'
   | 'number-sense'
   | 'skip-counting'
@@ -21,12 +18,38 @@ export type ConceptId =
   | 'fractions'
   | 'shapes-geometry'
   | 'measurement-time-money'
-  | 'patterns-coding'
-  | 'phonics-reading'
-  | 'colours-sorting'
+  | 'algebra-equations'
+  | 'probability-statistics'
   | 'deep-math'
+  // Reading, Phonics & Language (ELA)
+  | 'phonics-foundations'
+  | 'phonics-decoding'
+  | 'grammar-syntax'
+  | 'vocabulary-reading'
+  | 'linguistics-writing'
+  // Science & Engineering
+  | 'science-life-nature'
+  | 'science-human-body'
+  | 'science-earth-weather'
+  | 'science-space-astronomy'
+  | 'science-forces-physics'
+  | 'science-matter-chemistry'
+  | 'science-biology-genetics'
+  | 'science-engineering'
+  // Logic, Coding & AI
+  | 'patterns-coding'
+  | 'logic-reasoning'
+  | 'computer-science'
+  | 'ai-machine-learning'
+  // World, Geography & History
+  | 'world-geography'
+  | 'great-stories'
+  | 'world-history'
+  // Art, Color & Music
+  | 'colours-sorting'
+  | 'music-rhythm'
+  | 'art-design'
 
-export type StageId = 'preschool' | 'primary' | 'elementary' | 'horizon'
 export type VideoFormat = 'episode' | 'compilation'
 export type VideoRole = 'seed' | 'candidate'
 export type ConceptOverride = 'mastered' | 'frontier'
@@ -44,7 +67,9 @@ export interface ProximalVideo {
   channel: string
   channelKey: string
   role: VideoRole
-  group: ChannelGroupId
+  subjects: SubjectId[]
+  primarySubject: SubjectId
+  levelBand: LevelBandId
   seedAnchor: SeedAnchorId
   nearestSeedId: string
   seedSim: number
@@ -52,7 +77,6 @@ export interface ProximalVideo {
   score: number
   duration: number
   format: VideoFormat
-  stage: StageId
   concepts: ConceptId[]
   needs: ConceptId[]
   views: number
@@ -76,7 +100,7 @@ export interface ProximalCatalog {
   videos: ProximalVideo[]
 }
 
-export type FeedTab = 'frontier' | 'explore' | 'seeds' | 'discover' | 'liked' | 'saved' | 'history'
+export type FeedTab = 'explore' | 'frontier' | 'seeds' | 'discover' | 'liked' | 'saved' | 'history'
 export type ThumbnailMode = 'midpoint' | 'poster'
 
 export interface WatchEntry {
@@ -95,9 +119,10 @@ export interface LearnerState {
 export interface BrowseQuery {
   tab: FeedTab
   search: string
+  subject: SubjectId | 'all'
   anchor: SeedAnchorId | 'all'
   concept: ConceptId | 'all'
-  stage: StageId | 'all'
+  levelBand: LevelBandId | 'all'
   format: VideoFormat | 'all'
   channelKey: string | 'all'
   similarToId?: string | null

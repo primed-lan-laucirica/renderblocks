@@ -1,5 +1,5 @@
 /**
- * Proximal Learning Frontier Engine (ZPD — Zone of Proximal Development)
+ * Proximal Learning Frontier Engine (ZPD — Uncapped Multi-Subject DAG)
  *
  * Reads real learner evidence across RenderBlocks:
  *  1. Shared IndexedDB progress log (`renderblocks-progress`) with <600ms button-mash noise filtering
@@ -11,53 +11,72 @@
  *     Scribble (`rb:scribble:stars`), Words (`rb:words:index1..3`)
  *  6. Optional parent overrides stored in Proximal (`auto` | `mastered` | `frontier`)
  *
- * Computes each concept's status in the 16-node curriculum DAG:
- *  - `mastered`: strong secure evidence (or parent override)
- *  - `frontier`: all prerequisites in `dependsOn` are `mastered`, and this concept is not yet `mastered`
- *                (sub-tagged with `active: true` when the child already has `getting`/`tried` activity!)
- *  - `ahead`: one or more prerequisites are not yet `mastered`
+ * Computes each concept's status in the 38-node uncapped multi-subject curriculum DAG (PreK -> University).
  */
 import type { ProgressEvent } from '@renderblocks/kernel'
 import { CONCEPT_BY_ID } from '../data/taxonomy'
-import type { ConceptId, ConceptOverride, ProximalVideo } from '../types'
+import type { ConceptId, ConceptOverride, ProximalVideo, SubjectId } from '../types'
 
 /** Minimum response time (ms) to count as intentional rather than a button-mash. */
 export const MIN_INTENTIONAL_MS = 600
 
 export interface ConceptDagNode {
   id: ConceptId
+  subject: SubjectId
   layer: number
   dependsOn: ConceptId[]
 }
 
 export const CONCEPT_DAG: ConceptDagNode[] = [
-  // Layer 0 — Foundational Entry (open from day 1 with zero history)
-  { id: 'counting', layer: 0, dependsOn: [] },
-  { id: 'shapes-geometry', layer: 0, dependsOn: [] },
-  { id: 'patterns-coding', layer: 0, dependsOn: [] },
-  { id: 'colours-sorting', layer: 0, dependsOn: [] },
-  { id: 'phonics-reading', layer: 0, dependsOn: [] },
+  // Layer 0 — Foundational Entry across all 6 subjects (open from day 1)
+  { id: 'counting', subject: 'math', layer: 0, dependsOn: [] },
+  { id: 'shapes-geometry', subject: 'math', layer: 0, dependsOn: [] },
+  { id: 'phonics-foundations', subject: 'ela', layer: 0, dependsOn: [] },
+  { id: 'science-life-nature', subject: 'science', layer: 0, dependsOn: [] },
+  { id: 'science-human-body', subject: 'science', layer: 0, dependsOn: [] },
+  { id: 'science-earth-weather', subject: 'science', layer: 0, dependsOn: [] },
+  { id: 'science-space-astronomy', subject: 'science', layer: 0, dependsOn: [] },
+  { id: 'patterns-coding', subject: 'cs-logic', layer: 0, dependsOn: [] },
+  { id: 'logic-reasoning', subject: 'cs-logic', layer: 0, dependsOn: [] },
+  { id: 'world-geography', subject: 'world-history', layer: 0, dependsOn: [] },
+  { id: 'colours-sorting', subject: 'arts-music', layer: 0, dependsOn: [] },
+  { id: 'music-rhythm', subject: 'arts-music', layer: 0, dependsOn: [] },
 
-  // Layer 1 — Early Number Structure
-  { id: 'number-sense', layer: 1, dependsOn: ['counting'] },
-  { id: 'skip-counting', layer: 1, dependsOn: ['counting'] },
+  // Layer 1 — Early Structure, Decoding, Physical Science & Origins
+  { id: 'number-sense', subject: 'math', layer: 1, dependsOn: ['counting'] },
+  { id: 'skip-counting', subject: 'math', layer: 1, dependsOn: ['counting'] },
+  { id: 'phonics-decoding', subject: 'ela', layer: 1, dependsOn: ['phonics-foundations'] },
+  { id: 'grammar-syntax', subject: 'ela', layer: 1, dependsOn: ['phonics-foundations'] },
+  { id: 'science-forces-physics', subject: 'science', layer: 1, dependsOn: ['science-earth-weather'] },
+  { id: 'science-matter-chemistry', subject: 'science', layer: 1, dependsOn: ['science-earth-weather'] },
+  { id: 'science-engineering', subject: 'science', layer: 1, dependsOn: ['patterns-coding'] },
+  { id: 'great-stories', subject: 'world-history', layer: 1, dependsOn: ['world-geography'] },
+  { id: 'art-design', subject: 'arts-music', layer: 1, dependsOn: ['colours-sorting'] },
 
-  // Layer 2 — Additive Reasoning, Base-10 & Everyday Math
-  { id: 'addition', layer: 2, dependsOn: ['counting', 'number-sense'] },
-  { id: 'place-value', layer: 2, dependsOn: ['counting', 'number-sense'] },
-  { id: 'measurement-time-money', layer: 2, dependsOn: ['counting'] },
+  // Layer 2 — Additive Reasoning, Base-10, Vocab & World History
+  { id: 'addition', subject: 'math', layer: 2, dependsOn: ['counting', 'number-sense'] },
+  { id: 'place-value', subject: 'math', layer: 2, dependsOn: ['counting', 'number-sense'] },
+  { id: 'measurement-time-money', subject: 'math', layer: 2, dependsOn: ['counting'] },
+  { id: 'vocabulary-reading', subject: 'ela', layer: 2, dependsOn: ['phonics-decoding'] },
+  { id: 'science-biology-genetics', subject: 'science', layer: 2, dependsOn: ['science-life-nature'] },
+  { id: 'world-history', subject: 'world-history', layer: 2, dependsOn: ['world-geography'] },
 
-  // Layer 3 — Subtraction & Fact Automaticity
-  { id: 'subtraction', layer: 3, dependsOn: ['addition'] },
-  { id: 'math-facts', layer: 3, dependsOn: ['addition', 'subtraction'] },
+  // Layer 3 — Subtraction, Fluency & Computing Foundations
+  { id: 'subtraction', subject: 'math', layer: 3, dependsOn: ['addition'] },
+  { id: 'math-facts', subject: 'math', layer: 3, dependsOn: ['addition', 'subtraction'] },
+  { id: 'computer-science', subject: 'cs-logic', layer: 3, dependsOn: ['patterns-coding', 'logic-reasoning'] },
+  { id: 'linguistics-writing', subject: 'ela', layer: 3, dependsOn: ['vocabulary-reading'] },
 
-  // Layer 4 — Multiplicative Reasoning
-  { id: 'multiplication', layer: 4, dependsOn: ['addition', 'skip-counting'] },
-  { id: 'division', layer: 4, dependsOn: ['multiplication', 'subtraction'] },
+  // Layer 4 — Multiplicative Reasoning & Rational Numbers
+  { id: 'multiplication', subject: 'math', layer: 4, dependsOn: ['addition', 'skip-counting'] },
+  { id: 'division', subject: 'math', layer: 4, dependsOn: ['multiplication', 'subtraction'] },
+  { id: 'fractions', subject: 'math', layer: 4, dependsOn: ['division', 'place-value'] },
 
-  // Layer 5 — Rational Numbers & Upper Math Horizon
-  { id: 'fractions', layer: 5, dependsOn: ['division', 'place-value'] },
-  { id: 'deep-math', layer: 5, dependsOn: ['fractions', 'multiplication'] },
+  // Layer 5 — Secondary, University & Frontier (Uncapped)
+  { id: 'algebra-equations', subject: 'math', layer: 5, dependsOn: ['fractions', 'multiplication'] },
+  { id: 'probability-statistics', subject: 'math', layer: 5, dependsOn: ['fractions'] },
+  { id: 'deep-math', subject: 'math', layer: 5, dependsOn: ['algebra-equations'] },
+  { id: 'ai-machine-learning', subject: 'cs-logic', layer: 5, dependsOn: ['computer-science', 'probability-statistics'] },
 ]
 
 export const DAG_BY_ID: Record<ConceptId, ConceptDagNode> = Object.fromEntries(
@@ -75,12 +94,12 @@ export interface ConceptEvidence {
 
 export interface ConceptFrontierNode {
   id: ConceptId
+  subject: SubjectId
   label: string
   color: string
   layer: number
   dependsOn: ConceptId[]
   zone: FrontierZone
-  /** True when the learner has active in-progress practice on this frontier node. */
   active: boolean
   override?: ConceptOverride
   evidence: ConceptEvidence
@@ -104,10 +123,6 @@ function localDay(t: number): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-/**
- * Noise filter for young learners (30-month+):
- * Drops rapid button-mashes (`ms < 600`) when `ok` is present. Exploratory `watch` events pass through.
- */
 export function filterNoisyEvents(events: readonly ProgressEvent[]): {
   clean: ProgressEvent[]
   droppedNoise: number
@@ -124,10 +139,6 @@ export function filterNoisyEvents(events: readonly ProgressEvent[]): {
   return { clean, droppedNoise }
 }
 
-/**
- * Sticky item mastery: once an item has been answered right on >=2 distinct days,
- * one playful miss does not erase `secure` — it only demotes if the last TWO intentional attempts were both wrong.
- */
 export function isItemSecureSticky(attempts: readonly ProgressEvent[]): boolean {
   const intentional = attempts.filter((e) => e.ok !== undefined)
   if (intentional.length === 0) return false
@@ -136,7 +147,6 @@ export function isItemSecureSticky(attempts: readonly ProgressEvent[]): boolean 
   const last = intentional[intentional.length - 1]
   if (last.ok) return true
   const prev = intentional.length >= 2 ? intentional[intentional.length - 2] : null
-  // One isolated miss after multi-day mastery is treated as playful noise; two consecutive misses demote
   return prev ? Boolean(prev.ok) : true
 }
 
@@ -168,8 +178,8 @@ function mapProgressEventToConcepts(e: ProgressEvent): ConceptId[] {
   if (e.app === 'subtract') return ['subtraction', 'math-facts']
   if (e.app === 'times') return ['multiplication', 'math-facts']
   if (e.app === 'divide') return ['division', 'math-facts']
-  if (e.app === 'sort' || e.concept === 'K.MD.B.3') return ['colours-sorting', 'patterns-coding']
-  if (e.app === 'graph' || e.concept === '5.G.A.1' || e.concept === '6.NS.C.8') return ['shapes-geometry']
+  if (e.app === 'sort' || e.concept === 'K.MD.B.3') return ['colours-sorting', 'logic-reasoning']
+  if (e.app === 'graph' || e.concept === '5.G.A.1' || e.concept === '6.NS.C.8') return ['shapes-geometry', 'algebra-equations']
   if (e.app === 'sneeze') {
     if (e.concept === '3.OA.C.7') return e.item.includes('÷') ? ['division'] : ['multiplication']
     if (e.concept === '2.OA.B.2') return e.item.includes('+') ? ['addition'] : ['subtraction']
@@ -181,10 +191,6 @@ function mapProgressEventToConcepts(e: ProgressEvent): ConceptId[] {
   return []
 }
 
-/**
- * Computes the complete Learning Frontier snapshot from RenderBlocks progress events,
- * cross-app localStorage saves, and optional parent concept overrides.
- */
 export function computeFrontier(
   rawEvents: readonly ProgressEvent[],
   overrides: Partial<Record<ConceptId, ConceptOverride>> = {},
@@ -194,8 +200,8 @@ export function computeFrontier(
 
   const evMap = new Map<ConceptId, ConceptEvidence>()
   const addSource = (cid: ConceptId, src: string) => {
-    const cur = evMap.get(cid)!
-    if (!cur.sources.includes(src)) cur.sources.push(src)
+    const cur = evMap.get(cid)
+    if (cur && !cur.sources.includes(src)) cur.sources.push(src)
   }
   for (const node of CONCEPT_DAG) {
     evMap.set(node.id, { secureItems: 0, rightCount: 0, attemptCount: 0, sources: [] })
@@ -207,7 +213,8 @@ export function computeFrontier(
     if (e.ok === undefined) continue
     const mapped = mapProgressEventToConcepts(e)
     for (const cid of mapped) {
-      const ev = evMap.get(cid)!
+      const ev = evMap.get(cid)
+      if (!ev) continue
       ev.attemptCount++
       if (e.ok) ev.rightCount++
       addSource(cid, e.app)
@@ -231,7 +238,7 @@ export function computeFrontier(
     }
   }
 
-  // 2. Drill star saves (rb:add:progress, rb:subtract:progress, rb:times:progress, rb:divide:progress)
+  // 2. Drill star saves
   const drillMap: [string, ConceptId, number][] = [
     ['add', 'addition', 10],
     ['subtract', 'subtraction', 10],
@@ -255,14 +262,13 @@ export function computeFrontier(
     }
   }
 
-  // If addition or multiplication has meaningful activity, counting & number-sense were exercised too
   if (evMap.get('addition')!.rightCount >= 5) {
     evMap.get('counting')!.secureItems += 12
     evMap.get('number-sense')!.rightCount += 5
     addSource('counting', 'add')
   }
 
-  // 3. Story5 shared workshop & episode evidence
+  // 3. Story5 evidence
   const storyWorkshops = safeJson<{ part?: number; correct?: boolean }[]>(reader.getKey('rb:shared:story5.workshop'), [])
   for (const w of storyWorkshops) {
     const cids: ConceptId[] =
@@ -323,20 +329,31 @@ export function computeFrontier(
   }
   for (const rank of symProg.watched ?? []) {
     const cid: ConceptId =
-      rank <= 2 ? 'addition' : rank === 3 ? 'multiplication' : rank === 4 ? 'fractions' : rank <= 11 ? 'place-value' : 'deep-math'
+      rank <= 2
+        ? 'addition'
+        : rank === 3
+          ? 'multiplication'
+          : rank === 4
+            ? 'fractions'
+            : rank <= 11
+              ? 'algebra-equations'
+              : 'deep-math'
     evMap.get(cid)!.rightCount += 2
     addSource(cid, 'symbols')
   }
 
-  // 5. Gifted levels (patterns & geometry)
+  // 5. Gifted levels (logic, patterns & geometry)
   const giftedProg = safeJson<{ levels?: Record<string, number>; correct?: number }>(reader.getKey('rb:gifted:progress'), {})
   const maxGiftedLvl = Math.max(1, ...Object.values(giftedProg.levels ?? {}))
   if ((giftedProg.correct ?? 0) > 0) {
+    evMap.get('logic-reasoning')!.rightCount += giftedProg.correct ?? 0
     evMap.get('patterns-coding')!.rightCount += giftedProg.correct ?? 0
     evMap.get('shapes-geometry')!.rightCount += Math.ceil((giftedProg.correct ?? 0) / 2)
+    addSource('logic-reasoning', 'gifted')
     addSource('patterns-coding', 'gifted')
     addSource('shapes-geometry', 'gifted')
     if (maxGiftedLvl >= 4) {
+      evMap.get('logic-reasoning')!.secureItems += 15
       evMap.get('patterns-coding')!.secureItems += 15
       evMap.get('shapes-geometry')!.secureItems += 12
     }
@@ -352,13 +369,13 @@ export function computeFrontier(
     if (sneezeStops >= 3) evMap.get('number-sense')!.secureItems += 12
   }
 
-  // 7. Scribble & Words (counting & phonics)
+  // 7. Scribble & Words (counting & phonics foundations/decoding)
   const scribbleStars = Number(reader.getKey('rb:scribble:stars') || 0)
   if (scribbleStars > 0) {
     evMap.get('counting')!.rightCount += scribbleStars * 2
-    evMap.get('phonics-reading')!.rightCount += scribbleStars * 2
+    evMap.get('phonics-foundations')!.rightCount += scribbleStars * 2
     addSource('counting', 'scribble')
-    addSource('phonics-reading', 'scribble')
+    addSource('phonics-foundations', 'scribble')
     if (scribbleStars >= 8) evMap.get('counting')!.secureItems += 12
   }
   const wordsIdx =
@@ -366,12 +383,13 @@ export function computeFrontier(
     Number(reader.getKey('rb:words:index2') || 0) +
     Number(reader.getKey('rb:words:index3') || 0)
   if (wordsIdx > 0) {
-    evMap.get('phonics-reading')!.rightCount += wordsIdx
-    addSource('phonics-reading', 'words')
-    if (wordsIdx >= 15) evMap.get('phonics-reading')!.secureItems += 12
+    evMap.get('phonics-foundations')!.rightCount += wordsIdx
+    evMap.get('phonics-decoding')!.rightCount += Math.floor(wordsIdx / 2)
+    addSource('phonics-foundations', 'words')
+    addSource('phonics-decoding', 'words')
+    if (wordsIdx >= 15) evMap.get('phonics-foundations')!.secureItems += 12
   }
 
-  // Thresholds for automatic concept mastery (before overrides)
   const MASTERY_SECURE_THRESHOLD: Partial<Record<ConceptId, number>> = {
     addition: 25,
     subtraction: 25,
@@ -379,6 +397,7 @@ export function computeFrontier(
     multiplication: 25,
     division: 25,
     fractions: 15,
+    'algebra-equations': 20,
     'deep-math': 20,
   }
 
@@ -401,7 +420,6 @@ export function computeFrontier(
     if (autoMastered) masteredIds.add(node.id)
   }
 
-  // Second pass: classify every node into mastered | frontier | ahead along the DAG
   const frontierIds = new Set<ConceptId>()
   const activeFrontierIds = new Set<ConceptId>()
   const aheadIds = new Set<ConceptId>()
@@ -436,14 +454,15 @@ export function computeFrontier(
         ? `Practicing now (${ev.rightCount} right in ${ev.sources.join(', ') || 'apps'})`
         : dag.dependsOn.length === 0
           ? 'Ready to explore'
-          : `Unlocked by ${dag.dependsOn.map((d) => CONCEPT_BY_ID[d].label).join(' + ')}`
+          : `Unlocked by ${dag.dependsOn.map((d) => CONCEPT_BY_ID[d]?.label ?? d).join(' + ')}`
     } else {
-      const missing = dag.dependsOn.filter((d) => !masteredIds.has(d)).map((d) => CONCEPT_BY_ID[d].label)
+      const missing = dag.dependsOn.filter((d) => !masteredIds.has(d)).map((d) => CONCEPT_BY_ID[d]?.label ?? d)
       note = `Needs ${missing.join(' & ')}`
     }
 
     nodes.push({
       id: dag.id,
+      subject: dag.subject,
       label: meta.label,
       color: meta.color,
       layer: dag.layer,
@@ -469,27 +488,17 @@ export function computeFrontier(
   }
 }
 
-/**
- * Evaluates whether a video sits in the learner's Zone of Proximal Development (ZPD)
- * and computes its frontier relevance score + human-readable explanation.
- */
 export function evaluateVideoFrontier(
   video: ProximalVideo,
   frontier: FrontierSnapshot,
 ): { proximal: boolean; fitScore: number; reason: string } {
   const { masteredIds, frontierIds, activeFrontierIds, aheadIds } = frontier
 
-  // 1. Check prerequisites (`needs`): every prerequisite should be mastered (or already on the open frontier for bridge videos)
   const unmetHardPrereq = video.needs.some((req) => aheadIds.has(req))
   if (unmetHardPrereq) {
     return { proximal: false, fitScore: 0, reason: '' }
   }
-  // Horizon lectures are only proximal once `deep-math` or `fractions` reaches the frontier
-  if (video.stage === 'horizon' && !frontierIds.has('deep-math') && !masteredIds.has('deep-math')) {
-    return { proximal: false, fitScore: 0, reason: '' }
-  }
 
-  // 2. Check target concepts (`concepts` == what it teaches)
   const activeHits = video.concepts.filter((c) => activeFrontierIds.has(c))
   const frontierHits = video.concepts.filter((c) => frontierIds.has(c))
   const aheadHits = video.concepts.filter((c) => aheadIds.has(c))
@@ -497,8 +506,24 @@ export function evaluateVideoFrontier(
   if (frontierHits.length === 0) {
     return { proximal: false, fitScore: 0, reason: '' }
   }
-  // Avoid videos whose primary focus is an unready `ahead` concept
   if (aheadIds.has(video.concepts[0])) {
+    return { proximal: false, fitScore: 0, reason: '' }
+  }
+
+  // Gate university/HS videos unless an upper-layer concept is actually on the frontier or mastered
+  const upperReady =
+    frontierIds.has('algebra-equations') ||
+    masteredIds.has('algebra-equations') ||
+    frontierIds.has('deep-math') ||
+    masteredIds.has('deep-math') ||
+    frontierIds.has('computer-science') ||
+    masteredIds.has('computer-science') ||
+    frontierIds.has('ai-machine-learning') ||
+    masteredIds.has('ai-machine-learning') ||
+    frontierIds.has('science-biology-genetics') ||
+    masteredIds.has('science-biology-genetics')
+
+  if ((video.levelBand === 'university' || video.levelBand === 'hs') && !upperReady && activeHits.length === 0) {
     return { proximal: false, fitScore: 0, reason: '' }
   }
 
@@ -511,7 +536,7 @@ export function evaluateVideoFrontier(
   if (video.seasonal) fitScore -= 0.12
 
   const leadConcept = activeHits[0] ?? frontierHits[0]
-  const label = CONCEPT_BY_ID[leadConcept].label
+  const label = CONCEPT_BY_ID[leadConcept]?.label ?? leadConcept
   const reason = activeHits.length > 0 ? `⚡ Active Frontier · ${label}` : `⚡ Ready Next · ${label}`
 
   return { proximal: true, fitScore, reason }

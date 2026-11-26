@@ -1,5 +1,14 @@
-import { ANCHOR_BY_ID, CONCEPTS, CONCEPT_BY_ID } from '../data/taxonomy'
-import type { BrowseQuery, ConceptId, FeedCard, LearnerState, ProximalCatalog, ProximalVideo, SeedAnchorId } from '../types'
+import { ANCHOR_BY_ID, BAND_BY_ID, CONCEPTS, CONCEPT_BY_ID, SUBJECT_BY_ID, SUBJECTS } from '../data/taxonomy'
+import type {
+  BrowseQuery,
+  ConceptId,
+  FeedCard,
+  LearnerState,
+  ProximalCatalog,
+  ProximalVideo,
+  SeedAnchorId,
+  SubjectId,
+} from '../types'
 import { evaluateVideoFrontier, type FrontierSnapshot } from './frontier'
 import { buildQueryVector, buildVideoCentroid, dotRow, getVectorIndex, type VectorIndex } from './vectors'
 
@@ -60,7 +69,7 @@ export function inferQueryConcepts(rawQuery: string): Set<ConceptId> {
   if (!q) return matched
 
   for (const c of CONCEPTS) {
-    if (q.includes(c.id.replace('-', ' ')) || q.includes(c.label.toLowerCase())) {
+    if (q.includes(c.id.replace(/-/g, ' ')) || q.includes(c.label.toLowerCase())) {
       matched.add(c.id)
       continue
     }
@@ -87,16 +96,18 @@ export function matchesFilters(v: ProximalVideo, query: BrowseQuery, state: Lear
   if (query.tab === 'saved' && !state.saved.includes(v.id)) return false
   if (query.tab === 'history' && !state.history.some((h) => h.id === v.id)) return false
 
+  if (query.subject !== 'all' && !v.subjects.includes(query.subject)) return false
+
   if (query.anchor !== 'all') {
     if (v.role === 'seed') {
       if (v.seedAnchor !== query.anchor) return false
-    } else if (v.seedAnchor !== query.anchor && anchorSimValue(v, query.anchor) < 0.8) {
+    } else if (v.seedAnchor !== query.anchor && anchorSimValue(v, query.anchor) < 0.78) {
       return false
     }
   }
 
   if (query.concept !== 'all' && !v.concepts.includes(query.concept)) return false
-  if (query.stage !== 'all' && v.stage !== query.stage) return false
+  if (query.levelBand !== 'all' && v.levelBand !== query.levelBand) return false
   if (query.format !== 'all' && v.format !== query.format) return false
   if (query.channelKey !== 'all' && v.channelKey !== query.channelKey) return false
 
@@ -150,7 +161,7 @@ export function searchVideos(
       if (summaryTokens.some((t) => t === qt || (qt.length >= 4 && t.startsWith(qt)))) {
         tokenHit += 1.1
       }
-      if (v.concepts.some((cid) => cid.includes(qt) || CONCEPT_BY_ID[cid].label.toLowerCase().includes(qt))) {
+      if (v.concepts.some((cid) => cid.includes(qt) || (CONCEPT_BY_ID[cid]?.label.toLowerCase().includes(qt) ?? false))) {
         tokenHit += 2.2
       }
 
@@ -165,7 +176,7 @@ export function searchVideos(
     for (const cid of expandedConcepts) {
       if (v.concepts.includes(cid)) {
         conceptBoost += 3.2
-        if (!matchedConceptLabel) matchedConceptLabel = CONCEPT_BY_ID[cid].label
+        if (!matchedConceptLabel) matchedConceptLabel = CONCEPT_BY_ID[cid]?.label ?? cid
       }
     }
 
@@ -174,24 +185,26 @@ export function searchVideos(
       const row = vecIndex.idToRow.get(v.id)
       if (row !== undefined) {
         const cos = dotRow(vecIndex, row, qVec)
-        if (cos > 0.32) semScore = cos * 3.8
+        if (cos > 0.34) semScore = cos * 4.0
       }
     }
 
-    if (matchedTokens === 0 && conceptBoost === 0 && semScore < 1.55) continue
-    if (qTokens.length >= 2 && conceptBoost === 0 && semScore < 1.7 && matchedTokens < Math.ceil(qTokens.length * 0.6)) {
+    if (matchedTokens === 0 && conceptBoost === 0 && semScore < 1.65) continue
+    if (qTokens.length >= 2 && conceptBoost === 0 && semScore < 1.8 && matchedTokens < Math.ceil(qTokens.length * 0.6)) {
       continue
     }
 
     const coverage = qTokens.length > 0 ? matchedTokens / qTokens.length : 1
     const sim = anchorSimValue(v, anchor)
-    const total = (lexScore * (0.6 + 0.4 * coverage) + conceptBoost + semScore) * (0.72 + 0.28 * sim) + v.score * 0.015
+    const total = (lexScore * (0.6 + 0.4 * coverage) + conceptBoost + semScore) * (0.82 + 0.18 * sim) + v.score * 0.015
 
+    const bandShort = BAND_BY_ID[v.levelBand]?.shortLabel ?? v.levelBand
+    const subjShort = SUBJECT_BY_ID[v.primarySubject]?.shortLabel ?? v.primarySubject
     const reason = matchedConceptLabel
-      ? `${matchedConceptLabel} · ${Math.round(sim * 100)}% seed match`
-      : semScore >= 1.55 && matchedTokens === 0
-        ? `Semantic match · ${ANCHOR_BY_ID[v.seedAnchor].shortLabel}`
-        : `${ANCHOR_BY_ID[v.seedAnchor].shortLabel} match (${Math.round(sim * 100)}%)`
+      ? `${matchedConceptLabel} · ${bandShort}`
+      : semScore >= 1.65 && matchedTokens === 0
+        ? `Semantic match · ${subjShort} · ${bandShort}`
+        : `${subjShort} · ${bandShort}`
 
     scored.push({ video: v, total, reason })
   }
@@ -228,7 +241,6 @@ export function findSimilarVideos(
   }
 
   const targetCentroid = vecIndex ? buildVideoCentroid(vecIndex, [targetId]) : null
-  const targetVec = [target.anchorSims.nb, target.anchorSims.wb, target.anchorSims.pp, target.anchorSims.hp]
   const targetConcepts = new Set(target.concepts)
 
   const candidates = (pool ?? allVideos).filter((v) => !seen.has(v.id))
@@ -237,18 +249,20 @@ export function findSimilarVideos(
     if (targetCentroid && vecIndex) {
       const row = vecIndex.idToRow.get(v.id)
       if (row !== undefined) vecCos = dotRow(vecIndex, row, targetCentroid)
-    } else {
-      const vec = [v.anchorSims.nb, v.anchorSims.wb, v.anchorSims.pp, v.anchorSims.hp]
-      const dot = vec[0] * targetVec[0] + vec[1] * targetVec[1] + vec[2] * targetVec[2] + vec[3] * targetVec[3]
-      vecCos = dot / ((Math.hypot(...targetVec) || 1) * (Math.hypot(...vec) || 1))
     }
 
     let sharedConcepts = 0
     for (const c of v.concepts) if (targetConcepts.has(c)) sharedConcepts++
-    const sameStageBonus = v.stage === target.stage ? 0.08 : 0
+    const sameBandBonus = v.levelBand === target.levelBand ? 0.08 : 0
+    const sameSubjectBonus = v.primarySubject === target.primarySubject ? 0.06 : 0
     const crossChannelBonus = v.channelKey !== target.channelKey ? 0.04 : 0
 
-    const rankScore = 0.58 * vecCos + 0.22 * (sharedConcepts / Math.max(1, target.concepts.length)) + sameStageBonus + crossChannelBonus + v.seedSim * 0.12
+    const rankScore =
+      0.62 * vecCos +
+      0.22 * (sharedConcepts / Math.max(1, target.concepts.length)) +
+      sameBandBonus +
+      sameSubjectBonus +
+      crossChannelBonus
     return { v, rankScore, vecCos }
   })
 
@@ -257,7 +271,10 @@ export function findSimilarVideos(
     if (out.length >= limit) break
     out.push({
       video: v,
-      reason: vecCos > 0.45 ? `Vector neighbor of "${truncate(target.title, 22)}"` : `Matches ${ANCHOR_BY_ID[v.seedAnchor].shortLabel}`,
+      reason:
+        vecCos > 0.45
+          ? `Vector neighbor of "${truncate(target.title, 22)}"`
+          : `${SUBJECT_BY_ID[v.primarySubject]?.shortLabel ?? v.primarySubject} · ${BAND_BY_ID[v.levelBand]?.shortLabel ?? v.levelBand}`,
     })
   }
 
@@ -285,7 +302,6 @@ export function diversifyChannels(cards: readonly FeedCard[], maxRun = 2): FeedC
   return out
 }
 
-/** Compute personal taste bonus from 64-D centroid of liked + watched videos. */
 function buildTasteCentroid(vecIndex: VectorIndex | null, state: LearnerState): Float32Array | null {
   if (!vecIndex) return null
   const ids: string[] = []
@@ -304,9 +320,9 @@ function buildTasteCentroid(vecIndex: VectorIndex | null, state: LearnerState): 
 }
 
 /**
- * Dynamic Feed Builder:
- * - `frontier`: ZPD videos matching the learner's active learning frontier, ranked by frontier fit + vector taste + seed similarity
- * - `explore`: Balanced Reference Seeds + High-Similarity Candidate Lessons + Personal Vector Neighbors + Unexplored Concepts
+ * Dynamic Feed Builder across all 6 uncapped subjects (PreK -> University):
+ * - `frontier`: ZPD videos matching the learner's active learning frontier
+ * - `explore`: Multi-subject balanced mix (Math, Science, Reading/ELA, Logic/AI, World/History, Art/Music)
  * - Plus `seeds`, `discover`, `liked`, `saved`, `history`, `search`, and `similarToId`
  */
 export function buildBrowseFeed(
@@ -322,17 +338,14 @@ export function buildBrowseFeed(
   const byId = new Map(allVideos.map((v) => [v.id, v]))
   const filtered = allVideos.filter((v) => matchesFilters(v, query, state))
 
-  // 1. Explicit "More Like This" similarity mode
   if (query.similarToId) {
     return findSimilarVideos(allVideos, query.similarToId, filtered, 80, vecIndex)
   }
 
-  // 2. Explicit text search
   if (query.search.trim().length > 0) {
     return searchVideos(filtered, query.search, query.anchor, vecIndex)
   }
 
-  // 3. History tab
   if (query.tab === 'history') {
     const allowed = new Set(filtered.map((v) => v.id))
     const out: FeedCard[] = []
@@ -344,7 +357,6 @@ export function buildBrowseFeed(
     return out
   }
 
-  // 4. Liked / Saved tabs
   if (query.tab === 'liked' || query.tab === 'saved') {
     const ids = query.tab === 'liked' ? state.liked : state.saved
     const allowed = new Set(filtered.map((v) => v.id))
@@ -360,7 +372,7 @@ export function buildBrowseFeed(
   const watchedSet = new Set(state.history.map((h) => h.id))
   const tasteCentroid = buildTasteCentroid(vecIndex, state)
 
-  // 5. Learning Frontier ZPD tab!
+  // Learning Frontier ZPD tab
   if (query.tab === 'frontier' && frontier) {
     const proximalScored: { card: FeedCard; rankVal: number }[] = []
     for (const v of filtered) {
@@ -374,7 +386,7 @@ export function buildBrowseFeed(
       }
       const unseenBoost = watchedSet.has(v.id) ? -0.14 : 0.04
       const jitter = (rand() - 0.5) * 0.06
-      const rankVal = res.fitScore + 0.35 * sim + tasteBonus + unseenBoost + jitter
+      const rankVal = res.fitScore + 0.25 * sim + v.score * 0.002 + tasteBonus + unseenBoost + jitter
       proximalScored.push({
         card: { video: v, reason: res.reason, frontierBadge: true },
         rankVal,
@@ -385,20 +397,26 @@ export function buildBrowseFeed(
     return query.channelKey === 'all' ? diversifyChannels(cards, 2) : cards
   }
 
-  // 6. Focused filter or Seeds / Discover tab
-  if (query.tab === 'seeds' || query.tab === 'discover' || query.channelKey !== 'all' || query.concept !== 'all') {
+  // Focused filter or Seeds / Discover tab
+  if (
+    query.tab === 'seeds' ||
+    query.tab === 'discover' ||
+    query.channelKey !== 'all' ||
+    query.concept !== 'all' ||
+    query.subject !== 'all' ||
+    query.levelBand !== 'all'
+  ) {
     const ranked = filtered
       .map((v) => {
         const sim = anchorSimValue(v, query.anchor)
-        const epBoost = query.format === 'all' ? (v.format === 'episode' ? 0.04 : -0.03) : 0
-        const seasonalPen = v.seasonal ? -0.08 : 0
+        const epBoost = query.format === 'all' ? (v.format === 'episode' ? 0.05 : -0.04) : 0
+        const seasonalPen = v.seasonal ? -0.09 : 0
         const unseenBoost = watchedSet.has(v.id) ? -0.04 : 0.02
         const jitter = (rand() - 0.5) * 0.05
-        const sortVal = sim + v.score * 0.002 + epBoost + seasonalPen + unseenBoost + jitter
-        const reason =
-          v.role === 'seed'
-            ? `Seed · ${ANCHOR_BY_ID[v.seedAnchor].shortLabel}`
-            : `${Math.round(sim * 100)}% like ${ANCHOR_BY_ID[v.seedAnchor].shortLabel}`
+        const sortVal = v.score * 0.01 + sim * 0.35 + epBoost + seasonalPen + unseenBoost + jitter
+        const subj = SUBJECT_BY_ID[v.primarySubject]?.shortLabel ?? v.primarySubject
+        const band = BAND_BY_ID[v.levelBand]?.shortLabel ?? v.levelBand
+        const reason = v.role === 'seed' ? `Seed · ${subj} · ${band}` : `${subj} · ${band}`
         return { video: v, reason, sortVal }
       })
       .sort((a, b) => b.sortVal - a.sortVal)
@@ -407,7 +425,7 @@ export function buildBrowseFeed(
     return query.channelKey === 'all' ? diversifyChannels(ranked, 2) : ranked
   }
 
-  // 7. Default "Explore" Home Dashboard Mixer (Standalone-first, non-seasonal prioritized):
+  // Default "Explore" Dashboard Mixer: balanced across all 6 subjects + personal taste + standalone-first
   const allowedIds = new Set(filtered.map((v) => v.id))
   const personalCards: FeedCard[] = []
   const positiveSeeds = [...state.liked.slice(0, 6), ...state.history.slice(0, 6).map((h) => h.id)]
@@ -423,82 +441,42 @@ export function buildBrowseFeed(
     }
   }
 
-  const seedsByAnchor = new Map<SeedAnchorId, ProximalVideo[]>()
-  for (const v of filtered) {
-    if (v.role !== 'seed') continue
-    const list = seedsByAnchor.get(v.seedAnchor) ?? []
-    list.push(v)
-    seedsByAnchor.set(v.seedAnchor, list)
-  }
-  for (const [k, list] of seedsByAnchor) {
-    // Put crisp standalone non-seasonal episodes ahead of seasonal/marathon packs
-    const sorted = [...list].sort(
-      (a, b) =>
-        (a.seasonal ? 1 : 0) - (b.seasonal ? 1 : 0) ||
-        (a.format === 'episode' ? 0 : 1) - (b.format === 'episode' ? 0 : 1) ||
-        (watchedSet.has(a.id) ? 1 : 0) - (watchedSet.has(b.id) ? 1 : 0) ||
-        b.score - a.score,
+  // Round-robin queues across all 6 subjects so Explore represents the entire uncapped multi-subject corpus
+  const queuesBySubject = new Map<SubjectId, FeedCard[]>()
+  for (const s of SUBJECTS) {
+    const list = filtered.filter((v) => v.primarySubject === s.id)
+    const ranked = list
+      .map((v) => {
+        const epBoost = v.format === 'episode' ? 0.08 : -0.06
+        const seasonalPen = v.seasonal ? -0.12 : 0
+        let tasteBoost = 0
+        if (tasteCentroid && vecIndex) {
+          const row = vecIndex.idToRow.get(v.id)
+          if (row !== undefined) tasteBoost = Math.max(0, dotRow(vecIndex, row, tasteCentroid)) * 0.1
+        }
+        const unseen = watchedSet.has(v.id) ? -0.05 : 0.02
+        const jitter = (rand() - 0.5) * 0.08
+        const key = v.score * 0.01 + epBoost + seasonalPen + tasteBoost + unseen + jitter
+        return { v, key }
+      })
+      .sort((a, b) => b.key - a.key)
+
+    const topPool = ranked.slice(0, Math.min(80, ranked.length))
+    const restPool = ranked.slice(topPool.length)
+    const ordered = [...seededShuffle(topPool, query.shuffleSeed + s.id.length * 17), ...restPool]
+    queuesBySubject.set(
+      s.id,
+      ordered.map(({ v }) => ({
+        video: v,
+        reason: `${s.shortLabel} · ${BAND_BY_ID[v.levelBand]?.shortLabel ?? v.levelBand}`,
+      })),
     )
-    const topSlice = sorted.slice(0, Math.max(24, Math.ceil(sorted.length * 0.6)))
-    const restSlice = sorted.slice(topSlice.length)
-    seedsByAnchor.set(k, [...seededShuffle(topSlice, query.shuffleSeed + k.length), ...restSlice])
   }
-  const seedQueue: FeedCard[] = []
-  const anchorKeys: SeedAnchorId[] = ['numberblocks', 'wonderblocks', 'preschool-prep', 'homeschool-pop']
-  let round = 0
-  while (seedQueue.length < 180) {
-    let added = false
-    for (const ak of anchorKeys) {
-      const item = seedsByAnchor.get(ak)?.[round]
-      if (item) {
-        seedQueue.push({ video: item, reason: `Reference · ${ANCHOR_BY_ID[ak].shortLabel}` })
-        added = true
-      }
-    }
-    if (!added) break
-    round++
-  }
-
-  const candidateSorted = filtered
-    .filter((v) => v.role === 'candidate')
-    .map((v) => {
-      const sim = anchorSimValue(v, query.anchor)
-      const epBoost = v.format === 'episode' ? 0.065 : -0.055
-      const seasonalPen = v.seasonal ? -0.1 : 0
-      let tasteBoost = 0
-      if (tasteCentroid && vecIndex) {
-        const row = vecIndex.idToRow.get(v.id)
-        if (row !== undefined) tasteBoost = Math.max(0, dotRow(vecIndex, row, tasteCentroid)) * 0.08
-      }
-      const unseen = watchedSet.has(v.id) ? -0.05 : 0.02
-      const jitter = (rand() - 0.5) * 0.045
-      return { v, key: sim + v.score * 0.0015 + epBoost + seasonalPen + tasteBoost + unseen + jitter, sim }
-    })
-    .sort((a, b) => b.key - a.key)
-
-  const discoveryQueue: FeedCard[] = candidateSorted.map(({ v, sim }) => ({
-    video: v,
-    reason: `${Math.round(sim * 100)}% match · ${ANCHOR_BY_ID[v.seedAnchor].shortLabel}`,
-  }))
-
-  const watchedConcepts = new Set<ConceptId>()
-  for (const h of state.history) {
-    const hv = byId.get(h.id)
-    if (hv) for (const c of hv.concepts) watchedConcepts.add(c)
-  }
-  const unexploredQueue: FeedCard[] = seededShuffle(
-    filtered.filter((v) => v.stage !== 'horizon' && !v.seasonal && v.format === 'episode' && v.concepts.some((c) => !watchedConcepts.has(c))),
-    query.shuffleSeed + 99,
-  )
-    .slice(0, 80)
-    .map((v) => {
-      const freshConcept = v.concepts.find((c) => !watchedConcepts.has(c)) ?? v.concepts[0]
-      return { video: v, reason: `Explore · ${CONCEPT_BY_ID[freshConcept].label}` }
-    })
 
   const seen = new Set<string>()
   const merged: FeedCard[] = []
-  const takeNext = (q: FeedCard[]): FeedCard | null => {
+  const takeNext = (q: FeedCard[] | undefined): FeedCard | null => {
+    if (!q) return null
     while (q.length > 0) {
       const next = q.shift()!
       if (!seen.has(next.video.id)) {
@@ -510,17 +488,22 @@ export function buildBrowseFeed(
   }
 
   const pQueue = seededShuffle(personalCards, query.shuffleSeed + 7)
-  while (seedQueue.length || discoveryQueue.length || pQueue.length || unexploredQueue.length) {
-    const s1 = takeNext(seedQueue)
-    if (s1) merged.push(s1)
-    const d1 = takeNext(discoveryQueue)
-    if (d1) merged.push(d1)
-    const p1 = takeNext(pQueue) ?? takeNext(discoveryQueue)
-    if (p1) merged.push(p1)
-    const d2 = takeNext(discoveryQueue)
-    if (d2) merged.push(d2)
-    const u1 = takeNext(unexploredQueue)
-    if (u1) merged.push(u1)
+  const subjectCycle: SubjectId[] = ['math', 'science', 'ela', 'cs-logic', 'world-history', 'arts-music']
+  let anyLeft = true
+  while (anyLeft) {
+    anyLeft = false
+    const pCard = takeNext(pQueue)
+    if (pCard) {
+      merged.push(pCard)
+      anyLeft = true
+    }
+    for (const sid of subjectCycle) {
+      const card = takeNext(queuesBySubject.get(sid))
+      if (card) {
+        merged.push(card)
+        anyLeft = true
+      }
+    }
   }
 
   for (const v of filtered) {
@@ -528,7 +511,7 @@ export function buildBrowseFeed(
       seen.add(v.id)
       merged.push({
         video: v,
-        reason: v.role === 'seed' ? `Reference · ${ANCHOR_BY_ID[v.seedAnchor].shortLabel}` : `${Math.round(v.seedSim * 100)}% match`,
+        reason: `${SUBJECT_BY_ID[v.primarySubject]?.shortLabel ?? v.primarySubject} · ${BAND_BY_ID[v.levelBand]?.shortLabel ?? v.levelBand}`,
       })
     }
   }

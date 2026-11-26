@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { GameProps, NamespacedStorage, ProgressEvent } from '@renderblocks/kernel'
 import rawCatalog from './data/catalog.json'
-import { CONCEPTS, SEED_ANCHORS, STAGES, channelCollectionLabel } from './data/taxonomy'
+import { CONCEPTS, LEVEL_BANDS, SUBJECTS, channelCollectionLabel } from './data/taxonomy'
 import { computeFrontier } from './engine/frontier'
 import { buildBrowseFeed, findSimilarVideos } from './engine/search'
 import { getVectorIndex } from './engine/vectors'
@@ -13,10 +13,11 @@ import type {
   ConceptOverride,
   FeedTab,
   LearnerState,
+  LevelBandId,
   ProximalCatalog,
   ProximalVideo,
   SeedAnchorId,
-  StageId,
+  SubjectId,
   VideoFormat,
 } from './types'
 import { VideoCard } from './VideoCard'
@@ -60,9 +61,10 @@ export default function App({ services }: GameProps) {
 
   const [tab, setTab] = useState<FeedTab>('explore')
   const [search, setSearch] = useState('')
+  const [subject, setSubject] = useState<SubjectId | 'all'>('all')
   const [anchor, setAnchor] = useState<SeedAnchorId | 'all'>('all')
   const [concept, setConcept] = useState<ConceptId | 'all'>('all')
-  const [stage, setStage] = useState<StageId | 'all'>('all')
+  const [levelBand, setLevelBand] = useState<LevelBandId | 'all'>('all')
   const [format, setFormat] = useState<VideoFormat | 'all'>('all')
   const [channelKey, setChannelKey] = useState<string | 'all'>('all')
   const [similarToId, setSimilarToId] = useState<string | null>(null)
@@ -115,6 +117,7 @@ export default function App({ services }: GameProps) {
   const channelOptions = useMemo(() => {
     const counts = new Map<string, { key: string; label: string; count: number; role: string }>()
     for (const v of catalog.videos) {
+      if (subject !== 'all' && !v.subjects.includes(subject)) continue
       const prev = counts.get(v.channelKey)
       if (prev) prev.count++
       else {
@@ -127,21 +130,27 @@ export default function App({ services }: GameProps) {
       }
     }
     return [...counts.values()].sort((a, b) => (a.role === b.role ? b.count - a.count : a.role === 'seed' ? -1 : 1))
-  }, [])
+  }, [subject])
+
+  const visibleConcepts = useMemo(
+    () => (subject === 'all' ? CONCEPTS : CONCEPTS.filter((c) => c.subject === subject)),
+    [subject],
+  )
 
   const query: BrowseQuery = useMemo(
     () => ({
       tab,
       search,
+      subject,
       anchor,
       concept,
-      stage,
+      levelBand,
       format,
       channelKey,
       similarToId,
       shuffleSeed,
     }),
-    [tab, search, anchor, concept, stage, format, channelKey, similarToId, shuffleSeed],
+    [tab, search, subject, anchor, concept, levelBand, format, channelKey, similarToId, shuffleSeed],
   )
 
   const cards = useMemo(() => buildBrowseFeed(catalog, query, learner, frontier), [query, learner, frontier])
@@ -189,9 +198,10 @@ export default function App({ services }: GameProps) {
 
   const resetFilters = () => {
     setSearch('')
+    setSubject('all')
     setAnchor('all')
     setConcept('all')
-    setStage('all')
+    setLevelBand('all')
     setFormat('all')
     setChannelKey('all')
     setSimilarToId(null)
@@ -228,9 +238,10 @@ export default function App({ services }: GameProps) {
   const frontierNodes = frontier.nodes.filter((n) => n.zone === 'frontier')
   const hasActiveFilter =
     search.trim() !== '' ||
+    subject !== 'all' ||
     anchor !== 'all' ||
     concept !== 'all' ||
-    stage !== 'all' ||
+    levelBand !== 'all' ||
     format !== 'all' ||
     channelKey !== 'all' ||
     similarToId !== null ||
@@ -255,7 +266,7 @@ export default function App({ services }: GameProps) {
           <div className="flex items-baseline gap-2 mr-1">
             <h1 className="text-lg sm:text-xl font-black tracking-tight text-white">Proximal</h1>
             <span className="hidden md:inline text-xs font-semibold text-slate-400">
-              {cards.length} / {catalog.totalVideos} videos
+              {cards.length.toLocaleString()} / {catalog.totalVideos.toLocaleString()} videos
             </span>
           </div>
 
@@ -268,7 +279,7 @@ export default function App({ services }: GameProps) {
                 setSimilarToId(null)
                 setVisibleCount(PAGE_SIZE)
               }}
-              placeholder="Search topics, math facts, channels, skills…"
+              placeholder="Search math, science, phonics, coding, history, channels…"
               className="w-full h-10 rounded-full bg-slate-950 border border-slate-700 focus:border-sky-400 pl-4 pr-9 text-sm text-white placeholder:text-slate-500 outline-none"
             />
             {search && (
@@ -283,7 +294,6 @@ export default function App({ services }: GameProps) {
             )}
           </div>
 
-          {/* Frontier Map button */}
           <button
             type="button"
             onClick={() => setShowFrontierMap(true)}
@@ -320,14 +330,13 @@ export default function App({ services }: GameProps) {
           </button>
         </div>
 
-        {/* Navigation tabs + Seed Anchor lens */}
+        {/* Navigation tabs + Subject lens */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
           {(
             [
               { id: 'explore', label: 'Explore' },
               { id: 'frontier', label: `⚡ Frontier (${frontier.frontierIds.size})` },
               { id: 'seeds', label: `Seeds (${catalog.seedCount})` },
-              { id: 'discover', label: `Discover (${catalog.candidateCount})` },
               { id: 'liked', label: `♥ Liked (${learner.liked.length})` },
               { id: 'saved', label: `Later (${learner.saved.length})` },
               { id: 'history', label: `History (${learner.history.length})` },
@@ -364,40 +373,45 @@ export default function App({ services }: GameProps) {
           <button
             type="button"
             onClick={() => {
-              setAnchor('all')
+              setSubject('all')
+              setConcept('all')
+              setChannelKey('all')
               setVisibleCount(PAGE_SIZE)
             }}
             className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold transition-colors ${
-              anchor === 'all' ? 'bg-slate-700 text-white' : 'bg-slate-800/50 text-slate-400 hover:text-slate-200'
+              subject === 'all' ? 'bg-slate-700 text-white' : 'bg-slate-800/50 text-slate-400 hover:text-slate-200'
             }`}
           >
-            All Seeds
+            All Subjects
           </button>
-          {SEED_ANCHORS.map((a) => {
-            const active = anchor === a.id
+          {SUBJECTS.map((s) => {
+            const active = subject === s.id
             return (
               <button
-                key={a.id}
+                key={s.id}
                 type="button"
                 onClick={() => {
-                  setAnchor(active ? 'all' : a.id)
+                  const next = active ? 'all' : s.id
+                  setSubject(next)
+                  setConcept('all')
+                  setChannelKey('all')
                   setVisibleCount(PAGE_SIZE)
                 }}
                 className="shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-colors"
                 style={{
-                  backgroundColor: active ? a.color : `${a.color}20`,
+                  backgroundColor: active ? s.color : `${s.color}20`,
                   color: active ? '#FFFFFF' : '#E2E8F0',
-                  border: `1px solid ${active ? a.color : `${a.color}55`}`,
+                  border: `1px solid ${active ? s.color : `${s.color}55`}`,
                 }}
               >
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: active ? '#FFF' : a.color }} />
-                {a.shortLabel}
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: active ? '#FFF' : s.color }} />
+                {s.shortLabel}
               </button>
             )
           })}
         </div>
 
-        {/* Concept chips + Channel / Stage / Format selectors */}
+        {/* Channel / Level Band / Format selectors + Concept chips */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
           <select
             aria-label="Filter by channel"
@@ -418,18 +432,18 @@ export default function App({ services }: GameProps) {
           </select>
 
           <select
-            aria-label="Filter by stage"
-            value={stage}
+            aria-label="Filter by level band"
+            value={levelBand}
             onChange={(e) => {
-              setStage(e.target.value as StageId | 'all')
+              setLevelBand(e.target.value as LevelBandId | 'all')
               setVisibleCount(PAGE_SIZE)
             }}
             className="h-7 rounded-full bg-slate-800 border border-slate-700 px-2.5 text-xs font-bold text-slate-200 shrink-0 outline-none"
           >
-            <option value="all">All Stages</option>
-            {STAGES.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.label}
+            <option value="all">All Levels (PreK → Univ)</option>
+            {LEVEL_BANDS.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.label}
               </option>
             ))}
           </select>
@@ -450,7 +464,7 @@ export default function App({ services }: GameProps) {
 
           <span className="mx-0.5 h-4 w-px bg-slate-800 shrink-0" />
 
-          {CONCEPTS.map((c) => {
+          {visibleConcepts.map((c) => {
             const active = concept === c.id
             const onFrontier = frontier.frontierIds.has(c.id)
             return (
@@ -480,7 +494,8 @@ export default function App({ services }: GameProps) {
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-emerald-950/55 border border-emerald-500/40 px-3 py-1.5 text-xs">
             <span className="text-emerald-100 truncate">
               <strong>Active Learning Frontier:</strong>{' '}
-              {frontierNodes.map((n) => n.label).join(' · ') || 'Foundations'}
+              {frontierNodes.slice(0, 8).map((n) => n.label).join(' · ') || 'Foundations'}
+              {frontierNodes.length > 8 ? ` +${frontierNodes.length - 8} more` : ''}
             </span>
             <button
               type="button"
@@ -553,7 +568,7 @@ export default function App({ services }: GameProps) {
                   onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
                   className="rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-600 px-6 py-2.5 text-sm font-extrabold text-white shadow"
                 >
-                  Show more ({cards.length - visibleCount} remaining)
+                  Show more ({(cards.length - visibleCount).toLocaleString()} remaining)
                 </button>
               </div>
             )}

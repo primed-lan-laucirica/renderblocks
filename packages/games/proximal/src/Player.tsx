@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ANCHOR_BY_ID, CONCEPT_BY_ID, SEED_ANCHORS, formatDuration, thumbnailUrl } from './data/taxonomy'
+import { BAND_BY_ID, CONCEPT_BY_ID, SUBJECT_BY_ID, formatDuration, thumbnailUrl } from './data/taxonomy'
 import type { FeedCard, ProximalVideo, ThumbnailMode } from './types'
 
 const HOST = 'https://www.youtube-nocookie.com'
@@ -66,6 +66,8 @@ export function Player({
   onExploreSimilar,
 }: PlayerProps) {
   const online = useOnline()
+  const subjMeta = SUBJECT_BY_ID[video.primarySubject]
+  const bandMeta = BAND_BY_ID[video.levelBand]
 
   return (
     <div className="flex h-full w-full flex-col bg-slate-950 text-slate-100 overflow-y-auto select-none" data-proximal-player={video.id}>
@@ -82,7 +84,7 @@ export function Player({
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-base sm:text-lg font-extrabold text-white">{video.title}</h1>
           <div className="truncate text-xs text-slate-400">
-            {video.channel} · {formatDuration(video.duration)} · {ANCHOR_BY_ID[video.seedAnchor].label} neighborhood
+            {video.channel} · {formatDuration(video.duration)} · {subjMeta.label} · {bandMeta.label}
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -127,11 +129,21 @@ export function Player({
           )}
         </div>
 
-        {/* Concept & Seed Reference Profile Bar */}
+        {/* Subject, Level Band & Concept Profile Bar */}
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-slate-900/90 border border-slate-800 p-3">
           <div className="flex flex-wrap items-center gap-1.5">
+            <span
+              className="rounded-full px-2.5 py-1 text-xs font-extrabold text-white"
+              style={{ backgroundColor: subjMeta.color }}
+            >
+              {subjMeta.label}
+            </span>
+            <span className="rounded-full bg-slate-800 border border-slate-600 px-2.5 py-1 text-xs font-bold text-slate-100">
+              {bandMeta.label}
+            </span>
             {video.concepts.map((cid) => {
               const meta = CONCEPT_BY_ID[cid]
+              if (!meta) return null
               return (
                 <span
                   key={cid}
@@ -142,31 +154,18 @@ export function Player({
                 </span>
               )
             })}
-            <button
-              type="button"
-              onClick={() => onExploreSimilar(video)}
-              className="rounded-full bg-indigo-500/25 hover:bg-indigo-500/40 border border-indigo-400/50 px-3 py-1 text-xs font-bold text-indigo-200"
-            >
-              ✦ Browse neighborhood on grid
-            </button>
           </div>
 
-          {/* 4-anchor similarity meters */}
-          <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-300">
-            {SEED_ANCHORS.map((a) => {
-              const val = Math.round(video.anchorSims[a.simKey] * 100)
-              return (
-                <span key={a.id} className="inline-flex items-center gap-1 rounded-md bg-slate-800 px-2 py-0.5">
-                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: a.color }} />
-                  <span className="text-slate-400">{a.shortLabel}:</span>
-                  <span className="font-bold text-white">{val}%</span>
-                </span>
-              )
-            })}
-          </div>
+          <button
+            type="button"
+            onClick={() => onExploreSimilar(video)}
+            className="rounded-full bg-indigo-500/25 hover:bg-indigo-500/40 border border-indigo-400/50 px-3 py-1 text-xs font-bold text-indigo-200"
+          >
+            ✦ Browse neighborhood on grid
+          </button>
         </div>
 
-        {nearestSeed && nearestSeed.id !== video.id && (
+        {nearestSeed && nearestSeed.id !== video.id && video.primarySubject === 'math' && (
           <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl bg-slate-900/60 border border-slate-800/80 px-3 py-2 text-xs">
             <span className="text-slate-400 truncate">
               Closest seed reference: <strong className="text-slate-200">{nearestSeed.title}</strong> ({nearestSeed.channel})

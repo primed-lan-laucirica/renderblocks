@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ANCHOR_BY_ID, CONCEPT_BY_ID, formatDuration, thumbnailUrl } from './data/taxonomy'
+import { BAND_BY_ID, CONCEPT_BY_ID, SUBJECT_BY_ID, formatDuration, thumbnailUrl } from './data/taxonomy'
 import type { FeedCard, ProximalVideo, ThumbnailMode } from './types'
 
 interface VideoCardProps {
@@ -28,7 +28,8 @@ export function VideoCard({
   const { video, reason, frontierBadge } = card
   const [fallbackPoster, setFallbackPoster] = useState(false)
   const effectiveMode: ThumbnailMode = fallbackPoster ? 'poster' : thumbMode
-  const anchorMeta = ANCHOR_BY_ID[video.seedAnchor]
+  const subjMeta = SUBJECT_BY_ID[video.primarySubject]
+  const bandMeta = BAND_BY_ID[video.levelBand]
   const primaryConcept = video.concepts[0] ? CONCEPT_BY_ID[video.concepts[0]] : null
 
   return (
@@ -56,28 +57,22 @@ export function VideoCard({
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
 
-        {/* Top-left role / frontier / compilation badge */}
-        <div className="absolute top-2 left-2 flex items-center gap-1.5">
+        {/* Top-left subject, level band, frontier & pack badges */}
+        <div className="absolute top-2 left-2 flex flex-wrap items-center gap-1.5 pr-12">
           {frontierBadge && (
             <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[11px] font-extrabold text-slate-950 shadow">
               ⚡ FRONTIER
             </span>
           )}
-          {video.role === 'seed' ? (
-            <span
-              className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white shadow"
-              style={{ backgroundColor: anchorMeta.color }}
-            >
-              SEED
-            </span>
-          ) : (
-            <span
-              className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white/95 shadow backdrop-blur-xs"
-              style={{ backgroundColor: `${anchorMeta.color}CC` }}
-            >
-              {Math.round(video.seedSim * 100)}% {anchorMeta.shortLabel}
-            </span>
-          )}
+          <span
+            className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white shadow backdrop-blur-xs"
+            style={{ backgroundColor: `${subjMeta.color}E0` }}
+          >
+            {subjMeta.shortLabel}
+          </span>
+          <span className="rounded-full bg-slate-950/80 border border-white/15 px-2 py-0.5 text-[10px] font-bold text-slate-100 shadow">
+            {bandMeta.shortLabel}
+          </span>
           {video.format === 'compilation' && (
             <span className="rounded-full bg-slate-950/80 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-amber-300 uppercase">
               Pack
@@ -116,7 +111,11 @@ export function VideoCard({
             {primaryConcept && (
               <span
                 className="rounded-full px-2 py-0.2 text-[11px] font-semibold"
-                style={{ backgroundColor: `${primaryConcept.color}28`, color: '#E2E8F0', border: `1px solid ${primaryConcept.color}66` }}
+                style={{
+                  backgroundColor: `${primaryConcept.color}28`,
+                  color: '#E2E8F0',
+                  border: `1px solid ${primaryConcept.color}66`,
+                }}
               >
                 {primaryConcept.label}
               </span>

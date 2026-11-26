@@ -1,13 +1,15 @@
+import { useState } from 'react'
+import { SUBJECTS } from './data/taxonomy'
 import type { ConceptFrontierNode, FrontierSnapshot } from './engine/frontier'
-import type { ConceptId, ConceptOverride } from './types'
+import type { ConceptId, ConceptOverride, SubjectId } from './types'
 
 const LAYER_TITLES: Record<number, string> = {
   0: 'Stage 1 · Foundations (Entry)',
-  1: 'Stage 2 · Number Structure',
-  2: 'Stage 3 · Addition, Base 10 & Everyday Math',
-  3: 'Stage 4 · Subtraction & Fact Fluency',
-  4: 'Stage 5 · Multiplication & Division',
-  5: 'Stage 6 · Fractions & Higher Math Horizon',
+  1: 'Stage 2 · Early Structure, Decoding & Physical World',
+  2: 'Stage 3 · Core Operations, Reading & World Knowledge',
+  3: 'Stage 4 · Fluency, Computing & Linguistics',
+  4: 'Stage 5 · Multiplication, Division & Fractions',
+  5: 'Stage 6 · Secondary, University & Frontier (Uncapped)',
 }
 
 interface FrontierModalProps {
@@ -31,11 +33,17 @@ export function FrontierModal({
   onCycleOverride,
   onResetOverrides,
 }: FrontierModalProps) {
-  const layers = [0, 1, 2, 3, 4, 5].map((layer) => ({
-    layer,
-    title: LAYER_TITLES[layer],
-    nodes: frontier.nodes.filter((n) => n.layer === layer),
-  }))
+  const [subjectTab, setSubjectTab] = useState<SubjectId | 'all'>('all')
+
+  const visibleNodes = subjectTab === 'all' ? frontier.nodes : frontier.nodes.filter((n) => n.subject === subjectTab)
+
+  const layers = [0, 1, 2, 3, 4, 5]
+    .map((layer) => ({
+      layer,
+      title: LAYER_TITLES[layer],
+      nodes: visibleNodes.filter((n) => n.layer === layer),
+    }))
+    .filter((l) => l.nodes.length > 0)
 
   const hasOverrides = frontier.nodes.some((n) => n.override !== undefined)
 
@@ -59,7 +67,7 @@ export function FrontierModal({
               </span>
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              Computed live from RenderBlocks apps ({frontier.totalEvidenceEvents} clean events
+              Uncapped 38-concept multi-subject DAG ({frontier.totalEvidenceEvents} clean events
               {frontier.noiseFilteredCount > 0 ? `, ${frontier.noiseFilteredCount} rapid taps filtered` : ''}). Tap a skill to browse videos, or toggle status to steer the frontier.
             </p>
           </div>
@@ -84,17 +92,48 @@ export function FrontierModal({
           </div>
         </div>
 
-        {/* Legend */}
-        <div className="flex flex-wrap items-center gap-4 px-5 py-2.5 bg-slate-900/90 border-b border-slate-800 text-xs font-bold">
-          <span className="inline-flex items-center gap-1.5 text-sky-300">
-            <span className="h-2.5 w-2.5 rounded-full bg-sky-400" /> ✓ Mastered (unlocks dependents)
-          </span>
-          <span className="inline-flex items-center gap-1.5 text-emerald-300">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /> ⚡ Active Frontier (ready now)
-          </span>
-          <span className="inline-flex items-center gap-1.5 text-slate-400">
-            <span className="h-2.5 w-2.5 rounded-full bg-slate-600" /> 🔒 Ahead (waiting on prerequisites)
-          </span>
+        {/* Subject Tabs + Legend */}
+        <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-2.5 bg-slate-900/90 border-b border-slate-800">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <button
+              type="button"
+              onClick={() => setSubjectTab('all')}
+              className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold transition-colors ${
+                subjectTab === 'all' ? 'bg-white text-slate-950' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              All Subjects ({frontier.nodes.length})
+            </button>
+            {SUBJECTS.map((s) => {
+              const active = subjectTab === s.id
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setSubjectTab(s.id)}
+                  className="shrink-0 rounded-full px-3 py-1 text-xs font-bold transition-colors"
+                  style={{
+                    backgroundColor: active ? s.color : `${s.color}20`,
+                    color: active ? '#FFFFFF' : '#E2E8F0',
+                    border: `1px solid ${active ? s.color : `${s.color}55`}`,
+                  }}
+                >
+                  {s.shortLabel}
+                </button>
+              )
+            })}
+          </div>
+          <div className="hidden md:flex items-center gap-3 text-[11px] font-bold">
+            <span className="inline-flex items-center gap-1 text-sky-300">
+              <span className="h-2 w-2 rounded-full bg-sky-400" /> Mastered
+            </span>
+            <span className="inline-flex items-center gap-1 text-emerald-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" /> Frontier
+            </span>
+            <span className="inline-flex items-center gap-1 text-slate-400">
+              <span className="h-2 w-2 rounded-full bg-slate-600" /> Ahead
+            </span>
+          </div>
         </div>
 
         {/* DAG Layers */}
