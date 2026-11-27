@@ -200,3 +200,45 @@ describe('Proximal multi-subject search & home mixer', () => {
     expect(mixed[2].video.channelKey).toBe('scishow-kids')
   })
 })
+
+describe('Proximal Ranking Algorithm MVP (Weighted ZPD + BandFit + Explore + Taste + Diversity)', () => {
+  it('ranks the Frontier feed with full RankBreakdown, penalizes fast-bails, and diversifies channel & concept runs', () => {
+    const frontier = computeFrontier(
+      [],
+      { counting: 'mastered', 'number-sense': 'mastered' },
+      emptyReader,
+    )
+    const feed = buildBrowseFeed(catalog, { ...baseQuery, tab: 'frontier' }, emptyState, frontier)
+    expect(feed.length).toBeGreaterThan(500)
+
+    // Every frontier card carries an inspectable RankBreakdown
+    for (const card of feed.slice(0, 20)) {
+      expect(card.frontierBadge).toBe(true)
+      expect(card.rank).toBeDefined()
+      expect(card.rank!.zpd).toBeGreaterThanOrEqual(0)
+      expect(card.rank!.zpd).toBeLessThanOrEqual(1)
+      expect(card.rank!.bandFit).toBeGreaterThanOrEqual(0)
+      expect(card.rank!.bandFit).toBeLessThanOrEqual(1)
+    }
+
+    // Channel diversity: never 3 consecutive cards from same channel in top 30
+    for (let i = 2; i < 30; i++) {
+      const sameThreeCh =
+        feed[i].video.channelKey === feed[i - 1].video.channelKey &&
+        feed[i].video.channelKey === feed[i - 2].video.channelKey
+      expect(sameThreeCh).toBe(false)
+    }
+
+    // Fast-bail penalty pushes a bailed video down in rank
+    const topVideo = feed[0].video
+    const bailedState: LearnerState = {
+      ...emptyState,
+      history: [{ id: topVideo.id, at: Date.now(), dwellSec: 5, completed: false, bailedFast: true }],
+    }
+    const feedAfterBail = buildBrowseFeed(catalog, { ...baseQuery, tab: 'frontier' }, bailedState, frontier)
+    const oldRank = feed[0].rank!.total
+    const newCard = feedAfterBail.find((c) => c.video.id === topVideo.id)!
+    expect(newCard.rank!.penalty).toBeGreaterThanOrEqual(0.3)
+    expect(newCard.rank!.total).toBeLessThan(oldRank - 0.2)
+  })
+})

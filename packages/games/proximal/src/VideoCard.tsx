@@ -8,6 +8,7 @@ interface VideoCardProps {
   liked: boolean
   saved: boolean
   watched: boolean
+  showRankDebug?: boolean
   onPlay: (video: ProximalVideo) => void
   onToggleLike: (id: string) => void
   onToggleSave: (id: string) => void
@@ -20,12 +21,13 @@ export function VideoCard({
   liked,
   saved,
   watched,
+  showRankDebug = false,
   onPlay,
   onToggleLike,
   onToggleSave,
   onMoreLikeThis,
 }: VideoCardProps) {
-  const { video, reason, frontierBadge } = card
+  const { video, reason, frontierBadge, rank } = card
   const [fallbackPoster, setFallbackPoster] = useState(false)
   const effectiveMode: ThumbnailMode = fallbackPoster ? 'poster' : thumbMode
   const subjMeta = SUBJECT_BY_ID[video.primarySubject]
@@ -124,6 +126,20 @@ export function VideoCard({
           {reason && (
             <div className={`text-[11px] truncate ${frontierBadge ? 'font-bold text-emerald-300' : 'text-slate-400'}`}>
               {reason}
+            </div>
+          )}
+          {showRankDebug && rank && (
+            <div className="mt-1 rounded-lg bg-slate-950/80 border border-emerald-500/30 px-2 py-1 text-[10px] font-mono text-slate-300 leading-tight tabular-nums">
+              <div className="flex justify-between font-bold text-emerald-300">
+                <span>Score {rank.total.toFixed(2)}</span>
+                <span>
+                  pM {Math.round(rank.pMastery * 100)}% · conf {Math.round(rank.confidence * 100)}%
+                </span>
+              </div>
+              <div className="text-slate-400">
+                ZPD {rank.zpd} · Bnd {rank.bandFit} · Exp {rank.explore} · Tst {rank.taste} · Q {rank.quality}
+                {rank.penalty > 0 ? ` · -${rank.penalty}` : ''}
+              </div>
             </div>
           )}
         </div>

@@ -85,3 +85,25 @@ describe('the stars from before', () => {
     expect(s.counts.secure).toBe(1)
   })
 })
+
+describe('validation quizlet (vq) integration', () => {
+  it('credits vq answers to the matching facts grid without cross-contaminating + and −', () => {
+    const addConcept = CONCEPTS.find((c) => c.id === 'add') as FactsConcept
+    const subConcept = CONCEPTS.find((c) => c.id === 'subtract') as FactsConcept
+    const events: ProgressEvent[] = [
+      ev('4+5', true, T0, 'vq', '2.OA.B.2'),
+      ev('4+5', true, T0 + DAY, 'vq', '2.OA.B.2'),
+      ev('9−4', true, T0, 'vq', '2.OA.B.2'),
+    ]
+    const addSum = summarise(addConcept, events) as FactsSummary
+    const subSum = summarise(subConcept, events) as FactsSummary
+    expect(addSum.items.get('4+5')).toBe('secure')
+    expect(subSum.items.get('9−4')).toBe('getting')
+    const days = perDay(events, T0 + DAY, 2)
+    // Day 1 (T0): 1 add + 1 subtract; Day 2 (T0+DAY): 1 add
+    expect(days[0].byConcept[0]).toBe(1)
+    expect(days[0].byConcept[1]).toBe(1)
+    expect(days[1].byConcept[0]).toBe(1)
+    expect(days[1].byConcept[1]).toBe(0)
+  })
+})

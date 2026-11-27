@@ -1,5 +1,18 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
-import { speakEquation, speakNumber, type GameProps, type ProgressEvent } from '@renderblocks/kernel'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  LEVEL_BANDS,
+  SUBJECTS,
+  VqPopup,
+  computeFrontier,
+  pickNextVq,
+  readVqCadence,
+  speakEquation,
+  speakNumber,
+  type FrontierSnapshot,
+  type GameProps,
+  type ProgressEvent,
+  type ValidationQuizlet,
+} from '@renderblocks/kernel'
 import { CONCEPTS, type Concept } from './concepts'
 import { BEFORE, milestones, next, perDay, summarise, type FactsSummary, type Milestone, type Status, type Summary } from './mastery'
 import { seedEvents } from './seed'
@@ -7,22 +20,61 @@ import { seedEvents } from './seed'
 /**
  * Progress (Lan, Oct 17): his progress toward the core concepts, added up
  * from every app's answers, as real graphs: a bar for each concept, a bar
- * chart of the days, and each concept's facts as a grid. Read-only. Every
- * bar and cell says its number when tapped.
+ * chart of the days, each concept's facts as a grid, and the shared Learning
+ * Frontier + Validation Quizlets (Quick Checks).
  */
 export default function App({ services }: GameProps) {
-  const [events, setEvents] = useState<ProgressEvent[] | null>(null)
+  const [rawEvents, setRawEvents] = useState<ProgressEvent[] | null>(null)
   const [open, setOpen] = useState<Concept | null>(null)
+  const [activeVq, setActiveVq] = useState<ValidationQuizlet | null>(null)
+  const [recentVqIds, setRecentVqIds] = useState<string[]>(() => readVqCadence().recentQuestionIds)
+
+  const reloadEvents = useCallback(() => {
+    return services.progress.all().then((logged) => {
+      setRawEvents(logged)
+      return logged
+    })
+  }, [services])
 
   useEffect(() => {
     let live = true
-    void services.progress.all().then((logged) => live && setEvents([...seedEvents(), ...logged]))
+    void services.progress.all().then((logged) => live && setRawEvents(logged))
     return () => {
       live = false
     }
   }, [services])
 
-  useEffect(() => services.onBack(() => (open ? (setOpen(null), true) : false)), [services, open])
+  const events = useMemo(() => (rawEvents ? [...seedEvents(), ...rawEvents] : null), [rawEvents])
+  const frontier = useMemo(() => (rawEvents ? computeFrontier(rawEvents) : null), [rawEvents])
+
+  useEffect(
+    () =>
+      services.onBack(() => {
+        if (activeVq) {
+          setActiveVq(null)
+          return true
+        }
+        if (open) {
+          setOpen(null)
+          return true
+        }
+        return false
+      }),
+    [services, open, activeVq],
+  )
+
+  const launchQuickCheck = useCallback(
+    (sourceFrontier?: FrontierSnapshot | null, extraRecent?: string[]) => {
+      const f = sourceFrontier ?? frontier
+      if (!f) return
+      const q = pickNextVq(f, {
+        recentQuestionIds: extraRecent ?? recentVqIds,
+        seed: Math.floor(Date.now() % 1_000_000),
+      })
+      if (q) setActiveVq(q)
+    },
+    [frontier, recentVqIds],
+  )
 
   const summaries = useMemo(() => (events ? CONCEPTS.map((c) => summarise(c, events)) : []), [events])
   const reached = useMemo(() => (events ? milestones(events) : []), [events])
@@ -33,13 +85,51 @@ export default function App({ services }: GameProps) {
         <button type="button" onClick={() => (open ? setOpen(null) : services.exitToHome())} className="w-12 h-12 rounded-full bg-white/10 text-2xl font-bold shrink-0" aria-label="Back">
           ←
         </button>
-        <h1 className="text-3xl font-black">{open ? open.title : 'Progress'}</h1>
-        {open && <span className="text-slate-400 font-bold tabular-nums">{open.codes.join(' · ')}</span>}
+        <h1 className="text-3xl font-black flex-1">{open ? open.title : 'Progress'}</h1>
+        {open ? (
+          <span className="text-slate-400 font-bold tabular-nums">{open.codes.join(' · ')}</span>
+        ) : (
+          <button
+            type="button"
+            onClick={() => launchQuickCheck()}
+            className="rounded-full bg-emerald-500 hover:bg-emerald-400 active:scale-95 px-4 py-2 text-sm font-black text-slate-950 shadow shrink-0 transition"
+          >
+            ⚡ Quick Check
+          </button>
+        )}
       </div>
-      {!events ? null : open ? (
+      {!events || !frontier ? null : open ? (
         <Detail summary={summaries[CONCEPTS.indexOf(open)]} reached={reached.filter((m) => m.concept === open)} />
       ) : (
-        <Overview summaries={summaries} events={events} reached={reached} onOpen={setOpen} />
+        <Overview
+          summaries={summaries}
+          events={events}
+          reached={reached}
+          frontier={frontier}
+          onOpen={setOpen}
+          onQuickCheck={() => launchQuickCheck()}
+        />
+      )}
+      {activeVq && (
+        <VqPopup
+          quizlet={activeVq}
+          allowNext
+          onAnswered={({ quizlet }) => {
+            setRecentVqIds((prev) => [quizlet.id, ...prev.filter((x) => x !== quizlet.id)].slice(0, 30))
+            void reloadEvents()
+          }}
+          onNext={() => {
+            const nextRecent = [activeVq.id, ...recentVqIds.filter((x) => x !== activeVq.id)].slice(0, 30)
+            setRecentVqIds(nextRecent)
+            void reloadEvents().then((fresh) => {
+              launchQuickCheck(computeFrontier(fresh), nextRecent)
+            })
+          }}
+          onClose={() => {
+            setActiveVq(null)
+            void reloadEvents()
+          }}
+        />
       )}
     </div>
   )
@@ -72,10 +162,26 @@ function Key({ colour = '#94a3b8' }: { colour?: string }) {
   )
 }
 
-function Overview({ summaries, events, reached, onOpen }: { summaries: Summary[]; events: ProgressEvent[]; reached: Milestone[]; onOpen: (c: Concept) => void }) {
-  const days = useMemo(() => perDay(events, Date.now()), [events])
+function Overview({
+  summaries,
+  events,
+  reached,
+  frontier,
+  onOpen,
+  onQuickCheck,
+}: {
+  summaries: Summary[]
+  events: ProgressEvent[]
+  reached: Milestone[]
+  frontier: FrontierSnapshot
+  onOpen: (c: Concept) => void
+  onQuickCheck: () => void
+}) {
+  const [now] = useState(() => Date.now())
+  const days = useMemo(() => perDay(events, now), [events, now])
   return (
     <div className="max-w-3xl mx-auto flex flex-col gap-6">
+      <FrontierSummarySection frontier={frontier} onQuickCheck={onQuickCheck} />
       <section>
         <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
           <h2 className="text-lg font-bold text-slate-400">Concepts</h2>
@@ -251,6 +357,81 @@ function Milestones({ list }: { list: Milestone[] }) {
           </li>
         ))}
     </ol>
+  )
+}
+
+function bandLabel(order: number): string {
+  const idx = Math.max(0, Math.min(LEVEL_BANDS.length - 1, Math.round(order)))
+  return LEVEL_BANDS[idx]?.shortLabel ?? 'PreK'
+}
+
+function FrontierSummarySection({
+  frontier,
+  onQuickCheck,
+}: {
+  frontier: FrontierSnapshot
+  onQuickCheck: () => void
+}) {
+  return (
+    <section className="rounded-2xl bg-slate-800/90 border-2 border-slate-700 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div>
+          <h2 className="text-lg font-black text-white flex items-center gap-2">
+            <span>⚡ Learning Frontier</span>
+            <span className="rounded-full bg-emerald-500/20 border border-emerald-400/40 px-2.5 py-0.5 text-xs font-extrabold text-emerald-300 tabular-nums">
+              {frontier.masteredIds.size} mastered · {frontier.frontierIds.size} active
+            </span>
+          </h2>
+          <p className="text-xs font-semibold text-slate-400 mt-0.5">
+            Shared with Proximal &amp; Quick Checks ({frontier.totalVqAttempts} checks done
+            {frontier.totalVqAttempts > 0 ? `, ${frontier.totalVqRight} right` : ''}
+            {frontier.noiseFilteredCount > 0 ? ` · ${frontier.noiseFilteredCount} rapid taps filtered` : ''})
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onQuickCheck}
+          className="rounded-full bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 px-3 py-1.5 text-xs font-extrabold text-emerald-200"
+        >
+          Run Quick Check →
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+        {SUBJECTS.map((subj) => {
+          const nodes = frontier.nodes.filter((n) => n.subject === subj.id)
+          const mastered = nodes.filter((n) => n.zone === 'mastered').length
+          const onFrontier = nodes.filter((n) => n.zone === 'frontier')
+          const avgConf = nodes.length ? Math.round((nodes.reduce((s, n) => s + n.confidence, 0) / nodes.length) * 100) : 0
+          const lead = onFrontier.find((n) => n.active) ?? onFrontier[0]
+          return (
+            <div key={subj.id} className="rounded-xl bg-slate-900/90 border border-slate-700/80 p-2.5">
+              <div className="flex items-center justify-between gap-1.5">
+                <span className="text-sm font-black" style={{ color: subj.color }}>
+                  {subj.shortLabel}
+                </span>
+                <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[10px] font-extrabold text-slate-200 tabular-nums">
+                  {bandLabel(frontier.subjectBand[subj.id])} · {mastered}/{nodes.length}
+                </span>
+              </div>
+              <div className="mt-1.5 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${Math.max(8, Math.round(((mastered + onFrontier.length * 0.35) / Math.max(1, nodes.length)) * 100))}%`,
+                    backgroundColor: subj.color,
+                  }}
+                />
+              </div>
+              <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-400">
+                <span className="truncate">{lead ? `Next: ${lead.label}` : 'All mastered!'}</span>
+                <span className="shrink-0 tabular-nums">{avgConf}% conf</span>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </section>
   )
 }
 

@@ -66,7 +66,7 @@ export const CONCEPTS: Concept[] = [
     id: 'add',
     title: 'Adding',
     codes: ['2.OA.B.2'],
-    apps: ['add'],
+    apps: ['add', 'vq'],
     colour: '#FF8C00',
     kind: 'facts',
     grid: {
@@ -84,7 +84,7 @@ export const CONCEPTS: Concept[] = [
     id: 'subtract',
     title: 'Taking away',
     codes: ['2.OA.B.2'],
-    apps: ['subtract'],
+    apps: ['subtract', 'vq'],
     colour: '#00BCD4',
     kind: 'facts',
     grid: {
@@ -102,7 +102,7 @@ export const CONCEPTS: Concept[] = [
     id: 'times',
     title: 'Times tables',
     codes: ['3.OA.C.7'],
-    apps: ['times'],
+    apps: ['times', 'vq'],
     colour: '#16A34A',
     kind: 'facts',
     grid: {
@@ -120,7 +120,7 @@ export const CONCEPTS: Concept[] = [
     id: 'divide',
     title: 'Dividing',
     codes: ['3.OA.C.7'],
-    apps: ['divide'],
+    apps: ['divide', 'vq'],
     colour: '#E91E63',
     kind: 'facts',
     grid: {
@@ -138,7 +138,7 @@ export const CONCEPTS: Concept[] = [
     id: 'plane',
     title: 'Coordinate plane',
     codes: ['5.G.A.1', '6.NS.C.8'],
-    apps: ['graph'],
+    apps: ['graph', 'vq'],
     colour: '#009688',
     kind: 'count',
     unit: 'points found',
@@ -148,7 +148,7 @@ export const CONCEPTS: Concept[] = [
     id: 'sort',
     title: 'Sorting into groups',
     codes: ['K.MD.B.3'],
-    apps: ['sort'],
+    apps: ['sort', 'vq'],
     colour: '#0EA5E9',
     kind: 'count',
     unit: 'decks sorted right',

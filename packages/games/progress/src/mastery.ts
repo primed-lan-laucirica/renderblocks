@@ -35,7 +35,21 @@ export function status(ev: { t: number; ok?: boolean }[]): Status {
   return 'tried'
 }
 
-export const belongs = (c: Concept, e: ProgressEvent) => c.apps.includes(e.app) && c.codes.includes(e.concept)
+const OP_FOR_FACTS: Record<string, string> = {
+  add: '+',
+  subtract: '−',
+  times: '×',
+  divide: '÷',
+}
+
+export const belongs = (c: Concept, e: ProgressEvent) => {
+  if (!c.apps.includes(e.app) || !c.codes.includes(e.concept)) return false
+  if (e.app === 'vq' && c.kind === 'facts') {
+    const op = OP_FOR_FACTS[c.id]
+    if (op && !e.item.includes(op)) return false
+  }
+  return true
+}
 
 const byTime = (a: ProgressEvent, b: ProgressEvent) => a.t - b.t
 

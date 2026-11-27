@@ -18,6 +18,7 @@ interface FrontierModalProps {
   onSelectConcept: (conceptId: ConceptId) => void
   onCycleOverride: (conceptId: ConceptId, next: ConceptOverride | undefined) => void
   onResetOverrides: () => void
+  onQuickCheck?: () => void
 }
 
 function nextOverride(cur: ConceptOverride | undefined): ConceptOverride | undefined {
@@ -32,6 +33,7 @@ export function FrontierModal({
   onSelectConcept,
   onCycleOverride,
   onResetOverrides,
+  onQuickCheck,
 }: FrontierModalProps) {
   const [subjectTab, setSubjectTab] = useState<SubjectId | 'all'>('all')
 
@@ -72,6 +74,15 @@ export function FrontierModal({
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {onQuickCheck && (
+              <button
+                type="button"
+                onClick={onQuickCheck}
+                className="rounded-full bg-emerald-500 hover:bg-emerald-400 px-3.5 py-1.5 text-xs font-black text-slate-950"
+              >
+                ⚡ Quick Check
+              </button>
+            )}
             {hasOverrides && (
               <button
                 type="button"
@@ -192,6 +203,20 @@ function ConceptCard({
           <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-extrabold ${badge.cls}`}>{badge.text}</span>
         </div>
         <div className="mt-1 text-[11px] opacity-80 leading-snug">{node.note}</div>
+        <div className="mt-1.5 flex items-center gap-2 text-[10px] font-bold opacity-80 tabular-nums">
+          <span>Mastery {Math.round(node.pMastery * 100)}%</span>
+          <span className="opacity-40">·</span>
+          <span>Conf {Math.round(node.confidence * 100)}%</span>
+        </div>
+        <div className="mt-1 h-1.5 w-full rounded-full bg-black/30 overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all"
+            style={{
+              width: `${Math.max(6, Math.round(node.pMastery * 100))}%`,
+              backgroundColor: node.zone === 'mastered' ? '#38BDF8' : node.zone === 'frontier' ? '#34D399' : '#64748B',
+            }}
+          />
+        </div>
       </div>
 
       <div className="flex items-center justify-between pt-1.5 border-t border-white/10 text-[11px]">

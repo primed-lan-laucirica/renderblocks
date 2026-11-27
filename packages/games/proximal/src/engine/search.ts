@@ -9,7 +9,8 @@ import type {
   SeedAnchorId,
   SubjectId,
 } from '../types'
-import { evaluateVideoFrontier, type FrontierSnapshot } from './frontier'
+import type { FrontierSnapshot } from './frontier'
+import { rankFrontierFeed } from './ranker'
 import { buildQueryVector, buildVideoCentroid, dotRow, getVectorIndex, type VectorIndex } from './vectors'
 
 /** Deterministic PRNG (Mulberry32) so shuffle seeds produce stable, testable feeds. */
@@ -372,29 +373,14 @@ export function buildBrowseFeed(
   const watchedSet = new Set(state.history.map((h) => h.id))
   const tasteCentroid = buildTasteCentroid(vecIndex, state)
 
-  // Learning Frontier ZPD tab
+  // Learning Frontier ZPD tab — powered by the weighted Proximal Ranking Algorithm MVP
   if (query.tab === 'frontier' && frontier) {
-    const proximalScored: { card: FeedCard; rankVal: number }[] = []
-    for (const v of filtered) {
-      const res = evaluateVideoFrontier(v, frontier)
-      if (!res.proximal) continue
-      const sim = anchorSimValue(v, query.anchor)
-      let tasteBonus = 0
-      if (tasteCentroid && vecIndex) {
-        const row = vecIndex.idToRow.get(v.id)
-        if (row !== undefined) tasteBonus = Math.max(0, dotRow(vecIndex, row, tasteCentroid)) * 0.1
-      }
-      const unseenBoost = watchedSet.has(v.id) ? -0.14 : 0.04
-      const jitter = (rand() - 0.5) * 0.06
-      const rankVal = res.fitScore + 0.25 * sim + v.score * 0.002 + tasteBonus + unseenBoost + jitter
-      proximalScored.push({
-        card: { video: v, reason: res.reason, frontierBadge: true },
-        rankVal,
-      })
-    }
-    proximalScored.sort((a, b) => b.rankVal - a.rankVal)
-    const cards = proximalScored.map((x) => x.card)
-    return query.channelKey === 'all' ? diversifyChannels(cards, 2) : cards
+    return rankFrontierFeed(filtered, frontier, state, {
+      anchor: query.anchor,
+      vecIndex,
+      rand,
+      diversify: query.channelKey === 'all',
+    })
   }
 
   // Focused filter or Seeds / Discover tab

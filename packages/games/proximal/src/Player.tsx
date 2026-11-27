@@ -38,6 +38,12 @@ function useOnline() {
   return online
 }
 
+export interface WatchStats {
+  dwellSec: number
+  completed: boolean
+  bailedFast: boolean
+}
+
 interface PlayerProps {
   video: ProximalVideo
   nearestSeed?: ProximalVideo
@@ -50,6 +56,7 @@ interface PlayerProps {
   onToggleLike: (id: string) => void
   onToggleSave: (id: string) => void
   onExploreSimilar: (video: ProximalVideo) => void
+  onWatchEnd?: (video: ProximalVideo, stats: WatchStats) => void
 }
 
 export function Player({
@@ -64,10 +71,30 @@ export function Player({
   onToggleLike,
   onToggleSave,
   onExploreSimilar,
+  onWatchEnd,
 }: PlayerProps) {
   const online = useOnline()
   const subjMeta = SUBJECT_BY_ID[video.primarySubject]
   const bandMeta = BAND_BY_ID[video.levelBand]
+  const startedAtRef = useRef<number>(0)
+  const completedRef = useRef<boolean>(false)
+  const onWatchEndRef = useRef(onWatchEnd)
+
+  useEffect(() => {
+    onWatchEndRef.current = onWatchEnd
+  }, [onWatchEnd])
+
+  useEffect(() => {
+    startedAtRef.current = Date.now()
+    completedRef.current = false
+    const currentVideo = video
+    return () => {
+      const dwellSec = Math.max(0, Math.round((Date.now() - startedAtRef.current) / 1000))
+      const completed = completedRef.current || (currentVideo.duration > 0 && dwellSec >= currentVideo.duration * 0.8)
+      const bailedFast = !completed && dwellSec < 15
+      onWatchEndRef.current?.(currentVideo, { dwellSec, completed, bailedFast })
+    }
+  }, [video])
 
   return (
     <div className="flex h-full w-full flex-col bg-slate-950 text-slate-100 overflow-y-auto select-none" data-proximal-player={video.id}>
@@ -120,7 +147,13 @@ export function Player({
       <div className="mx-auto w-full max-w-5xl px-3 pt-3">
         <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-slate-800 shadow-xl">
           {online ? (
-            <EmbedScreen key={video.id} video={video} />
+            <EmbedScreen
+              key={video.id}
+              video={video}
+              onEnded={() => {
+                completedRef.current = true
+              }}
+            />
           ) : (
             <StatusCard
               title="Proximal needs the internet to play videos."
@@ -227,9 +260,13 @@ function RelatedThumb({ id, title, thumbMode }: { id: string; title: string; thu
   )
 }
 
-function EmbedScreen({ video }: { video: ProximalVideo }) {
+function EmbedScreen({ video, onEnded }: { video: ProximalVideo; onEnded?: () => void }) {
   const [state, setState] = useState<'on' | 'ended' | 'failed'>('on')
   const frameRef = useRef<HTMLIFrameElement>(null)
+  const onEndedRef = useRef(onEnded)
+  useEffect(() => {
+    onEndedRef.current = onEnded
+  }, [onEnded])
 
   useEffect(() => {
     if (state !== 'on') return
@@ -252,7 +289,10 @@ function EmbedScreen({ video }: { video: ProximalVideo }) {
             : msg.event === 'infoDelivery'
               ? (msg.info as { playerState?: number } | null)?.playerState
               : undefined
-        if (played === ENDED) setState('ended')
+        if (played === ENDED) {
+          setState('ended')
+          onEndedRef.current?.()
+        }
       } catch {
         // ignore non-JSON messages
       }

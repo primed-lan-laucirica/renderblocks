@@ -1,12 +1,26 @@
-import { useEffect, useMemo, useState } from 'react'
-import type { GameProps, NamespacedStorage, ProgressEvent } from '@renderblocks/kernel'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  VqPopup,
+  pickNextVq,
+  readVqCadence,
+  type GameProps,
+  type NamespacedStorage,
+  type ProgressEvent,
+  type ValidationQuizlet,
+} from '@renderblocks/kernel'
 import rawCatalog from './data/catalog.json'
 import { CONCEPTS, LEVEL_BANDS, SUBJECTS, channelCollectionLabel } from './data/taxonomy'
-import { computeFrontier } from './engine/frontier'
+import {
+  computeFrontier,
+  readSharedOverrides,
+  recordProximalExposure,
+  writeSharedOverrides,
+  type FrontierSnapshot,
+} from './engine/frontier'
 import { buildBrowseFeed, findSimilarVideos } from './engine/search'
 import { getVectorIndex } from './engine/vectors'
 import { FrontierModal } from './FrontierModal'
-import { Player } from './Player'
+import { Player, type WatchStats } from './Player'
 import type {
   BrowseQuery,
   ConceptId,
@@ -35,20 +49,22 @@ const DEFAULT_STATE: LearnerState = {
 }
 
 function readState(storage: NamespacedStorage): LearnerState {
+  const sharedOverrides = readSharedOverrides()
   try {
     const raw = storage.get('learner_state_v1')
-    if (!raw) return DEFAULT_STATE
+    if (!raw) return { ...DEFAULT_STATE, conceptOverrides: sharedOverrides }
     const parsed = JSON.parse(raw) as Partial<LearnerState>
+    const localOverrides =
+      parsed.conceptOverrides && typeof parsed.conceptOverrides === 'object' ? parsed.conceptOverrides : {}
     return {
       liked: Array.isArray(parsed.liked) ? parsed.liked : [],
       saved: Array.isArray(parsed.saved) ? parsed.saved : [],
       history: Array.isArray(parsed.history) ? parsed.history : [],
       thumbMode: parsed.thumbMode === 'poster' ? 'poster' : 'midpoint',
-      conceptOverrides:
-        parsed.conceptOverrides && typeof parsed.conceptOverrides === 'object' ? parsed.conceptOverrides : {},
+      conceptOverrides: { ...localOverrides, ...sharedOverrides },
     }
   } catch {
-    return DEFAULT_STATE
+    return { ...DEFAULT_STATE, conceptOverrides: sharedOverrides }
   }
 }
 
@@ -58,8 +74,12 @@ export default function App({ services }: GameProps) {
   const [progressEvents, setProgressEvents] = useState<ProgressEvent[]>([])
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null)
   const [showFrontierMap, setShowFrontierMap] = useState(false)
+  const [showRankDebug, setShowRankDebug] = useState(false)
+  const [activeVq, setActiveVq] = useState<ValidationQuizlet | null>(null)
+  const [recentVqIds, setRecentVqIds] = useState<string[]>(() => readVqCadence().recentQuestionIds)
+  const [exposureTick, setExposureTick] = useState(0)
 
-  const [tab, setTab] = useState<FeedTab>('explore')
+  const [tab, setTab] = useState<FeedTab>('frontier')
   const [search, setSearch] = useState('')
   const [subject, setSubject] = useState<SubjectId | 'all'>('all')
   const [anchor, setAnchor] = useState<SeedAnchorId | 'all'>('all')
@@ -70,6 +90,13 @@ export default function App({ services }: GameProps) {
   const [similarToId, setSimilarToId] = useState<string | null>(null)
   const [shuffleSeed, setShuffleSeed] = useState<number>(() => Math.floor(Date.now() % 1_000_000))
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+
+  const reloadProgress = useCallback(() => {
+    return services.progress.all().then((events) => {
+      setProgressEvents(events)
+      return events
+    })
+  }, [services])
 
   // Load shared RenderBlocks IndexedDB progress log for live Learning Frontier detection
   useEffect(() => {
@@ -84,11 +111,16 @@ export default function App({ services }: GameProps) {
 
   useEffect(() => {
     storage.set('learner_state_v1', JSON.stringify(learner))
+    writeSharedOverrides(learner.conceptOverrides)
   }, [storage, learner])
 
   useEffect(
     () =>
       services.onBack(() => {
+        if (activeVq) {
+          setActiveVq(null)
+          return true
+        }
         if (activeVideoId) {
           setActiveVideoId(null)
           return true
@@ -103,15 +135,31 @@ export default function App({ services }: GameProps) {
         }
         return false
       }),
-    [services, activeVideoId, showFrontierMap, similarToId],
+    [services, activeVq, activeVideoId, showFrontierMap, similarToId],
   )
 
   const videoById = useMemo(() => new Map(catalog.videos.map((v) => [v.id, v])), [])
   const vecIndex = useMemo(() => getVectorIndex(catalog), [])
 
   const frontier = useMemo(
-    () => computeFrontier(progressEvents, learner.conceptOverrides),
-    [progressEvents, learner.conceptOverrides],
+    () => {
+      void exposureTick
+      return computeFrontier(progressEvents, learner.conceptOverrides)
+    },
+    [progressEvents, learner.conceptOverrides, exposureTick],
+  )
+
+  const launchQuickCheck = useCallback(
+    (sourceFrontier?: FrontierSnapshot, extraRecent?: string[]) => {
+      const f = sourceFrontier ?? frontier
+      const q = pickNextVq(f, {
+        focusSubject: subject,
+        recentQuestionIds: extraRecent ?? recentVqIds,
+        seed: Math.floor(Date.now() % 1_000_000),
+      })
+      if (q) setActiveVq(q)
+    },
+    [frontier, subject, recentVqIds],
   )
 
   const channelOptions = useMemo(() => {
@@ -196,6 +244,21 @@ export default function App({ services }: GameProps) {
     setActiveVideoId(v.id)
   }
 
+  const handleWatchEnd = useCallback((v: ProximalVideo, stats: WatchStats) => {
+    setLearner((prev) => ({
+      ...prev,
+      history: prev.history.map((h) =>
+        h.id === v.id
+          ? { ...h, dwellSec: stats.dwellSec, completed: stats.completed, bailedFast: stats.bailedFast }
+          : h,
+      ),
+    }))
+    if (stats.dwellSec >= 20) {
+      recordProximalExposure(v.concepts, stats.dwellSec)
+      setExposureTick((t) => t + 1)
+    }
+  }, [])
+
   const resetFilters = () => {
     setSearch('')
     setSubject('all')
@@ -205,7 +268,7 @@ export default function App({ services }: GameProps) {
     setFormat('all')
     setChannelKey('all')
     setSimilarToId(null)
-    setTab('explore')
+    setTab('frontier')
     setVisibleCount(PAGE_SIZE)
   }
 
@@ -225,6 +288,7 @@ export default function App({ services }: GameProps) {
         onSelectVideo={openVideo}
         onToggleLike={toggleLike}
         onToggleSave={toggleSave}
+        onWatchEnd={handleWatchEnd}
         onExploreSimilar={(v) => {
           setSimilarToId(v.id)
           setActiveVideoId(null)
@@ -245,7 +309,7 @@ export default function App({ services }: GameProps) {
     format !== 'all' ||
     channelKey !== 'all' ||
     similarToId !== null ||
-    tab !== 'explore'
+    tab !== 'frontier'
 
   const shownCards = cards.slice(0, visibleCount)
 
@@ -296,11 +360,20 @@ export default function App({ services }: GameProps) {
 
           <button
             type="button"
+            onClick={() => launchQuickCheck()}
+            title="Run a quick frontier calibration check"
+            className="h-10 rounded-full bg-emerald-500 hover:bg-emerald-400 px-3.5 text-xs font-black text-slate-950 shrink-0 shadow"
+          >
+            ⚡ Check
+          </button>
+
+          <button
+            type="button"
             onClick={() => setShowFrontierMap(true)}
             title="Inspect or steer the Learning Frontier skill graph"
             className="h-10 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 px-3.5 text-xs font-extrabold text-emerald-200 shrink-0"
           >
-            ⚡ Map ({frontier.frontierIds.size})
+            Map ({frontier.frontierIds.size})
           </button>
 
           <button
@@ -334,8 +407,8 @@ export default function App({ services }: GameProps) {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar">
           {(
             [
-              { id: 'explore', label: 'Explore' },
               { id: 'frontier', label: `⚡ Frontier (${frontier.frontierIds.size})` },
+              { id: 'explore', label: 'Explore' },
               { id: 'seeds', label: `Seeds (${catalog.seedCount})` },
               { id: 'liked', label: `♥ Liked (${learner.liked.length})` },
               { id: 'saved', label: `Later (${learner.saved.length})` },
@@ -497,13 +570,26 @@ export default function App({ services }: GameProps) {
               {frontierNodes.slice(0, 8).map((n) => n.label).join(' · ') || 'Foundations'}
               {frontierNodes.length > 8 ? ` +${frontierNodes.length - 8} more` : ''}
             </span>
-            <button
-              type="button"
-              onClick={() => setShowFrontierMap(true)}
-              className="shrink-0 rounded-full bg-emerald-500/25 hover:bg-emerald-500/40 px-2.5 py-0.5 font-bold text-emerald-200"
-            >
-              View Skill Map →
-            </button>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => setShowRankDebug((v) => !v)}
+                className={`rounded-full px-2.5 py-0.5 font-bold transition-colors ${
+                  showRankDebug
+                    ? 'bg-emerald-400 text-slate-950'
+                    : 'bg-slate-900/80 border border-emerald-500/40 text-emerald-200 hover:bg-emerald-900/50'
+                }`}
+              >
+                {showRankDebug ? '✓ Why ranked' : 'Why ranked?'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowFrontierMap(true)}
+                className="rounded-full bg-emerald-500/25 hover:bg-emerald-500/40 px-2.5 py-0.5 font-bold text-emerald-200"
+              >
+                Skill Map →
+              </button>
+            </div>
           </div>
         )}
 
@@ -550,6 +636,7 @@ export default function App({ services }: GameProps) {
                   liked={likedSet.has(card.video.id)}
                   saved={savedSet.has(card.video.id)}
                   watched={watchedSet.has(card.video.id)}
+                  showRankDebug={showRankDebug}
                   onPlay={openVideo}
                   onToggleLike={toggleLike}
                   onToggleSave={toggleSave}
@@ -587,6 +674,32 @@ export default function App({ services }: GameProps) {
           }}
           onCycleOverride={setConceptOverride}
           onResetOverrides={() => setLearner((prev) => ({ ...prev, conceptOverrides: {} }))}
+          onQuickCheck={() => {
+            setShowFrontierMap(false)
+            launchQuickCheck()
+          }}
+        />
+      )}
+
+      {activeVq && (
+        <VqPopup
+          quizlet={activeVq}
+          allowNext
+          onAnswered={({ quizlet }) => {
+            setRecentVqIds((prev) => [quizlet.id, ...prev.filter((x) => x !== quizlet.id)].slice(0, 30))
+            void reloadProgress()
+          }}
+          onNext={() => {
+            const nextRecent = [activeVq.id, ...recentVqIds.filter((x) => x !== activeVq.id)].slice(0, 30)
+            setRecentVqIds(nextRecent)
+            void reloadProgress().then((fresh) => {
+              launchQuickCheck(computeFrontier(fresh, learner.conceptOverrides), nextRecent)
+            })
+          }}
+          onClose={() => {
+            setActiveVq(null)
+            void reloadProgress()
+          }}
         />
       )}
     </div>

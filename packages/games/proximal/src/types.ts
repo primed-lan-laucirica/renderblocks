@@ -1,58 +1,11 @@
+import type { ConceptId, ConceptOverride, LevelBandId, SubjectId } from '@renderblocks/kernel'
+
+export type { ConceptId, ConceptOverride, LevelBandId, SubjectId }
+
 export type SeedAnchorId = 'numberblocks' | 'wonderblocks' | 'preschool-prep' | 'homeschool-pop'
-
-export type SubjectId = 'math' | 'ela' | 'science' | 'cs-logic' | 'world-history' | 'arts-music'
-
-export type LevelBandId = 'prek' | 'k_2' | 'g3_5' | 'g6_8' | 'hs' | 'university'
-
-export type ConceptId =
-  // Mathematics
-  | 'counting'
-  | 'number-sense'
-  | 'skip-counting'
-  | 'addition'
-  | 'subtraction'
-  | 'math-facts'
-  | 'place-value'
-  | 'multiplication'
-  | 'division'
-  | 'fractions'
-  | 'shapes-geometry'
-  | 'measurement-time-money'
-  | 'algebra-equations'
-  | 'probability-statistics'
-  | 'deep-math'
-  // Reading, Phonics & Language (ELA)
-  | 'phonics-foundations'
-  | 'phonics-decoding'
-  | 'grammar-syntax'
-  | 'vocabulary-reading'
-  | 'linguistics-writing'
-  // Science & Engineering
-  | 'science-life-nature'
-  | 'science-human-body'
-  | 'science-earth-weather'
-  | 'science-space-astronomy'
-  | 'science-forces-physics'
-  | 'science-matter-chemistry'
-  | 'science-biology-genetics'
-  | 'science-engineering'
-  // Logic, Coding & AI
-  | 'patterns-coding'
-  | 'logic-reasoning'
-  | 'computer-science'
-  | 'ai-machine-learning'
-  // World, Geography & History
-  | 'world-geography'
-  | 'great-stories'
-  | 'world-history'
-  // Art, Color & Music
-  | 'colours-sorting'
-  | 'music-rhythm'
-  | 'art-design'
 
 export type VideoFormat = 'episode' | 'compilation'
 export type VideoRole = 'seed' | 'candidate'
-export type ConceptOverride = 'mastered' | 'frontier'
 
 export interface AnchorSims {
   nb: number
@@ -100,12 +53,18 @@ export interface ProximalCatalog {
   videos: ProximalVideo[]
 }
 
-export type FeedTab = 'explore' | 'frontier' | 'seeds' | 'discover' | 'liked' | 'saved' | 'history'
+export type FeedTab = 'frontier' | 'explore' | 'seeds' | 'discover' | 'liked' | 'saved' | 'history'
 export type ThumbnailMode = 'midpoint' | 'poster'
 
 export interface WatchEntry {
   id: string
   at: number
+  /** Observed dwell seconds inside Player. */
+  dwellSec?: number
+  /** True if video reached YouTube ENDED state or >=80% duration. */
+  completed?: boolean
+  /** True if learner exited in <15s (soft negative signal for ranker). */
+  bailedFast?: boolean
 }
 
 export interface LearnerState {
@@ -129,8 +88,22 @@ export interface BrowseQuery {
   shuffleSeed: number
 }
 
+export interface RankBreakdown {
+  total: number
+  zpd: number
+  bandFit: number
+  explore: number
+  taste: number
+  quality: number
+  penalty: number
+  pMastery: number
+  confidence: number
+  leadConcept: ConceptId
+}
+
 export interface FeedCard {
   video: ProximalVideo
   reason?: string
   frontierBadge?: boolean
+  rank?: RankBreakdown
 }
